@@ -1,55 +1,209 @@
 import Image from "next/image";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
+    return (
+    <div className="font-sans min-h-screen p-8 pb-20 flex flex-col items-center">
+      <main className="flex flex-col items center w-full">
+      <div className="border-4 border-[#19FF19] rounded-xl mt-12 p-6 shadow-sm text-center max-w-3xl mx-auto">
+        <h1 className="text-3xl font-bold">Kappa Theta Pi</h1>
+        <p className="text-xl mt-2">
+          University of South Carolina, Columbia
+        </p>
+      </div>
+            <div className="border border-transparent rounded-xl max-w-3xl mt-12 p-6 shadow-xl text-center mx-auto bg-white/5 backdrop-blur-sm">
+        <h2 className="text-2xl font-semibold text-left mb-4">
+          About Our Chapter
+        </h2>
+        <p className="text-lg leading-relaxed text-gray-700">
+          Kappa Theta Pi at the University of South Carolina is committed to
+          fostering a community of passionate technologists, innovators, and
+          leaders. We host workshops, networking events, and professional
+          development sessions that empower members to grow both personally and
+          professionally.
+        </p>
+      </div>
+            <div className="border-2 border-gray-400 rounded-xl p-6 text-center shadow-md mt-10">
+        <h2 className="text-2xl font-semibold text-left mb-4">
+          Our Partners
+        </h2>
+        <p className="text-lg leading-relaxed text-gray-700">
+        Pictures of the companies, project info, organized by 1r, 3c
+        </p>
+      </div>
+
+
+
+          <div className="w-full flex flex-col items-center">
+            <h2 className="text-3xl font-bold text-center mt-12 mb-8">Meet the Executive Board</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-items-center">
+ 
+
+
+          <div className="flex flex-col items-center">
+          <Image src="/Images/Screenshot Owen.png"  
           alt="Next.js logo"
           width={180}
           height={38}
           priority
         />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+                    <a
+            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer hover:bg-[#19FF19]"
+            href="https://www.linkedin.com/in/owencoulam/"
             target="_blank"
             rel="noopener noreferrer"
+            
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
+            
+            President: <p>Owen Coulam</p>
           </a>
         </div>
+        <div className="flex flex-col items-center">
+                  <Image
+          className="dark:invert"
+          src="/Images/Screenshot Darssan.png"
+          alt="Next.js logo"
+          width={180}
+          height={38}
+          priority
+        />
+
+                              <a
+            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer hover:bg-[#19FF19]"
+            href="https://www.linkedin.com/in/ledarssan/"
+            target="_blank"
+            rel="noopener noreferrer"
+            
+          >
+            Vice President: <p>Darssan Eswaramoorthi</p>
+          </a>
+          </div>
+        <div className="flex flex-col items-center">
+          <Image
+          className="dark:invert"
+          src="/Images/Screenshot Josiah.png"
+          alt="Next.js logo"
+          width={180}
+          height={38}
+          priority
+        />
+                              <a
+            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer hover:bg-[#19FF19]"
+            href="https://www.linkedin.com/in/josiahawhite/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Executive Secretary: <p>Josiah White</p>
+          </a>
+          </div>
+          <div className="flex flex-col items-center">
+          <Image
+          className="dark:invert"
+          src="/Images/Screenshot Luke.png"
+          alt="Next.js logo"
+          width={180}
+          height={38}
+          priority
+        />
+                              <a
+            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer hover:bg-[#19FF19]"
+            href="https://www.linkedin.com/in/lukejannazzo/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Director of Outreach:<p>Luke Jannazzo</p>
+          </a>
+          </div>
+          <div className="flex flex-col items-center">
+                  <Image
+          className="dark:invert"
+          src="/Images/Screenshot Braden.png"
+          alt="Next.js logo"
+          width={180}
+          height={38}
+          priority
+        />
+                              <a
+            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer hover:bg-[#19FF19]"
+            href="https://www.linkedin.com/in/bguliano/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Director of Technical Development: <p>Braden Guliano</p>
+          </a>
+          </div>
+          <div className="flex flex-col items-center">
+                  <Image
+          className="dark:invert"
+          src="/Images/Screenshot Sara.png"
+          alt="Next.js logo"
+          width={180}
+          height={38}
+          priority
+        />
+           <a
+            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer hover:bg-[#19FF19]"
+            href="https://www.linkedin.com/in/sara-muthu/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Director of Finance: <p>Sara Muthuselvam</p>
+          </a>  
+          </div>
+          <div className="flex flex-col items-center">
+         <Image
+          className="dark:invert"
+          src="/Images/Screenshot Katie.png"
+          alt="Next.js logo"
+          width={180}
+          height={38}
+          priority
+        />                         <a
+            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer hover:bg-[#19FF19]"
+            href="https://www.linkedin.com/in/katiejones404/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Director of Marketing: <p>Katie Jones</p>
+          </a>    
+          </div>
+          <div className="flex flex-col items-center">
+         <Image
+          className="dark:invert"
+          src="/Images/Screenshot Sai.png"
+          alt="Next.js logo"
+          width={180}
+          height={38}
+          priority
+        />                         
+         <a
+            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer hover:bg-[#19FF19]"
+            href="https://www.linkedin.com/in/sai-kottapali-153695288/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Director of Engagement: <p>Sai Kottapali</p>
+          </a>    
+          </div>
+          <div className="flex flex-col items-center">
+          <Image
+          className="dark:invert"
+          src="/Images/Screenshot Tarun.png"
+          alt="Next.js logo"
+          width={180}
+          height={38}
+          priority
+        />                          
+        <a
+            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer hover:bg-[#19FF19]"
+            href="https://www.linkedin.com/in/tarun-ramkumar/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Director of Professional Development: <p>Tarun Ramkumar</p>
+          </a>
+          </div>
+          </div>
+          </div>
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         <a
