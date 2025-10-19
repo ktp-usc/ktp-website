@@ -37,7 +37,7 @@ export default function Home() {
 
 
       <div className="max-w-3xl w-full mx-auto">
-          <h2 className="text-2xl font-semibold text-left">
+          <h2 className="text-3xl font-bold text-left">
               Ongoing Projects
           </h2>
       <div className="relative">
