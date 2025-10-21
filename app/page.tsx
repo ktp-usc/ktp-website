@@ -71,12 +71,9 @@ export default function Home() {
                 </div>
             </div>
 
-
-
           <div className="w-full flex flex-col items-center">
             <h2 className="text-3xl font-bold text-center mt-12 mb-8">Meet the Executive Board</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-items-center">
- 
 
 
           <div className="flex flex-col items-center">
@@ -99,7 +96,6 @@ export default function Home() {
         </div>
         <div className="flex flex-col items-center">
                   <Image
-          className="dark:invert"
           src="/Images/Screenshot Darssan.png"
           alt="Next.js logo"
           width={180}
@@ -119,7 +115,6 @@ export default function Home() {
           </div>
         <div className="flex flex-col items-center">
           <Image
-          className="dark:invert"
           src="/Images/Screenshot Josiah.png"
           alt="Next.js logo"
           width={180}
@@ -137,7 +132,6 @@ export default function Home() {
           </div>
           <div className="flex flex-col items-center">
           <Image
-          className="dark:invert"
           src="/Images/Screenshot Luke.png"
           alt="Next.js logo"
           width={180}
@@ -155,7 +149,6 @@ export default function Home() {
           </div>
           <div className="flex flex-col items-center">
                   <Image
-          className="dark:invert"
           src="/Images/Screenshot Braden.png"
           alt="Next.js logo"
           width={180}
@@ -173,7 +166,6 @@ export default function Home() {
           </div>
           <div className="flex flex-col items-center">
                   <Image
-          className="dark:invert"
           src="/Images/Screenshot Sara.png"
           alt="Next.js logo"
           width={180}
@@ -191,7 +183,6 @@ export default function Home() {
           </div>
           <div className="flex flex-col items-center">
          <Image
-          className="dark:invert"
           src="/Images/Screenshot Katie.png"
           alt="Next.js logo"
           width={180}
@@ -208,7 +199,6 @@ export default function Home() {
           </div>
           <div className="flex flex-col items-center">
          <Image
-          className="dark:invert"
           src="/Images/Screenshot Sai.png"
           alt="Next.js logo"
           width={180}
@@ -226,7 +216,6 @@ export default function Home() {
           </div>
           <div className="flex flex-col items-center">
           <Image
-          className="dark:invert"
           src="/Images/Screenshot Tarun.png"
           alt="Next.js logo"
           width={180}
