@@ -34,14 +34,42 @@ export default function Home() {
               </p>
             </div>
           </div>
-            <div className="border-2 border-gray-400 rounded-xl p-6 text-center shadow-md mt-10">
-        <h2 className="text-2xl font-semibold text-left mb-4">
-          Our Partners
-        </h2>
-        <p className="text-lg leading-relaxed text-gray-700">
-        Pictures of the companies, project info, organized by 1r, 3c
-        </p>
-      </div>
+            <div className="max-w-3xl w-full mx-auto">
+                <h2 className="text-3xl font-bold text-left">
+                    Ongoing Projects
+                </h2>
+                <div className="relative">
+                    <Carousel className="w-full border-2 border-gray-400 rounded-xl p-6 shadow-md mt-4">
+                        <CarouselContent>
+                            {data.map((p)=>(
+                                <CarouselItem key={p.id} className="w-full">
+                                    <div className="flex flex-col md:flex-row items-start">
+
+                                        <div className="w-full md:w-1/2 p-2" >
+                                            <h2 className="text-xl font-semibold mb-2 text-gray-900">
+                                                {p.title}
+                                            </h2>
+                                            <p className="leading-relaxed text-gray-700">
+                                                {p.text}
+                                            </p>
+                                        </div>
+
+                                        <div className="relative w-full md:w-1/2 h-64 md:h-auto p-4 flex items-center justify-center">
+                                            <div className="relative w-full h-full overflow-hidden rounded-xl">
+                                                <AspectRatio ratio={5 / 4}>
+                                                    <Image src={p.image} alt={"${project} logo"} fill className="object-cover"/>;
+                                                </AspectRatio>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CarouselItem>
+                            ))}
+                        </CarouselContent>
+                        <CarouselPrevious aria-label="Previous" />
+                        <CarouselNext aria-label="Next"/>
+                    </Carousel>
+                </div>
+            </div>
 
 
 
