@@ -4,6 +4,7 @@ import React, { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import {Textarea} from "@/components/ui/textarea";
 import { toast } from "sonner";
 import {
     Select,
@@ -13,7 +14,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import {
-    Field,
+    Field, FieldContent,
     FieldDescription,
     FieldGroup,
     FieldLabel,
@@ -33,7 +34,7 @@ export default function Application() {
         <div className= "max-w-3xl w-full mx-auto">
             <h1 className="text-2xl p4 pt-4 pb-5">KTP Rush Application</h1>
             <div className="pb-20">
-                <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-full max-w-sm">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-full">
                     <FieldGroup>
                         <FieldSet>
                             <FieldGroup>
@@ -74,17 +75,33 @@ export default function Application() {
                                     </FieldDescription>
                                 </Field>
                                 <Field>
-                                    <FieldLabel>Major</FieldLabel>
+                                    <FieldLabel>Major(s)</FieldLabel>
                                     <Input
                                         id="major"
                                         required
+                                        placeholder="IT, CE, CS, etc..."
                                     />
                                 </Field>
-                                <Field>
-                                    <FieldLabel>Minor</FieldLabel>
+                                <Field className="pb-3">
+                                    <FieldLabel>Minor(s)</FieldLabel>
                                     <Input
-                                    id="minor"/>
+                                    id="minor"
+                                    placeholder="optional"
+                                    />
                                 </Field>
+                                <FieldSeparator />
+                                <Field>
+                                    <FieldLabel htmlFor="resume">Upload Resume/CV</FieldLabel>
+                                    <FieldDescription>Please attach a copy of your resume (.pdf, .dox, .jpg, .png)</FieldDescription>
+                                    <Input
+                                        id="resume"
+                                        type="file"
+                                        name="attachment"
+                                        accept=".pdf,.jpg,.png,.dox"
+                                        required
+                                    />
+                                </Field>
+                                <FieldSeparator />
                                 <Field>
                                     <FieldLabel>Which rushing events did you attend?</FieldLabel>
                                     <FieldDescription>Select the events you plan to or have already attended</FieldDescription>
@@ -107,10 +124,23 @@ export default function Application() {
                                         </Field>
                                     </FieldGroup>
                                 </Field>
+                                <FieldSeparator />
+                                <Field>
+                                    <FieldContent>
+                                        <FieldLabel>Why would you like to join KTP?</FieldLabel>
+                                        <FieldDescription>Answer prompt in less than 250 words</FieldDescription>
+                                    </FieldContent>
+                                    <Textarea
+                                        id="reason"
+                                        placeholder="Enter text here"
+                                        required
+                                        className="min-h-[100px] resize-none sm:min-w-[300px]"
+                                    />
+                                </Field>
                             </FieldGroup>
                         </FieldSet>
                         <Field className="pt-4" orientation="horizontal">
-                            <Button type="submit">Submit</Button>
+                            <Button className="bg-blue-900 text-lg font-semibold" type="submit">Submit</Button>
                         </Field>
                     </FieldGroup>
                 </form>
