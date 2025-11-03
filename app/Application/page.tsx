@@ -1,5 +1,5 @@
 "use client"
-
+//need to make pages responsive, add form button to all pages, & fix handleSubmit
 import React, { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,17 +24,15 @@ import {
 } from "@/components/ui/field";
 
 export default function Application() {
-    const [email, setEmail] = useState("");
 
-    function handleSubmit(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        toast.success(`Saved: ${email}`);
+    function handleSubmit() {
+        toast.success(`Submission Saved`);
     }
     return (
         <div className= "max-w-3xl w-full mx-auto">
             <h1 className="text-2xl p4 pt-4 pb-5">KTP Rush Application</h1>
             <div className="pb-20">
-                <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-full">
+                <form onSubmit={handleSubmit}>
                     <FieldGroup>
                         <FieldSet>
                             <FieldGroup>
@@ -51,10 +49,8 @@ export default function Application() {
                                     <Input
                                         id="email"
                                         type="email"
-                                        placeholder="user@email.sc.edu"
                                         required
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="user@email.sc.edu"
                                     />
                                 </Field>
                                 <Field>
@@ -140,7 +136,7 @@ export default function Application() {
                             </FieldGroup>
                         </FieldSet>
                         <Field className="pt-4" orientation="horizontal">
-                            <Button className="bg-blue-900 text-lg font-semibold" type="submit">Submit</Button>
+                            <Button type ="submit" className="bg-blue-900 text-lg font-semibold">Submit</Button>
                         </Field>
                     </FieldGroup>
                 </form>
