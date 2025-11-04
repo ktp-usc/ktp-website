@@ -25,7 +25,7 @@ import {
 
 export default function Application() {
 
-    function handleSubmit() {
+    function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         toast.success(`Submission Saved`);
     }
     return (
