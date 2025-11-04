@@ -6,7 +6,7 @@ export function form() {
         <form>
             <div>
                 <Link href="/Application">
-                    <Button className="text-lg bg-blue-900 hover:bg-red-800 font-semibold">Apply Now!</Button>
+                    <Button className="text-lg bg-blue-900 hover:bg-red-800 font-semibold">Click Here to Apply Now!</Button>
                 </Link>
             </div>
         </form>
