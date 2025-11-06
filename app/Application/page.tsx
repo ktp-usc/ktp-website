@@ -1,5 +1,6 @@
 "use client"
 //need to make pages responsive, add form button to all pages, & fix handleSubmit
+import { Header } from "../Header";
 import React, { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +31,7 @@ export default function Application() {
     }
     return (
         <div className= "max-w-3xl w-full mx-auto">
+            < Header />
             <h1 className="text-2xl p4 pt-4 pb-5">KTP Rush Application</h1>
             <div className="pb-20">
                 <form onSubmit={handleSubmit}>

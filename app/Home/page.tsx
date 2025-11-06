@@ -1,7 +1,6 @@
 import Image from "next/image";
-import { Header } from "./Header";
-import Footer from "./Footer";
-import logo from '../SquareLogoGarnet.png';
+import { Header } from "../Header";
+import Footer from "../Footer";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious,} from "@/components/ui/carousel"
 
@@ -21,7 +20,7 @@ export default function Home() {
           <Header />
           <div className="border-4 border-white rounded-xl mt-12 p-6 shadow-sm text-center max-w-3xl mx-auto">
             <div className="relative w-48 h-48 mx-auto mb-6">
-              <Image src={logo} alt="Logo" fill style={{ objectFit: 'contain' }} />
+             <Image src="/Images/SquareLogoGarnet.png" alt="KTP Logo"  width={120} height={120} className="" />
             </div>
             <div className="border-2 border-gray-400 rounded-xl p-6 text-center shadow-md mt-10 max-w-3xl mx-auto bg-white/5 backdrop-blur-sm">
               <h2 className="text-2xl font-semibold text-left mb-4">About Our Chapter</h2>
