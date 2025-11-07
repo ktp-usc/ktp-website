@@ -16,79 +16,105 @@ export default function Page2() {
   return (
     <main>
       <Header />
-      <div className="border-2 border-gray-400 rounded-xl p-6 text-center shadow-md mt-10 max-w-3xl mx-auto bg-white/5 backdrop-blur-sm">
-        <h1 className="text-2xl p-4 pb-5">Why rush</h1>
+      <section className="text-center py-16 px-6">
+        <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
+          Learn About Joining KTP!
+        </h1>
+        <p className="text-gray-600 text-lg sm:text-xl mb-2">
+          Welcome to Kappa Theta Pi's Spring 2026 Rush!
+        </p>
+        <p className="text-gray-600 text-lg sm:text-xl mb-8">
+          Here's our rush schedule. Applications are due{" "}
+          <span className="font-semibold text-black">February 20, 2025.</span>
+        </p>
+
+        {/* Application button */}
+        <div className="flex justify-center mb-6">
+          <Link
+            href="/Application"
+            className="px-6 py-3 bg-[#315CA9] text-white rounded-lg font-semibold hover:bg-[#23498F] transition-colors"
+          >
+            Application Link
+          </Link>
+        </div>
+      </section>
+
+      {/* ===== Timeline Section ===== */}
+      {/* ===== Timeline Section (no right column) ===== */}
+      <section className="max-w-6xl mx-auto mt-12 px-4">
         <div>
-          <form>{/* Form fields for page 2 go here */}</form>
+          <h2 className="text-3xl font-bold mb-8">Upcoming Rush Events</h2>
+
+          <div className="relative">
+            {/* vertical line (left) */}
+            <div className="absolute left-3 top-0 bottom-0 w-px bg-gray-200 hidden sm:block" />
+
+            {/* Event 1 */}
+            <div className="relative pl-8 pb-10">
+              <div className="absolute -left-0.5 top-1 w-3 h-3 rounded-full bg-[#315CA9]"></div>
+              <h3 className="text-lg font-semibold mb-1">TBD</h3>
+              <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
+                <CalendarIcon />
+                <span>Wednesday, August 27, 4:30-6:00 PM</span>
+              </p>
+              <p className="text-sm text-gray-600 flex items-center gap-2 mb-3">
+                <PinIcon />
+                <span>300 Main St.</span>
+              </p>
+              <p className="text-sm text-gray-600 leading-relaxed">TBD</p>
+            </div>
+
+            {/* Event 2 */}
+            <div className="relative pl-8 pb-10">
+              <div className="absolute -left-0.5 top-1 w-3 h-3 rounded-full bg-[#315CA9]"></div>
+              <h3 className="text-lg font-semibold mb-1">TBD</h3>
+              <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
+                <CalendarIcon />
+                <span>Tuesday, September 2, 8:00-10:00 PM</span>
+              </p>
+              <p className="text-sm text-gray-600 flex items-center gap-2 mb-3">
+                <PinIcon />
+                <span>300 Main St.</span>
+              </p>
+              <p className="text-sm text-gray-600 leading-relaxed">TBD</p>
+            </div>
+
+            {/* Event 3 */}
+            <div className="relative pl-8 pb-10">
+              <div className="absolute -left-0.5 top-1 w-3 h-3 rounded-full bg-[#315CA9]"></div>
+              <h3 className="text-lg font-semibold mb-1">TBD</h3>
+              <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
+                <CalendarIcon />
+                <span>Wednesday, September 3, 7:00-9:00 PM</span>
+              </p>
+              <p className="text-sm text-gray-600 flex items-center gap-2 mb-3">
+                <PinIcon />
+                <span>Sai's House on 67 Avenue</span>
+              </p>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                TBD BY THE FUTURE EXECS
+              </p>
+            </div>
+
+            {/* Event 4 */}
+            <div className="relative pl-8 pb-10">
+              <div className="absolute -left-0.5 top-1 w-3 h-3 rounded-full bg-[#315CA9]"></div>
+              <h3 className="text-lg font-semibold mb-1">TBD</h3>
+              <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
+                <CalendarIcon />
+                <span>Thursday, September 4, 6:30-8:00 PM</span>
+              </p>
+              <p className="text-sm text-gray-600 flex items-center gap-2 mb-3">
+                <PinIcon />
+                <span>Boyd Innovation Center</span>
+              </p>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Start-Ups!
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div className="flex justify-center mt-6 mb-10">
-        <Link
-          href="/Application"
-          className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400 inline-block"
-        >
-          Rush application
-        </Link>
-      </div>
-
-      <div className="mb-10 flex items-center relative">
-        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 -translate-x-1/2">
-          <div className="w-4 h-4 rounded-full bg-[#315CA9] z-10"></div>
-        </div>
-      </div>
-
-      <div className="ml-8 pl-4">
-        <h2 className="text-lg sm:text-xl font-bold mb-3">
-          Application Office Hours
-        </h2>
-      </div>
-
-      <div className="mb-4">
-        <div className="flex items-center mb-2">
-          <CalendarIcon />
-          <span className="ml-1 font-semibold text-black text-[13px] sm:text-base">
-            Thursday, September 4, 8:00-9:00 PM
-          </span>
-        </div>
-      </div>
-
-      <div className="flex items-center">
-        <PinIcon />
-        <span className="ml-1 font-semibold text-black text-[13px] sm:text-base">
-          Virtual (Zoom)
-        </span>
-      </div>
-
-      <br />
-
-      <div className="mb-10 flex items-center relative">
-        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 -translate-x-1/2">
-          <div className="w-4 h-4 rounded-full bg-[#315CA9] z-10"></div>
-        </div>
-      </div>
-
-      <div className="ml-8 pl-4">
-        <h2 className="text-lg sm:text-xl font-bold mb-3">
-          Application Office Hours
-        </h2>
-      </div>
-
-      <div className="mb-4">
-        <div className="flex items-center mb-2">
-          <CalendarIcon />
-          <span className="ml-1 font-semibold text-black text-[13px] sm:text-base">
-            Thursday, September 4, 8:00-9:00 PM
-          </span>
-        </div>
-      </div>
-
-      <div className="flex items-center">
-        <PinIcon />
-        <span className="ml-1 font-semibold text-black text-[13px] sm:text-base">
-          Virtual (Zoom)
-        </span>
-      </div>
+      </section>
 
       {/* ===== FAQ Accordion (added here) ===== */}
       <section className="max-w-4xl mx-auto mt-16 mb-24 px-4">
