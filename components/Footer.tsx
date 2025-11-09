@@ -2,7 +2,7 @@
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-gray-800 text-white mt-auto">
+    <footer className="w-screen bg-gray-800 text-white mt-auto">
       <div className="max-w-5xl mx-auto px-6 py-0">
           <div className='main-footer flex flex-col pt-12 pb-4'>
             <div className="flex flex-col md:flex-row justify-center items-center gap-12">

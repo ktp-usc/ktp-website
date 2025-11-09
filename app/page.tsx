@@ -158,13 +158,13 @@ export default function Home() {
                 >
                     Our Network
                 </div>
-                <div className='flex flex-wrap justify-center items-center gap-4 lg:gap-8 mb-8 min-h-[160px] lg:min-h-[180px]'>
+                <div className='flex flex-wrap justify-center items-center pb-10 gap-4 lg:gap-8 mb-8 min-h-[160px] lg:min-h-[180px]'>
                     {networkCompanies.map((company, index) => (
                         <img
                             key={company.alt}
                             src={company.src}
                             alt={company.alt}
-                            className='h-6 lg:h-8 network-logo-simple opacity-0'
+                            className='h-6 lg:h-8 network-logo-simple'
                             style={{
                                 animationDelay: `${index * 50}ms`,
                                 animationFillMode: 'forwards'
