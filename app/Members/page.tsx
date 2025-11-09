@@ -14,14 +14,15 @@ export default function Members(){
 
                     <div className="flex flex-col items-center">
                         <Image src="/Images/Screenshot Owen.png"
-                               alt="Next.js logo"
+                               alt="KTP President"
                                width={180}
                                height={38}
                                priority
+                               className="rounded-md"
                         />
 
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer hover:bg-[#19FF19]"
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer "
                             href="https://www.linkedin.com/in/owencoulam/"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -38,10 +39,11 @@ export default function Members(){
                             width={180}
                             height={38}
                             priority
+                            className="rounded-md"
                         />
 
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer hover:bg-[#19FF19]"
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer"
                             href="https://www.linkedin.com/in/ledarssan/"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -57,9 +59,10 @@ export default function Members(){
                             width={180}
                             height={38}
                             priority
+                            className="rounded-md"
                         />
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer hover:bg-[#19FF19]"
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer"
                             href="https://www.linkedin.com/in/josiahawhite/"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -74,9 +77,10 @@ export default function Members(){
                             width={180}
                             height={38}
                             priority
+                            className="rounded-md"
                         />
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer hover:bg-[#19FF19]"
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer"
                             href="https://www.linkedin.com/in/lukejannazzo/"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -91,9 +95,10 @@ export default function Members(){
                             width={180}
                             height={38}
                             priority
+                            className="rounded-md"
                         />
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer hover:bg-[#19FF19]"
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer"
                             href="https://www.linkedin.com/in/bguliano/"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -108,9 +113,10 @@ export default function Members(){
                             width={180}
                             height={38}
                             priority
+                            className="rounded-md"
                         />
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer hover:bg-[#19FF19]"
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer "
                             href="https://www.linkedin.com/in/sara-muthu/"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -125,8 +131,9 @@ export default function Members(){
                             width={180}
                             height={38}
                             priority
+                            className="rounded-md"
                         />                         <a
-                        className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer hover:bg-[#19FF19]"
+                        className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer "
                         href="https://www.linkedin.com/in/katiejones404/"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -141,9 +148,10 @@ export default function Members(){
                             width={180}
                             height={38}
                             priority
+                            className="rounded-md"
                         />
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer hover:bg-[#19FF19]"
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer "
                             href="https://www.linkedin.com/in/sai-kottapali-153695288/"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -158,9 +166,10 @@ export default function Members(){
                             width={180}
                             height={38}
                             priority
+                            className="rounded-md"
                         />
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer hover:bg-[#19FF19]"
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer "
                             href="https://www.linkedin.com/in/tarun-ramkumar/"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -170,7 +179,7 @@ export default function Members(){
                     </div>
                 </div>
             </div>
-    <div className="w-screen overflow-hidden mt-0">
+    <div className="w-screen overflow-hidden mt-4">
         <img src="/Images/Banner Image_2.png" alt="Decorative bottom banner" className="block w-full h-40 object-cover max-w-none"/>
     </div>
             <Footer/>
