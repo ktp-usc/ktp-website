@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { Header } from "./Header";
 import Footer from "./Footer";
-import logo from '../SquareLogoGarnet.png';
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious,} from "@/components/ui/carousel"
 
@@ -16,18 +15,33 @@ const data = [
 
 export default function Home() {
     return (
-      <div className="font-sans min-h-screen p-8 pb-20 flex flex-col items-center">
-        <main className="flex flex-col items-center w-full">
+      <div className="font-sans min-h-screen flex flex-col">
+        <main className="flex flex-col items-center flex-grow p-8 pb-0">
           <Header />
+          <div className='flex flex-row justify-center xl:justify-between mb-12 md:mb-20 lg:mb-32 px-6 sm:px-8 md:px-12 lg:px-20'>
+            <div className="absolute inset-0 blob-c z-0 hidden md:block">
+                <div className="shape-blob ten"></div>
+                <div className="shape-blob eleven"></div>
+        </div>
+        <div className='flex-1 flex flex-col items-end'>
+          <img src="/images/home/melgrace.jpg" className='hidden xl:block' style={{ width: '175px', transform: 'rotate(10deg)', borderRadius: '25px', marginRight: '50px' }} />
+          <img src="/images/home/rock.JPEG" className='hidden xl:block' style={{ width: '200px', transform: 'rotate(-19deg)', borderRadius: '25px', marginRight: '20px' }} />
+        </div>
+
+        <div className='flex flex-col flex-none'>
+          <div className="absolute inset-0 blob-c z-0 block md:hidden overflow-hidden">
+              <div className="shape-blob twelve"></div>
+              <div className="shape-blob thirteen"></div>
+          </div>
           <div className="border-4 border-white rounded-xl mt-12 p-6 shadow-sm text-center max-w-3xl mx-auto">
             <div className="relative w-48 h-48 mx-auto mb-6">
-              <Image src={logo} alt="Logo" fill style={{ objectFit: 'contain' }} />
+              <img src="/Images/ktp_logo.svg" alt="logo" width={250} height={250}/>
             </div>
             <div className="border-2 border-gray-400 rounded-xl p-6 text-center shadow-md mt-10 max-w-3xl mx-auto bg-white/5 backdrop-blur-sm">
-              <h2 className="text-2xl font-semibold text-left mb-4">About Our Chapter</h2>
-              <p className="text-lg leading-relaxed text-gray-700">
-                Kappa Theta Pi at the University of South Carolina is committed to
-                fostering a community of passionate technologists, innovators, and
+              <h2 className="text-2xl font-semibold text-left mb-4">Our Passion</h2>
+              <p className="text-lg leading-relaxed text-gray-700 text-left">
+                Welcome to Kappa Theta Pi at the University of South Carolina where we are committed to
+                fostering a community of inspired technologists, innovators, and
                 leaders. We host workshops, networking events, and professional
                 development sessions that empower members to grow both personally and
                 professionally.
@@ -35,10 +49,10 @@ export default function Home() {
             </div>
           </div>
             <div className="max-w-3xl w-full mx-auto">
-                <h2 className="text-3xl font-bold text-left">
+                <h2 className="relative z-10 text-3xl font-bold text-left mt-10">
                     Ongoing Projects
                 </h2>
-                <div className="relative">
+                <div className="relative z-10">
                     <Carousel className="w-full border-2 border-gray-400 rounded-xl p-6 shadow-md mt-4">
                         <CarouselContent>
                             {data.map((p)=>(
@@ -233,7 +247,13 @@ export default function Home() {
           </div>
           </div>
           </div>
-      </main>
+          </div>
+          </div>
+      <div className="w-screen overflow-hidden mt-0">
+        <img src="/Images/Banner Image_2.png" alt="Decorative bottom banner" className="block w-full h-40 object-cover max-w-none"/>
+      </div>
+
+  </main>
       <Footer />
     </div>
   );
