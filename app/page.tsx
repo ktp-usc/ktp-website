@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Header } from "@/components/Header";
-import Footer from "../components/Footer";
+import Footer from "@/components/Footer";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious,} from "@/components/ui/carousel"
 import { useEffect } from 'react';
@@ -94,6 +94,7 @@ export default function Home() {
           <div className="border-4 border-white rounded-xl mt-12 p-6 text-center max-w-3xl mx-auto">
             <div className="relative w-48 h-48 mx-auto mb-6">
               <img src="/Images/ktp_logo.svg" alt="logo" width={250} height={250}/>
+              <img src="/Images/ktp_logo.svg" alt="logo" width={250} height={250}/>
             </div>
 
               {/*Motto*/}
@@ -113,6 +114,7 @@ export default function Home() {
 
             {/*Projects*/}
             <div className="max-w-3xl w-full mx-auto">
+                <h2 className="relative z-10 text-3xl font-bold text-left mt-10">
                 <h2 className="relative z-10 text-3xl font-bold text-left mt-10">
                     Ongoing Projects
                 </h2>
@@ -177,6 +179,13 @@ export default function Home() {
           <div className="w-screen overflow-hidden mt-0">
               <img src="/Images/Banner Image_2.png" alt="Decorative bottom banner" className="block w-full h-40 object-cover max-w-none"/>
           </div>
+          </div>
+          </div>
+      <div className="w-screen overflow-hidden mt-0">
+        <img src="/Images/Banner Image_2.png" alt="Decorative bottom banner" className="block w-full h-40 object-cover max-w-none"/>
+      </div>
+
+  </main>
       <Footer />
     </div>
   );
