@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Header } from "@/components/Header";
 import Footer from "@/components/Footer";
-import logo from '@/public/Images/SquareLogoGarnet.png';
+import logo from '@/public/Images/ktp_logo.svg';
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious,} from "@/components/ui/carousel"
 import { useEffect } from 'react';
