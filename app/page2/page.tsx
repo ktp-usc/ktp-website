@@ -21,10 +21,10 @@ export default function Page2() {
           Learn About Joining KTP!
         </h1>
         <p className="text-gray-600 text-lg sm:text-xl mb-2">
-          Welcome to Kappa Theta Pi's Spring 2026 Rush!
+          Welcome to Kappa Theta Pi&apos;s Spring 2026 Rush!
         </p>
         <p className="text-gray-600 text-lg sm:text-xl mb-8">
-          Here's our rush schedule. Applications are due{" "}
+          Here&apos;s our rush schedule. Applications are due{" "}
           <span className="font-semibold text-black">February 20, 2025.</span>
         </p>
 
@@ -89,7 +89,7 @@ export default function Page2() {
               </p>
               <p className="text-sm text-gray-600 flex items-center gap-2 mb-3">
                 <PinIcon />
-                <span>Sai's House on 67 Avenue</span>
+                <span>Sai&apos;s House on 67 Avenue</span>
               </p>
               <p className="text-sm text-gray-600 leading-relaxed">
                 TBD BY THE FUTURE EXECS
@@ -126,7 +126,7 @@ export default function Page2() {
         <Accordion type="multiple" className="w-full divide-y divide-gray-200">
           <AccordionItem value="q1">
             <AccordionTrigger className="py-6 text-left text-xl sm:text-2xl font-semibold text-black hover:bg-gray-50">
-              I'm not majoring in the MCEC, can I still apply?
+              I&apos;m not majoring in the MCEC, can I still apply?
             </AccordionTrigger>
             <AccordionContent className="pb-6 text-gray-700 text-base leading-relaxed">
               Yes! All majors are welcome, and we encourage applicants from
@@ -137,14 +137,14 @@ export default function Page2() {
 
           <AccordionItem value="q2">
             <AccordionTrigger className="py-6 text-left text-xl sm:text-2xl font-semibold text-black hover:bg-gray-50">
-              I'm not able to attend one of the rush events. How will this
+              I&apos;m not able to attend one of the rush events. How will this
               affect my chances?
             </AccordionTrigger>
             <AccordionContent className="pb-6 text-gray-700 text-base leading-relaxed">
               We understand that various circumstances prevent applicants from
               attending all of our events. Please contact our Executive
               Secretary at least an hour before the event takes place if you
-              aren't able to attend.
+              aren&apos;t able to attend.
             </AccordionContent>
           </AccordionItem>
 
@@ -155,7 +155,7 @@ export default function Page2() {
             </AccordionTrigger>
             <AccordionContent className="pb-6 text-gray-700 text-base leading-relaxed">
               Yes, but if you receive a bid from us, we ask that you only pledge
-              our organization this semester. You're also able to hold
+              our organization this semester. You&apos;re also able to hold
               membership in any other professional or social
               fraternity/sorority!
             </AccordionContent>
@@ -178,7 +178,7 @@ export default function Page2() {
 
           <AccordionItem value="q5">
             <AccordionTrigger className="py-6 text-left text-xl sm:text-2xl font-semibold text-black hover:bg-gray-50">
-              If I'm selected for an interbiew, what commitments should I plan
+              If I&apos;m selected for an interview, what commitments should I plan
               for?
             </AccordionTrigger>
             <AccordionContent className="pb-6 text-gray-700 text-base leading-relaxed">
