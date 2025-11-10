@@ -1,18 +1,17 @@
-import Image from 'next/image';
-import logo from '../CircleLogo-Transparent.png';
-import Link from 'next/link';
-                          
+import Image from "next/image";
+import logo from "../CircleLogo-Transparent.png";
+
 export function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
       <div className="max-w-5xl mx-auto px-6 py-4">
-        <Image src={logo} alt="Logo" width={40} height={40} className="inline-block mr-3" />
-        <Link href="/page2" className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400 inline-block" >
-                Rush Page 
-        </Link>
-        <Link href="/Home" className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400 inline-block">
-                Home Page
-        </Link>
+        <Image
+          src={logo}
+          alt="Logo"
+          width={40}
+          height={40}
+          className="inline-block mr-3"
+        />
       </div>
     </header>
   );
