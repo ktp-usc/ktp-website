@@ -11,7 +11,7 @@ export default function Footer() {
                     <div className='flex flex-col items-center text-center min-w-[170px] mx-0 font-inter'>
                         <p className='mb-4 font-extrabold'>Contact Us</p>
                         <p className='mb-4'>
-                            <a href="ocoulam@email.sc.edu" className='hover-text-custom font-medium'>ocoulam@email.sc.edu</a>
+                            <a href="ocoulam@email.sc.edu" className='hover-text-custom font-medium'>soktp@mailbox.sc.edu</a>
                         </p>
 
 
