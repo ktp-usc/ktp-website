@@ -73,14 +73,16 @@ const networkCompanies = [
 export default function Home() {
     return (
       <div className="font-sans min-h-screen flex flex-col">
-          <Header/>
         <main className="flex flex-col items-center flex-grow p-8 pb-0">
-            {/*Blob Shape*/}
+          <Header />
           <div className='flex flex-row justify-center xl:justify-between mb-12 md:mb-20 lg:mb-32 px-6 sm:px-8 md:px-12 lg:px-20'>
             <div className="absolute inset-0 blob-c z-0 hidden md:block">
                 <div className="shape-blob ten"></div>
                 <div className="shape-blob eleven"></div>
-            </div>
+        </div>
+        <div className='flex-1 flex flex-col items-end'>
+          <img src="/images/home/melgrace.jpg" className='hidden xl:block' style={{ width: '175px', transform: 'rotate(10deg)', borderRadius: '25px', marginRight: '50px' }} />
+          <img src="/images/home/rock.JPEG" className='hidden xl:block' style={{ width: '200px', transform: 'rotate(-19deg)', borderRadius: '25px', marginRight: '20px' }} />
         </div>
 
         <div className='flex flex-col flex-none'>
@@ -88,11 +90,9 @@ export default function Home() {
               <div className="shape-blob twelve"></div>
               <div className="shape-blob thirteen"></div>
           </div>
-
-            {/*Logo*/}
-          <div className="border-4 border-white rounded-xl mt-12 p-6 text-center max-w-3xl mx-auto">
+          <div className="border-4 border-white rounded-xl mt-12 p-6 shadow-sm text-center max-w-3xl mx-auto">
             <div className="relative w-48 h-48 mx-auto mb-6">
-              <Image src={logo} alt="Logo" fill style={{ objectFit: 'contain' }} />
+              <img src="/Images/ktp_logo.svg" alt="logo" width={250} height={250}/>
             </div>
 
               {/*Motto*/}
