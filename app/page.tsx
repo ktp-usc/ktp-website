@@ -3,11 +3,10 @@
 import Image from "next/image";
 import { Header } from "@/components/Header";
 import Footer from "@/components/Footer";
+import logo from '@/public/Images/ktp_logo.svg';
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious,} from "@/components/ui/carousel"
 import { useEffect } from 'react';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
 
 {/*Project Data*/}
 const data = [
@@ -93,8 +92,7 @@ export default function Home() {
             {/*Logo*/}
           <div className="border-4 border-white rounded-xl mt-12 p-6 text-center max-w-3xl mx-auto">
             <div className="relative w-48 h-48 mx-auto mb-6">
-              <img src="/Images/ktp_logo.svg" alt="logo" width={250} height={250}/>
-              <img src="/Images/ktp_logo.svg" alt="logo" width={250} height={250}/>
+              <Image src={logo} alt="Logo" fill style={{ objectFit: 'contain' }} />
             </div>
 
               {/*Motto*/}
@@ -114,7 +112,6 @@ export default function Home() {
 
             {/*Projects*/}
             <div className="max-w-3xl w-full mx-auto">
-                <h2 className="relative z-10 text-3xl font-bold text-left mt-10">
                 <h2 className="relative z-10 text-3xl font-bold text-left mt-10">
                     Ongoing Projects
                 </h2>
@@ -137,7 +134,7 @@ export default function Home() {
                                         <div className="relative w-full md:w-1/2 h-64 md:h-auto p-4 flex items-center justify-center">
                                             <div className="relative w-full h-full overflow-hidden rounded-xl">
                                                 <AspectRatio ratio={5 / 4}>
-                                                    <Image src={p.image} alt={"${project} logo"} fill className="object-cover"/>;
+                                                    <Image src={p.image} alt={"${project} logo"} fill className="object-cover"/>
                                                 </AspectRatio>
                                             </div>
                                         </div>
@@ -179,14 +176,7 @@ export default function Home() {
           <div className="w-screen overflow-hidden mt-0">
               <img src="/Images/Banner Image_2.png" alt="Decorative bottom banner" className="block w-full h-40 object-cover max-w-none"/>
           </div>
-          </div>
-          </div>
-      <div className="w-screen overflow-hidden mt-0">
-        <img src="/Images/Banner Image_2.png" alt="Decorative bottom banner" className="block w-full h-40 object-cover max-w-none"/>
-      </div>
-
-  </main>
-      <Footer />
+    <Footer />
     </div>
   );
 }
