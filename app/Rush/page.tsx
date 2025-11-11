@@ -15,7 +15,7 @@ import {
 export default function Page2() {
   return (
     <main>
-      <Header />
+      <Header></Header>
       <section className="text-center py-16 px-6">
         <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
           Learn About Joining KTP!
