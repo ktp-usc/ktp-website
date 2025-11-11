@@ -1,12 +1,11 @@
 import { Header } from "@/components/Header";
 import Footer from "@/components/Footer";
 import Image from "next/image";
-import { Button } from "@/components/ui/button"
 
-export default function Members(){
-    return(
+export default function Members() {
+    return (
         <div>
-            <Header/>
+            <Header />
             <div className="w-full flex flex-col items-center">
                 <h2 className="text-3xl font-bold text-center mt-12 mb-8">Meet the Executive Board</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-items-center">
@@ -132,7 +131,7 @@ export default function Members(){
                             height={38}
                             priority
                             className="rounded-md"
-                        />                         <a
+                        /> <a
                         className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer "
                         href="https://www.linkedin.com/in/katiejones404/"
                         target="_blank"
@@ -179,10 +178,11 @@ export default function Members(){
                     </div>
                 </div>
             </div>
-    <div className="w-screen overflow-hidden mt-4">
-        <img src="/Images/Banner Image_2.png" alt="Decorative bottom banner" className="block w-full h-40 object-cover max-w-none"/>
-    </div>
-            <Footer/>
+            <div className="w-screen overflow-hidden mt-4">
+                <img src="/Images/Banner Image_2.png" alt="Decorative bottom banner"
+                     className="block w-full h-40 object-cover max-w-none" />
+            </div>
+            <Footer />
         </div>
     );
 }
