@@ -146,8 +146,8 @@ export default function Application() {
                                             Which rush events did you attend?<span className="text-red-500">*</span>
                                         </FieldLabel>
                                         <FieldDescription className="italic font-semibold">
-                                            If you're completing this application early, select the events you plan on attending.
-                                            Reach out to our Executive Secretary (contact in the FAQ) if you're unable to attend one
+                                            If you are completing this application early, select the events you plan on attending.
+                                            Reach out to our Executive Secretary (contact in the FAQ) if you are unable to attend one
                                             of the events you select.
                                         </FieldDescription>
                                         <FieldGroup className="gap-3">
