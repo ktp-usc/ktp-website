@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,6 +16,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Kappa Theta Pi",
   description: "The official website for Kappa Theta Pi",
+    icons: {
+        icon: '/favicon.png',
+        shortcut: '/favicon.ico',
+        apple: '/favicon.ico',
+    },
 };
 
 export default function RootLayout({
@@ -25,9 +31,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {/* <Navbar /> */}
-
         {children}
+        <Toaster position="bottom-right" richColors />
       </body>
     </html>
   );

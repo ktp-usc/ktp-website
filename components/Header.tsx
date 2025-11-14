@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import logo from '../CircleLogo-Transparent.png';
+import logo from "../CircleLogo-Transparent.png";
 import Link from 'next/link';
 
 export function Header() {
