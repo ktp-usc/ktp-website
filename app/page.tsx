@@ -3,10 +3,8 @@
 import Image from "next/image";
 import { Header } from "@/components/Header";
 import Footer from "@/components/Footer";
-import logo from "@/public/Images/ktp_logo.svg";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { useEffect } from "react";
 
 {/*Project Data*/
 }
@@ -96,13 +94,13 @@ export default function Home() {
                     </div>
                 </div>
                 <div className="flex-1 flex flex-col items-end">
-                    <img src="/images/home/melgrace.jpg" className="hidden xl:block" style={{
+                    <img src="/images/home/melgrace.jpg" alt = "blob image" className="hidden xl:block" style={{
                         width: "175px",
                         transform: "rotate(10deg)",
                         borderRadius: "25px",
                         marginRight: "50px",
                     }} />
-                    <img src="/images/home/rock.JPEG" className="hidden xl:block" style={{
+                    <img src="/images/home/rock.JPEG" alt = "blob image" className="hidden xl:block" style={{
                         width: "200px",
                         transform: "rotate(-19deg)",
                         borderRadius: "25px",
