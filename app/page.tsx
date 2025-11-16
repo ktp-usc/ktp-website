@@ -115,7 +115,7 @@ export default function Home() {
                         <div className="shape-blob twelve"></div>
                         <div className="shape-blob thirteen"></div>
                     </div>
-                    <div className="border-4 border-white rounded-xl mt-12 p-6 shadow-sm text-center max-w-3xl mx-auto">
+                    <div className="border-4 border-white rounded-xl mt-12 p-6 text-center max-w-3xl mx-auto">
                         <div className="relative w-48 h-48 mx-auto mb-6">
                             <img src="/Images/ktp_logo.svg" alt="logo" width={250} height={250} />
                         </div>
