@@ -3,10 +3,8 @@
 import Image from "next/image";
 import { Header } from "@/components/Header";
 import Footer from "@/components/Footer";
-import logo from "@/public/Images/ktp_logo.svg";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { useEffect } from "react";
 
 {/*Project Data*/
 }
@@ -96,13 +94,13 @@ export default function Home() {
                     </div>
                 </div>
                 <div className="flex-1 flex flex-col items-end">
-                    <img src="/images/home/melgrace.jpg" className="hidden xl:block" style={{
+                    <img src="/images/home/melgrace.jpg" alt = "blob image" className="hidden xl:block" style={{
                         width: "175px",
                         transform: "rotate(10deg)",
                         borderRadius: "25px",
                         marginRight: "50px",
                     }} />
-                    <img src="/images/home/rock.JPEG" className="hidden xl:block" style={{
+                    <img src="/images/home/rock.JPEG" alt = "blob image" className="hidden xl:block" style={{
                         width: "200px",
                         transform: "rotate(-19deg)",
                         borderRadius: "25px",
@@ -115,7 +113,7 @@ export default function Home() {
                         <div className="shape-blob twelve"></div>
                         <div className="shape-blob thirteen"></div>
                     </div>
-                    <div className="border-4 border-white rounded-xl mt-12 p-6 shadow-sm text-center max-w-3xl mx-auto">
+                    <div className="border-4 border-white rounded-xl mt-12 p-6 text-center max-w-3xl mx-auto">
                         <div className="relative w-48 h-48 mx-auto mb-6">
                             <img src="/Images/ktp_logo.svg" alt="logo" width={250} height={250} />
                         </div>
@@ -191,7 +189,8 @@ export default function Home() {
                                 key={company.alt}
                                 src={company.src}
                                 alt={company.alt}
-                                className="h-6 lg:h-8 network-logo-simple"
+                                className="h-6 lg:h-8 network-logo-simple transition-all duration-300
+                    hover:scale-110 hover: drop-shadow-md"
                                 style={{
                                     animationDelay: `${index * 50}ms`,
                                     animationFillMode: "forwards",

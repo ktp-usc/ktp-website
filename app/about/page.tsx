@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { Link as ScrollLink, Element } from 'react-scroll';
-import {Header} from '../Header';   // change to `{ Header }` if it's a named export
-import Footer from '../Footer';   // same note
+import { Header } from '@/components/Header';   // change to `{ Header }` if it's a named export
+import Footer from '@/components/Footer';   // same note
 
 
 
@@ -18,8 +18,8 @@ export default function About(): React.JSX.Element {
 
   return (
     <div className="min-h-screen">
-      <Header />
-    <main className="flex flex-col items-center flex-grow p-8 pb-0">
+        <Header />
+        <main className="flex flex-col items-center flex-grow p-8 pb-0">
       {/* Top blobs/background */}
       <div className="relative bg-white w-full">
         <div className="absolute inset-0 blob-c z-0">
@@ -132,8 +132,8 @@ export default function About(): React.JSX.Element {
 
       </div>
 </main>
-      <Footer />
 
+        <Footer/>
       <style jsx>{`
         .ktp-active-category {
           background-color: #315CA9 !important;
