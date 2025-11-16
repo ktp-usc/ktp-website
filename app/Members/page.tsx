@@ -21,7 +21,7 @@ export default function Members() {
                         />
 
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-900
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
                     hover:scale-110 hover: drop-shadow-md"
                             href="https://www.linkedin.com/in/owencoulam/"
                             target="_blank"
@@ -43,7 +43,7 @@ export default function Members() {
                         />
 
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-900
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
                     hover:scale-110 hover: drop-shadow-md"
                             href="https://www.linkedin.com/in/ledarssan/"
                             target="_blank"
@@ -63,7 +63,7 @@ export default function Members() {
                             className="rounded-md "
                         />
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-900
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
                     hover:scale-110 hover: drop-shadow-md"
                             href="https://www.linkedin.com/in/josiahawhite/"
                             target="_blank"
@@ -82,7 +82,7 @@ export default function Members() {
                             className="rounded-md"
                         />
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-900
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
                     hover:scale-110 hover: drop-shadow-md"
                             href="https://www.linkedin.com/in/lukejannazzo/"
                             target="_blank"
@@ -101,7 +101,7 @@ export default function Members() {
                             className="rounded-md"
                         />
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-900
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
                     hover:scale-110 hover: drop-shadow-md"
                             href="https://www.linkedin.com/in/bguliano/"
                             target="_blank"
@@ -120,7 +120,7 @@ export default function Members() {
                             className="rounded-md"
                         />
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-900
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
                     hover:scale-110 hover: drop-shadow-md"
                             href="https://www.linkedin.com/in/sara-muthu/"
                             target="_blank"
@@ -138,7 +138,7 @@ export default function Members() {
                             priority
                             className="rounded-md"
                         /> <a
-                        className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-900
+                        className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
                         hover:scale-110 hover:drop-shadow-md"
                         href="https://www.linkedin.com/in/katiejones404/"
                         target="_blank"
@@ -157,7 +157,7 @@ export default function Members() {
                             className="rounded-md"
                         />
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-900
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
                             hover:scale-110 hover:drop-shadow-md"
                             href="https://www.linkedin.com/in/sai-kottapali-153695288/"
                             target="_blank"
@@ -176,7 +176,7 @@ export default function Members() {
                             className="rounded-md"
                         />
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-900
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
                     hover:scale-110 hover: drop-shadow-md"
                             href="https://www.linkedin.com/in/tarun-ramkumar/"
                             target="_blank"

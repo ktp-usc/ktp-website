@@ -1,6 +1,6 @@
 // app/page2/page.tsx  (or wherever your Page2 file lives)
 import Footer from "../Footer";
-import { Header } from "../Header";
+import { Header } from "@/components/Header";
 import Link from "next/link";
 import CalendarIcon from "../../Componenets/CalendarIcon";
 import PinIcon from "../../Componenets/PinIcon";
@@ -15,7 +15,7 @@ import {
 export default function Page2() {
   return (
     <main>
-      <Header />
+        <Header />
       <section className="text-center py-16 px-6">
         <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
           Learn About Joining KTP!
@@ -29,7 +29,7 @@ export default function Page2() {
         </p>
 
         {/* Application button */}
-        <div className="flex justify-center mb-6 transition-all duration-900
+        <div className="flex justify-center mb-6 transition-all duration-300
                     hover:scale-110 hover: drop-shadow-md">
           <Link
             href="/Application"

@@ -189,7 +189,7 @@ export default function Home() {
                                 key={company.alt}
                                 src={company.src}
                                 alt={company.alt}
-                                className="h-6 lg:h-8 network-logo-simple transition-all duration-900
+                                className="h-6 lg:h-8 network-logo-simple transition-all duration-300
                     hover:scale-110 hover: drop-shadow-md"
                                 style={{
                                     animationDelay: `${index * 50}ms`,
