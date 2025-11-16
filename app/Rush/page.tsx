@@ -199,7 +199,7 @@ export default function Page2() {
         </Accordion>
       </section>
 
-      <Footer />
+      <Footer/>
     </main>
   );
 }

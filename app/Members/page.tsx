@@ -182,7 +182,7 @@ export default function Members() {
                 <img src="/Images/Banner Image_2.png" alt="Decorative bottom banner"
                      className="block w-full h-40 object-cover max-w-none" />
             </div>
-            <Footer />
+        <Footer/>
         </div>
     );
 }

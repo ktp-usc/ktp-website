@@ -132,8 +132,8 @@ export default function About(): React.JSX.Element {
 
       </div>
 </main>
-      <Footer />
 
+        <Footer/>
       <style jsx>{`
         .ktp-active-category {
           background-color: #315CA9 !important;
