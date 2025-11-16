@@ -210,7 +210,8 @@ export default function Application() {
                             <div className="pt-4">
                                 <Button
                                     type="submit"
-                                    className="bg-blue-900 text-lg text-white font-semibold"
+                                    className="bg-blue-900 text-lg text-white font-semibold transition-all duration-300
+                    hover:scale-110 hover: drop-shadow-md"
                                     variant="outline"
                                     onClick={(e) => {
                                         e.preventDefault();
