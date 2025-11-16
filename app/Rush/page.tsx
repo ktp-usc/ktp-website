@@ -15,7 +15,7 @@ import {
 export default function Page2() {
   return (
     <main>
-      <Header></Header>
+      <Header />
       <section className="text-center py-16 px-6">
         <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
           Learn About Joining KTP!
@@ -29,7 +29,8 @@ export default function Page2() {
         </p>
 
         {/* Application button */}
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center mb-6 transition-all duration-900
+                    hover:scale-110 hover: drop-shadow-md">
           <Link
             href="/Application"
             className="px-6 py-3 bg-[#315CA9] text-white rounded-lg font-semibold hover:bg-[#23498F] transition-colors"

@@ -18,7 +18,7 @@ export default function About(): React.JSX.Element {
 
   return (
     <div className="min-h-screen">
-      <Header />
+        <Header />
     <main className="flex flex-col items-center flex-grow p-8 pb-0">
       {/* Top blobs/background */}
       <div className="relative bg-white w-full">

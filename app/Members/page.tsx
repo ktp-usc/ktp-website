@@ -6,7 +6,7 @@ export default function Members() {
     return (
         <div>
             <Header />
-            <div className="w-full flex flex-col items-center">
+            <div className="w-full flex flex-col items-center ">
                 <h2 className="text-3xl font-bold text-center mt-12 mb-8">Meet the Executive Board</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-items-center">
 
@@ -21,7 +21,8 @@ export default function Members() {
                         />
 
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer "
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-900
+                    hover:scale-110 hover: drop-shadow-md"
                             href="https://www.linkedin.com/in/owencoulam/"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -42,7 +43,8 @@ export default function Members() {
                         />
 
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer"
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-900
+                    hover:scale-110 hover: drop-shadow-md"
                             href="https://www.linkedin.com/in/ledarssan/"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -58,10 +60,11 @@ export default function Members() {
                             width={180}
                             height={38}
                             priority
-                            className="rounded-md"
+                            className="rounded-md "
                         />
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer"
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-900
+                    hover:scale-110 hover: drop-shadow-md"
                             href="https://www.linkedin.com/in/josiahawhite/"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -79,7 +82,8 @@ export default function Members() {
                             className="rounded-md"
                         />
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer"
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-900
+                    hover:scale-110 hover: drop-shadow-md"
                             href="https://www.linkedin.com/in/lukejannazzo/"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -97,7 +101,8 @@ export default function Members() {
                             className="rounded-md"
                         />
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer"
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-900
+                    hover:scale-110 hover: drop-shadow-md"
                             href="https://www.linkedin.com/in/bguliano/"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -115,7 +120,8 @@ export default function Members() {
                             className="rounded-md"
                         />
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer "
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-900
+                    hover:scale-110 hover: drop-shadow-md"
                             href="https://www.linkedin.com/in/sara-muthu/"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -132,7 +138,8 @@ export default function Members() {
                             priority
                             className="rounded-md"
                         /> <a
-                        className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer "
+                        className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-900
+                        hover:scale-110 hover:drop-shadow-md"
                         href="https://www.linkedin.com/in/katiejones404/"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -150,7 +157,8 @@ export default function Members() {
                             className="rounded-md"
                         />
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer "
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-900
+                            hover:scale-110 hover:drop-shadow-md"
                             href="https://www.linkedin.com/in/sai-kottapali-153695288/"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -168,7 +176,8 @@ export default function Members() {
                             className="rounded-md"
                         />
                         <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer "
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-900
+                    hover:scale-110 hover: drop-shadow-md"
                             href="https://www.linkedin.com/in/tarun-ramkumar/"
                             target="_blank"
                             rel="noopener noreferrer"
