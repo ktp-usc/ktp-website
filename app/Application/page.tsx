@@ -1,5 +1,5 @@
 "use client";
-//need to make pages responsive, add form button to all pages, & fix handleSubmit
+
 import { Header } from "@/components/Header";
 import React from "react";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import {
     Field,
     FieldContent,
@@ -19,8 +25,30 @@ import {
 } from "@/components/ui/field";
 
 export default function Application() {
-    function handleSubmit() {
-        toast.success(`Submission Saved`);
+    // --------------------------------------------
+    // REAL SUBMIT HANDLER — sends FormData to API
+    // --------------------------------------------
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault(); // Stop GET request
+
+        const form = e.currentTarget;
+        const formData = new FormData(form);
+
+        // Submit to backend
+        const res = await fetch("/api/applications", {
+            method: "POST",
+            body: formData,
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            toast.error(data.error || "Submission failed");
+            return;
+        }
+
+        toast.success("Application submitted!");
+        form.reset();
     }
 
     return (
@@ -28,31 +56,40 @@ export default function Application() {
             <Header />
             <div className="max-w-3xl w-full mx-auto">
                 <h1 className="text-2xl p4 pt-4 pb-5">KTP Rush Application</h1>
+
                 <div className="pb-20">
                     <form onSubmit={handleSubmit}>
                         <FieldGroup>
                             <FieldSet>
                                 <FieldGroup>
+
+                                    {/* Full Name */}
                                     <Field>
                                         <FieldLabel>Full Name</FieldLabel>
                                         <Input
                                             id="name"
+                                            name="name"
                                             placeholder="First and Last Name"
                                             required
                                         />
                                     </Field>
+
+                                    {/* Email */}
                                     <Field>
                                         <FieldLabel htmlFor="email">USC Email</FieldLabel>
                                         <Input
                                             id="email"
+                                            name="email"
                                             type="email"
                                             required
                                             placeholder="user@email.sc.edu"
                                         />
                                     </Field>
+
+                                    {/* Classification */}
                                     <Field>
                                         <FieldLabel>Classification</FieldLabel>
-                                        <Select>
+                                        <Select name="classification">
                                             <SelectTrigger>
                                                 <SelectValue placeholder="None Selected" />
                                             </SelectTrigger>
@@ -67,77 +104,66 @@ export default function Application() {
                                             Select your classification.
                                         </FieldDescription>
                                     </Field>
+
+                                    {/* Major */}
                                     <Field>
                                         <FieldLabel>Major(s)</FieldLabel>
                                         <Input
                                             id="major"
+                                            name="major"
                                             required
                                             placeholder="IT, CE, CS, etc..."
                                         />
                                     </Field>
+
+                                    {/* Minor */}
                                     <Field className="pb-3">
                                         <FieldLabel>Minor(s)</FieldLabel>
-                                        <Input id="minor" placeholder="optional" />
+                                        <Input id="minor" name="minor" placeholder="optional" />
                                     </Field>
+
                                     <FieldSeparator />
+
+                                    {/* Resume Upload */}
                                     <Field>
                                         <FieldLabel htmlFor="resume">Upload Resume/CV</FieldLabel>
                                         <FieldDescription>
-                                            Please attach a copy of your resume (.pdf, .dox, .jpg,
-                                            .png)
+                                            Please attach your resume (.pdf, .doc, .jpg, .png)
                                         </FieldDescription>
+
                                         <Input
                                             id="resume"
+                                            name="resume"
                                             type="file"
-                                            name="attachment"
-                                            accept=".pdf,.jpg,.png,.dox"
+                                            accept=".pdf,.jpg,.png,.doc,.docx"
                                             required
                                         />
                                     </Field>
+
                                     <FieldSeparator />
-                                    <Field>
-                                        <FieldLabel>
-                                            Which rushing events did you attend?
-                                        </FieldLabel>
-                                        <FieldDescription>
-                                            Select the events you plan to or have already attended
-                                        </FieldDescription>
-                                        <FieldGroup className="gap-3">
-                                            <Field orientation="horizontal">
-                                                <Checkbox />
-                                                <FieldLabel>Info Session(s)</FieldLabel>
-                                            </Field>
-                                            <Field orientation="horizontal">
-                                                <Checkbox />
-                                                <FieldLabel>Rush Workshop</FieldLabel>
-                                            </Field>
-                                            <Field orientation="horizontal">
-                                                <Checkbox />
-                                                <FieldLabel>Pitch Night</FieldLabel>
-                                            </Field>
-                                            <Field orientation="horizontal">
-                                                <Checkbox />
-                                                <FieldLabel>KTP Field Day</FieldLabel>
-                                            </Field>
-                                        </FieldGroup>
-                                    </Field>
-                                    <FieldSeparator />
+
+                                    {/* Why KTP */}
                                     <Field>
                                         <FieldContent>
-                                            <FieldLabel>Why would you like to join KTP?</FieldLabel>
+                                            <FieldLabel>
+                                                Why would you like to join KTP?
+                                            </FieldLabel>
                                             <FieldDescription>
-                                                Answer prompt in less than 250 words
+                                                Answer in less than 250 words
                                             </FieldDescription>
                                         </FieldContent>
                                         <Textarea
                                             id="reason"
+                                            name="reason"
                                             placeholder="Enter text here"
                                             required
                                             className="min-h-[100px] resize-none sm:min-w-[300px]"
                                         />
                                     </Field>
+
                                 </FieldGroup>
                             </FieldSet>
+
                             <Field className="pt-4" orientation="horizontal">
                                 <Button
                                     type="submit"
