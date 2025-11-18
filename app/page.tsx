@@ -83,7 +83,7 @@ const networkCompanies = [
 
 export default function Home() {
     return (
-        <div className="font-sans min-h-screen flex flex-col">
+        <div className="font-sans min-h-screen flex flex-col overflow-x-hidden">
             <main className="flex flex-col items-center flex-grow p-8 pb-0">
                 <Header />
                 <div
@@ -93,23 +93,9 @@ export default function Home() {
                         <div className="shape-blob eleven"></div>
                     </div>
                 </div>
-                <div className="flex-1 flex flex-col items-end">
-                    <img src="/images/home/melgrace.jpg" alt = "blob image" className="hidden xl:block" style={{
-                        width: "175px",
-                        transform: "rotate(10deg)",
-                        borderRadius: "25px",
-                        marginRight: "50px",
-                    }} />
-                    <img src="/images/home/rock.JPEG" alt = "blob image" className="hidden xl:block" style={{
-                        width: "200px",
-                        transform: "rotate(-19deg)",
-                        borderRadius: "25px",
-                        marginRight: "20px",
-                    }} />
-                </div>
 
                 <div className="flex flex-col flex-none">
-                    <div className="absolute inset-0 blob-c z-0 block md:hidden overflow-hidden">
+                     <div className="absolute inset-0 blob-c z-0 block md:hidden overflow-hidden">
                         <div className="shape-blob twelve"></div>
                         <div className="shape-blob thirteen"></div>
                     </div>
@@ -121,7 +107,7 @@ export default function Home() {
                         {/*Motto*/}
 
                         {/*Passion*/}
-                        <div className="max-w-3xl w-full mx-auto bg-white/5 backdrop-blur-sm">
+                        <div className="max-w-3xl w-auto mx-auto bg-white/5 backdrop-blur-sm">
                             <h2 className="relative z-10 text-3xl font-bold text-left mt-10">Our Passion</h2>
                             <p className=" border-2 border-gray-400 rounded-xl mt-4 p-6 text-lg leading-relaxed text-gray-700 text-left">
                                 Welcome to Kappa Theta Pi at the University of South Carolina where we are committed to
@@ -138,7 +124,7 @@ export default function Home() {
                         <h2 className="relative z-10 text-3xl font-bold text-left mt-10">
                             Ongoing Projects
                         </h2>
-                        <div className="relative z-10 scroll-pb-9">
+                        <div className="relative z-10">
                             <Carousel className="w-full border-2 border-gray-400 rounded-xl p-6 shadow-md mt-4">
                                 <CarouselContent>
                                     {data.map((p) => (
@@ -159,7 +145,7 @@ export default function Home() {
                                                     <div className="relative w-full h-full overflow-hidden rounded-xl">
                                                         <AspectRatio ratio={5 / 4}>
                                                             <Image src={p.image} alt={"${project} logo"} fill
-                                                                   className="object-cover" />
+                                                                   className="object-cover w-full max-w-full" />
                                                         </AspectRatio>
                                                     </div>
                                                 </div>
@@ -200,10 +186,10 @@ export default function Home() {
                     </div>
                 </div>
             </main>
-            <div className="w-screen overflow-hidden mt-0">
+            {/*<div className="w-screen overflow-hidden mt-0">
                 <img src="/Images/Banner Image_2.png" alt="Decorative bottom banner"
                      className="block w-full h-40 object-cover max-w-none" />
-            </div>
+            </div>*/}
             <Footer />
         </div>
     );

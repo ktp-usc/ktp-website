@@ -20,7 +20,7 @@ import {
 
 export default function Application() {
     return (
-        <>
+        <div className="overflow-x-hidden">
             <Header />
             <div className="max-w-3xl w-full mx-auto">
                 <h1 className="text-2xl p4 pt-4 pb-5 font-semibold">KTP Rush Application</h1>
@@ -230,6 +230,6 @@ export default function Application() {
                 </div>
             </div>
             <Footer/>
-        </>
+        </div>
     );
 }

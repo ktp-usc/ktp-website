@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function Members() {
     return (
-        <div>
+        <div className="overflow-x-hidden">
             <Header />
             <div className="w-full flex flex-col items-center ">
                 <h2 className="text-3xl font-bold text-center mt-12 mb-8">Meet the Executive Board</h2>
@@ -189,7 +189,7 @@ export default function Members() {
             </div>
             <div className="w-screen overflow-hidden mt-4">
                 <img src="/Images/Banner Image_2.png" alt="Decorative bottom banner"
-                     className="block w-full h-40 object-cover max-w-none" />
+                     className="block h-40 object-cover w-full max-w-full" />
             </div>
         <Footer/>
         </div>
