@@ -14,8 +14,18 @@ import {
 
 export default function Page2() {
   return (
-    <main>
+    <main className="relative">
       <Header></Header>
+
+      {/* Background blobs */}
+      <div className="relative bg-white w-full">
+        <div className="absolute inset-0 blob-c z-0">
+          <div className="shape-blob eight" />
+          <div className="shape-blob nine" />
+        </div>
+      </div>
+
+      <div className="relative z-10">
       <section className="text-center py-16 px-6">
         <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
           Learn About Joining KTP!
@@ -192,6 +202,7 @@ export default function Page2() {
       </section>
 
       <Footer />
+      </div>
     </main>
   );
 }
