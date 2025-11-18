@@ -165,7 +165,7 @@ export default function About(): React.JSX.Element {
                       This year we are happy to announce our Alpha Class! The
                       2025 Alpha Class of the Kappa Theta Pi UofSC have
                       showcased their skills gained through the rush process by
-                      contributing to three non profits and creating a
+                      contributing to three non-profits and creating a
                       betterment in the social and economic landscape of our
                       local community.
                     </p>
