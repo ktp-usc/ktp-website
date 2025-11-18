@@ -5,4 +5,5 @@ These changes add new functionality to...
 Add an "X" inside each bracket to check it off
 - [ ] Ticket ID is included in the branch name
 - [ ] No secrets committed
-- [ ] Web app runs with no errors
+- [ ] Web app dev environment functions with no errors
+- [ ] `npm run build` runs with minimal warnings and no errors
