@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header";
 import Image from "next/image";
+import banner_image_2 from "@/public/Images/Banner Image_2.png"
 
 export default function Members() {
     return (
@@ -187,7 +188,7 @@ export default function Members() {
                 </div>
             </div>
             <div className="w-screen overflow-hidden mt-4">
-                <img src="/Images/Banner Image_2.png" alt="Decorative bottom banner"
+                <Image src={banner_image_2} alt="Decorative bottom banner"
                      className="block h-40 object-cover w-full max-w-full" />
             </div>
         </div>

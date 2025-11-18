@@ -80,7 +80,7 @@ export default function Page2() {
                 <span>Strom Thurmond Gym</span>
               </p>
               <p className="text-sm text-gray-600 leading-relaxed">
-                  Join us for this casual social event where you'll get to enjoy a night full of fun activities and games
+                  Join us for this casual social event where you&apos;ll get to enjoy a night full of fun activities and games
                   including volleyball, spikeball, swimming, frisbee, and more.
               </p>
             </div>
@@ -98,7 +98,7 @@ export default function Page2() {
                 <span>Innovation Center Room 2277</span>
               </p>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Want to get a glance of what it's like joining KTP? Join us for this enriching event that will teach you the
+                Want to get a glance of what it&apos;s like joining KTP? Join us for this enriching event that will teach you the
                   basics about React applications and how to build your own website!
               </p>
             </div>
@@ -116,7 +116,7 @@ export default function Page2() {
                 <span>Darla Moore School of Business Room 140</span>
               </p>
               <p className="text-sm text-gray-600 leading-relaxed">
-                It's time to showcase your collaboration skills. In this event you'll work with a team to pitch a
+                It&apos;s time to showcase your collaboration skills. In this event you&apos;ll work with a team to pitch a
                   solution to a technical challenge. You will need to dress business-casual for this event.
               </p>
             </div>
