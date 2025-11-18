@@ -1,7 +1,6 @@
 "use client";
 //need to make pages responsive, add form button to all pages, & fix handleSubmit
 import { Header } from "@/components/Header";
-import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -229,7 +228,6 @@ export default function Application() {
                     </form>
                 </div>
             </div>
-            <Footer/>
         </div>
     );
 }
