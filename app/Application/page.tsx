@@ -19,7 +19,7 @@ import {
 
 export default function Application() {
     return (
-        <>
+        <div className="overflow-x-hidden">
             <Header />
             <div className="max-w-3xl w-full mx-auto">
                 <h1 className="text-2xl p4 pt-4 pb-5 font-semibold">KTP Rush Application</h1>
@@ -209,7 +209,8 @@ export default function Application() {
                             <div className="pt-4">
                                 <Button
                                     type="submit"
-                                    className="bg-blue-900 text-lg text-white font-semibold"
+                                    className="bg-blue-900 text-lg text-white font-semibold transition-all duration-300
+                    hover:scale-110 hover: drop-shadow-md"
                                     variant="outline"
                                     onClick={(e) => {
                                         e.preventDefault();
@@ -227,6 +228,6 @@ export default function Application() {
                     </form>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
