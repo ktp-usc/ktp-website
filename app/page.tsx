@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { Header } from "@/components/Header";
-import Footer from "@/components/Footer";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
@@ -186,11 +185,6 @@ export default function Home() {
                     </div>
                 </div>
             </main>
-            {/*<div className="w-screen overflow-hidden mt-0">
-                <img src="/Images/Banner Image_2.png" alt="Decorative bottom banner"
-                     className="block w-full h-40 object-cover max-w-none" />
-            </div>*/}
-            <Footer />
         </div>
     );
 }

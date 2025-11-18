@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { Link as ScrollLink, Element } from 'react-scroll';
 import { Header } from '@/components/Header';   // change to `{ Header }` if it's a named export
-import Footer from '@/components/Footer';   // same note
 
 
 
@@ -133,7 +132,6 @@ export default function About(): React.JSX.Element {
       </div>
 </main>
 
-        <Footer/>
       <style jsx>{`
         .ktp-active-category {
           background-color: #315CA9 !important;

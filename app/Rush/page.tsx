@@ -1,5 +1,4 @@
 // app/page2/page.tsx  (or wherever your Page2 file lives)
-import Footer from "../Footer";
 import { Header } from "@/components/Header";
 import Link from "next/link";
 import CalendarIcon from "../../Componenets/CalendarIcon";
@@ -200,7 +199,6 @@ export default function Page2() {
         </Accordion>
       </section>
 
-      <Footer/>
     </main>
   );
 }

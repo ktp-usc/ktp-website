@@ -1,5 +1,4 @@
 import { Header } from "@/components/Header";
-import Footer from "@/components/Footer";
 import Image from "next/image";
 
 export default function Members() {
@@ -191,7 +190,6 @@ export default function Members() {
                 <img src="/Images/Banner Image_2.png" alt="Decorative bottom banner"
                      className="block h-40 object-cover w-full max-w-full" />
             </div>
-        <Footer/>
         </div>
     );
 }
