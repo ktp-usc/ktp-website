@@ -121,7 +121,7 @@ export default function Home() {
 
                     {/*Projects*/}
                     <div className="max-w-3xl w-full mx-auto">
-                        <h2 className="relative z-10 text-3xl font-bold text-left mt-10">
+                        <h2 className="text-3xl sm:text-xl md:text-2xl mb-2 font-bold text-left mt-10">
                             Ongoing Projects
                         </h2>
                         <div className="relative z-10">
@@ -141,7 +141,7 @@ export default function Home() {
                                                 </div>
 
                                                 <div
-                                                    className="relative w-full md:w-1/2 h-64 md:h-auto p-4 flex items-center justify-center">
+                                                    className="relative w-full h-64 sm:h-56 md:w-1/2 md:h-auto p-4 flex items-center justify-center">
                                                     <div className="relative w-full h-full overflow-hidden rounded-xl">
                                                         <AspectRatio ratio={5 / 4}>
                                                             <Image src={p.image} alt={"${project} logo"} fill
@@ -154,7 +154,7 @@ export default function Home() {
                                     ))}
                                 </CarouselContent>
                                 <CarouselPrevious aria-label="Previous"/>
-                                <CarouselNext aria-label="Next"/>
+                                <CarouselNext classaria-label="Next"/>
                             </Carousel>
                         </div>
                     </div>
