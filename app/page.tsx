@@ -2,12 +2,16 @@
 
 import Image from "next/image";
 import { Header } from "@/components/Header";
-import Footer from "@/components/Footer";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "@/components/ui/carousel";
 
-{/*Project Data*/
-}
+// Project data
 const data = [
     {
         id: 1,
@@ -29,162 +33,200 @@ const data = [
     },
 ];
 
-
 // Network company data
 const networkCompanies = [
-    {src: "/network/google.png", alt: "Google"},
-    {src: "/network/microsoft.png", alt: "Microsoft"},
-    {src: "/network/deloitte.png", alt: "Deloitte"},
-    {src: "/network/jpmorgan.png", alt: "JP Morgan"},
-    {src: "/network/meta.png", alt: "Meta"},
-    {src: "/network/citadel.png", alt: "Citadel"},
-    {src: "/network/capital_one.png", alt: "Capital One"},
-    {src: "/network/spotify.png", alt: "Spotify"},
-    {src: "/network/bloomberg.png", alt: "Bloomberg"},
-    {src: "/network/doordash.png", alt: "Doordash"},
-    {src: "/network/hudson_river_trading.png", alt: "Hudson River Trading"},
-    {src: "/network/amazon.png", alt: "Amazon"},
-    {src: "/network/apple.png", alt: "Apple"},
-    {src: "/network/tiktok.png", alt: "Tiktok"},
-    {src: "/network/nvidia.png", alt: "Nvidia"},
-    {src: "/network/duolingo.png", alt: "Duolingo"},
-    {src: "/network/jane_street.png", alt: "Jane Street"},
-    {src: "/network/pwc.png", alt: "PWC"},
-    {src: "/network/ey.png", alt: "EY"},
-    {src: "/network/accenture.png", alt: "Accenture"},
-    {src: "/network/linkedin.png", alt: "LinkedIn"},
-    {src: "/network/tesla.png", alt: "Tesla"},
-    {src: "/network/ibm.png", alt: "IBM"},
-    {src: "/network/cisco.png", alt: "Cisco"},
-    {src: "/network/asana.png", alt: "Asana"},
-    {src: "/network/slack.png", alt: "Slack"},
-    {src: "/network/figma.png", alt: "Figma"},
-    {src: "/network/bleacher_report.png", alt: "Bleacher Report"},
-    {src: "/network/stripe.png", alt: "Stripe"},
-    {src: "/network/pnc.png", alt: "PNC"},
-    {src: "/network/boeing.png", alt: "Boeing"},
-    {src: "/network/salesforce.png", alt: "Salesforce"},
-    {src: "/network/mongo_db.png", alt: "MongoDB"},
-    {src: "/network/vmware.png", alt: "VMware"},
-    {src: "/network/nike.png", alt: "Nike"},
-    {src: "/network/uber.png", alt: "Uber"},
-    {src: "/network/netskope.png", alt: "Netskope"},
-    {src: "/network/att.png", alt: "AT&T"},
-    {src: "/network/ford.png", alt: "Ford"},
-    {src: "/network/modern_treasury.png", alt: "Modern Treasury"},
-    {src: "/network/indeed.png", alt: "Indeed"},
-    {src: "/network/bank_of_america.png", alt: "Bank of America"},
-    {src: "/network/workday.png", alt: "Workday"},
-    {src: "/network/caterpillar.png", alt: "Caterpillar"},
-    {src: "/network/p&g.png", alt: "P&G"},
-    {src: "/network/viget.png", alt: "Viget"},
-    {src: "/network/united.png", alt: "United"},
+    { src: "/network/google.png", alt: "Google" },
+    { src: "/network/microsoft.png", alt: "Microsoft" },
+    { src: "/network/deloitte.png", alt: "Deloitte" },
+    { src: "/network/jpmorgan.png", alt: "JP Morgan" },
+    { src: "/network/meta.png", alt: "Meta" },
+    { src: "/network/citadel.png", alt: "Citadel" },
+    { src: "/network/capital_one.png", alt: "Capital One" },
+    { src: "/network/spotify.png", alt: "Spotify" },
+    { src: "/network/bloomberg.png", alt: "Bloomberg" },
+    { src: "/network/doordash.png", alt: "Doordash" },
+    { src: "/network/hudson_river_trading.png", alt: "Hudson River Trading" },
+    { src: "/network/amazon.png", alt: "Amazon" },
+    { src: "/network/apple.png", alt: "Apple" },
+    { src: "/network/tiktok.png", alt: "Tiktok" },
+    { src: "/network/nvidia.png", alt: "Nvidia" },
+    { src: "/network/duolingo.png", alt: "Duolingo" },
+    { src: "/network/jane_street.png", alt: "Jane Street" },
+    { src: "/network/pwc.png", alt: "PWC" },
+    { src: "/network/ey.png", alt: "EY" },
+    { src: "/network/accenture.png", alt: "Accenture" },
+    { src: "/network/linkedin.png", alt: "LinkedIn" },
+    { src: "/network/tesla.png", alt: "Tesla" },
+    { src: "/network/ibm.png", alt: "IBM" },
+    { src: "/network/cisco.png", alt: "Cisco" },
+    { src: "/network/asana.png", alt: "Asana" },
+    { src: "/network/slack.png", alt: "Slack" },
+    { src: "/network/figma.png", alt: "Figma" },
+    { src: "/network/bleacher_report.png", alt: "Bleacher Report" },
+    { src: "/network/stripe.png", alt: "Stripe" },
+    { src: "/network/pnc.png", alt: "PNC" },
+    { src: "/network/boeing.png", alt: "Boeing" },
+    { src: "/network/salesforce.png", alt: "Salesforce" },
+    { src: "/network/mongo_db.png", alt: "MongoDB" },
+    { src: "/network/vmware.png", alt: "VMware" },
+    { src: "/network/nike.png", alt: "Nike" },
+    { src: "/network/uber.png", alt: "Uber" },
+    { src: "/network/netskope.png", alt: "Netskope" },
+    { src: "/network/att.png", alt: "AT&T" },
+    { src: "/network/ford.png", alt: "Ford" },
+    { src: "/network/modern_treasury.png", alt: "Modern Treasury" },
+    { src: "/network/indeed.png", alt: "Indeed" },
+    { src: "/network/bank_of_america.png", alt: "Bank of America" },
+    { src: "/network/workday.png", alt: "Workday" },
+    { src: "/network/caterpillar.png", alt: "Caterpillar" },
+    { src: "/network/p&g.png", alt: "P&G" },
+    { src: "/network/viget.png", alt: "Viget" },
+    { src: "/network/united.png", alt: "United" },
 ];
 
 export default function Home() {
     return (
         <div className="font-sans min-h-screen flex flex-col overflow-x-clip">
             <main className="flex flex-col items-center flex-grow p-8 pb-0">
-                <Header/>
-                <div
-                    className="flex flex-row justify-center xl:justify-between mb-12 md:mb-20 lg:mb-32 px-6 sm:px-8 md:px-12 lg:px-20">
+                <Header />
+
+                {/* Background blobs top */}
+                <div className="flex flex-row justify-center xl:justify-between mb-12 md:mb-20 lg:mb-32 px-6 sm:px-8 md:px-12 lg:px-20">
                     <div className="absolute inset-0 blob-c z-0 hidden md:block">
-                        <div className="shape-blob ten"></div>
-                        <div className="shape-blob eleven"></div>
+                        <div className="shape-blob ten" />
+                        <div className="shape-blob eleven" />
                     </div>
                 </div>
 
-                <div className="flex flex-col flex-none">
-                    <div className="absolute inset-0 blob-c z-0 block md:hidden overflow-hidden">
-                        <div className="shape-blob twelve"></div>
-                        <div className="shape-blob thirteen"></div>
-                    </div>
-                    <div className="border-4 border-white rounded-xl mt-12 p-6 text-center max-w-3xl mx-auto">
-                        <div className="relative w-48 h-48 mx-auto mb-6">
-                            <img src="/Images/ktp_logo.svg" alt="logo" width={250} height={250} />
-                            {/*Motto*/}
-                            <p className={`text-1xl pt-2 font-thin italic playfair`}>for the love of technology</p>
+                <div className="flex flex-col items-center w-full">
+                    <section className="px-6 sm:px-8 md:px-16 lg:px-24 xl:px-32 py-8 sm:py-12 md:py-16 w-full">
+                        {/* Top section: logo + headshot + passion */}
+                        <div className="relative flex flex-col items-center pb-10">
+                            {/* Mobile blobs */}
+                            <div className="absolute inset-0 blob-c z-0 block md:hidden overflow-hidden">
+                                <div className="shape-blob twelve" />
+                                <div className="shape-blob thirteen" />
+                            </div>
+
+                            {/* Card with logo + headshot side by side */}
+                            <div className="rounded-2xl mt-8 p-12 w-full max-w-6xl bg-white/20 backdrop-blur-md shadow-lg border border-white/30">
+                                <div className="flex flex-row items-center justify-center gap-20 mb-20">
+                                    <img
+                                        src="/Images/Halloween.JPEG"
+                                        alt="President's Headshot"
+                                        className="w-75 h-75 rounded-xl border-8 object-cover"
+                                        style={{
+                                            borderLeftColor: "#d1fae5",
+                                            borderRightColor: "#d1fae5",
+                                            borderTopColor: "#e5e7eb",
+                                            borderBottomColor: "#e5e7eb",
+                                        }}
+                                    />
+                                    {/* KTP Logo */}
+                                    <img
+                                        src="/Images/ktp_logo.svg"
+                                        alt="Kappa Theta Pi logo"
+                                        className="w-32 h-32 object-contain"
+                                    />
+
+                                    {/* President Headshot */}
+                                    <img
+                                        src="/Images/Glow_Sticks.JPEG"
+                                        alt="President's Headshot"
+                                        className="w-75 h-75 rounded-xl border-8 object-cover"
+                                        style={{
+                                            borderLeftColor: "#d1fae5",
+                                            borderRightColor: "#d1fae5",
+                                            borderTopColor: "#e5e7eb",
+                                            borderBottomColor: "#e5e7eb",
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Our Passion */}
+                            <div className="max-w-3xl w-full mx-auto bg-white/5 backdrop-blur-sm mt-8 relative z-10">
+                                <h2 className="text-3xl font-bold text-left mt-2">
+                                    Our Passion
+                                </h2>
+                                <p className="border-2 border-gray-400 rounded-xl mt-4 p-6 text-lg leading-relaxed text-gray-700 text-left">
+                                    Welcome to Kappa Theta Pi at the University of South Carolina
+                                    where we are committed to fostering a community of inspired
+                                    technologists, innovators, and leaders. We host workshops,
+                                    networking events, and professional development sessions that
+                                    empower members to grow both personally and professionally.
+                                </p>
+                            </div>
                         </div>
 
-                        {/*Passion*/}
-                        <div className="max-w-3xl w-auto mx-auto bg-white/5 backdrop-blur-sm">
-                            <h2 className="relative z-10 text-3xl font-bold text-left mt-10">Our Passion</h2>
-                            <p className=" border-2 border-gray-400 rounded-xl mt-4 p-6 text-lg leading-relaxed text-gray-700 text-left">
-                                Welcome to Kappa Theta Pi at the University of South Carolina where we are committed to
-                                fostering a community of inspired technologists, innovators, and
-                                leaders. We host workshops, networking events, and professional
-                                development sessions that empower members to grow both personally and
-                                professionally.
-                            </p>
-                        </div>
-                    </div>
+                        {/* Projects */}
+                        <div className="max-w-3xl w-full mx-auto">
+                            <h2 className="relative z-10 text-3xl font-bold text-left mt-10">
+                                Ongoing Projects
+                            </h2>
+                            <div className="relative z-10">
+                                <Carousel className="w-full border-2 border-gray-400 rounded-xl p-6 shadow-md mt-4">
+                                    <CarouselContent>
+                                        {data.map((p) => (
+                                            <CarouselItem key={p.id} className="w-full">
+                                                <div className="flex flex-col md:flex-row items-start">
+                                                    <div className="w-full md:w-1/2 p-2">
+                                                        <h2 className="text-xl font-semibold mb-2 text-gray-900">
+                                                            {p.title}
+                                                        </h2>
+                                                        <p className="leading-relaxed text-gray-700">
+                                                            {p.text}
+                                                        </p>
+                                                    </div>
 
-                    {/*Projects*/}
-                    <div className="max-w-3xl w-full mx-auto">
-                        <h2 className="text-3xl sm:text-xl md:text-2xl mb-2 font-bold text-left mt-10">
-                            Ongoing Projects
-                        </h2>
-                        <div className="relative z-10">
-                            <Carousel className="w-full border-2 border-gray-400 rounded-xl p-6 shadow-md mt-4">
-                                <CarouselContent>
-                                    {data.map((p) => (
-                                        <CarouselItem key={p.id} className="w-full">
-                                            <div className="flex flex-col md:flex-row items-start">
-
-                                                <div className="w-full md:w-1/2 p-2">
-                                                    <h2 className="text-xl font-semibold mb-2 text-gray-900">
-                                                        {p.title}
-                                                    </h2>
-                                                    <p className="leading-relaxed text-gray-700">
-                                                        {p.text}
-                                                    </p>
-                                                </div>
-
-                                                <div
-                                                    className="relative w-full h-64 sm:h-56 md:w-1/2 md:h-auto p-4 flex items-center justify-center">
-                                                    <div className="relative w-full h-full overflow-hidden rounded-xl">
-                                                        <AspectRatio ratio={5 / 4}>
-                                                            <Image src={p.image} alt={"${project} logo"} fill
-                                                                   className="object-cover w-full max-w-full"/>
-                                                        </AspectRatio>
+                                                    <div className="relative w-full md:w-1/2 h-64 md:h-auto p-4 flex items-center justify-center">
+                                                        <div className="relative w-full h-full overflow-hidden rounded-xl">
+                                                            <AspectRatio ratio={5 / 4}>
+                                                                <Image
+                                                                    src={p.image}
+                                                                    alt={`${p.title} logo`}
+                                                                    fill
+                                                                    className="object-cover w-full max-w-full"
+                                                                />
+                                                            </AspectRatio>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </CarouselItem>
-                                    ))}
-                                </CarouselContent>
-                                <CarouselPrevious aria-label="Previous"/>
-                                <CarouselNext classaria-label="Next"/>
-                            </Carousel>
+                                            </CarouselItem>
+                                        ))}
+                                    </CarouselContent>
+                                    <CarouselPrevious aria-label="Previous" />
+                                    <CarouselNext aria-label="Next" />
+                                </Carousel>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                {/* Network */}
-                <div className="px-6 sm:px-8 md:px-12 lg:px-20">
-                    <div
-                        className="flex justify-left text-3xl lg:text-4xl font-semibold mt-10 mb-12 font-inter"
-                        style={{fontWeight: "680", letterSpacing: "-0.02em"}}
-                    >
-                        Our Network
-                    </div>
-                    <div
-                        className="flex flex-wrap justify-center items-center pb-10 gap-4 lg:gap-8 mb-8 min-h-[160px] lg:min-h-[180px]">
-                        {networkCompanies.map((company, index) => (
-                            <Image
-                                key={company.alt}
-                                src={company.src}
-                                alt={company.alt}
-                                width={200}
-                                height={200}
-                                className="max-h-6 lg:max-h-8 w-auto transition-all duration-300 hover:scale-110 drop-shadow-md"
-                                style={{
-                                    animationDelay: `${index * 50}ms`,
-                                    animationFillMode: "forwards",
-                                }}
-                            />
-                        ))}
-                    </div>
+                        {/* Network */}
+                        <div className="px-6 sm:px-8 md:px-12 lg:px-20">
+                            <div
+                                className="flex justify-left text-3xl lg:text-4xl font-semibold mt-10 mb-12 font-inter"
+                                style={{ fontWeight: 680, letterSpacing: "-0.02em" }}
+                            >
+                                Our Network
+                            </div>
+                            <div className="flex flex-wrap justify-center items-center pb-10 gap-4 lg:gap-8 mb-8 min-h-[160px] lg:min-h-[180px]">
+                                {networkCompanies.map((company, index) => (
+                                    <Image
+                                        key={company.alt}
+                                        src={company.src}
+                                        alt={company.alt}
+                                        width={200}
+                                        height={200}
+                                        className="max-h-6 lg:max-h-8 w-auto transition-all duration-300 hover:scale-110 drop-shadow-md"
+                                        style={{
+                                            animationDelay: `${index * 50}ms`,
+                                            animationFillMode: "forwards",
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </main>
         </div>
