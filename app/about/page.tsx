@@ -134,11 +134,27 @@ export default function About(): React.JSX.Element {
                                 </div>
 
                                 <div className="w-full lg:w-3/5 text-left relative z-10">
-                                    <h2 className="text-center text-2xl sm:text-4xl font-black mb-10">History</h2>
-                                    <div className="text-base sm:text-lg leading-relaxed space-y-4">
-                                        <p>History paragraph 1 — add your copy here.</p>
-                                        <p>History paragraph 2 — more details go here.</p>
-                                        <p>History paragraph 3 — etc.</p>
+                                    <h2 className="text-center text-2xl sm:text-4xl font-black mb-10">
+                                        History
+                                    </h2>
+                                    <div className="text-base sm:text-lg leading-relaxed space-y-4 text-center">
+                                        <p>
+                                            Regarded as one of the first professional technology
+                                            fraternities, Kappa Theta Pi is a technical and
+                                            professional incubation hub that produces first class
+                                            brothers nationwide. We were ignited in 2012 at University
+                                            of Michigan by a group of 7 aspiring students looking to
+                                            create a diverse community for tech interested
+                                            individuals. Today our national organization holds
+                                            steadfast to our motto, “For the Love of Technology”,
+                                            while concurrently enriching new generations of students.
+                                            This year we are happy to announce our Alpha Class! The
+                                            2025 Alpha Class of the Kappa Theta Pi UofSC have
+                                            showcased their skills gained through the rush process by
+                                            contributing to three non profits and creating a
+                                            betterment in the social and economic landscape of our
+                                            local community.
+                                        </p>
                                     </div>
                                 </div>
                             </div>
