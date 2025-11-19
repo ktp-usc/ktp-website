@@ -33,7 +33,7 @@ export default function Page2() {
           </h1>
           <p className="text-gray-600 text-lg sm:text-xl mb-2">
             Fall 2025 rush is now closed. If you&apos;re interested in joining KTP,
-  consider rushing in the Spring 2026 semester!
+            consider rushing in the Spring 2026 semester!
           </p>
           <p className="text-gray-600 text-lg sm:text-xl mb-8">
             <span className="font-semibold text-black"></span>
@@ -69,7 +69,7 @@ export default function Page2() {
                 <h3 className="text-lg font-semibold mb-1">Info Session</h3>
                 <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
                   <CalendarIcon />
-                  <span>Tuesday, February 24, 6:00-7:30 PM</span>
+                  <span>Tuesday, January 20, 6:00-7:30 PM</span>
                 </p>
                 <p className="text-sm text-gray-600 flex items-center gap-2 mb-3">
                   <PinIcon />
@@ -88,7 +88,7 @@ export default function Page2() {
                 <h3 className="text-lg font-semibold mb-1">KTP Field Day</h3>
                 <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
                   <CalendarIcon />
-                  <span>Wednesday, February 25, 8:00-10:00 PM</span>
+                  <span>Wednesday, January 21, 8:00-10:00 PM</span>
                 </p>
                 <p className="text-sm text-gray-600 flex items-center gap-2 mb-3">
                   <PinIcon />
@@ -109,7 +109,7 @@ export default function Page2() {
                 </h3>
                 <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
                   <CalendarIcon />
-                  <span>Thursday, February 26, 7:00-9:00 PM</span>
+                  <span>Thursday, January 22, 7:00-9:00 PM</span>
                 </p>
                 <p className="text-sm text-gray-600 flex items-center gap-2 mb-3">
                   <PinIcon />
@@ -128,7 +128,7 @@ export default function Page2() {
                 <h3 className="text-lg font-semibold mb-1">Pitch Night</h3>
                 <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
                   <CalendarIcon />
-                  <span>Friday, September 27, 6:30-8:00 PM</span>
+                  <span>Friday, January 23, 6:30-8:00 PM</span>
                 </p>
                 <p className="text-sm text-gray-600 flex items-center gap-2 mb-3">
                   <PinIcon />
