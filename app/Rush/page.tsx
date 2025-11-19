@@ -1,6 +1,5 @@
 // app/page2/page.tsx  (or wherever your Page2 file lives)
-import Footer from "../Footer";
-import { Header } from "../Header";
+import { Header } from "@/components/Header";
 import Link from "next/link";
 import CalendarIcon from "../../Componenets/CalendarIcon";
 import PinIcon from "../../Componenets/PinIcon";
@@ -14,8 +13,18 @@ import {
 
 export default function Page2() {
   return (
-    <main>
+    <main className="relative">
       <Header></Header>
+
+      {/* Background blobs */}
+      <div className="relative bg-white w-full">
+        <div className="absolute inset-0 blob-c z-0">
+          <div className="shape-blob eight" />
+          <div className="shape-blob nine" />
+        </div>
+      </div>
+
+      <div className="relative z-10">
       <section className="text-center py-16 px-6">
         <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
           Learn About Joining KTP!
@@ -29,7 +38,8 @@ export default function Page2() {
         </p>
 
         {/* Application button */}
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center mb-6 transition-all duration-300
+                    hover:scale-110 hover: drop-shadow-md">
           <Link
             href="/Application"
             className="px-6 py-3 bg-[#315CA9] text-white rounded-lg font-semibold hover:bg-[#23498F] transition-colors"
@@ -41,7 +51,7 @@ export default function Page2() {
 
       {/* ===== Timeline Section ===== */}
       {/* ===== Timeline Section (no right column) ===== */}
-      <section className="max-w-6xl mx-auto mt-12 px-4">
+      <section className="max-w-6xl mx-auto mt-9 px-4">
         <div>
           <h2 className="text-3xl font-bold mb-8">Upcoming Rush Events</h2>
 
@@ -52,64 +62,72 @@ export default function Page2() {
             {/* Event 1 */}
             <div className="relative pl-8 pb-10">
               <div className="absolute -left-0.5 top-1 w-3 h-3 rounded-full bg-[#315CA9]"></div>
-              <h3 className="text-lg font-semibold mb-1">TBD</h3>
+              <h3 className="text-lg font-semibold mb-1">Info Session</h3>
               <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
                 <CalendarIcon />
-                <span>Wednesday, August 27, 4:30-6:00 PM</span>
+                <span>Tuesday, February 24, 6:00-7:30 PM</span>
               </p>
               <p className="text-sm text-gray-600 flex items-center gap-2 mb-3">
                 <PinIcon />
-                <span>300 Main St.</span>
+                <span>300 Main St. Room B201</span>
               </p>
-              <p className="text-sm text-gray-600 leading-relaxed">TBD</p>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                  Want to learn more about what KTP has to offer? Join us for this exciting start to a new experience.
+                  Food and refreshments will be provided.
+              </p>
             </div>
 
             {/* Event 2 */}
             <div className="relative pl-8 pb-10">
               <div className="absolute -left-0.5 top-1 w-3 h-3 rounded-full bg-[#315CA9]"></div>
-              <h3 className="text-lg font-semibold mb-1">TBD</h3>
+              <h3 className="text-lg font-semibold mb-1">KTP Field Day</h3>
               <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
                 <CalendarIcon />
-                <span>Tuesday, September 2, 8:00-10:00 PM</span>
+                <span>Wednesday, February 25, 8:00-10:00 PM</span>
               </p>
               <p className="text-sm text-gray-600 flex items-center gap-2 mb-3">
                 <PinIcon />
-                <span>300 Main St.</span>
+                <span>Strom Thurmond Gym</span>
               </p>
-              <p className="text-sm text-gray-600 leading-relaxed">TBD</p>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                  Join us for this casual social event where you&apos;ll get to enjoy a night full of fun activities and games
+                  including volleyball, spikeball, swimming, frisbee, and more.
+              </p>
             </div>
 
             {/* Event 3 */}
             <div className="relative pl-8 pb-10">
               <div className="absolute -left-0.5 top-1 w-3 h-3 rounded-full bg-[#315CA9]"></div>
-              <h3 className="text-lg font-semibold mb-1">TBD</h3>
+              <h3 className="text-lg font-semibold mb-1">Technical Workshop</h3>
               <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
                 <CalendarIcon />
-                <span>Wednesday, September 3, 7:00-9:00 PM</span>
+                <span>Thursday, February 26, 7:00-9:00 PM</span>
               </p>
               <p className="text-sm text-gray-600 flex items-center gap-2 mb-3">
                 <PinIcon />
-                <span>Sai&apos;s House on 67 Avenue</span>
+                <span>Innovation Center Room 2277</span>
               </p>
               <p className="text-sm text-gray-600 leading-relaxed">
-                TBD BY THE FUTURE EXECS
+                Want to get a glance of what it&apos;s like joining KTP? Join us for this enriching event that will teach you the
+                  basics about React applications and how to build your own website!
               </p>
             </div>
 
             {/* Event 4 */}
             <div className="relative pl-8 pb-10">
               <div className="absolute -left-0.5 top-1 w-3 h-3 rounded-full bg-[#315CA9]"></div>
-              <h3 className="text-lg font-semibold mb-1">TBD</h3>
+              <h3 className="text-lg font-semibold mb-1">Pitch Night</h3>
               <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
                 <CalendarIcon />
-                <span>Thursday, September 4, 6:30-8:00 PM</span>
+                <span>Friday, September 27, 6:30-8:00 PM</span>
               </p>
               <p className="text-sm text-gray-600 flex items-center gap-2 mb-3">
                 <PinIcon />
-                <span>Boyd Innovation Center</span>
+                <span>Darla Moore School of Business Room 140</span>
               </p>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Start-Ups!
+                It&apos;s time to showcase your collaboration skills. In this event you&apos;ll work with a team to pitch a
+                  solution to a technical challenge. You will need to dress business-casual for this event.
               </p>
             </div>
           </div>
@@ -178,7 +196,7 @@ export default function Page2() {
 
           <AccordionItem value="q5">
             <AccordionTrigger className="py-6 text-left text-xl sm:text-2xl font-semibold text-black hover:bg-gray-50">
-              If I&apos;m selected for an interbiew, what commitments should I plan
+              If I&apos;m selected for an interview, what commitments should I plan
               for?
             </AccordionTrigger>
             <AccordionContent className="pb-6 text-gray-700 text-base leading-relaxed">
@@ -190,8 +208,7 @@ export default function Page2() {
           </AccordionItem>
         </Accordion>
       </section>
-
-      <Footer />
+      </div>
     </main>
   );
 }
