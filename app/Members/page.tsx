@@ -1,13 +1,11 @@
 "use client"
 
 import React from "react";
-import { Header } from "@/components/Header";
 import Image from "next/image";
 
 export default function Members() {
     return (
         <div className="overflow-x-clip">
-            <Header />
             <div className="w-full flex flex-col items-center ">
                 <h2 className="text-3xl font-bold text-center mt-12 mb-8">Meet the Executive Board</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 pb-10 justify-items-center">

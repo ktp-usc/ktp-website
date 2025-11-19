@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { Header } from "@/components/Header";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import {
     Carousel,
@@ -88,7 +87,6 @@ export default function Home() {
     return (
         <div className="font-sans min-h-screen flex flex-col overflow-x-clip">
             <main className="flex flex-col items-center flex-grow p-8 pb-0">
-                <Header />
 
                 {/* Background blobs top */}
                 <div className="flex flex-row justify-center xl:justify-between mb-12 md:mb-20 lg:mb-32 px-6 sm:px-8 md:px-12 lg:px-20">

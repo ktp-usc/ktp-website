@@ -25,7 +25,7 @@ export function Header() {
     }, []);
 
     return (
-        <header className={`sticky top-0 w-full z-[9999] transition-all duration-900 ${isScrolled ? 'bg-white' +
+        <header className={`sticky top-0 w-full z-[9999] transition-all duration-900 p-8 ${isScrolled ? 'bg-white' +
             ' shadow-md' : 'bg-transparent'}`}>
             <div className="relative flex items-center justify-center w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-3 z-10">
 
