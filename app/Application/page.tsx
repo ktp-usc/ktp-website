@@ -1,7 +1,6 @@
 "use client";
 //need to make pages responsive, add form button to all pages, & fix handleSubmit
 import { Header } from "@/components/Header";
-import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -20,7 +19,7 @@ import {
 
 export default function Application() {
     return (
-        <>
+        <div className="overflow-x-hidden">
             <Header />
             <div className="max-w-3xl w-full mx-auto">
                 <h1 className="text-2xl p4 pt-4 pb-5 font-semibold">KTP Rush Application</h1>
@@ -229,7 +228,6 @@ export default function Application() {
                     </form>
                 </div>
             </div>
-            <Footer/>
-        </>
+        </div>
     );
 }
