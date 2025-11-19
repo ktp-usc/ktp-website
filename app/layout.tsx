@@ -18,9 +18,7 @@ export const metadata: Metadata = {
   title: "Kappa Theta Pi",
   description: "The official website for Kappa Theta Pi",
     icons: {
-        icon: '/favicon.png',
-        shortcut: '/favicon.ico',
-        apple: '/favicon.ico',
+        icon: '/favicon.png'
     },
 };
 

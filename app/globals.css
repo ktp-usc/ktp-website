@@ -57,7 +57,9 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
-
+.playfair {
+    font-family: 'Playfair Display', serif;
+}
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -168,7 +170,7 @@
 	height: 160px;
 	width: 180px;
 	border-radius: 40% 50% 30% 40%;
-  	animation: 
+  	animation:
 		transform 4s ease-in-out infinite both alternate,
 		movement_one 5s ease-in-out infinite both;
 	opacity:.7;
