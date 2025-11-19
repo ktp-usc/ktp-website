@@ -1,6 +1,5 @@
 import { Header } from "@/components/Header";
 import Image from "next/image";
-import banner_image_2 from "@/public/Images/Banner Image_2.png"
 
 export default function Members() {
     return (
