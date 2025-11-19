@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import { Link as ScrollLink, Element } from "react-scroll";
-import { Header } from "../Header"; // change to `{ Header }` if it's a named export
-import Footer from "../Footer"; // same note
+import React, { useState } from 'react';
+import { Link as ScrollLink, Element } from 'react-scroll';
+import { Header } from '@/components/Header';   // change to `{ Header }` if it's a named export
 
 const categories = ["President's Welcome", "History"];
 
@@ -23,14 +22,13 @@ export default function About(): React.JSX.Element {
 
   return (
     <div className="min-h-screen">
-      <Header />
-      <main className="flex flex-col items-center flex-grow p-8 pb-0">
-        {/* Top blobs/background */}
-        <div className="relative bg-white w-full">
-          <div className="absolute inset-0 blob-c z-0">
-            <div className="shape-blob eight" />
-            <div className="shape-blob nine" />
-          </div>
+        <Header />
+        <main className="flex flex-col items-center flex-grow p-8 pb-0">
+      {/* Top blobs/background */}
+      <div className="relative bg-white w-full">
+        <div className="absolute inset-0 blob-c z-0">
+          <div className="shape-blob eight" />
+          <div className="shape-blob nine" />
         </div>
 
         {/* Page header */}
@@ -172,12 +170,16 @@ export default function About(): React.JSX.Element {
                   </div>
                 </div>
               </div>
-            </section>
-          </Element>
-        </div>
-      </main>
-      <Footer />
 
+          </section>
+
+        </Element>
+
+      </div>
+      </div>
+</main>
+
+       
       <style jsx>{`
         .ktp-active-category {
           background-color: #315ca9 !important;

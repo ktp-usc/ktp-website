@@ -86,7 +86,7 @@ const networkCompanies = [
 
 export default function Home() {
     return (
-        <div className="font-sans min-h-screen flex flex-col overflow-x-hidden">
+        <div className="font-sans min-h-screen flex flex-col overflow-x-clip">
             <main className="flex flex-col items-center flex-grow p-8 pb-0">
                 <Header />
 

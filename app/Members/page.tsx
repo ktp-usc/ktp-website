@@ -1,14 +1,16 @@
+"use client"
+
+import React, { useState} from "react";
 import { Header } from "@/components/Header";
 import Image from "next/image";
-import banner_image_2 from "@/public/Images/Banner Image_2.png"
 
 export default function Members() {
     return (
-        <div className="overflow-x-hidden">
+        <div className="overflow-x-clip">
             <Header />
             <div className="w-full flex flex-col items-center ">
                 <h2 className="text-3xl font-bold text-center mt-12 mb-8">Meet the Executive Board</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-items-center">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 pb-10 justify-items-center">
 
 
                     <div className="flex flex-col items-center">
@@ -114,8 +116,8 @@ export default function Members() {
                         <Image
                             src="/Images/Screenshot Sara.png"
                             alt="Next.js logo"
-                            width={180}
-                            height={38}
+                            width={190}
+                            height={45}
                             priority
                             className="rounded-md"
                         />
@@ -149,35 +151,16 @@ export default function Members() {
                     </div>
                     <div className="flex flex-col items-center">
                         <Image
-                            src="/Images/Screenshot Sai.png"
+                            src="/Images/Screenshot Tarun.png"
                             alt="Next.js logo"
-                            width={180}
-                            height={38}
+                            width={190}
+                            height={40}
                             priority
                             className="rounded-md"
                         />
                         <a
                             className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
                             hover:scale-110 hover:drop-shadow-md"
-                            href="https://www.linkedin.com/in/sai-kottapali-153695288/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Director of Engagement: <span>Sai Kottapali</span>
-                        </a>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <Image
-                            src="/Images/Screenshot Tarun.png"
-                            alt="Next.js logo"
-                            width={180}
-                            height={38}
-                            priority
-                            className="rounded-md"
-                        />
-                        <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
-                    hover:scale-110 hover: drop-shadow-md"
                             href="https://www.linkedin.com/in/tarun-ramkumar/"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -185,11 +168,26 @@ export default function Members() {
                             Director of Professional Development: <span>Tarun Ramkumar</span>
                         </a>
                     </div>
+                    <div className="flex flex-col items-center">
+                        <Image
+                            src="/Images/Screenshot Sai.png"
+                            alt="Next.js logo"
+                            width={190}
+                            height={45}
+                            priority
+                            className="rounded-md"
+                        />
+                        <a
+                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
+                    hover:scale-110 hover: drop-shadow-md"
+                            href="https://www.linkedin.com/in/sai-kottapali-153695288/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Director of Engagement: <span>Sai Kotapalli</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div className="w-screen overflow-hidden mt-4">
-                <Image src={banner_image_2} alt="Decorative bottom banner"
-                     className="block h-40 object-cover w-full max-w-full" />
             </div>
         </div>
     );
