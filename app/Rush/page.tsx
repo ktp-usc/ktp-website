@@ -15,8 +15,9 @@ import {
 
 export default function Page2() {
   return (
-    <main className="relative">
-      <Header></Header>
+      <div className="font-sans min-h-screen flex flex-col overflow-x-clip">
+          <main className="flex flex-col items-center flex-grow p-8 pb-0">
+              <Header />
 
       {/* Background blobs */}
       <div className="relative bg-white w-full">
@@ -224,5 +225,6 @@ export default function Page2() {
         </section>
       </div>
     </main>
+      </div>
   );
 }

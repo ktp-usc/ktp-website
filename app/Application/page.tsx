@@ -19,8 +19,9 @@ import {
 
 export default function Application() {
     return (
-        <div className="overflow-x-hidden">
-            <Header />
+        <div className="font-sans min-h-screen flex flex-col overflow-x-clip">
+            <main className="flex flex-col items-center flex-grow p-8 pb-0">
+                <Header />
             <div className="max-w-3xl w-full mx-auto">
                 <h1 className="text-2xl p4 pt-4 pb-5 font-semibold">KTP Rush Application</h1>
                 <div className="pb-20">
@@ -228,6 +229,7 @@ export default function Application() {
                     </form>
                 </div>
             </div>
+            </main>
         </div>
     );
 }
