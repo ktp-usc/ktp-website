@@ -18,7 +18,7 @@ export default function About(): React.JSX.Element {
     const [selectedCategory, setSelectedCategory] = useState<string>(categories[0]);
 
     return (
-        <div className="min-h-screen overflow-x-hidden">
+        <div className="min-h-screen overflow-x-clip">
             <Header/>
             <main className="flex flex-col items-center flex-grow p-8 pb-0">
                 {/* Top blobs/background */}
