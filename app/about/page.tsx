@@ -170,11 +170,12 @@ export default function About(): React.JSX.Element {
                   </div>
                 </div>
               </div>
-            </div>
+
           </section>
 
         </Element>
 
+      </div>
       </div>
 </main>
 
