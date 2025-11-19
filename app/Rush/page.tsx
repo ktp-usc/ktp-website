@@ -30,8 +30,8 @@ export default function Page2() {
             Learn About Joining KTP!
           </h1>
           <p className="text-gray-600 text-lg sm:text-xl mb-2">
-            Fall 2025 rush is now closed. If you're interested in joining KTP,
-            consider rushing in the Spring 2026 semester!
+            Fall 2025 rush is now closed. If you&apos;re interested in joining KTP,
+  consider rushing in the Spring 2026 semester!
           </p>
           <p className="text-gray-600 text-lg sm:text-xl mb-8">
             <span className="font-semibold text-black"></span>
