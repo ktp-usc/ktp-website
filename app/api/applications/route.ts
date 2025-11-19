@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { neon } from "@neondatabase/serverless";
 import { put } from "@vercel/blob";
 import { Prisma } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 export const runtime = "nodejs";
 
@@ -114,7 +115,7 @@ const rows = (await sql`
 
     return NextResponse.json({ ok: true, id: rows[0]?.id ?? null });
   } catch (err) {
-    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "42P01") {
+      if (err instanceof PrismaClientKnownRequestError && err.code === "42P01") {
       // relation does not exist
       return NextResponse.json(
         {
@@ -186,7 +187,7 @@ const rows = (await sql`
 
     return NextResponse.json({ ok: true, data: rows });
   } catch (err) {
-    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "42P01") {
+      if (err instanceof PrismaClientKnownRequestError && err.code === "42P01") {
       return NextResponse.json(
         {
           error:
