@@ -10,7 +10,6 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel";
-import ktp_logo from "@/public/Images/ktp_logo.svg";
 
 // Project data
 const data = [
@@ -145,7 +144,7 @@ export default function Home() {
                                 </div>
                             </div>
 
-                            {/* Our Passion (first block) */}
+                            {/* Our Passion */}
                             <div className="max-w-3xl w-full mx-auto bg-white/5 backdrop-blur-sm mt-8 relative z-10">
                                 <h2 className="text-3xl font-bold text-left mt-2">
                                     Our Passion
@@ -160,74 +159,45 @@ export default function Home() {
                             </div>
                         </div>
 
-                        {/* Centered logo + passion + projects */}
-                        <div className="flex flex-col flex-none mt-8">
-                            {/* Mobile blobs for this section if needed */}
-                            <div className="absolute inset-0 blob-c z-0 block md:hidden overflow-hidden">
-                                <div className="shape-blob twelve" />
-                                <div className="shape-blob thirteen" />
-                            </div>
+                        {/* Projects */}
+                        <div className="max-w-3xl w-full mx-auto">
+                            <h2 className="relative z-10 text-3xl font-bold text-left mt-10">
+                                Ongoing Projects
+                            </h2>
+                            <div className="relative z-10">
+                                <Carousel className="w-full border-2 border-gray-400 rounded-xl p-6 shadow-md mt-4">
+                                    <CarouselContent>
+                                        {data.map((p) => (
+                                            <CarouselItem key={p.id} className="w-full">
+                                                <div className="flex flex-col md:flex-row items-start">
+                                                    <div className="w-full md:w-1/2 p-2">
+                                                        <h2 className="text-xl font-semibold mb-2 text-gray-900">
+                                                            {p.title}
+                                                        </h2>
+                                                        <p className="leading-relaxed text-gray-700">
+                                                            {p.text}
+                                                        </p>
+                                                    </div>
 
-                            <div className="border-4 border-white rounded-xl mt-12 p-6 text-center max-w-3xl mx-auto bg-white/20 backdrop-blur-md">
-                                <div className="relative w-48 h-48 mx-auto mb-6">
-                                    <Image src={ktp_logo} alt="logo" width={250} height={250} />
-                                </div>
-
-                                {/* Passion (second card) */}
-                                <div className="max-w-3xl w-auto mx-auto bg-white/5 backdrop-blur-sm">
-                                    <h2 className="relative z-10 text-3xl font-bold text-left mt-10">
-                                        Our Passion
-                                    </h2>
-                                    <p className="border-2 border-gray-400 rounded-xl mt-4 p-6 text-lg leading-relaxed text-gray-700 text-left">
-                                        Welcome to Kappa Theta Pi at the University of South Carolina
-                                        where we are committed to fostering a community of inspired
-                                        technologists, innovators, and leaders. We host workshops,
-                                        networking events, and professional development sessions that
-                                        empower members to grow both personally and professionally.
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Projects */}
-                            <div className="max-w-3xl w-full mx-auto">
-                                <h2 className="relative z-10 text-3xl font-bold text-left mt-10">
-                                    Ongoing Projects
-                                </h2>
-                                <div className="relative z-10">
-                                    <Carousel className="w-full border-2 border-gray-400 rounded-xl p-6 shadow-md mt-4">
-                                        <CarouselContent>
-                                            {data.map((p) => (
-                                                <CarouselItem key={p.id} className="w-full">
-                                                    <div className="flex flex-col md:flex-row items-start">
-                                                        <div className="w-full md:w-1/2 p-2">
-                                                            <h2 className="text-xl font-semibold mb-2 text-gray-900">
-                                                                {p.title}
-                                                            </h2>
-                                                            <p className="leading-relaxed text-gray-700">
-                                                                {p.text}
-                                                            </p>
-                                                        </div>
-
-                                                        <div className="relative w-full md:w-1/2 h-64 md:h-auto p-4 flex items-center justify-center">
-                                                            <div className="relative w-full h-full overflow-hidden rounded-xl">
-                                                                <AspectRatio ratio={5 / 4}>
-                                                                    <Image
-                                                                        src={p.image}
-                                                                        alt={`${p.title} logo`}
-                                                                        fill
-                                                                        className="object-cover w-full max-w-full"
-                                                                    />
-                                                                </AspectRatio>
-                                                            </div>
+                                                    <div className="relative w-full md:w-1/2 h-64 md:h-auto p-4 flex items-center justify-center">
+                                                        <div className="relative w-full h-full overflow-hidden rounded-xl">
+                                                            <AspectRatio ratio={5 / 4}>
+                                                                <Image
+                                                                    src={p.image}
+                                                                    alt={`${p.title} logo`}
+                                                                    fill
+                                                                    className="object-cover w-full max-w-full"
+                                                                />
+                                                            </AspectRatio>
                                                         </div>
                                                     </div>
-                                                </CarouselItem>
-                                            ))}
-                                        </CarouselContent>
-                                        <CarouselPrevious aria-label="Previous" />
-                                        <CarouselNext aria-label="Next" />
-                                    </Carousel>
-                                </div>
+                                                </div>
+                                            </CarouselItem>
+                                        ))}
+                                    </CarouselContent>
+                                    <CarouselPrevious aria-label="Previous" />
+                                    <CarouselNext aria-label="Next" />
+                                </Carousel>
                             </div>
                         </div>
 
@@ -262,4 +232,3 @@ export default function Home() {
         </div>
     );
 }
-
