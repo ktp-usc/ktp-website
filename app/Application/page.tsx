@@ -1,19 +1,12 @@
 "use client";
 
 import { Header } from "@/components/Header";
-import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
     Field,
     FieldContent,
@@ -52,11 +45,10 @@ export default function Application() {
     }
 
     return (
-        <>
+        <div className="overflow-x-hidden">
             <Header />
             <div className="max-w-3xl w-full mx-auto">
-                <h1 className="text-2xl p4 pt-4 pb-5">KTP Rush Application</h1>
-
+                <h1 className="text-2xl p4 pt-4 pb-5 font-semibold">KTP Rush Application</h1>
                 <div className="pb-20">
                     <form onSubmit={handleSubmit}>
                         <FieldGroup>
@@ -65,7 +57,7 @@ export default function Application() {
 
                                     {/* Full Name */}
                                     <Field>
-                                        <FieldLabel>Full Name</FieldLabel>
+                                        <FieldLabel>Full Name<span className="text-red-500">*</span></FieldLabel>
                                         <Input
                                             id="name"
                                             name="name"
@@ -76,7 +68,7 @@ export default function Application() {
 
                                     {/* Email */}
                                     <Field>
-                                        <FieldLabel htmlFor="email">USC Email</FieldLabel>
+                                        <FieldLabel htmlFor="email">USC Email<span className="text-red-500">*</span></FieldLabel>
                                         <Input
                                             id="email"
                                             name="email"
@@ -88,7 +80,7 @@ export default function Application() {
 
                                     {/* Classification */}
                                     <Field>
-                                        <FieldLabel>Classification</FieldLabel>
+                                        <FieldLabel>Classification<span className="text-red-500">*</span></FieldLabel>
                                         <Select name="classification">
                                             <SelectTrigger>
                                                 <SelectValue placeholder="None Selected" />
@@ -107,7 +99,7 @@ export default function Application() {
 
                                     {/* Major */}
                                     <Field>
-                                        <FieldLabel>Major(s)</FieldLabel>
+                                        <FieldLabel>Major(s) <span className="text-red-500">*</span> </FieldLabel>
                                         <Input
                                             id="major"
                                             name="major"
@@ -126,7 +118,7 @@ export default function Application() {
 
                                     {/* Resume Upload */}
                                     <Field>
-                                        <FieldLabel htmlFor="resume">Upload Resume/CV</FieldLabel>
+                                        <FieldLabel htmlFor="resume">Upload Resume/CV <span className="text-red-500">*</span></FieldLabel>
                                         <FieldDescription>
                                             Please attach your resume (.pdf, .doc, .jpg, .png)
                                         </FieldDescription>
@@ -147,6 +139,7 @@ export default function Application() {
                                         <FieldContent>
                                             <FieldLabel>
                                                 Why would you like to join KTP?
+                                                <span className="text-red-500">*</span>
                                             </FieldLabel>
                                             <FieldDescription>
                                                 Answer in less than 250 words
@@ -176,6 +169,6 @@ export default function Application() {
                     </form>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
