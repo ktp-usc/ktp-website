@@ -115,10 +115,10 @@ export default function Home() {
                     </div>
                     <div className="border-4 border-white rounded-xl mt-12 p-6 text-center max-w-3xl mx-auto">
                         <div className="relative w-48 h-48 mx-auto mb-6">
-                            <img src="/Images/ktp_logo.svg" alt="logo" width={250} height={250} />
+                            <img src="/Images/ktp_logo.svg" alt="logo" width={850} height={333}/>
+                            {/*Motto*/}
+                            <p className={`text-2x pt-2 font-thin italic playfair`}>for the love of technology</p>
                         </div>
-
-                        {/*Motto*/}
 
                         {/*Passion*/}
                         <div className="max-w-3xl w-full mx-auto bg-white/5 backdrop-blur-sm">
