@@ -93,20 +93,6 @@ export default function Home() {
                         <div className="shape-blob eleven"></div>
                     </div>
                 </div>
-                <div className="flex-1 flex flex-col items-end">
-                    <img src="/images/home/melgrace.jpg" alt = "blob image" className="hidden xl:block" style={{
-                        width: "175px",
-                        transform: "rotate(10deg)",
-                        borderRadius: "25px",
-                        marginRight: "50px",
-                    }} />
-                    <img src="/images/home/rock.JPEG" alt = "blob image" className="hidden xl:block" style={{
-                        width: "200px",
-                        transform: "rotate(-19deg)",
-                        borderRadius: "25px",
-                        marginRight: "20px",
-                    }} />
-                </div>
 
                 <div className="flex flex-col flex-none">
                     <div className="absolute inset-0 blob-c z-0 block md:hidden overflow-hidden">
@@ -115,9 +101,9 @@ export default function Home() {
                     </div>
                     <div className="border-4 border-white rounded-xl mt-12 p-6 text-center max-w-3xl mx-auto">
                         <div className="relative w-48 h-48 mx-auto mb-6">
-                            <img src="/Images/ktp_logo.svg" alt="logo" width={850} height={333}/>
+                            <img src="/Images/ktp_logo.svg" alt="logo" width={250} height={250} />
                             {/*Motto*/}
-                            <p className={`text-2x pt-2 font-thin italic playfair`}>for the love of technology</p>
+                            <p className={`text-1xl pt-2 font-thin italic playfair`}>for the love of technology</p>
                         </div>
 
                         {/*Passion*/}
