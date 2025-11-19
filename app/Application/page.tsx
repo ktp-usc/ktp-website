@@ -3,7 +3,6 @@
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -16,6 +15,7 @@ import {
     FieldSeparator,
     FieldSet,
 } from "@/components/ui/field";
+import React from "react";
 
 export default function Application() {
     // --------------------------------------------
