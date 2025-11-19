@@ -2,189 +2,101 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
+
+const members = [
+    {
+        name: "Owen Coulam",
+        role: "President",
+        imageSrc: "/Images/Screenshot Owen.png",
+        linkedin: "https://www.linkedin.com/in/owencoulam/"
+    },
+    {
+        name: "Darssan Eswaramoorthi",
+        role: "Vice President",
+        imageSrc: "/Images/Screenshot Darssan.png",
+        linkedin: "https://www.linkedin.com/in/ledarssan/"
+    },
+    {
+        name: "Josiah White",
+        role: "Executive Secretary",
+        imageSrc: "/Images/Screenshot Josiah.png",
+        linkedin: "https://www.linkedin.com/in/josiahawhite/"
+    },
+    {
+        name: "Luke Jannazzo",
+        role: "Director of Outreach",
+        imageSrc: "/Images/Screenshot Luke.png",
+        linkedin: "https://www.linkedin.com/in/lukejannazzo/"
+    },
+    {
+        name: "Braden Guliano",
+        role: "Director of Technical Development",
+        imageSrc: "/Images/Screenshot Braden.png",
+        linkedin: "https://www.linkedin.com/in/bguliano/"
+    },
+    {
+        name: "Sara Muthuselvam",
+        role: "Director of Finance",
+        imageSrc: "/Images/Screenshot Sara.png",
+        linkedin: "https://www.linkedin.com/in/sara-muthu/"
+    },
+    {
+        name: "Katie Jones",
+        role: "Director of Marketing",
+        imageSrc: "/Images/Screenshot Katie.png",
+        linkedin: "https://www.linkedin.com/in/katiejones404/"
+    },
+    {
+        name: "Tarun Ramkumar",
+        role: "Director of Professional Development",
+        imageSrc: "/Images/Screenshot Tarun.png",
+        linkedin: "https://www.linkedin.com/in/tarun-ramkumar/"
+    },
+    {
+        name: "Sai Kotapalli",
+        role: "Director of Engagement",
+        imageSrc: "/Images/Screenshot Sai.png",
+        linkedin: "https://www.linkedin.com/in/sai-kottapali-153695288/"
+    },
+];
 
 export default function Members() {
     return (
         <div className="overflow-x-clip">
-            <div className="w-full flex flex-col items-center ">
-                <h2 className="text-3xl font-bold text-center mt-12 mb-8">Meet the Executive Board</h2>
+            <div className="w-full flex flex-col items-center">
+                <h2 className="text-3xl font-bold text-center mt-12 mb-8">
+                    Meet the Executive Board
+                </h2>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 pb-10 justify-items-center">
+                    {members.map((member) => (
+                        <div key={member.name} className="flex flex-col items-center">
 
+                            {/* Consistent image size */}
+                            <div className="w-[200px] h-[200px] rounded-md overflow-hidden">
+                                <Image
+                                    src={member.imageSrc}
+                                    alt={`${member.role} - ${member.name}`}
+                                    width={200}
+                                    height={200}
+                                    className="object-cover w-full h-full"
+                                    priority
+                                />
+                            </div>
 
-                    <div className="flex flex-col items-center">
-                        <Image src="/Images/Screenshot Owen.png"
-                               alt="KTP President"
-                               width={180}
-                               height={38}
-                               priority
-                               className="rounded-md"
-                        />
+                            {/* Button — styled directly, no wrapper */}
+                            <Link
+                                href={member.linkedin}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="mt-4 px-6 py-3 bg-[#315CA9] text-white rounded-lg font-semibold transition-all duration-300 hover:bg-[#23498F] hover:scale-110 hover:drop-shadow-md"
+                            >
+                                {member.role}: {member.name}
+                            </Link>
 
-                        <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
-                    hover:scale-110 hover: drop-shadow-md"
-                            href="https://www.linkedin.com/in/owencoulam/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-
-                        >
-
-                            President: <span>Owen Coulam</span>
-                        </a>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <Image
-                            src="/Images/Screenshot Darssan.png"
-                            alt="Next.js logo"
-                            width={180}
-                            height={38}
-                            priority
-                            className="rounded-md"
-                        />
-
-                        <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
-                    hover:scale-110 hover: drop-shadow-md"
-                            href="https://www.linkedin.com/in/ledarssan/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-
-                        >
-                            Vice President: <span>Darssan Eswaramoorthi</span>
-                        </a>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <Image
-                            src="/Images/Screenshot Josiah.png"
-                            alt="Next.js logo"
-                            width={180}
-                            height={38}
-                            priority
-                            className="rounded-md "
-                        />
-                        <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
-                    hover:scale-110 hover: drop-shadow-md"
-                            href="https://www.linkedin.com/in/josiahawhite/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Executive Secretary: <span>Josiah White</span>
-                        </a>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <Image
-                            src="/Images/Screenshot Luke.png"
-                            alt="Next.js logo"
-                            width={180}
-                            height={38}
-                            priority
-                            className="rounded-md"
-                        />
-                        <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
-                    hover:scale-110 hover: drop-shadow-md"
-                            href="https://www.linkedin.com/in/lukejannazzo/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Director of Outreach: <span>Luke Jannazzo</span>
-                        </a>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <Image
-                            src="/Images/Screenshot Braden.png"
-                            alt="Next.js logo"
-                            width={180}
-                            height={38}
-                            priority
-                            className="rounded-md"
-                        />
-                        <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
-                    hover:scale-110 hover: drop-shadow-md"
-                            href="https://www.linkedin.com/in/bguliano/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Director of Technical Development: <span>Braden Guliano</span>
-                        </a>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <Image
-                            src="/Images/Screenshot Sara.png"
-                            alt="Next.js logo"
-                            width={190}
-                            height={45}
-                            priority
-                            className="rounded-md"
-                        />
-                        <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
-                    hover:scale-110 hover: drop-shadow-md"
-                            href="https://www.linkedin.com/in/sara-muthu/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Director of Finance: <span>Sara Muthuselvam</span>
-                        </a>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <Image
-                            src="/Images/Screenshot Katie.png"
-                            alt="Next.js logo"
-                            width={180}
-                            height={38}
-                            priority
-                            className="rounded-md"
-                        /> <a
-                        className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
-                        hover:scale-110 hover:drop-shadow-md"
-                        href="https://www.linkedin.com/in/katiejones404/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Director of Marketing: <span>Katie Jones</span>
-                    </a>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <Image
-                            src="/Images/Screenshot Tarun.png"
-                            alt="Next.js logo"
-                            width={190}
-                            height={40}
-                            priority
-                            className="rounded-md"
-                        />
-                        <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
-                            hover:scale-110 hover:drop-shadow-md"
-                            href="https://www.linkedin.com/in/tarun-ramkumar/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Director of Professional Development: <span>Tarun Ramkumar</span>
-                        </a>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <Image
-                            src="/Images/Screenshot Sai.png"
-                            alt="Next.js logo"
-                            width={190}
-                            height={45}
-                            priority
-                            className="rounded-md"
-                        />
-                        <a
-                            className="mt-4 rounded bg-[#143d76] px-4 py-2 text-white cursor-pointer transition-all duration-300
-                    hover:scale-110 hover: drop-shadow-md"
-                            href="https://www.linkedin.com/in/sai-kottapali-153695288/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Director of Engagement: <span>Sai Kotapalli</span>
-                        </a>
-                    </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>

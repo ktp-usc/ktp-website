@@ -1,10 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {Button} from "@/components/ui/button";
+import {Input} from "@/components/ui/input";
+import {Textarea} from "@/components/ui/textarea";
+import {toast} from "sonner";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {
     Field,
     FieldContent,
@@ -66,7 +66,8 @@ export default function Application() {
 
                                     {/* Email */}
                                     <Field>
-                                        <FieldLabel htmlFor="email">USC Email<span className="text-red-500">*</span></FieldLabel>
+                                        <FieldLabel htmlFor="email">USC Email<span
+                                            className="text-red-500">*</span></FieldLabel>
                                         <Input
                                             id="email"
                                             name="email"
@@ -81,7 +82,7 @@ export default function Application() {
                                         <FieldLabel>Classification<span className="text-red-500">*</span></FieldLabel>
                                         <Select name="classification">
                                             <SelectTrigger>
-                                                <SelectValue placeholder="None Selected" />
+                                                <SelectValue placeholder="None Selected"/>
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="freshman">Freshman</SelectItem>
@@ -109,14 +110,15 @@ export default function Application() {
                                     {/* Minor */}
                                     <Field className="pb-3">
                                         <FieldLabel>Minor(s)</FieldLabel>
-                                        <Input id="minor" name="minor" placeholder="optional" />
+                                        <Input id="minor" name="minor" placeholder="optional"/>
                                     </Field>
 
-                                    <FieldSeparator />
+                                    <FieldSeparator/>
 
                                     {/* Resume Upload */}
                                     <Field>
-                                        <FieldLabel htmlFor="resume">Upload Resume/CV <span className="text-red-500">*</span></FieldLabel>
+                                        <FieldLabel htmlFor="resume">Upload Resume/CV <span
+                                            className="text-red-500">*</span></FieldLabel>
                                         <FieldDescription>
                                             Please attach your resume (.pdf, .doc, .jpg, .png)
                                         </FieldDescription>
@@ -130,7 +132,7 @@ export default function Application() {
                                         />
                                     </Field>
 
-                                    <FieldSeparator />
+                                    <FieldSeparator/>
 
                                     {/* Why KTP */}
                                     <Field>
@@ -158,7 +160,7 @@ export default function Application() {
                             <Field className="pt-4" orientation="horizontal">
                                 <Button
                                     type="submit"
-                                    className="bg-blue-900 text-lg font-semibold"
+                                    className="px-6 py-3 bg-[#315CA9] text-white rounded-lg font-semibold transition-all duration-300 hover:bg-[#23498F] hover:scale-110 hover:drop-shadow-md cursor-pointer"
                                 >
                                     Submit
                                 </Button>
