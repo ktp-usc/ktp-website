@@ -32,60 +32,60 @@ const data = [
 
 // Network company data
 const networkCompanies = [
-    { src: "/network/google.png", alt: "Google" },
-    { src: "/network/microsoft.png", alt: "Microsoft" },
-    { src: "/network/deloitte.png", alt: "Deloitte" },
-    { src: "/network/jpmorgan.png", alt: "JP Morgan" },
-    { src: "/network/meta.png", alt: "Meta" },
-    { src: "/network/citadel.png", alt: "Citadel" },
-    { src: "/network/capital_one.png", alt: "Capital One" },
-    { src: "/network/spotify.png", alt: "Spotify" },
-    { src: "/network/bloomberg.png", alt: "Bloomberg" },
-    { src: "/network/doordash.png", alt: "Doordash" },
-    { src: "/network/hudson_river_trading.png", alt: "Hudson River Trading" },
-    { src: "/network/amazon.png", alt: "Amazon" },
-    { src: "/network/apple.png", alt: "Apple" },
-    { src: "/network/tiktok.png", alt: "Tiktok" },
-    { src: "/network/nvidia.png", alt: "Nvidia" },
-    { src: "/network/duolingo.png", alt: "Duolingo" },
-    { src: "/network/jane_street.png", alt: "Jane Street" },
-    { src: "/network/pwc.png", alt: "PWC" },
-    { src: "/network/ey.png", alt: "EY" },
-    { src: "/network/accenture.png", alt: "Accenture" },
-    { src: "/network/linkedin.png", alt: "LinkedIn" },
-    { src: "/network/tesla.png", alt: "Tesla" },
-    { src: "/network/ibm.png", alt: "IBM" },
-    { src: "/network/cisco.png", alt: "Cisco" },
-    { src: "/network/asana.png", alt: "Asana" },
-    { src: "/network/slack.png", alt: "Slack" },
-    { src: "/network/figma.png", alt: "Figma" },
-    { src: "/network/bleacher_report.png", alt: "Bleacher Report" },
-    { src: "/network/stripe.png", alt: "Stripe" },
-    { src: "/network/pnc.png", alt: "PNC" },
-    { src: "/network/boeing.png", alt: "Boeing" },
-    { src: "/network/salesforce.png", alt: "Salesforce" },
-    { src: "/network/mongo_db.png", alt: "MongoDB" },
-    { src: "/network/vmware.png", alt: "VMware" },
-    { src: "/network/nike.png", alt: "Nike" },
-    { src: "/network/uber.png", alt: "Uber" },
-    { src: "/network/netskope.png", alt: "Netskope" },
-    { src: "/network/att.png", alt: "AT&T" },
-    { src: "/network/ford.png", alt: "Ford" },
-    { src: "/network/modern_treasury.png", alt: "Modern Treasury" },
-    { src: "/network/indeed.png", alt: "Indeed" },
-    { src: "/network/bank_of_america.png", alt: "Bank of America" },
-    { src: "/network/workday.png", alt: "Workday" },
-    { src: "/network/caterpillar.png", alt: "Caterpillar" },
-    { src: "/network/p&g.png", alt: "P&G" },
-    { src: "/network/viget.png", alt: "Viget" },
-    { src: "/network/united.png", alt: "United" },
+    {src: "/network/google.png", alt: "Google"},
+    {src: "/network/microsoft.png", alt: "Microsoft"},
+    {src: "/network/deloitte.png", alt: "Deloitte"},
+    {src: "/network/jpmorgan.png", alt: "JP Morgan"},
+    {src: "/network/meta.png", alt: "Meta"},
+    {src: "/network/citadel.png", alt: "Citadel"},
+    {src: "/network/capital_one.png", alt: "Capital One"},
+    {src: "/network/spotify.png", alt: "Spotify"},
+    {src: "/network/bloomberg.png", alt: "Bloomberg"},
+    {src: "/network/doordash.png", alt: "Doordash"},
+    {src: "/network/hudson_river_trading.png", alt: "Hudson River Trading"},
+    {src: "/network/amazon.png", alt: "Amazon"},
+    {src: "/network/apple.png", alt: "Apple"},
+    {src: "/network/tiktok.png", alt: "Tiktok"},
+    {src: "/network/nvidia.png", alt: "Nvidia"},
+    {src: "/network/duolingo.png", alt: "Duolingo"},
+    {src: "/network/jane_street.png", alt: "Jane Street"},
+    {src: "/network/pwc.png", alt: "PWC"},
+    {src: "/network/ey.png", alt: "EY"},
+    {src: "/network/accenture.png", alt: "Accenture"},
+    {src: "/network/linkedin.png", alt: "LinkedIn"},
+    {src: "/network/tesla.png", alt: "Tesla"},
+    {src: "/network/ibm.png", alt: "IBM"},
+    {src: "/network/cisco.png", alt: "Cisco"},
+    {src: "/network/asana.png", alt: "Asana"},
+    {src: "/network/slack.png", alt: "Slack"},
+    {src: "/network/figma.png", alt: "Figma"},
+    {src: "/network/bleacher_report.png", alt: "Bleacher Report"},
+    {src: "/network/stripe.png", alt: "Stripe"},
+    {src: "/network/pnc.png", alt: "PNC"},
+    {src: "/network/boeing.png", alt: "Boeing"},
+    {src: "/network/salesforce.png", alt: "Salesforce"},
+    {src: "/network/mongo_db.png", alt: "MongoDB"},
+    {src: "/network/vmware.png", alt: "VMware"},
+    {src: "/network/nike.png", alt: "Nike"},
+    {src: "/network/uber.png", alt: "Uber"},
+    {src: "/network/netskope.png", alt: "Netskope"},
+    {src: "/network/att.png", alt: "AT&T"},
+    {src: "/network/ford.png", alt: "Ford"},
+    {src: "/network/modern_treasury.png", alt: "Modern Treasury"},
+    {src: "/network/indeed.png", alt: "Indeed"},
+    {src: "/network/bank_of_america.png", alt: "Bank of America"},
+    {src: "/network/workday.png", alt: "Workday"},
+    {src: "/network/caterpillar.png", alt: "Caterpillar"},
+    {src: "/network/p&g.png", alt: "P&G"},
+    {src: "/network/viget.png", alt: "Viget"},
+    {src: "/network/united.png", alt: "United"},
 ];
 
 export default function Home() {
     return (
-        <div className="font-sans min-h-screen flex flex-col">
+        <div className="font-sans min-h-screen flex flex-col overflow-x-hidden">
             <main className="flex flex-col items-center flex-grow p-8 pb-0">
-                <Header />
+                <Header/>
                 <div
                     className="flex flex-row justify-center xl:justify-between mb-12 md:mb-20 lg:mb-32 px-6 sm:px-8 md:px-12 lg:px-20">
                     <div className="absolute inset-0 blob-c z-0 hidden md:block">
@@ -107,7 +107,7 @@ export default function Home() {
                         </div>
 
                         {/*Passion*/}
-                        <div className="max-w-3xl w-full mx-auto bg-white/5 backdrop-blur-sm">
+                        <div className="max-w-3xl w-auto mx-auto bg-white/5 backdrop-blur-sm">
                             <h2 className="relative z-10 text-3xl font-bold text-left mt-10">Our Passion</h2>
                             <p className=" border-2 border-gray-400 rounded-xl mt-4 p-6 text-lg leading-relaxed text-gray-700 text-left">
                                 Welcome to Kappa Theta Pi at the University of South Carolina where we are committed to
@@ -124,7 +124,7 @@ export default function Home() {
                         <h2 className="relative z-10 text-3xl font-bold text-left mt-10">
                             Ongoing Projects
                         </h2>
-                        <div className="relative z-10 scroll-pb-9">
+                        <div className="relative z-10">
                             <Carousel className="w-full border-2 border-gray-400 rounded-xl p-6 shadow-md mt-4">
                                 <CarouselContent>
                                     {data.map((p) => (
@@ -145,7 +145,7 @@ export default function Home() {
                                                     <div className="relative w-full h-full overflow-hidden rounded-xl">
                                                         <AspectRatio ratio={5 / 4}>
                                                             <Image src={p.image} alt={"${project} logo"} fill
-                                                                   className="object-cover" />
+                                                                   className="object-cover w-full max-w-full"/>
                                                         </AspectRatio>
                                                     </div>
                                                 </div>
@@ -153,8 +153,8 @@ export default function Home() {
                                         </CarouselItem>
                                     ))}
                                 </CarouselContent>
-                                <CarouselPrevious aria-label="Previous" />
-                                <CarouselNext aria-label="Next" />
+                                <CarouselPrevious aria-label="Previous"/>
+                                <CarouselNext aria-label="Next"/>
                             </Carousel>
                         </div>
                     </div>
@@ -164,19 +164,20 @@ export default function Home() {
                 <div className="px-6 sm:px-8 md:px-12 lg:px-20">
                     <div
                         className="flex justify-left text-3xl lg:text-4xl font-semibold mt-10 mb-12 font-inter"
-                        style={{ fontWeight: "680", letterSpacing: "-0.02em" }}
+                        style={{fontWeight: "680", letterSpacing: "-0.02em"}}
                     >
                         Our Network
                     </div>
                     <div
                         className="flex flex-wrap justify-center items-center pb-10 gap-4 lg:gap-8 mb-8 min-h-[160px] lg:min-h-[180px]">
                         {networkCompanies.map((company, index) => (
-                            <img
+                            <Image
                                 key={company.alt}
                                 src={company.src}
                                 alt={company.alt}
-                                className="h-6 lg:h-8 network-logo-simple transition-all duration-300
-                    hover:scale-110 hover: drop-shadow-md"
+                                width={200}
+                                height={200}
+                                className="max-h-6 lg:max-h-8 w-auto transition-all duration-300 hover:scale-110 drop-shadow-md"
                                 style={{
                                     animationDelay: `${index * 50}ms`,
                                     animationFillMode: "forwards",
@@ -186,11 +187,6 @@ export default function Home() {
                     </div>
                 </div>
             </main>
-            <div className="w-screen overflow-hidden mt-0">
-                <img src="/Images/Banner Image_2.png" alt="Decorative bottom banner"
-                     className="block w-full h-40 object-cover max-w-none" />
-            </div>
-            <Footer />
         </div>
     );
 }

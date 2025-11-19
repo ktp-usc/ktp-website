@@ -1,5 +1,4 @@
 // app/page2/page.tsx  (or wherever your Page2 file lives)
-import Footer from "../Footer";
 import { Header } from "@/components/Header";
 import Link from "next/link";
 import CalendarIcon from "../../Componenets/CalendarIcon";
@@ -14,8 +13,18 @@ import {
 
 export default function Page2() {
   return (
-    <main>
-        <Header />
+    <main className="relative">
+      <Header></Header>
+
+      {/* Background blobs */}
+      <div className="relative bg-white w-full">
+        <div className="absolute inset-0 blob-c z-0">
+          <div className="shape-blob eight" />
+          <div className="shape-blob nine" />
+        </div>
+      </div>
+
+      <div className="relative z-10">
       <section className="text-center py-16 px-6">
         <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
           Learn About Joining KTP!
@@ -199,8 +208,7 @@ export default function Page2() {
           </AccordionItem>
         </Accordion>
       </section>
-
-      <Footer/>
+      </div>
     </main>
   );
 }
