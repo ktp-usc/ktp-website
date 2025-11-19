@@ -1,7 +1,6 @@
 "use client"
 
-import { Header } from "@/components/Header";
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import CalendarIcon from "../../Componenets/CalendarIcon";
 import PinIcon from "../../Componenets/PinIcon";
@@ -16,8 +15,6 @@ import {
 export default function Page2() {
   return (
     <main className="relative">
-      <Header></Header>
-
       {/* Background blobs */}
       <div className="relative bg-white w-full">
         <div className="absolute inset-0 blob-c z-0">
