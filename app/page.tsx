@@ -121,11 +121,22 @@ export default function Home() {
                                         }}
                                     />
                                     {/* KTP Logo */}
-                                    <img
-                                        src="/Images/ktp_logo.svg"
-                                        alt="Kappa Theta Pi logo"
-                                        className="w-32 h-32 object-contain"
-                                    />
+                                    <div className="flex flex-col items-center justify-center leading-none">
+                                        <img
+                                            src="/Images/ktp_logo_trimmed.png"
+                                            alt="Kappa Theta Pi logo"
+                                            className="w-96 h-auto object-contain block m-0 p-0"
+                                            style={{ display: "block" }}
+                                        />
+                                        <p
+                                            className="text-2xl font-thin italic playfair text-center m-0 leading-none mt-4 whitespace-nowrap"
+                                        >
+                                            for the love of technology
+                                        </p>
+                                    </div>
+
+
+
 
                                     {/* President Headshot */}
                                     <img
