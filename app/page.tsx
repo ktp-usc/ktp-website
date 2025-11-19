@@ -106,51 +106,50 @@ export default function Home() {
                                 <div className="shape-blob thirteen" />
                             </div>
 
-                            {/* Card with logo + headshot side by side */}
-                            <div className="rounded-2xl mt-8 p-12 w-full max-w-6xl bg-white/20 backdrop-blur-md shadow-lg border border-white/30">
-                                <div className="flex flex-row items-center justify-center gap-20 mb-20">
+                            <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 lg:gap-20 mb-20">
+
+                                {/* Left Image */}
+                                <img
+                                    src="/Images/Halloween.JPEG"
+                                    alt="Headshot"
+                                    className="rounded-xl border-8 object-cover
+                   w-40 h-40 sm:w-48 sm:h-48 md:w-60 md:h-60 lg:w-72 lg:h-72"
+                                    style={{
+                                        borderLeftColor: "#d1fae5",
+                                        borderRightColor: "#d1fae5",
+                                        borderTopColor: "#e5e7eb",
+                                        borderBottomColor: "#e5e7eb",
+                                    }}
+                                />
+
+                                {/* Middle Logo */}
+                                <div className="flex flex-col items-center justify-center leading-none">
                                     <img
-                                        src="/Images/Halloween.JPEG"
-                                        alt="President's Headshot"
-                                        className="w-75 h-75 rounded-xl border-8 object-cover"
-                                        style={{
-                                            borderLeftColor: "#d1fae5",
-                                            borderRightColor: "#d1fae5",
-                                            borderTopColor: "#e5e7eb",
-                                            borderBottomColor: "#e5e7eb",
-                                        }}
+                                        src="/Images/ktp_logo_trimmed.png"
+                                        alt="Kappa Theta Pi logo"
+                                        className="w-96 h-auto object-contain block m-0 p-0"
+                                        style={{ display: "block" }}
                                     />
-                                    {/* KTP Logo */}
-                                    <div className="flex flex-col items-center justify-center leading-none">
-                                        <img
-                                            src="/Images/ktp_logo_trimmed.png"
-                                            alt="Kappa Theta Pi logo"
-                                            className="w-96 h-auto object-contain block m-0 p-0"
-                                            style={{ display: "block" }}
-                                        />
-                                        <p
-                                            className="text-2xl font-thin italic playfair text-center m-0 leading-none mt-4 whitespace-nowrap"
-                                        >
-                                            for the love of technology
-                                        </p>
-                                    </div>
-
-
-
-
-                                    {/* President Headshot */}
-                                    <img
-                                        src="/Images/Glow_Sticks.JPEG"
-                                        alt="President's Headshot"
-                                        className="w-75 h-75 rounded-xl border-8 object-cover"
-                                        style={{
-                                            borderLeftColor: "#d1fae5",
-                                            borderRightColor: "#d1fae5",
-                                            borderTopColor: "#e5e7eb",
-                                            borderBottomColor: "#e5e7eb",
-                                        }}
-                                    />
+                                    <p
+                                        className="text-2xl sm:text-3xl pt-4 font-thin italic playfair text-center m-0 leading-none mt-4 whitespace-nowrap"
+                                    >
+                                        for the love of technology
+                                    </p>
                                 </div>
+
+                                {/* Right Image */}
+                                <img
+                                    src="/Images/Glow_Sticks.JPEG"
+                                    alt="Headshot"
+                                    className="rounded-xl border-8 object-cover
+                   w-40 h-40 sm:w-48 sm:h-48 md:w-60 md:h-60 lg:w-72 lg:h-72"
+                                    style={{
+                                        borderLeftColor: "#d1fae5",
+                                        borderRightColor: "#d1fae5",
+                                        borderTopColor: "#e5e7eb",
+                                        borderBottomColor: "#e5e7eb",
+                                    }}
+                                />
                             </div>
 
                             {/* Our Passion */}
