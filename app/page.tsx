@@ -104,8 +104,6 @@ export default function Home() {
 
                             {/* Card with logo + headshot side by side */}
                             <div className="rounded-2xl mt-8 p-12 w-full max-w-6xl bg-white/20 backdrop-blur-md shadow-lg border border-white/30">
-
-
                                 <div className="flex flex-row items-center justify-center gap-20 mb-20">
                                     <img
                                         src="/Images/Halloween.JPEG"
