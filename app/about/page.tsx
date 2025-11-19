@@ -108,9 +108,9 @@ export default function About(): React.JSX.Element {
                                             President&apos;s Welcome
                                         </h2>
                                         <div className="text-base sm:text-lg leading-relaxed space-y-4">
-                                            <p>pgh 1</p>
-                                            <p>pgh 2</p>
-                                            <p>pgh 3</p>
+                                            <p>Welcome to Kappa Theta Pi, USC&apos;s premier professional technology fraternity. On behalf of our chapter, I’m excited to welcome you to our fraternity&apos;s new website, where you can catch a glimpse of the passion and excellence that our chapter celebrates.</p>
+                                            <p>Kappa Theta Pi offers brothers the support to be extraordinary during their time at South Carolina with resources centered around professional development, alumni connections, social growth, technological advancement, and academic support. From nonprofit project teams and study groups to professional development workshops and hackathons, we foster a culture of growth encouraging members to pursue their tech passions. Our chapter values diversity, with brothers contributing unique experiences and excelling as student leaders. We celebrate our diverse brotherhood, welcoming all united by a passion for technology.</p>
+                                            <p>Founding the South Carolina chapter of KTP has been the most impactful part of my college experience. I’ve had the immense privilege of building this community and watching it grow into a home for USC&apos;s most exceptional and ambitious professionals, seeing first-hand the incredible things they do. Our nonprofit consulting initiative, undertaken by no other KTP chapter nationally, has seen immense success with 5 clients in the span of a single semester. Most importantly, this chapter is built upon the promise of not only professional excellence, but also creating lifelong bonds that will serve as a constant source of inspiration and support for every member to be their full and best self.</p>
                                             <p>
                                                 Sincerely,
                                                 <br/>
