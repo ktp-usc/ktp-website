@@ -18,9 +18,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Kappa Theta Pi",
   description: "The official website for Kappa Theta Pi",
-    icons: {
-        icon: '/favicon.png'
-    },
 };
 
 export default function RootLayout({
