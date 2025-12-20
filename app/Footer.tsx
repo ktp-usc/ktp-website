@@ -23,9 +23,11 @@ export default function Footer() {
                         </div>
 
 
-                        <p className="text-white max-w-sm">
-                            Alpha Theta Chapter at the University of South Carolina. Where technology meets impact.
-                        </p>
+                        <div className="text-white max-w-sm">
+                            <p>Alpha Theta Chapter at the University of South Carolina</p>
+                            <p className="mt-2">Where technology meets impact</p>
+                        </div>
+
 
                         {/* Social Icons */}
                         <div className="flex gap-5 mt-2 text-white relative z-20 pointer-events-auto">
