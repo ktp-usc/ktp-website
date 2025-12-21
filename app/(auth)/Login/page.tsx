@@ -47,7 +47,7 @@ export default function LoginPage() {
           <div className="space-y-6">
             
             <div className="inline-block">
-              <h1 className="text-5xl lg:text-6xl font-bold text-white mb-2">
+              <h1 className="text-5xl lg:text-6xl font-serif font-bold text-white mb-2">
                 ΚΘΠ
               </h1>
               <div className="h-1 w-20 bg-white/80 rounded-full"></div>
@@ -67,7 +67,7 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="md:hidden text-center mb-8">
-            <h1 className="text-4xl font-bold bg-gradient-to-br from-blue-400 via-blue-700 to-blue-100 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-serif font-bold bg-gradient-to-br from-blue-400 via-blue-700 to-blue-100 bg-clip-text text-transparent">
               ΚΘΠ
             </h1>
           </div>
