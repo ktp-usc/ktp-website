@@ -174,7 +174,7 @@ export default function Application() {
                                     <Field>
                                         <FieldLabel>GPA<span className="text-red-500">*</span></FieldLabel>
                                         <FieldDescription>
-                                            <em>Kappa Theta Pi expects its brothers to maintain a minimum of a 3.00 GPA; however, we invite anyone interested in our organization to apply. If you are a current freshman (i.e. do not yet have a college GPA), please put "N/A" in the space below.</em>
+                                            <em>Kappa Theta Pi expects its brothers to maintain a minimum of a 3.00 GPA; however, we invite anyone interested in our organization to apply.</em>
                                         </FieldDescription>
                                         <Input
                                             id="gpa"
