@@ -2,8 +2,7 @@
 import Background from "@/components/Background";
 import ThemeToggle from "@/components/ui/themeToggle";
 import { useRouter } from 'next/navigation';
-import Link from "next/link";
-import useState from "react";
+import Image from "next/image";
 
 
 
@@ -47,10 +46,14 @@ export default function LoginPage() {
           <div className="space-y-6">
             
             <div className="inline-block">
-              <h1 className="text-5xl lg:text-6xl font-serif font-bold text-white mb-2">
-                ΚΘΠ
-              </h1>
-              <div className="h-1 w-20 bg-white/80 rounded-full"></div>
+              <Image
+              src="KTPLettersW.svg"
+              alt="Kappa Theta Pi logo"
+              width={220}
+              height={140}
+              priority
+              />
+            <div className="h-1 w-20 bg-white/80 rounded-full"></div>
             </div>
             <h2 className="text-3xl lg:text-4xl font-bold text-white">
               Welcome Back
@@ -65,13 +68,24 @@ export default function LoginPage() {
       {/* Right Side - Login Form */}
       <div className="flex items-center justify-center px-6 py-12 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
         <div className="w-full max-w-md">
-          {/* Mobile Logo */}
-          <div className="md:hidden text-center mb-8">
-            <h1 className="text-4xl font-serif font-bold bg-gradient-to-br from-blue-400 via-blue-700 to-blue-100 bg-clip-text text-transparent">
-              ΚΘΠ
-            </h1>
-          </div>
+          {/* Mobile Logo */} 
+            <div className="flex justify-center mb-6">
+            <Image
+            src="/KTPLettersW.svg"
+            alt="Kappa Theta Pi logo"
+            className="hidden dark:block"
+            width={120}
+            height={40}
+            />
+            <Image
+            src="/KTPLetters.svg"
+            alt="Kappa Theta Pi logo"
+            className="block dark:hidden"
+            width={120}
+            height={40}
+            />
 
+            </div>
           {/* Form Container */}
           <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl dark:shadow-gray-900/50 p-8 lg:p-10 transition-colors duration-300 border dark:border-gray-700">
             <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Sign In</h2>
@@ -95,6 +109,9 @@ export default function LoginPage() {
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Password
                   </label>
+                  <a href="#" className="text-sm text-blue-900 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 font-medium">
+                    Forgot?
+                  </a>
                 </div>
                 <input
                   id="password"
