@@ -31,12 +31,9 @@ export default function Application() {
         const emailLower = email?.toLowerCase() || "";
         
         // Check for sc.edu (including subdomains like mailbox.sc.edu, email.sc.edu)
-        const isScEdu = emailLower.includes("@") && emailLower.split("@")[1]?.endsWith("sc.edu");
-        const isUscb = emailLower.endsWith("@uscb.edu");
-        const isUsca = emailLower.endsWith("@usca.edu");
-        const isUscSumter = emailLower.endsWith("@uscsumter.edu");
-        
-        if (!isScEdu && !isUscb && !isUsca && !isUscSumter) {
+        const isGeneralScEdu = emailLower.includes("@") && emailLower.split("@")[1]?.endsWith("sc.edu");
+
+        if (!isGeneralScEdu) {
             toast.error("Please use a valid USC email address.");
             return;
         }
@@ -75,22 +72,27 @@ export default function Application() {
     return (
         <div className="overflow-x-hidden">
             <div className="max-w-3xl w-full mx-auto">
-                <h1 className="text-4xl p4 pt-4 pb-6 font-bold">KTP Rush Application</h1>
+                <h1 className="text-4xl p4 pt-4 pb-6 font-bold">KTP Rush Application: Spring 2026</h1>
                 
                 {/* Introduction */}
                 <div className="mb-8 space-y-4 mt-4">
                     <p>
                         Thank you for your interest in becoming a member of Kappa Theta Pi!
                     </p>
-                    <p className="font-bold">
+                    <p>
                         Kappa Theta Pi is a Professional Co-Ed Technology Fraternity founded in 2012, aiming to
                         develop a talented slate of future computing professionals. The Alpha Theta Chapter at 
                         the University of South Carolina welcomes you to its second recruitment cycle for its 
-                        Beta class.
+                            Beta class.
                     </p>
                     <p>
                         If you have any questions, please reach out to the executive board at {' '}
-                        <a href="mailto:soktp@mailbox.sc.edu" className="text-blue-600 underline">soktp@mailbox.sc.edu</a>.
+                        <a href="mailto:soktp@mailbox.sc.edu" className="text-blue-500 underline">soktp@mailbox.sc.edu</a>.
+                        <em> Please note that this application will not save your progress.</em>
+                    </p>
+                    <p className="font-bold">
+                        This application is due <u>Friday, January 30th, 9 PM EST.</u>
+                        <em> We will not accept responses after this time.</em>
                     </p>
                 </div>
 
@@ -152,6 +154,9 @@ export default function Application() {
                                     {/* Year in School */}
                                     <Field>
                                         <FieldLabel>Year in School<span className="text-red-500">*</span></FieldLabel>
+                                        <FieldDescription>
+                                            <em>Not by credit hours. For example, "Freshman" means first-year in University.</em>
+                                        </FieldDescription>
                                         <Select name="classification">
                                             <SelectTrigger>
                                                 <SelectValue placeholder="None Selected"/>
@@ -163,14 +168,14 @@ export default function Application() {
                                                 <SelectItem value="senior">Senior</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        <FieldDescription>
-                                            Select your current year in school. <em>Not by credit hours. For example, "Freshman" means first-year in University.</em>
-                                        </FieldDescription>
                                     </Field>
 
                                     {/* GPA */}
                                     <Field>
                                         <FieldLabel>GPA<span className="text-red-500">*</span></FieldLabel>
+                                        <FieldDescription>
+                                            <em>Kappa Theta Pi expects its brothers to maintain a minimum of a 3.00 GPA; however, we invite anyone interested in our organization to apply. If you are a current freshman (i.e. do not yet have a college GPA), please put "N/A" in the space below.</em>
+                                        </FieldDescription>
                                         <Input
                                             id="gpa"
                                             name="gpa"
@@ -178,15 +183,12 @@ export default function Application() {
                                             required
                                             placeholder="e.g., 3.75"
                                         />
-                                        <FieldDescription>
-                                            <em>Kappa Theta Pi expects its brothers to maintain a minimum of a 3.00 GPA; however, we invite anyone interested in our organization to apply. If you are a current freshman (i.e. do not yet have a college GPA), please put "N/A" in the space below.</em>
-                                        </FieldDescription>
                                     </Field>
 
                                     {/* Extenuating circumstances */}
                                     <Field>
                                         <FieldContent>
-                                            <FieldLabel>Extenuating circumstances</FieldLabel>
+                                            <FieldLabel>Extenuating Circumstances</FieldLabel>
                                             <FieldDescription>
                                                 If your GPA is below a 3.00, please use the following to explain any extenuating circumstances or hardships you would like us to take into consideration
                                             </FieldDescription>
@@ -206,10 +208,10 @@ export default function Application() {
                                             id="major"
                                             name="major"
                                             required
-                                            placeholder="IT, CE, CS, etc..."
+                                            placeholder="IIT, CE, CS, etc..."
                                         />
                                         <FieldDescription>
-                                            <em>KTP accepts all majors.</em>
+                                            <em>KTP accepts all majors!</em>
                                         </FieldDescription>
                                     </Field>
 
@@ -236,9 +238,12 @@ export default function Application() {
                                         <FieldLabel htmlFor="resume">Upload Resume/CV <span
                                             className="text-red-500">*</span></FieldLabel>
                                         <FieldDescription>
-                                            Please attach your resume (PDF only)
+                                            PDF format only.
                                             <br/>
-                                            <em>If you don't have a resume made, quickly write-up a bullet pointed list of your previous jobs, leadership positions, involvement, technical projects, etc. Don't worry if it's not polished, we're looking at the content, not formatting. We'll help improve your resume during the process!</em>
+                                            <br/>
+                                            <em>If you don't have a resume made, quickly write-up a bullet pointed list of
+                                                 your previous jobs, leadership positions, involvement, technical projects,
+                                                 etc. Don't worry if it's not polished, we're looking at the content, not formatting.</em>
                                         </FieldDescription>
 
                                         <Input
@@ -282,13 +287,13 @@ export default function Application() {
                                                 <span className="text-red-500">*</span>
                                             </FieldLabel>
                                             <FieldDescription>
-                                                Answer in less than 250 words
+                                                Answer in less than 150 words.
                                             </FieldDescription>
                                         </FieldContent>
                                         <Textarea
                                             id="reason"
                                             name="reason"
-                                            placeholder="Enter text here"
+                                            placeholder="Note: this application will not save your progress"
                                             required
                                             className="min-h-[100px] resize-none sm:min-w-[300px]"
                                         />
@@ -299,7 +304,9 @@ export default function Application() {
                                         <FieldContent>
                                             <FieldLabel>Which rush events did you attend?<span className="text-red-500">*</span></FieldLabel>
                                             <FieldDescription>
-                                                Check all that apply (at least one required). <em>If you're completing this application early, select the events you plan on attending. Reach out to our Executive Secretary (contact in the FAQ) if you're unable to attend one of the events you select.</em>
+                                                Check all that apply (at least one required). <em>If you're completing this application early,
+                                                 select the events you plan on attending. Reach out to our Executive Secretary in the GroupMe
+                                                 (Josiah White) if you're unable to attend an event.</em>
                                             </FieldDescription>
                                         </FieldContent>
                                         <div className="flex flex-col gap-2">
