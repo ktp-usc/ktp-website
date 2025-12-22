@@ -168,6 +168,9 @@ export default function Application() {
                                             required
                                             placeholder="IT, CE, CS, etc..."
                                         />
+                                        <FieldDescription>
+                                            <em>KTP accepts all majors.</em>
+                                        </FieldDescription>
                                     </Field>
 
                                     {/* Minor */}
@@ -178,7 +181,7 @@ export default function Application() {
 
                                     {/* Hometown, Home State */}
                                     <Field>
-                                        <FieldLabel>Hometown, Home State</FieldLabel>
+                                        <FieldLabel>Hometown</FieldLabel>
                                         <Input
                                             id="hometown"
                                             name="hometown"
