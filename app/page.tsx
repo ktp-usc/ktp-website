@@ -9,7 +9,7 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel";
-import {Element} from "react-scroll";
+import { Element } from "react-scroll";
 import React from "react";
 
 // Project data
@@ -89,8 +89,7 @@ export default function Home() {
     return (
         <div className="font-sans min-h-screen flex flex-col overflow-x-clip">
             <main className="flex flex-col items-center flex-grow p-8 pb-0">
-
-                {/* Background blobs top */}
+                {/* Background blobs */}
                 <div className="flex flex-row justify-center xl:justify-between mb-12 md:mb-20 lg:mb-32 px-6 sm:px-8 md:px-12 lg:px-20">
                     <div className="absolute inset-0 blob-c z-0 hidden md:block">
                         <div className="shape-blob ten" />
@@ -100,188 +99,251 @@ export default function Home() {
 
                 <div className="flex flex-col items-center w-full">
                     <section className="px-6 sm:px-8 md:px-16 lg:px-24 xl:px-32 py-8 sm:py-12 md:py-16 w-full">
-                        {/* Top section: logo + headshot + passion */}
-                        <div className="relative flex flex-col items-center pb-10">
-                            {/* Mobile blobs */}
-                            <div className="absolute inset-0 blob-c z-0 block md:hidden overflow-hidden">
-                                <div className="shape-blob twelve" />
-                                <div className="shape-blob thirteen" />
-                            </div>
+                        <div className="relative w-full overflow-visible">
+                            <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                                {/* Header + subtitle + Rush button */}
+                                <div className="lg:col-span-6 flex flex-col justify-center">
+                                    <h1 className="text-6xl md:text-7xl lg:text-[6.25rem] leading-tight font-extrabold tracking-tight">
+                                        Kappa
+                                        <br />
+                                        Theta Pi
+                                    </h1>
 
-                            <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 lg:gap-20 mb-20">
-
-                                {/* Left Image */}
-                                <img
-                                    src="/Images/Halloween.JPEG"
-                                    alt="Headshot"
-                                    className="rounded-xl border-8 object-cover
-                   w-40 h-40 sm:w-48 sm:h-48 md:w-60 md:h-60 lg:w-72 lg:h-72"
-                                    style={{
-                                        borderLeftColor: "#d1fae5",
-                                        borderRightColor: "#d1fae5",
-                                        borderTopColor: "#e5e7eb",
-                                        borderBottomColor: "#e5e7eb",
-                                    }}
-                                />
-
-                                {/* Middle Logo */}
-                                <div className="flex flex-col items-center justify-center leading-none">
-                                    <img
-                                        src="/Images/ktp_logo_trimmed.png"
-                                        alt="Kappa Theta Pi logo"
-                                        className="w-96 h-auto object-contain block m-0 p-0"
-                                        style={{ display: "block" }}
-                                    />
-                                    <p
-                                        className="text-2xl sm:text-3xl pt-4 font-thin italic playfair text-center m-0 leading-none mt-4 whitespace-nowrap"
-                                    >
-                                        for the love of technology
+                                    <p className="mt-6 text-lg md:text-xl text-gray-600 max-w-xl">
+                                        Professional technology fraternity at the University of South Carolina.
                                     </p>
+
+                                    <div className="mt-8 flex">
+                                        <a
+                                            href="/Rush"
+                                            className="inline-block bg-[#315CA9] text-white px-6 py-3 rounded-lg font-medium shadow hover:shadow-lg transition mx-auto"
+                                        >
+                                            Rush KTP →
+                                        </a>
+                                    </div>
                                 </div>
 
-                                {/* Right Image */}
-                                <img
-                                    src="/Images/Glow_Sticks.JPEG"
-                                    alt="Headshot"
-                                    className="rounded-xl border-8 object-cover
-                   w-40 h-40 sm:w-48 sm:h-48 md:w-60 md:h-60 lg:w-72 lg:h-72"
-                                    style={{
-                                        borderLeftColor: "#d1fae5",
-                                        borderRightColor: "#d1fae5",
-                                        borderTopColor: "#e5e7eb",
-                                        borderBottomColor: "#e5e7eb",
-                                    }}
-                                />
+                                {/* Collage */}
+                                <div className="lg:col-span-6 relative h-[420px] md:h-[480px]">
+                                    <div className="relative w-full h-full">
+                                        {/* Top-left */}
+                                        <div
+                                            className="absolute top-0 left-[6%] z-20 rounded-xl overflow-hidden border-8"
+                                            style={{
+                                                width: "48%",
+                                                height: "44%",
+                                                transform: "translate(-6%, -6%)",
+                                                borderLeftColor: "#d1fae5",
+                                                borderRightColor: "#d1fae5",
+                                                borderTopColor: "#e5e7eb",
+                                                borderBottomColor: "#e5e7eb",
+                                            }}
+                                        >
+                                            <div className="relative w-full h-full">
+                                                <Image src="/Images/collagephoto1.JPG" alt="KTP Symposium" fill style={{ objectFit: "cover" }} />
+                                            </div>
+                                        </div>
+
+                                        {/* Top-right */}
+                                        <div
+                                            className="absolute top-0 right-[2%] z-10 rounded-xl overflow-hidden border-8"
+                                            style={{
+                                                width: "35%",
+                                                height: "50%",
+                                                transform: "translate(6%, -6%)",
+                                                borderLeftColor: "#d1fae5",
+                                                borderRightColor: "#d1fae5",
+                                                borderTopColor: "#e5e7eb",
+                                                borderBottomColor: "#e5e7eb",
+                                            }}
+                                        >
+                                            <div className="relative w-full h-full">
+                                                <Image src="/Images/collagephoto2.JPEG" alt="KTP pumpkin carving" fill style={{ objectFit: "cover" }} />
+                                            </div>
+                                        </div>
+
+                                        {/* center */}
+                                        <div
+                                            className="absolute z-50 rounded-xl overflow-hidden border-8 shadow-xl"
+                                            style={{
+                                                left: "50%",
+                                                top: "28%",
+                                                width: "56%",
+                                                height: "44%",
+                                                transform: "translate(-50%, -8%)",
+                                                borderLeftColor: "#d1fae5",
+                                                borderRightColor: "#d1fae5",
+                                                borderTopColor: "#e5e7eb",
+                                                borderBottomColor: "#e5e7eb",
+                                            }}
+                                        >
+                                            <div className="relative w-full h-full">
+                                                <Image src="/Images/collagephoto3.JPG" alt="KTP Alpha class" fill style={{ objectFit: "cover" }} />
+                                            </div>
+                                        </div>
+
+                                        {/* bottom-left */}
+                                        <div
+                                            className="absolute z-30 rounded-xl overflow-hidden border-8"
+                                            style={{
+                                                bottom: "0",
+                                                left: "5%",
+                                                width: "46%",
+                                                height: "38%",
+                                                transform: "translate(-4%, 8%)",
+                                                borderLeftColor: "#d1fae5",
+                                                borderRightColor: "#d1fae5",
+                                                borderTopColor: "#e5e7eb",
+                                                borderBottomColor: "#e5e7eb",
+                                            }}
+                                        >
+                                            <div className="relative w-full h-full">
+                                                <Image src="/Images/collagephoto4.JPG" alt="KTP speaker" fill style={{ objectFit: "cover" }} />
+                                            </div>
+                                        </div>
+
+                                        {/* bottom-right */}
+                                        <div
+                                            className="absolute z-40 rounded-xl overflow-hidden border-8"
+                                            style={{
+                                                bottom: "6%",
+                                                right: "-8%",
+                                                width: "44%",
+                                                height: "36%",
+                                                borderLeftColor: "#d1fae5",
+                                                borderRightColor: "#d1fae5",
+                                                borderTopColor: "#e5e7eb",
+                                                borderBottomColor: "#e5e7eb",
+                                            }}
+                                        >
+                                            <div className="relative w-full h-full">
+                                                <Image
+                                                    src="/Images/collagephoto5.JPG"
+                                                    alt="KTP symposium presentation"
+                                                    fill
+                                                    style={{ objectFit: "cover" }}
+                                                />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        {/* About Us: President's Welcome and History */}
-                        <div className="relative w-full">
-                            <div className="relative pt-12 sm:pt-16 z-10 px-6 sm:px-8 md:px-16 lg:px-20 text-center">
-                                <h1
-                                    className="text-3xl sm:text-4xl md:text-5xl font-black mb-0"
-                                    style={{
-                                        fontFamily: "Inter, sans-serif",
-                                        letterSpacing: "-0.02em",
-                                    }}
-                                >
-                                    About Us
-                                </h1>
-                                <p className="text-base sm:text-xl mt-8 mb-8 font-medium text-gray-600 max-w-2xl mx-auto">
-                                    Welcome to the Alpha Theta chapter of Kappa Theta Pi at the University of
-                                    South Carolina. We are a professional technology fraternity
-                                    committed to building a community of inspired
-                                    technologists, innovators, and leaders. Through hands-on projects,
-                                    networking events, and professional workshops, we
-                                    empower members to grow both professionally and personally.
-                                </p>
-                            </div>
-                        </div>
+                        {/* About Us */}
+                        <section className="w-full py-45">
+                            <div className="relative max-w-6xl mx-auto bg-gray-50 rounded-2xl overflow-hidden">
+                                <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-8 lg:gap-12 px-6 sm:px-8 md:px-12 lg:px-16 py-12">
+                                    {/* heading on left */}
+                                    <div className="lg:col-span-7 xl:col-span-6">
+                                        <h2 className="text-4xl lg:text-5xl font-extrabold mb-6 leading-tight text-center">About KTP</h2>
 
-                        {/* Sections */}
-                        <div className="flex flex-col space-y-12">
+                                        <p className="text-gray-700 text-base md:text-lg leading-relaxed max-w-2xl text-center">
+                                            Welcome to the Alpha Theta chapter of Kappa Theta Pi at the
+                                            University of South Carolina. We are a professional technology
+                                            fraternity committed to building a community of inspired technologists,
+                                            innovators, and leaders. Through hands-on projects, networking events,
+                                            and professional workshops, we empower members to grow both
+                                            professionally and personally.
+                                        </p>
+                                    </div>
+
+                                    {/* alpha class image on right */}
+                                    <div className="lg:col-span-5 xl:col-span-6 flex justify-center lg:justify-end relative">
+                                        {/* green blob behind image */}
+                                        <div className="absolute -top-25 -right-25 z-0 blob-c">
+                                            <div className="shape-blob eight absolute" />
+                                            <div className="shape-blob nine absolute" />
+                                        </div>
+                                        {/* image container */}
+                                        <div
+                                            className="relative z-10 w-full max-w-md lg:max-w-lg rounded-xl overflow-hidden border-8"
+                                            style={{
+                                                borderLeftColor: "#d1fae5",
+                                                borderRightColor: "#d1fae5",
+                                                borderTopColor: "#e5e7eb",
+                                                borderBottomColor: "#e5e7eb",
+                                            }}
+                                        >
+                                            <Image src="/Images/alphaclass.jpeg" alt="KTP Alpha class" width={900} height={600} className="object-cover w-full h-full block" priority={false} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* President's Welcome */}
+                        <div className="flex flex-col space-y-10">
                             <Element name="presidents-welcome-section" id="presidents-welcome-section">
-                            <section className="px-6 sm:px-8 md:px-16 lg:px-24 xl:px-32 py-8 sm:py-12 md:py-16">
-                                    <div
-                                        className="relative flex flex-col items-center lg:flex-row lg:items-start space-y-12 lg:space-y-0 lg:space-x-12 pb-10">
+                                <section className="px-6 sm:px-8 md:px-16 lg:px-24 xl:px-32 py-8 sm:py-12 md:py-16">
+                                    <div className="relative flex flex-col items-center lg:flex-row lg:items-start space-y-12 lg:space-y-0 lg:space-x-12 pb-10">
                                         <div className="relative w-full lg:w-2/5 flex justify-center">
                                             <div className="absolute blob-c z-0 flex justify-center items-center">
-                                                <div className="shape-blob eight absolute"/>
-                                                <div className="shape-blob nine absolute"/>
+                                                <div className="shape-blob eight absolute" />
+                                                <div className="shape-blob nine absolute" />
                                             </div>
-                                            <img
-                                                src="/Images/Screenshot Owen.png"
-                                                alt="President's Headshot"
-                                                className="relative z-10 w-3/4 h-auto rounded-full border-8 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg"
-                                                style={{
-                                                    borderLeftColor: "#d1fae5",
-                                                    borderRightColor: "#d1fae5",
-                                                    borderTopColor: "#e5e7eb",
-                                                    borderBottomColor: "#e5e7eb",
-                                                }}
-                                            />
+                                            <img src="/Images/presidentheadshot.png" alt="President's Headshot" className="relative z-10 w-3/4 h-auto rounded-full border-8 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg" style={{ borderLeftColor: "#d1fae5", borderRightColor: "#d1fae5", borderTopColor: "#e5e7eb", borderBottomColor: "#e5e7eb" }} />
                                         </div>
 
                                         <div className="w-full lg:w-3/5 text-left relative z-10">
-                                            <h2 className="text-center text-2xl sm:text-4xl font-black mb-10">
-                                                President&apos;s Welcome
-                                            </h2>
+                                            <h2 className="text-center text-2xl sm:text-4xl font-black mb-10">President&apos;s Welcome</h2>
                                             <div className="text-base sm:text-lg leading-relaxed space-y-4">
                                                 <p>Welcome to Kappa Theta Pi, USC&apos;s premier professional technology fraternity. On behalf of our chapter, I’m excited to welcome you to our fraternity&apos;s new website, where you can catch a glimpse of the passion and excellence that our chapter celebrates.</p>
                                                 <p>Kappa Theta Pi offers brothers the support to be extraordinary during their time at South Carolina with resources centered around professional development, alumni connections, social growth, technological advancement, and academic support. From nonprofit project teams and study groups to professional development workshops and hackathons, we foster a culture of growth encouraging members to pursue their tech passions. Our chapter values diversity, with brothers contributing unique experiences and excelling as student leaders. We celebrate our diverse brotherhood, welcoming all united by a passion for technology.</p>
                                                 <p>Founding the South Carolina chapter of KTP has been the most impactful part of my college experience. I’ve had the immense privilege of building this community and watching it grow into a home for USC&apos;s most exceptional and ambitious professionals, seeing first-hand the incredible things they do. Our nonprofit consulting initiative, undertaken by no other KTP chapter nationally, has seen immense success with 5 clients in the span of a single semester. Most importantly, this chapter is built upon the promise of not only professional excellence, but also creating lifelong bonds that will serve as a constant source of inspiration and support for every member to be their full and best self.</p>
-                                                <p>
-                                                    Sincerely,
-                                                    <br/>
-                                                    Owen Coulam
-                                                    <br/>
-                                                    President, 2025
-                                                </p>
+                                                <p>Sincerely,<br />Owen Coulam<br />President, 2025</p>
                                             </div>
                                         </div>
                                     </div>
                                 </section>
                             </Element>
 
+                            {/* History */}
                             <Element name="history-section" id="history-section">
-                            <section className="px-6 sm:px-8 md:px-16 lg:px-24 xl:px-32 py-8 sm:py-12 md:py-16">
-                                    <div
-                                        className="relative flex flex-col items-center lg:flex-row lg:items-start space-y-12 lg:space-y-0 lg:space-x-12 pb-10">
-                                        <div className="relative w-full lg:w-2/5 flex justify-center">
-                                            <div className="absolute blob-c z-0 flex justify-center items-center">
-                                                <div className="shape-blob eight absolute"/>
-                                                <div className="shape-blob nine absolute"/>
-                                            </div>
-                                            <img
-                                                src="/Images/group-photo.png"
-                                                alt="History image"
-                                                className="relative z-10 w-3/4 h-auto rounded-full border-8 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg"
-                                                style={{
-                                                    borderLeftColor: "#d1fae5",
-                                                    borderRightColor: "#d1fae5",
-                                                    borderTopColor: "#e5e7eb",
-                                                    borderBottomColor: "#e5e7eb",
-                                                }}
-                                            />
-                                        </div>
+                                <section className="w-full py-16">
+                                    <div className="relative max-w-6xl mx-auto bg-gray-50 rounded-2xl overflow-hidden">
+                                        <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-8 lg:gap-12 px-6 sm:px-8 md:px-12 lg:px-16 py-12">
+                                            {/* image on left */}
+                                            <div className="lg:col-span-5 xl:col-span-6 flex justify-center lg:justify-start relative order-first lg:order-first">
+                                                {/* green blob behind image */}
+                                                <div className="absolute -top-20 -left-20 z-0 blob-c pointer-events-none">
+                                                    <div className="shape-blob eight absolute" />
+                                                    <div className="shape-blob nine absolute" />
+                                                </div>
 
-                                        <div className="w-full lg:w-3/5 text-left relative z-10">
-                                            <h2 className="text-center text-2xl sm:text-4xl font-black mb-10">
-                                                History
-                                            </h2>
-                                            <div className="text-base sm:text-lg leading-relaxed space-y-4 text-center">
-                                                <p>
-                                                    Regarded as one of the first professional technology
-                                                    fraternities, Kappa Theta Pi is a technical and
-                                                    professional incubation hub that produces first class
-                                                    brothers nationwide. We were ignited in 2012 at University
-                                                    of Michigan by a group of 7 aspiring students looking to
-                                                    create a diverse community for tech interested
-                                                    individuals. Today our national organization holds
-                                                    steadfast to our motto, “For the Love of Technology”,
-                                                    while concurrently enriching new generations of students.
-                                                    This year we are happy to announce our Alpha Class! The
-                                                    2025 Alpha Class of the Kappa Theta Pi UofSC have
-                                                    showcased their skills gained through the rush process by
-                                                    contributing to three non-profits and creating a
-                                                    betterment in the social and economic landscape of our
-                                                    local community.
+                                                {/* image container */}
+                                                <div className="relative z-10 w-full max-w-md lg:max-w-lg rounded-xl overflow-hidden border-8" style={{ borderLeftColor: "#d1fae5", borderRightColor: "#d1fae5", borderTopColor: "#e5e7eb", borderBottomColor: "#e5e7eb" }}>
+                                                    <Image src="/Images/history-photo.JPG" alt="KTP Alpha Class" width={900} height={600} className="object-cover w-full h-full block" priority={false} />
+                                                </div>
+                                            </div>
+
+                                            {/* text on right */}
+                                            <div className="lg:col-span-7 xl:col-span-6">
+                                                <h2 className="text-4xl lg:text-5xl font-extrabold mb-6 leading-tight text-left">History</h2>
+
+                                                <p className="text-gray-700 text-base md:text-lg leading-relaxed max-w-2xl text-left">
+                                                    Kappa Theta Pi is professional technology fraternity that produces
+                                                    first class brothers nationwide. We were founded in 2012 at the
+                                                    University of Michigan by a group of 7 aspiring students looking
+                                                    to create a diverse community for tech interested individuals.
+                                                    Today, our national organization holds steadfast to our motto,
+                                                    “For the Love of Technology”, while concurrently enriching new
+                                                    generations of students. This year we are happy to announce the
+                                                    2025 Alpha Class, who have showcased their skills gained through
+                                                    the rush process by contributing to three non-profits and creating
+                                                    a betterment in the social and economic landscape of our local community.
                                                 </p>
                                             </div>
                                         </div>
                                     </div>
-
                                 </section>
-
                             </Element>
-
                         </div>
 
                         {/* Projects */}
-                        <div className="max-w-3xl w-full mx-auto">
-                            <h2 className="relative z-10 text-3xl font-bold text-left mt-10">
-                                Ongoing Projects
-                            </h2>
+                        <div className="max-w-3xl w-full mx-auto mb-32">
+                            <h2 className="relative z-10 text-3xl font-bold text-center mt-10">Ongoing Projects</h2>
                             <div className="relative z-10">
                                 <Carousel className="w-full border-2 border-gray-400 rounded-xl p-6 shadow-md mt-4">
                                     <CarouselContent>
@@ -289,23 +351,14 @@ export default function Home() {
                                             <CarouselItem key={p.id} className="w-full">
                                                 <div className="flex flex-col md:flex-row items-start">
                                                     <div className="w-full md:w-1/2 p-2">
-                                                        <h2 className="text-xl font-semibold mb-2 text-gray-900">
-                                                            {p.title}
-                                                        </h2>
-                                                        <p className="leading-relaxed text-gray-700">
-                                                            {p.text}
-                                                        </p>
+                                                        <h2 className="text-xl font-semibold mb-2 text-gray-900">{p.title}</h2>
+                                                        <p className="leading-relaxed text-gray-700">{p.text}</p>
                                                     </div>
 
                                                     <div className="relative w-full md:w-1/2 h-64 md:h-auto p-4 flex items-center justify-center">
                                                         <div className="relative w-full h-full overflow-hidden rounded-xl">
                                                             <AspectRatio ratio={5 / 4}>
-                                                                <Image
-                                                                    src={p.image}
-                                                                    alt={`${p.title} logo`}
-                                                                    fill
-                                                                    className="object-cover w-full max-w-full"
-                                                                />
+                                                                <Image src={p.image} alt={`${p.title} logo`} fill className="object-cover w-full max-w-full" />
                                                             </AspectRatio>
                                                         </div>
                                                     </div>
@@ -321,10 +374,7 @@ export default function Home() {
 
                         {/* Network */}
                         <div className="px-6 sm:px-8 md:px-12 lg:px-20">
-                            <div
-                                className="flex justify-left text-3xl lg:text-4xl font-semibold mt-10 mb-12 font-inter"
-                                style={{ fontWeight: 680, letterSpacing: "-0.02em" }}
-                            >
+                            <div className="flex justify-center text-3xl lg:text-4xl font-semibold mt-10 mb-12 font-inter" style={{ fontWeight: 680, letterSpacing: "-0.02em" }}>
                                 Our Network
                             </div>
                             <div className="flex flex-wrap justify-center items-center pb-10 gap-4 lg:gap-8 mb-8 min-h-[160px] lg:min-h-[180px]">
