@@ -26,6 +26,28 @@ export default function Application() {
         const form = e.currentTarget;
         const formData = new FormData(form);
 
+        // Validate USC email domain
+        const email = formData.get("email") as string;
+        const emailLower = email?.toLowerCase() || "";
+        
+        // Check for sc.edu (including subdomains like mailbox.sc.edu, email.sc.edu)
+        const isScEdu = emailLower.includes("@") && emailLower.split("@")[1]?.endsWith("sc.edu");
+        const isUscb = emailLower.endsWith("@uscb.edu");
+        const isUsca = emailLower.endsWith("@usca.edu");
+        const isUscSumter = emailLower.endsWith("@uscsumter.edu");
+        
+        if (!isScEdu && !isUscb && !isUsca && !isUscSumter) {
+            toast.error("Please use a valid USC email address.");
+            return;
+        }
+
+        // Validate resume is PDF only
+        const resume = formData.get("resume") as File;
+        if (resume && !resume.type.includes("pdf")) {
+            toast.error("Resume must be a PDF file.");
+            return;
+        }
+
         // Require at least one rush event selection
         const rushEvents = formData.getAll("rushEvents");
         if (rushEvents.length === 0) {
@@ -214,7 +236,7 @@ export default function Application() {
                                         <FieldLabel htmlFor="resume">Upload Resume/CV <span
                                             className="text-red-500">*</span></FieldLabel>
                                         <FieldDescription>
-                                            Please attach your resume (.pdf, .doc, .jpg, .png)
+                                            Please attach your resume (PDF only)
                                             <br/>
                                             <em>If you don't have a resume made, quickly write-up a bullet pointed list of your previous jobs, leadership positions, involvement, technical projects, etc. Don't worry if it's not polished, we're looking at the content, not formatting. We'll help improve your resume during the process!</em>
                                         </FieldDescription>
@@ -223,7 +245,7 @@ export default function Application() {
                                             id="resume"
                                             name="resume"
                                             type="file"
-                                            accept=".pdf,.jpg,.png,.doc,.docx"
+                                            accept=".pdf"
                                             required
                                         />
                                     </Field>
