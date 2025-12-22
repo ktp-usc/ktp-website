@@ -53,7 +53,25 @@ export default function Application() {
     return (
         <div className="overflow-x-hidden">
             <div className="max-w-3xl w-full mx-auto">
-                <h1 className="text-2xl p4 pt-4 pb-5 font-semibold">KTP Rush Application</h1>
+                <h1 className="text-4xl p4 pt-4 pb-6 font-bold">KTP Rush Application</h1>
+                
+                {/* Introduction */}
+                <div className="mb-8 space-y-4 mt-4">
+                    <p>
+                        Thank you for your interest in becoming a member of Kappa Theta Pi!
+                    </p>
+                    <p className="font-bold">
+                        Kappa Theta Pi is a Professional Co-Ed Technology Fraternity founded in 2012, aiming to
+                        develop a talented slate of future computing professionals. The Alpha Theta Chapter at 
+                        the University of South Carolina welcomes you to its second recruitment cycle for its 
+                        Beta class.
+                    </p>
+                    <p>
+                        If you have any questions, please reach out to the executive board at {' '}
+                        <a href="mailto:soktp@mailbox.sc.edu" className="text-blue-600 underline">soktp@mailbox.sc.edu</a>.
+                    </p>
+                </div>
+
                 <div className="pb-20">
                     <form onSubmit={handleSubmit}>
                         <FieldGroup>
