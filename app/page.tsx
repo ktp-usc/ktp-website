@@ -152,20 +152,23 @@ export default function Home() {
                                 />
                             </div>
 
-                            {/* Our Passion */}
+                            {/* About Us */}
                             <div className="max-w-3xl w-full mx-auto bg-white/5 backdrop-blur-sm mt-8 relative z-10">
                                 <h2 className="text-3xl font-bold text-left mt-2">
-                                    Our Passion
+                                    About Us
                                 </h2>
                                 <p className="border-2 border-gray-400 rounded-xl mt-4 p-6 text-lg leading-relaxed text-gray-700 text-left">
-                                    Welcome to Kappa Theta Pi at the University of South Carolina
-                                    where we are committed to fostering a community of inspired
-                                    technologists, innovators, and leaders. We host workshops,
-                                    networking events, and professional development sessions that
-                                    empower members to grow both personally and professionally.
+                                    Welcome to the Alpha Theta chapter of Kappa Theta Pi at the University of
+                                    South Carolina. We are a professional technology fraternity
+                                    committed to building a community of inspired
+                                    technologists, innovators, and leaders. Through hands-on projects,
+                                    networking events, and professional workshops, we
+                                    empower members to grow both professionally and personally.
                                 </p>
                             </div>
                         </div>
+
+                        //presidents welcome and history
 
                         {/* Projects */}
                         <div className="max-w-3xl w-full mx-auto">
