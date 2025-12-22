@@ -43,8 +43,15 @@ export function Header() {
                     <Link className="hover:text-[#315CA9] font-medium" href="/Rush">Rush</Link>
                     <Link className="hover:text-[#315CA9] font-medium" href="/Application">Apply</Link>
                 </div>
-
+                <div className="absolute right-1 sm:right-6 md:right-12 lg:right-16 xl:right-20">
+                    <Link
+                        className="bg-[#315CA9] text-white font-medium px-4 py-2 rounded-md hover:bg-[#23498F] transition-all duration-300 transform shadow-lg hover:drop-shadow-lg" 
+                        href="/Login">
+                        Login
+                    </Link>
+                </div>
             </div>
+            
         </header>
     );
 }
