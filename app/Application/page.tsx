@@ -26,6 +26,32 @@ export default function Application() {
         const form = e.currentTarget;
         const formData = new FormData(form);
 
+        // Validate USC email domain
+        const email = formData.get("email") as string;
+        const emailLower = email?.toLowerCase() || "";
+        
+        // Check for sc.edu (including subdomains like mailbox.sc.edu, email.sc.edu)
+        const isGeneralScEdu = emailLower.includes("@") && emailLower.split("@")[1]?.endsWith("sc.edu");
+
+        if (!isGeneralScEdu) {
+            toast.error("Please use a valid USC email address.");
+            return;
+        }
+
+        // Validate resume is PDF only
+        const resume = formData.get("resume") as File;
+        if (resume && !resume.type.includes("pdf")) {
+            toast.error("Resume must be a PDF file.");
+            return;
+        }
+
+        // Require at least one rush event selection
+        const rushEvents = formData.getAll("rushEvents");
+        if (rushEvents.length === 0) {
+            toast.error("Please select at least one rush event attended.");
+            return;
+        }
+
         // Submit to backend
         const res = await fetch("/api/applications", {
             method: "POST",
@@ -46,7 +72,30 @@ export default function Application() {
     return (
         <div className="overflow-x-hidden">
             <div className="max-w-3xl w-full mx-auto">
-                <h1 className="text-2xl p4 pt-4 pb-5 font-semibold">KTP Rush Application</h1>
+                <h1 className="text-4xl p4 pt-4 pb-6 font-bold">KTP Rush Application: Spring 2026</h1>
+                
+                {/* Introduction */}
+                <div className="mb-8 space-y-4 mt-4">
+                    <p>
+                        Thank you for your interest in becoming a member of Kappa Theta Pi!
+                    </p>
+                    <p>
+                        Kappa Theta Pi is a Professional Co-Ed Technology Fraternity founded in 2012, aiming to
+                        develop a talented slate of future computing professionals. The Alpha Theta Chapter at 
+                        the University of South Carolina welcomes you to its second recruitment cycle for its 
+                            Beta class.
+                    </p>
+                    <p>
+                        If you have any questions, please reach out to the executive board at {' '}
+                        <a href="mailto:soktp@mailbox.sc.edu" className="text-blue-500 underline">soktp@mailbox.sc.edu</a>.
+                        <em> Please note that this application will not save your progress.</em>
+                    </p>
+                    <p className="font-bold">
+                        This application is due <u>Friday, January 30th, 9 PM EST.</u>
+                        <em> We will not accept responses after this time.</em>
+                    </p>
+                </div>
+
                 <div className="pb-20">
                     <form onSubmit={handleSubmit}>
                         <FieldGroup>
@@ -64,10 +113,23 @@ export default function Application() {
                                         />
                                     </Field>
 
+                                    {/* Preferred First Name (optional) */}
+                                    <Field>
+                                        <FieldLabel>Preferred First Name</FieldLabel>
+                                        <Input
+                                            id="preferredFirstName"
+                                            name="preferredFirstName"
+                                            placeholder="Optional"
+                                        />
+                                    </Field>
+
                                     {/* Email */}
                                     <Field>
                                         <FieldLabel htmlFor="email">USC Email<span
                                             className="text-red-500">*</span></FieldLabel>
+                                        <FieldDescription>
+                                            <em>Please ensure this is correct. All communications concerning the interview process will be sent via email.</em>
+                                        </FieldDescription>
                                         <Input
                                             id="email"
                                             name="email"
@@ -77,9 +139,24 @@ export default function Application() {
                                         />
                                     </Field>
 
-                                    {/* Classification */}
+                                    {/* Phone Number */}
                                     <Field>
-                                        <FieldLabel>Classification<span className="text-red-500">*</span></FieldLabel>
+                                        <FieldLabel>Phone Number<span className="text-red-500">*</span></FieldLabel>
+                                        <Input
+                                            id="phone"
+                                            name="phone"
+                                            type="tel"
+                                            required
+                                            placeholder="(555) 123-4567"
+                                        />
+                                    </Field>
+
+                                    {/* Year in School */}
+                                    <Field>
+                                        <FieldLabel>Year in School<span className="text-red-500">*</span></FieldLabel>
+                                        <FieldDescription>
+                                            <em>Not by credit hours. For example, "Freshman" means first-year in University.</em>
+                                        </FieldDescription>
                                         <Select name="classification">
                                             <SelectTrigger>
                                                 <SelectValue placeholder="None Selected"/>
@@ -91,9 +168,37 @@ export default function Application() {
                                                 <SelectItem value="senior">Senior</SelectItem>
                                             </SelectContent>
                                         </Select>
+                                    </Field>
+
+                                    {/* GPA */}
+                                    <Field>
+                                        <FieldLabel>GPA<span className="text-red-500">*</span></FieldLabel>
                                         <FieldDescription>
-                                            Select your classification.
+                                            <em>Kappa Theta Pi expects its brothers to maintain a minimum of a 3.00 GPA; however, we invite anyone interested in our organization to apply.</em>
                                         </FieldDescription>
+                                        <Input
+                                            id="gpa"
+                                            name="gpa"
+                                            type="text"
+                                            required
+                                            placeholder="e.g., 3.75"
+                                        />
+                                    </Field>
+
+                                    {/* Extenuating circumstances */}
+                                    <Field>
+                                        <FieldContent>
+                                            <FieldLabel>Extenuating Circumstances</FieldLabel>
+                                            <FieldDescription>
+                                                If your GPA is below a 3.00, please use the following to explain any extenuating circumstances or hardships you would like us to take into consideration
+                                            </FieldDescription>
+                                        </FieldContent>
+                                        <Textarea
+                                            id="extenuatingCircumstances"
+                                            name="extenuatingCircumstances"
+                                            placeholder="Enter text here"
+                                            className="min-h-[100px] resize-none sm:min-w-[300px]"
+                                        />
                                     </Field>
 
                                     {/* Major */}
@@ -103,14 +208,27 @@ export default function Application() {
                                             id="major"
                                             name="major"
                                             required
-                                            placeholder="IT, CE, CS, etc..."
+                                            placeholder="IIT, CE, CS, etc..."
                                         />
+                                        <FieldDescription>
+                                            <em>KTP accepts all majors!</em>
+                                        </FieldDescription>
                                     </Field>
 
                                     {/* Minor */}
                                     <Field className="pb-3">
                                         <FieldLabel>Minor(s)</FieldLabel>
                                         <Input id="minor" name="minor" placeholder="optional"/>
+                                    </Field>
+
+                                    {/* Hometown, Home State */}
+                                    <Field>
+                                        <FieldLabel>Hometown</FieldLabel>
+                                        <Input
+                                            id="hometown"
+                                            name="hometown"
+                                            placeholder="City, State"
+                                        />
                                     </Field>
 
                                     <FieldSeparator/>
@@ -120,15 +238,42 @@ export default function Application() {
                                         <FieldLabel htmlFor="resume">Upload Resume/CV <span
                                             className="text-red-500">*</span></FieldLabel>
                                         <FieldDescription>
-                                            Please attach your resume (.pdf, .doc, .jpg, .png)
+                                            PDF format only.
+                                            <br/>
+                                            <br/>
+                                            <em>If you don't have a resume made, quickly write-up a bullet pointed list of
+                                                 your previous jobs, leadership positions, involvement, technical projects,
+                                                 etc. Don't worry if it's not polished, we're looking at the content, not formatting.</em>
                                         </FieldDescription>
 
                                         <Input
                                             id="resume"
                                             name="resume"
                                             type="file"
-                                            accept=".pdf,.jpg,.png,.doc,.docx"
+                                            accept=".pdf"
                                             required
+                                        />
+                                    </Field>
+
+                                    {/* LinkedIn (optional) */}
+                                    <Field>
+                                        <FieldLabel>LinkedIn (optional)</FieldLabel>
+                                        <Input
+                                            id="linkedin"
+                                            name="linkedin"
+                                            type="url"
+                                            placeholder="https://www.linkedin.com/in/username"
+                                        />
+                                    </Field>
+
+                                    {/* GitHub (optional) */}
+                                    <Field>
+                                        <FieldLabel>GitHub (optional)</FieldLabel>
+                                        <Input
+                                            id="github"
+                                            name="github"
+                                            type="url"
+                                            placeholder="https://github.com/username"
                                         />
                                     </Field>
 
@@ -138,20 +283,68 @@ export default function Application() {
                                     <Field>
                                         <FieldContent>
                                             <FieldLabel>
-                                                Why would you like to join KTP?
+                                                Why are you interested in joining Kappa Theta Pi? What talents/experiences could you bring to the organization?
                                                 <span className="text-red-500">*</span>
                                             </FieldLabel>
                                             <FieldDescription>
-                                                Answer in less than 250 words
+                                                Answer in less than 150 words.
                                             </FieldDescription>
                                         </FieldContent>
                                         <Textarea
                                             id="reason"
                                             name="reason"
-                                            placeholder="Enter text here"
+                                            placeholder="Note: this application will not save your progress"
                                             required
                                             className="min-h-[100px] resize-none sm:min-w-[300px]"
                                         />
+                                    </Field>
+
+                                    {/* Rush events attended (multi-select, required) */}
+                                    <Field>
+                                        <FieldContent>
+                                            <FieldLabel>Which rush events did you attend?<span className="text-red-500">*</span></FieldLabel>
+                                            <FieldDescription>
+                                                Check all that apply (at least one required). <em>If you're completing this application early,
+                                                 select the events you plan on attending. Reach out to our Executive Secretary in the GroupMe
+                                                 (Josiah White) if you're unable to attend an event.</em>
+                                            </FieldDescription>
+                                        </FieldContent>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="flex items-center gap-2">
+                                                <input type="checkbox" name="rushEvents" value="info-night" className="h-4 w-4 rounded border" />
+                                                <span>Info Night</span>
+                                            </label>
+                                            <label className="flex items-center gap-2">
+                                                <input type="checkbox" name="rushEvents" value="field-day" className="h-4 w-4 rounded border" />
+                                                <span>Field Day</span>
+                                            </label>
+                                            <label className="flex items-center gap-2">
+                                                <input type="checkbox" name="rushEvents" value="technical-workshop" className="h-4 w-4 rounded border" />
+                                                <span>Technical Workshop</span>
+                                            </label>
+                                            <label className="flex items-center gap-2">
+                                                <input type="checkbox" name="rushEvents" value="pitch-night" className="h-4 w-4 rounded border" />
+                                                <span>Pitch Night</span>
+                                            </label>
+                                        </div>
+                                    </Field>
+
+                                    <FieldSeparator/>
+
+                                    {/* Affirmation */}
+                                    <Field>
+                                        <FieldLabel>I affirm this application is complete and correct to the best of my knowledge.<span className="text-red-500">*</span></FieldLabel>
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                id="affirmation"
+                                                name="affirmation"
+                                                type="checkbox"
+                                                value="yes"
+                                                required
+                                                className="h-4 w-4 rounded border"
+                                            />
+                                            <label htmlFor="affirmation">Yes</label>
+                                        </div>
                                     </Field>
 
                                 </FieldGroup>
