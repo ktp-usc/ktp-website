@@ -42,37 +42,13 @@ export default function About(): React.JSX.Element {
                                 About Us
                             </h1>
                             <p className="text-base sm:text-xl mt-8 mb-8 font-medium text-gray-600 max-w-2xl mx-auto">
-                                Learn more about who we are at Kappa Theta Pi!
+                                Welcome to the Alpha Theta chapter of Kappa Theta Pi at the University of
+                                South Carolina. We are a professional technology fraternity
+                                committed to building a community of inspired
+                                technologists, innovators, and leaders. Through hands-on projects,
+                                networking events, and professional workshops, we
+                                empower members to grow both professionally and personally.
                             </p>
-                        </div>
-                    </div>
-
-                    {/* Category buttons */}
-                    <div className="relative sm:mt-0 mb-8 sm:mb-12 lg:mb-16 px-6 sm:px-8 md:px-16 lg:px-24 xl:px-32">
-                        <div
-                            className="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-2 sm:gap-4 md:gap-6 lg:gap-8">
-                            {categories.map((category) => {
-                                const id = makeId(category);
-                                return (
-                                    <ScrollLink
-                                        key={category}
-                                        to={id}
-                                        smooth={true}
-                                        duration={400}
-                                        spy={true}
-                                        offset={-80}
-                                        activeClass="ktp-active-category"
-                                        className={`px-3 sm:px-4 py-2 rounded-[40px] text-xs sm:text-sm md:text-base font-semibold transition-all duration-300 hover:scale-105 hover:shadow-md cursor-pointer whitespace-nowrap text-center ${
-                                            selectedCategory === category
-                                                ? "bg-[#315CA9] text-white"
-                                                : "bg-gray-200/60 text-gray-700 hover:bg-gray-300/80"
-                                        }`}
-                                        onClick={() => setSelectedCategory(category)}
-                                    >
-                                        {category}
-                                    </ScrollLink>
-                                );
-                            })}
                         </div>
                     </div>
 
