@@ -2,8 +2,6 @@
 
 import React from "react";
 import Link from "next/link";
-import CalendarIcon from "../../Componenets/CalendarIcon";
-import PinIcon from "../../Componenets/PinIcon";
 
 import {
   Accordion,
@@ -11,6 +9,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import CalendarIcon from "@/components/CalendarIcon";
+import PinIcon from "@/components/PinIcon";
 
 export default function Page2() {
   return (
