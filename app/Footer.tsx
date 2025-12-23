@@ -1,10 +1,13 @@
 'use client';
+
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Footer() {
     return (
         <footer className="relative z-10 w-full bg-[#003166] border-t mt-auto font-inter">
             <div className="max-w-6xl mx-auto px-6 py-14">
+
                 {/* Top section */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
 
@@ -13,7 +16,7 @@ export default function Footer() {
                         <div className="flex items-center gap-3">
                             <Image
                                 src="/Images/palm-tree.jpg"
-                                alt="Palm Tree"
+                                alt="Kappa Theta Pi Logo"
                                 width={40}
                                 height={40}
                                 className="object-contain"
@@ -22,29 +25,27 @@ export default function Footer() {
                             <h3 className="text-xl font-bold text-white">KTP</h3>
                         </div>
 
-
                         <div className="text-white max-w-sm">
                             <p>Alpha Theta Chapter at the University of South Carolina</p>
                             <p className="mt-2">Where technology meets impact</p>
                         </div>
 
-
                         {/* Social Icons */}
-                        <div className="flex gap-5 mt-2 text-white relative z-20 pointer-events-auto">
+                        <div className="flex gap-5 mt-2 text-white">
 
                             {/* Instagram */}
                             <a
-                                href="https://www.instagram.com/ktpusc/#"
+                                href="https://www.instagram.com/ktpusc/"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="relative z-30 pointer-events-auto hover:text-gray-300 transition-colors"
+                                className="hover:text-gray-300 transition-colors"
+                                aria-label="Instagram"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    fill="currentColor"
                                     viewBox="0 0 24 24"
+                                    fill="currentColor"
                                     className="h-5 w-5"
-                                    aria-hidden="true"
                                 >
                                     <path
                                         fillRule="evenodd"
@@ -54,19 +55,18 @@ export default function Footer() {
                                 </svg>
                             </a>
 
-
                             {/* LinkedIn */}
                             <a
                                 href="https://www.linkedin.com/company/ktpusc/"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="relative z-30 pointer-events-auto hover:text-gray-300 transition-colors"
+                                className="hover:text-gray-300 transition-colors"
+                                aria-label="LinkedIn"
                             >
                                 <svg
-                                    width="20"
-                                    height="20"
                                     viewBox="-4 -2 48 48"
                                     fill="currentColor"
+                                    className="h-5 w-5"
                                 >
                                     <path d="M44.45 0H3.54C1.58 0 0 1.55 0 3.46V44.53C0 46.44 1.58 48 3.54 48H44.45C46.41 48 48 46.44 48 44.54V3.46C48 1.55 46.41 0 44.45 0ZM14.24 40.9H7.12V17.99H14.24V40.9ZM10.68 14.87C8.39 14.87 6.54 13.02 6.54 10.74C6.54 8.47 8.39 6.62 10.68 6.62C12.96 6.62 14.8 8.47 14.8 10.74C14.8 13.01 12.96 14.87 10.68 14.87ZM40.9 40.9H33.79V29.77C33.79 27.11 33.74 23.69 30.08 23.69C26.38 23.69 25.82 26.59 25.82 29.58V40.9H18.71V17.99H25.54V21.12H25.63C26.58 19.32 28.9 17.42 32.36 17.42C39.57 17.42 40.9 22.16 40.9 28.33V40.9Z" />
                                 </svg>
@@ -77,13 +77,14 @@ export default function Footer() {
                                 href="https://garnetgate.sa.sc.edu/organization/ktp"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="relative z-30 pointer-events-auto hover:text-gray-300 transition-colors"
+                                className="hover:text-gray-300 transition-colors"
+                                aria-label="GarnetGate"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="2 2 23 23"
-                                    stroke="currentColor"
                                     fill="none"
+                                    stroke="currentColor"
                                     strokeWidth="1.5"
                                     className="h-5 w-5"
                                 >
@@ -99,12 +100,12 @@ export default function Footer() {
 
                     {/* Middle: Quick Links */}
                     <div className="flex flex-col gap-3 md:items-start md:mx-auto">
-                    <h4 className="font-semibold text-white">Quick Links</h4>
-                        <a href="/" className="text-white hover:text-gray-300">Home</a>
-                        <a href="/about" className="text-white hover:text-gray-300">About Us</a>
-                        <a href="/Members" className="text-white hover:text-gray-300">Members</a>
-                        <a href="/Rush" className="text-white hover:text-gray-300">Rush</a>
-                        <a href="/Application" className="text-white hover:text-gray-300">Apply</a>
+                        <h4 className="font-semibold text-white">Quick Links</h4>
+                        <Link href="/" className="text-white hover:text-gray-300">Home</Link>
+                        <Link href="/about" className="text-white hover:text-gray-300">About Us</Link>
+                        <Link href="/Members" className="text-white hover:text-gray-300">Members</Link>
+                        <Link href="/Rush" className="text-white hover:text-gray-300">Rush</Link>
+                        <Link href="/Application" className="text-white hover:text-gray-300">Apply</Link>
                     </div>
 
                     {/* Right: Contact */}
