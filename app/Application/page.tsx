@@ -155,7 +155,7 @@ export default function Application() {
                                     <Field>
                                         <FieldLabel>Year in School<span className="text-red-500">*</span></FieldLabel>
                                         <FieldDescription>
-                                            <em>Not by credit hours. For example, "Freshman" means first-year in University.</em>
+                                            <em>{`Not by credit hours. For example, "Freshman" means first-year in University.`}</em>
                                         </FieldDescription>
                                         <Select name="classification">
                                             <SelectTrigger>
@@ -241,9 +241,9 @@ export default function Application() {
                                             PDF format only.
                                             <br/>
                                             <br/>
-                                            <em>If you don't have a resume made, quickly write-up a bullet pointed list of
+                                            <em>{`If you don't have a resume made, quickly write-up a bullet pointed list of
                                                  your previous jobs, leadership positions, involvement, technical projects,
-                                                 etc. Don't worry if it's not polished, we're looking at the content, not formatting.</em>
+                                                 etc. Don't worry if it's not polished, we're looking at the content, not formatting.`}</em>
                                         </FieldDescription>
 
                                         <Input
@@ -304,9 +304,9 @@ export default function Application() {
                                         <FieldContent>
                                             <FieldLabel>Which rush events did you attend?<span className="text-red-500">*</span></FieldLabel>
                                             <FieldDescription>
-                                                Check all that apply (at least one required). <em>If you're completing this application early,
+                                                {`Check all that apply (at least one required). `}<em>{`If you're completing this application early,
                                                  select the events you plan on attending. Reach out to our Executive Secretary in the GroupMe
-                                                 (Josiah White) if you're unable to attend an event.</em>
+                                                 (Josiah White) if you're unable to attend an event.`}</em>
                                             </FieldDescription>
                                         </FieldContent>
                                         <div className="flex flex-col gap-2">
