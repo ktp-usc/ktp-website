@@ -1,10 +1,7 @@
 "use client";
 
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
-import {Textarea} from "@/components/ui/textarea";
-import {toast} from "sonner";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
     Field,
     FieldContent,
@@ -14,7 +11,11 @@ import {
     FieldSeparator,
     FieldSet,
 } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import React from "react";
+import { toast } from "sonner";
 
 export default function Application() {
     // --------------------------------------------
@@ -90,11 +91,22 @@ export default function Application() {
                         <a href="mailto:soktp@mailbox.sc.edu" className="text-blue-500 underline">soktp@mailbox.sc.edu</a>.
                         <em> Please note that this application will not save your progress.</em>
                     </p>
-                    <p className="font-bold">
-                        This application is due <u>Friday, January 30th, 9 PM EST.</u>
-                        <em> We will not accept responses after this time.</em>
-                    </p>
                 </div>
+
+                {/* Info Card with grey background and float effect */}
+                <Card className="bg-gray-50/80 border-gray-200 shadow-md mb-8 float-left w-full h-fit clear-both">
+                    <CardContent className="pt-fit middle-align">
+                        <p className="font-bold text-gray-900 flex items-center gap-2">
+                            <svg className="w-5 h-5 text-[#315CA9] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            This application is due<u className="text-[#315CA9]">Friday, January 30th, 9 PM EST</u>
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1 italic">
+                            &emsp;&emsp;We will not accept responses after this time.
+                        </p>
+                    </CardContent>
+                </Card>
 
                 <div className="pb-20">
                     <form onSubmit={handleSubmit}>
