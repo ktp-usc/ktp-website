@@ -256,8 +256,9 @@ export default function Members() {
                 categoryRefs.current[i] = el;
               }}
               onClick={() => setSelectedCategory(c)}
-              className={`px-4 py-2 rounded-full font-semibold transition-all ${
-                selectedCategory === c ? "bg-[#315CA9] text-white shadow-md" : "bg-gray-200 text-gray-700"
+              className={`px-4 py-2 rounded-full font-semibold transition-all cursor-pointer ${
+                selectedCategory === c ? "bg-[#315CA9] text-white shadow-md" : 
+                "bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-sm hover:-translate-y-[1px]"
               }`}
             >
               {c}
