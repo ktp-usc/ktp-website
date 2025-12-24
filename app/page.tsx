@@ -10,7 +10,7 @@ import {
     CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Element } from "react-scroll";
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 // Project data
 const data = [
@@ -85,12 +85,102 @@ const networkCompanies = [
     { src: "/network/united.png", alt: "United" },
 ];
 
+function TypeTwoLines({
+                          line1 = "Kappa",
+                          line2 = "Theta Pi",
+                          speed = 70,
+                          delayBetween = 300,
+                          className = "text-6xl md:text-7xl lg:text-[6.25rem] leading-tight font-extrabold tracking-tight",
+                      }) {
+    const [d1, setD1] = useState("");
+    const [d2, setD2] = useState("");
+    const mounted = useRef(true);
+
+    useEffect(() => {
+        mounted.current = true;
+        let t: ReturnType<typeof setTimeout> | null = null;
+
+        // type kappa
+        let i = 0;
+        function typeLine1() {
+            if (!mounted.current) return;
+            if (i < line1.length) {
+                setD1(line1.slice(0, i + 1));
+                i++;
+                t = setTimeout(typeLine1, speed);
+            } else {
+                // finished line1 -> wait then start line2
+                t = setTimeout(typeLine2Start, delayBetween);
+            }
+        }
+
+        // type theta pi
+        let j = 0;
+        function typeLine2Start() {
+            if (!mounted.current) return;
+            j = 0;
+            typeLine2();
+        }
+        function typeLine2() {
+            if (!mounted.current) return;
+            if (j < line2.length) {
+                setD2(line2.slice(0, j + 1));
+                j++;
+                t = setTimeout(typeLine2, speed);
+            } else {
+
+            }
+        }
+
+        typeLine1();
+
+        return () => {
+            mounted.current = false;
+            if (t) clearTimeout(t);
+        };
+    }, [line1, line2, speed, delayBetween]);
+
+    return (
+        <div className="relative inline-block">
+            <div className="absolute inset-0 pointer-events-none opacity-0 select-none whitespace-pre-wrap">
+                <div className={className}>{line1}</div>
+                <div className={className}>{line2}</div>
+            </div>
+
+            <div className="relative">
+                <div className={className} style={{ whiteSpace: "pre-wrap" }}>
+                    <span>{d1}</span>
+                </div>
+
+                <div className={className} style={{ whiteSpace: "pre-wrap" }}>
+                    <span>{d2}</span>
+                </div>
+            </div>
+
+            <style jsx>{`
+        .animate-blink {
+          animation: blink 1s steps(2, start) infinite;
+        }
+        @keyframes blink {
+          0%,
+          100% {
+            opacity: 0;
+          }
+          50% {
+            opacity: 1;
+          }
+        }
+      `}</style>
+        </div>
+    );
+}
+
 export default function Home() {
     return (
         <div className="font-sans min-h-screen flex flex-col overflow-x-clip">
-            <main className="flex flex-col items-center flex-grow p-8 pb-0">
+            <main className="flex flex-col items-center flex-grow pt-4 px-8 pb-0">
                 {/* Background blobs */}
-                <div className="flex flex-row justify-center xl:justify-between mb-12 md:mb-20 lg:mb-32 px-6 sm:px-8 md:px-12 lg:px-20">
+                <div className="flex flex-row justify-center xl:justify-between mb-0 px-6 sm:px-8 md:px-12 lg:px-20 pointer-events-none">
                     <div className="absolute inset-0 blob-c z-0 hidden md:block">
                         <div className="shape-blob ten" />
                         <div className="shape-blob eleven" />
@@ -98,135 +188,184 @@ export default function Home() {
                 </div>
 
                 <div className="flex flex-col items-center w-full">
-                    <section className="px-6 sm:px-8 md:px-16 lg:px-24 xl:px-32 py-8 sm:py-12 md:py-16 w-full">
+                    <section className="px-6 sm:px-8 md:px-16 lg:px-24 xl:px-32 pt-6 pb-8 sm:pt-8 md:pt-10 w-full">
                         <div className="relative w-full overflow-visible">
                             <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                                 {/* Header + subtitle + Rush button */}
-                                <div className="lg:col-span-6 flex flex-col justify-center">
-                                    <h1 className="text-6xl md:text-7xl lg:text-[6.25rem] leading-tight font-extrabold tracking-tight">
-                                        Kappa
-                                        <br />
-                                        Theta Pi
+                                <div className="lg:col-span-6 lg:order-first order-last flex flex-col justify-center items-center lg:items-start text-center lg:text-left">
+                                    <h1 className="whitespace-pre-line">
+                                        <TypeTwoLines
+                                            line1="Kappa"
+                                            line2="Theta Pi"
+                                            speed={70}
+                                            delayBetween={300}
+                                            className="text-6xl md:text-7xl lg:text-[6.25rem] leading-tight font-extrabold tracking-tight"
+                                        />
                                     </h1>
 
                                     <p className="mt-6 text-lg md:text-xl text-gray-600 max-w-xl">
                                         Professional technology fraternity at the University of South Carolina.
                                     </p>
 
-                                    <div className="mt-8 flex">
+                                    <div className="mt-8 max-w-xl mx-auto flex justify-center">
                                         <a
                                             href="/Rush"
-                                            className="inline-block bg-[#315CA9] text-white px-6 py-3 rounded-lg font-medium shadow hover:shadow-lg transition mx-auto"
+                                            className="inline-flex items-center justify-center bg-[#315CA9] text-white px-6 py-3 rounded-lg font-medium transform transition-transform duration-300 hover:-translate-y-1"
                                         >
                                             Rush KTP →
                                         </a>
                                     </div>
+
                                 </div>
 
                                 {/* Collage */}
-                                <div className="lg:col-span-6 relative h-[420px] md:h-[480px]">
-                                    <div className="relative w-full h-full">
-                                        {/* Top-left */}
-                                        <div
-                                            className="absolute top-0 left-[6%] z-20 rounded-xl overflow-hidden border-8"
-                                            style={{
-                                                width: "48%",
-                                                height: "44%",
-                                                transform: "translate(-6%, -6%)",
-                                                borderLeftColor: "#d1fae5",
-                                                borderRightColor: "#d1fae5",
-                                                borderTopColor: "#e5e7eb",
-                                                borderBottomColor: "#e5e7eb",
-                                            }}
-                                        >
-                                            <div className="relative w-full h-full">
-                                                <Image src="/Images/collagephoto1.JPG" alt="KTP Symposium" fill style={{ objectFit: "cover" }} />
+                                <div className="lg:col-span-6 order-first lg:order-last">
+                                    <div className="relative w-full overflow-visible flex justify-center">
+                                        <div className="collage-scale relative w-[560px] h-[420px] md:w-[720px] md:h-[480px]">
+                                            {/* Top-left */}
+                                            <div
+                                                className="absolute top-0 left-[6%] z-20 rounded-xl overflow-hidden border-8"
+                                                style={{
+                                                    width: "48%",
+                                                    height: "44%",
+                                                    transform: "translate(-5%, -6%)",
+                                                    borderLeftColor: "#d1fae5",
+                                                    borderRightColor: "#d1fae5",
+                                                    borderTopColor: "#e5e7eb",
+                                                    borderBottomColor: "#e5e7eb",
+                                                }}
+                                            >
+                                                <div className="relative w-full h-full">
+                                                    <Image src="/Images/collagephoto1.JPG" alt="KTP Symposium" fill style={{ objectFit: "cover" }} />
+                                                </div>
+                                            </div>
+
+                                            {/* Top-right */}
+                                            <div
+                                                className="absolute top-0 right-[2%] z-10 rounded-xl overflow-hidden border-8"
+                                                style={{
+                                                    width: "35%",
+                                                    height: "50%",
+                                                    transform: "translate(6%, -8%)",
+                                                    borderLeftColor: "#d1fae5",
+                                                    borderRightColor: "#d1fae5",
+                                                    borderTopColor: "#e5e7eb",
+                                                    borderBottomColor: "#e5e7eb",
+                                                }}
+                                            >
+                                                <div className="relative w-full h-full">
+                                                    <Image src="/Images/collagephoto2.JPEG" alt="KTP pumpkin carving" fill style={{ objectFit: "cover" }} />
+                                                </div>
+                                            </div>
+
+                                            {/* center */}
+                                            <div
+                                                className="absolute z-50 rounded-xl overflow-hidden border-8 shadow-xl"
+                                                style={{
+                                                    left: "55%",
+                                                    top: "28%",
+                                                    width: "56%",
+                                                    height: "44%",
+                                                    transform: "translate(-50%, -8%)",
+                                                    borderLeftColor: "#d1fae5",
+                                                    borderRightColor: "#d1fae5",
+                                                    borderTopColor: "#e5e7eb",
+                                                    borderBottomColor: "#e5e7eb",
+                                                }}
+                                            >
+                                                <div className="relative w-full h-full">
+                                                    <Image src="/Images/collagephoto3.JPG" alt="KTP Alpha class" fill style={{ objectFit: "cover" }} />
+                                                </div>
+                                            </div>
+
+                                            {/* bottom-left */}
+                                            <div
+                                                className="absolute z-30 rounded-xl overflow-hidden border-8"
+                                                style={{
+                                                    bottom: "3%",
+                                                    left: "5%",
+                                                    width: "46%",
+                                                    height: "38%",
+                                                    transform: "translate(-4%, 8%)",
+                                                    borderLeftColor: "#d1fae5",
+                                                    borderRightColor: "#d1fae5",
+                                                    borderTopColor: "#e5e7eb",
+                                                    borderBottomColor: "#e5e7eb",
+                                                }}
+                                            >
+                                                <div className="relative w-full h-full">
+                                                    <Image src="/Images/collagephoto4.JPG" alt="KTP speaker" fill style={{ objectFit: "cover" }} />
+                                                </div>
+                                            </div>
+
+                                            {/* bottom-right */}
+                                            <div
+                                                className="absolute z-40 rounded-xl overflow-hidden border-8"
+                                                style={{
+                                                    bottom: "5%",
+                                                    right: "-5%",
+                                                    width: "50%",
+                                                    height: "40%",
+                                                    borderLeftColor: "#d1fae5",
+                                                    borderRightColor: "#d1fae5",
+                                                    borderTopColor: "#e5e7eb",
+                                                    borderBottomColor: "#e5e7eb",
+                                                }}
+                                            >
+                                                <div className="relative w-full h-full">
+                                                    <Image
+                                                        src="/Images/collagephoto5.JPG"
+                                                        alt="KTP symposium presentation"
+                                                        fill
+                                                        style={{ objectFit: "cover" }}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
-
-                                        {/* Top-right */}
-                                        <div
-                                            className="absolute top-0 right-[2%] z-10 rounded-xl overflow-hidden border-8"
-                                            style={{
-                                                width: "35%",
-                                                height: "50%",
-                                                transform: "translate(6%, -6%)",
-                                                borderLeftColor: "#d1fae5",
-                                                borderRightColor: "#d1fae5",
-                                                borderTopColor: "#e5e7eb",
-                                                borderBottomColor: "#e5e7eb",
-                                            }}
-                                        >
-                                            <div className="relative w-full h-full">
-                                                <Image src="/Images/collagephoto2.JPEG" alt="KTP pumpkin carving" fill style={{ objectFit: "cover" }} />
-                                            </div>
-                                        </div>
-
-                                        {/* center */}
-                                        <div
-                                            className="absolute z-50 rounded-xl overflow-hidden border-8 shadow-xl"
-                                            style={{
-                                                left: "50%",
-                                                top: "28%",
-                                                width: "56%",
-                                                height: "44%",
-                                                transform: "translate(-50%, -8%)",
-                                                borderLeftColor: "#d1fae5",
-                                                borderRightColor: "#d1fae5",
-                                                borderTopColor: "#e5e7eb",
-                                                borderBottomColor: "#e5e7eb",
-                                            }}
-                                        >
-                                            <div className="relative w-full h-full">
-                                                <Image src="/Images/collagephoto3.JPG" alt="KTP Alpha class" fill style={{ objectFit: "cover" }} />
-                                            </div>
-                                        </div>
-
-                                        {/* bottom-left */}
-                                        <div
-                                            className="absolute z-30 rounded-xl overflow-hidden border-8"
-                                            style={{
-                                                bottom: "0",
-                                                left: "5%",
-                                                width: "46%",
-                                                height: "38%",
-                                                transform: "translate(-4%, 8%)",
-                                                borderLeftColor: "#d1fae5",
-                                                borderRightColor: "#d1fae5",
-                                                borderTopColor: "#e5e7eb",
-                                                borderBottomColor: "#e5e7eb",
-                                            }}
-                                        >
-                                            <div className="relative w-full h-full">
-                                                <Image src="/Images/collagephoto4.JPG" alt="KTP speaker" fill style={{ objectFit: "cover" }} />
-                                            </div>
-                                        </div>
-
-                                        {/* bottom-right */}
-                                        <div
-                                            className="absolute z-40 rounded-xl overflow-hidden border-8"
-                                            style={{
-                                                bottom: "6%",
-                                                right: "-8%",
-                                                width: "44%",
-                                                height: "36%",
-                                                borderLeftColor: "#d1fae5",
-                                                borderRightColor: "#d1fae5",
-                                                borderTopColor: "#e5e7eb",
-                                                borderBottomColor: "#e5e7eb",
-                                            }}
-                                        >
-                                            <div className="relative w-full h-full">
-                                                <Image
-                                                    src="/Images/collagephoto5.JPG"
-                                                    alt="KTP symposium presentation"
-                                                    fill
-                                                    style={{ objectFit: "cover" }}
-                                                />
-                                            </div>
-                                        </div>
-
                                     </div>
+
+                                    <style jsx>{`
+                                        .collage-scale {
+                                            transition: transform 200ms ease;
+                                            transform-origin: center;
+                                            display: inline-block;
+                                        }
+
+                                        /* desktop */
+                                        @media (min-width: 1025px) {
+                                            .collage-scale {
+                                                transform: scale(1);
+                                            }
+                                        }
+
+                                        /* large tablets/smaller desktops */
+                                        @media (max-width: 1024px) {
+                                            .collage-scale {
+                                                transform: scale(0.98);
+                                            }
+                                        }
+
+                                        /* tablet */
+                                        @media (max-width: 900px) {
+                                            .collage-scale {
+                                                transform: scale(0.9);
+                                            }
+                                        }
+
+                                        /* small tablets/large phones */
+                                        @media (max-width: 700px) {
+                                            .collage-scale {
+                                                transform: scale(0.82);
+                                            }
+                                        }
+
+                                        /* phones */
+                                        @media (max-width: 480px) {
+                                            .collage-scale {
+                                                transform: scale(0.74);
+                                            }
+                                        }
+                                    `}</style>
                                 </div>
                             </div>
                         </div>
@@ -258,7 +397,7 @@ export default function Home() {
                                         </div>
                                         {/* image container */}
                                         <div
-                                            className="relative z-10 w-full max-w-md lg:max-w-lg rounded-xl overflow-hidden border-8"
+                                            className="relative z-10 w-full max-w-md lg:max-w-lg rounded-xl overflow-hidden border-8 transform transition-transform duration-300 hover:-translate-y-3"
                                             style={{
                                                 borderLeftColor: "#d1fae5",
                                                 borderRightColor: "#d1fae5",
@@ -283,7 +422,12 @@ export default function Home() {
                                                 <div className="shape-blob eight absolute" />
                                                 <div className="shape-blob nine absolute" />
                                             </div>
-                                            <img src="/Images/presidentheadshot.png" alt="President's Headshot" className="relative z-10 w-3/4 h-auto rounded-full border-8 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg" style={{ borderLeftColor: "#d1fae5", borderRightColor: "#d1fae5", borderTopColor: "#e5e7eb", borderBottomColor: "#e5e7eb" }} />
+                                            <img
+                                                src="/Images/presidentheadshot.png"
+                                                alt="President's Headshot"
+                                                className="relative z-10 w-3/4 h-auto rounded-full border-8 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg transform transition-transform duration-300 hover:-translate-y-3"
+                                                style={{ borderLeftColor: "#d1fae5", borderRightColor: "#d1fae5", borderTopColor: "#e5e7eb", borderBottomColor: "#e5e7eb" }}
+                                            />
                                         </div>
 
                                         <div className="w-full lg:w-3/5 text-left relative z-10">
@@ -313,26 +457,30 @@ export default function Home() {
                                                 </div>
 
                                                 {/* image container */}
-                                                <div className="relative z-10 w-full max-w-md lg:max-w-lg rounded-xl overflow-hidden border-8" style={{ borderLeftColor: "#d1fae5", borderRightColor: "#d1fae5", borderTopColor: "#e5e7eb", borderBottomColor: "#e5e7eb" }}>
+                                                <div className="relative z-10 w-full max-w-md lg:max-w-lg rounded-xl overflow-hidden border-8 transform transition-transform duration-300 hover:-translate-y-3" style={{ borderLeftColor: "#d1fae5", borderRightColor: "#d1fae5", borderTopColor: "#e5e7eb", borderBottomColor: "#e5e7eb" }}>
                                                     <Image src="/Images/history-photo.JPG" alt="KTP Alpha Class" width={900} height={600} className="object-cover w-full h-full block" priority={false} />
                                                 </div>
                                             </div>
 
                                             {/* text on right */}
                                             <div className="lg:col-span-7 xl:col-span-6">
-                                                <h2 className="text-4xl lg:text-5xl font-extrabold mb-6 leading-tight text-left">History</h2>
+                                                <h2 className="text-4xl lg:text-5xl font-extrabold mb-6 leading-tight text-center">History</h2>
 
-                                                <p className="text-gray-700 text-base md:text-lg leading-relaxed max-w-2xl text-left">
-                                                    Kappa Theta Pi is professional technology fraternity that produces
-                                                    first class brothers nationwide. We were founded in 2012 at the
-                                                    University of Michigan by a group of 7 aspiring students looking
-                                                    to create a diverse community for tech interested individuals.
-                                                    Today, our national organization holds steadfast to our motto,
-                                                    “For the Love of Technology”, while concurrently enriching new
-                                                    generations of students. This year we are happy to announce the
-                                                    2025 Alpha Class, who have showcased their skills gained through
-                                                    the rush process by contributing to three non-profits and creating
-                                                    a betterment in the social and economic landscape of our local community.
+                                                <p className="indent-8 mb-6 text-gray-700 text-base md:text-lg leading-relaxed max-w-2xl text-center">
+                                                    Kappa Theta Pi is a professional technology fraternity focused on
+                                                    building a strong community of tech-driven students across the
+                                                    country. Founded in 2012 at the University of Michigan by seven
+                                                    students with a shared passion for technology, we’ve grown into
+                                                    a national organization guided by our motto, “For the Love of
+                                                    Technology.”
+                                                </p>
+
+                                                <p className="indent-6 text-gray-700 text-base md:text-lg leading-relaxed max-w-2xl text-center">
+                                                    Today, we continue to support and inspire new generations
+                                                    of students through hands-on learning and collaboration. We’re
+                                                    excited to introduce the 2025 Alpha Class, who put their skills
+                                                    to work during the rush process by partnering with three non-profits
+                                                    and making a positive impact on our local community.
                                                 </p>
                                             </div>
                                         </div>
@@ -356,7 +504,7 @@ export default function Home() {
                                                     </div>
 
                                                     <div className="relative w-full md:w-1/2 h-64 md:h-auto p-4 flex items-center justify-center">
-                                                        <div className="relative w-full h-full overflow-hidden rounded-xl">
+                                                        <div className="relative w-full h-full overflow-hidden rounded-xl transform transition-transform duration-300 hover:-translate-y-3">
                                                             <AspectRatio ratio={5 / 4}>
                                                                 <Image src={p.image} alt={`${p.title} logo`} fill className="object-cover w-full max-w-full" />
                                                             </AspectRatio>
@@ -385,7 +533,7 @@ export default function Home() {
                                         alt={company.alt}
                                         width={200}
                                         height={200}
-                                        className="max-h-6 lg:max-h-8 w-auto transition-all duration-300 hover:scale-110 drop-shadow-md"
+                                        className="max-h-6 lg:max-h-8 w-auto transform transition-transform duration-300 hover:-translate-y-2 hover:scale-105"
                                         style={{
                                             animationDelay: `${index * 50}ms`,
                                             animationFillMode: "forwards",
