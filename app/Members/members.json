@@ -6,7 +6,7 @@
         "category": "E-Board",
         "role": "President",
         "linkedin": "https://www.linkedin.com/in/lukejannazzo/",
-        "major": "Computer Science",
+        "major": "Computer Engineering",
         "year": "Junior"
       },
       {
@@ -15,7 +15,7 @@
         "category": "E-Board",
         "role": "Vice President",
         "linkedin": "https://www.linkedin.com/in/gwendalynkrauss/",
-        "major": "Computer Science",
+        "major": "Integrated Information Technology",
         "year": "Junior"
       },
       {
@@ -60,7 +60,7 @@
         "category": "E-Board",
         "role": "Director of Technical Development",
         "linkedin": "https://www.linkedin.com/in/bguliano/",
-        "major": "Computer Science",
+        "major": "Integrated Information Technology",
         "year": "Senior"
       },
       {
@@ -78,7 +78,7 @@
         "category": "E-Board",
         "role": "Director of Engagement",
         "linkedin": "https://www.linkedin.com/in/galenemiller/",
-        "major": "Computer Science",
+        "major": "Integrated Information Technology",
         "year": "Sophomore"
       }
     ],
@@ -88,16 +88,16 @@
         "imageUrl": "/Images/Brett.jpg",
         "category": "Chairs",
         "role": "Conferences & Hackathons Chair",
-        "linkedin": "#",
+        "linkedin": "https://www.linkedin.com/in/brett-eckstrom-19b964382/",
         "major": "Computer Science",
         "year": "Freshman"
       },
       {
-        "name": "Christian Wolfe",
+        "name": "Christian Wolff",
         "imageUrl": "/Images/Christian.jpg",
         "category": "Chairs",
         "role": "Infrastructure Chair",
-        "linkedin": "#",
+        "linkedin": "https://www.linkedin.com/in/christiangwolff/",
         "major": "Computer Science",
         "year": "Sophomore"
       }
@@ -118,7 +118,7 @@
         "imageUrl": "/Images/Screenshot Darssan.png",
         "linkedin": "https://www.linkedin.com/in/ledarssan/",
         "category": "Founding Class",
-        "major": "Computer Science",
+        "major": "Computer Engineering",
         "year": "Senior"
       },
       {
@@ -136,7 +136,7 @@
         "imageUrl": "/Images/Screenshot Luke.png",
         "linkedin": "https://www.linkedin.com/in/lukejannazzo/",
         "category": "Founding Class",
-        "major": "Computer Science",
+        "major": "Computer Engineering",
         "year": "Junior"
       },
       {
@@ -145,7 +145,7 @@
         "imageUrl": "/Images/Screenshot Braden.png",
         "linkedin": "https://www.linkedin.com/in/bguliano/",
         "category": "Founding Class",
-        "major": "Computer Science",
+        "major": "Integrated Information Technology",
         "year": "Senior"
       },
       {
@@ -154,7 +154,7 @@
         "imageUrl": "/Images/Screenshot Sara.png",
         "linkedin": "https://www.linkedin.com/in/sara-muthu/",
         "category": "Founding Class",
-        "major": "Computer Science",
+        "major": "Computer Engineering",
         "year": "Senior"
       },
       {
@@ -369,8 +369,39 @@
         "linkedin": "https://www.linkedin.com/in/christiangwolff/",
         "major": "Computer Science",
         "year": "Sophomore",
-        "bio": "Hi my name is Christian and I am a Sophomore majoring in Computer Science."
+        "bio": ""
+      },
+
+      {
+        "name":"Owen Coulam",
+        "imageUrl": "/Images/Screenshot Owen.png",
+        "category": "Actives",
+        "linkedin": "https://www.linkedin.com/in/owencoulam/",
+        "major": "Computer Science",
+        "year": "Junior",
+        "bio": ""
+      },
+
+      {
+        "name":"Sai Kotapalli",
+        "imageUrl": "/Images/Screenshot Sai.png",
+        "category": "Actives",
+        "linkedin": "https://www.linkedin.com/in/sai-kottapali-153695288/",
+        "major": "Computer Science",
+        "year": "Junior",
+        "bio": ""
+      },
+
+      {
+        "name":"Tarun Ramkumar",
+        "imageUrl": "/Images/Screenshot Tarun.png",
+        "category": "Actives",
+        "linkedin": "https://www.linkedin.com/in/tarun-ramkumar/",
+        "major": "Computer Science",
+        "year": "Junior",
+        "bio": ""
       }
+
     ]
   }
   

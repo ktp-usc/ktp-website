@@ -272,7 +272,7 @@ export default function Members() {
             {filtered.map((member) => (
               <div key={member.name} className="flex flex-col items-center">
                 <a
-                  href={member.linkedin || "#"}
+                  href="#"
                   onClick={(e) => {
                     e.preventDefault();
                     openMemberModal(member);
