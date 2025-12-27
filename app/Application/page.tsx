@@ -18,6 +18,37 @@ import React from "react";
 import { toast } from "sonner";
 
 export default function Application() {
+        // --------------------------------------------
+        // Resume upload UI helpers
+        // --------------------------------------------
+        const resumeInputRef = React.useRef<HTMLInputElement | null>(null);
+        const [resumeName, setResumeName] = React.useState<string | null>(null);
+
+        function triggerResumeSelect() {
+            resumeInputRef.current?.click();
+        }
+
+        function onResumeChange(e: React.ChangeEvent<HTMLInputElement>) {
+            const file = e.target.files?.[0];
+            if (!file) {
+                setResumeName(null);
+                return;
+            }
+            if (!file.type.includes("pdf")) {
+                toast.error("Resume must be a PDF file.");
+                e.target.value = "";
+                setResumeName(null);
+                return;
+            }
+            setResumeName(file.name);
+        }
+
+        function clearResume() {
+            if (resumeInputRef.current) {
+                resumeInputRef.current.value = "";
+            }
+            setResumeName(null);
+        }
     // --------------------------------------------
     // REAL SUBMIT HANDLER — sends FormData to API
     // --------------------------------------------
@@ -39,14 +70,27 @@ export default function Application() {
             return;
         }
 
-        // Validate resume is PDF only
+        // Validate resume is PDF and required
         const resume = formData.get("resume") as File;
-        if (resume && !resume.type.includes("pdf")) {
+        if (!resume || resume.size === 0) {
+            toast.error("Please upload a resume.");
+            return;
+        }
+        if (!resume.type.includes("pdf")) {
             toast.error("Resume must be a PDF file.");
             return;
         }
 
-        // Require at least one rush event selection
+        // Validate required photo upload (image only)
+        const photo = formData.get("photo") as File;
+        if (!photo || photo.size === 0) {
+            toast.error("Please upload a picture.");
+            return;
+        }
+        if (!photo.type.startsWith("image/")) {
+            toast.error("Picture must be an image file.");
+            return;
+        }
         const rushEvents = formData.getAll("rushEvents");
         if (rushEvents.length === 0) {
             toast.error("Please select at least one rush event attended.");
@@ -68,6 +112,49 @@ export default function Application() {
 
         toast.success("Application submitted!");
         form.reset();
+        // Reset local UI state
+        setPhotoPreview(null);
+        setPhotoName(null);
+        setResumeName(null);
+    }
+
+    // --------------------------------------------
+    // Picture upload (required) — client-side only
+    // --------------------------------------------
+    const photoInputRef = React.useRef<HTMLInputElement | null>(null);
+    const [photoPreview, setPhotoPreview] = React.useState<string | null>(null);
+    const [photoName, setPhotoName] = React.useState<string | null>(null);
+
+    function triggerPhotoSelect() {
+        photoInputRef.current?.click();
+    }
+
+    function onPhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) {
+            setPhotoPreview(null);
+            setPhotoName(null);
+            return;
+        }
+        // Limit to images
+        if (!file.type.startsWith("image/")) {
+            toast.error("Please select an image file.");
+            e.target.value = "";
+            setPhotoPreview(null);
+            setPhotoName(null);
+            return;
+        }
+        setPhotoName(file.name);
+        const url = URL.createObjectURL(file);
+        setPhotoPreview(url);
+    }
+
+    function clearPhoto() {
+        if (photoInputRef.current) {
+            photoInputRef.current.value = "";
+        }
+        setPhotoPreview(null);
+        setPhotoName(null);
     }
 
     return (
@@ -243,6 +330,65 @@ export default function Application() {
                                         />
                                     </Field>
 
+                                    {/* Picture Upload (required) */}
+                                    <Field>
+                                        <FieldContent>
+                                            <FieldLabel>
+                                                Upload Picture <span className="text-red-500">*</span>
+                                            </FieldLabel>
+                                            <FieldDescription>
+                                                Please include a headshot or photo to help us during the review process.
+                                            </FieldDescription>
+                                        </FieldContent>
+
+                                        {/* Hidden file input so we can use a styled button */}
+                                        <input
+                                            ref={photoInputRef}
+                                            id="photo"
+                                            name="photo"
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            required
+                                            onChange={onPhotoChange}
+                                        />
+
+                                        <div className="flex items-center gap-3 mt-2">
+                                            <Button
+                                                type="button"
+                                                onClick={triggerPhotoSelect}
+                                                className="px-4 py-2"
+                                            >
+                                                Upload Picture
+                                            </Button>
+                                            {photoName && (
+                                                <span className="text-sm text-muted-foreground truncate max-w-[200px]">
+                                                    {photoName}
+                                                </span>
+                                            )}
+                                            {photoName && (
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    className="text-red-600 hover:text-red-700"
+                                                    onClick={clearPhoto}
+                                                >
+                                                    Clear
+                                                </Button>
+                                            )}
+                                        </div>
+
+                                        {photoPreview && (
+                                            <div className="mt-3">
+                                                <img
+                                                    src={photoPreview}
+                                                    alt="Selected preview"
+                                                    className="h-28 w-28 rounded-md object-cover border"
+                                                />
+                                            </div>
+                                        )}
+                                    </Field>
+
                                     <FieldSeparator/>
 
                                     {/* Resume Upload */}
@@ -258,13 +404,40 @@ export default function Application() {
                                                  etc. Don't worry if it's not polished, we're looking at the content, not formatting.`}</em>
                                         </FieldDescription>
 
-                                        <Input
+                                        {/* Hidden file input so we can style the control */}
+                                        <input
                                             id="resume"
                                             name="resume"
                                             type="file"
                                             accept=".pdf"
+                                            className="hidden"
                                             required
+                                            ref={resumeInputRef}
+                                            onChange={onResumeChange}
                                         />
+
+                                        <div className="flex items-center gap-3 mt-2">
+                                            <Button type="button" onClick={triggerResumeSelect} className="px-4 py-2">
+                                                Upload Resume (PDF)
+                                            </Button>
+                                            {resumeName ? (
+                                                <span className="text-sm text-muted-foreground truncate max-w-[240px]">
+                                                    {resumeName}
+                                                </span>
+                                            ) : (
+                                                <span className="text-sm text-muted-foreground">No file selected</span>
+                                            )}
+                                            {resumeName && (
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    className="text-red-600 hover:text-red-700"
+                                                    onClick={clearResume}
+                                                >
+                                                    Clear
+                                                </Button>
+                                            )}
+                                        </div>
                                     </Field>
 
                                     {/* LinkedIn (optional) */}
