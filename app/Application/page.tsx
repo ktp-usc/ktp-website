@@ -357,7 +357,7 @@ export default function Application() {
                                             <Button
                                                 type="button"
                                                 onClick={triggerPhotoSelect}
-                                                className="px-4 py-2"
+                                                className="px-4 py-2 cursor-pointer"
                                             >
                                                 Upload Picture
                                             </Button>
@@ -370,7 +370,7 @@ export default function Application() {
                                                 <Button
                                                     type="button"
                                                     variant="ghost"
-                                                    className="text-red-600 hover:text-red-700"
+                                                    className="text-red-600 hover:text-red-700 cursor-pointer"
                                                     onClick={clearPhoto}
                                                 >
                                                     Clear
@@ -417,7 +417,7 @@ export default function Application() {
                                         />
 
                                         <div className="flex items-center gap-3 mt-2">
-                                            <Button type="button" onClick={triggerResumeSelect} className="px-4 py-2">
+                                            <Button type="button" onClick={triggerResumeSelect} className="px-4 py-2 cursor-pointer">
                                                 Upload Resume (PDF)
                                             </Button>
                                             {resumeName ? (
