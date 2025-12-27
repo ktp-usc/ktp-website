@@ -88,7 +88,7 @@ function MemberModal({
         <button
           onClick={onClose}
           aria-label="Close card"
-          className="absolute right-4 top-4 text-gray-500 hover:text-gray-800"
+          className="absolute right-4 top-4 text-gray-500 hover:text-gray-800 cursor-pointer"
         >
           ✕
         </button>
