@@ -39,24 +39,44 @@ const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
    Modal component
    ------------------------- */
 
+/**
+ * MemberModal handles its own entrance and exit animation.
+ * - When it mounts with `member`, it animates in.
+ * - When user requests close (click backdrop, press Escape, or press X),
+ *   it plays the exit animation then calls onClose (so the parent can actually unset the member).
+ */
 function MemberModal({
   member,
   onClose,
 }: {
   member: Member | null;
-  onClose: () => void;
+  onClose: () => void; // called after exit animation completes
 }) {
   const dialogRef = useRef<HTMLDivElement | null>(null);
+  const [mounted, setMounted] = useState(false); // triggers entrance animation
+  const isClosingRef = useRef(false); // guard to avoid double-close
 
+  // when modal first appears, trigger mounted -> true on next frame to run the CSS transition
+  useEffect(() => {
+    if (!member) return;
+    isClosingRef.current = false;
+    setMounted(false);
+    const frame = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(frame);
+  }, [member]);
+
+  // keyboard handling: Escape triggers animated close
   useEffect(() => {
     if (!member) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") startClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [member, onClose]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [member]);
 
+  // if modal not present, render nothing
   if (!member) return null;
 
   // treat literal "Member" (case-insensitive) as absent
@@ -69,6 +89,36 @@ function MemberModal({
 
   const showRoleLine = Boolean(cleanedRole || member.major || member.year);
 
+  // Called to begin the closing animation. After transition end, call onClose()
+  const startClose = () => {
+    if (isClosingRef.current) return;
+    isClosingRef.current = true;
+    setMounted(false);
+    // We rely on transitionend to call onClose() below; but also set a safety timeout
+    // in case transitionend doesn't fire for some reason.
+    const timeout = window.setTimeout(() => {
+      // last resort: call onClose if not already unmounted
+      if (isClosingRef.current) {
+        isClosingRef.current = false;
+        onClose();
+      }
+    }, 400 + 50); // duration + small buffer (match CSS duration)
+    // cleanup will clear timeout when transitionend fires
+    const ref = dialogRef.current;
+    const onTransitionEnd = (e: TransitionEvent) => {
+      // only react to the modal container's opacity/transform transition
+      if (e.target !== ref) return;
+      window.clearTimeout(timeout);
+      if (isClosingRef.current) {
+        isClosingRef.current = false;
+        onClose();
+      }
+    };
+    if (ref) {
+      ref.addEventListener("transitionend", onTransitionEnd, { once: true });
+    }
+  };
+
   return (
     <div
       role="dialog"
@@ -76,17 +126,25 @@ function MemberModal({
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
     >
       {/* backdrop */}
-      <div className="fixed inset-0 bg-black/50" onClick={onClose} />
+      <div
+        className={`fixed inset-0 bg-black/50 transition-opacity duration-300 ease-out ${
+          mounted ? "opacity-100" : "opacity-0"
+        }`}
+        onClick={startClose}
+      />
 
       {/* content */}
       <div
         ref={dialogRef}
-        className="relative z-10 bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6"
+        // animation classes -- start from scale-95 + opacity-0 and transition to scale-100 + opacity-100
+        className={`relative z-10 bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 transform transition-all duration-300 ease-out ${
+          mounted ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-2"
+        }`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close X */}
         <button
-          onClick={onClose}
+          onClick={startClose}
           aria-label="Close card"
           className="absolute right-4 top-4 text-gray-500 hover:text-gray-800 cursor-pointer"
         >
@@ -212,6 +270,11 @@ export default function Members() {
     setActiveMember({ ...m, role: resolvedRole });
   };
 
+  // close handler invoked after the modal's exit animation completes
+  const handleModalCloseAfterAnimation = () => {
+    setActiveMember(null);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       <div className="max-w-7xl mx-auto px-6 py-12">
@@ -257,7 +320,7 @@ export default function Members() {
               }}
               onClick={() => setSelectedCategory(c)}
               className={`px-4 py-2 rounded-full font-semibold transition-all cursor-pointer ${
-                selectedCategory === c ? "bg-[#315CA9] text-white shadow-md" : 
+                selectedCategory === c ? "bg-[#315CA9] text-white shadow-md" :
                 "bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-sm hover:-translate-y-[1px]"
               }`}
             >
@@ -396,7 +459,7 @@ export default function Members() {
         )}
 
         {/* Member modal (click X or backdrop or press Escape to close) */}
-        <MemberModal member={activeMember} onClose={() => setActiveMember(null)} />
+        <MemberModal member={activeMember} onClose={handleModalCloseAfterAnimation} />
 
         {/* Founding Class intentionally not rendered (keeps parity with prior code) */}
       </div>

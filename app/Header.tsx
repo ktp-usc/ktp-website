@@ -50,6 +50,10 @@ export function Header() {
           <Link className="hover:text-[#315CA9] font-medium" href="/Members">
             Members
           </Link>
+          <Link className="hover:text-[#315CA9] font-medium" href="/OurWork">
+            Our Work
+          </Link>
+
           <Link className="hover:text-[#315CA9] font-medium" href="/Rush">
             Rush
           </Link>
