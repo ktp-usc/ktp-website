@@ -2,13 +2,12 @@
 import Background from "@/components/Background";
 import ThemeToggle from "@/components/ui/themeToggle";
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import Image from "next/image";
 
 
 
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   const router = useRouter();
   const handleHomeClick = () => {
     document.documentElement.classList.remove('dark');
@@ -89,8 +88,8 @@ export default function LoginPage() {
             </div>
           {/* Form Container */}
           <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl dark:shadow-gray-900/50 p-8 lg:p-10 transition-colors duration-300 border dark:border-gray-700">
-            <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Sign In</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-5">Enter your credentials to access your account</p>
+            <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Reset Password</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-5">Enter your email address and we'll send you a reset code</p>
             
             <form className="space-y-5">
               <div>
@@ -105,29 +104,11 @@ export default function LoginPage() {
                 />
               </div>
 
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Password
-                  </label>
-                  <Link href="/Login/forgotpassword" className="text-sm text-blue-900 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 font-medium">
-                    Forgot?
-                  </Link>
-                </div>
-                <input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                />
-              </div>
-              {/* Testing Purposes */}
               <button
-                type="submit"
-                //onClick={() => router.push("/homepage")}
+                type="button"
                 className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 py-3 text-white font-semibold hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-lg shadow-blue-500/30"
               >
-                Sign In
+                Reset Password
               </button>
             </form>
           </div>
