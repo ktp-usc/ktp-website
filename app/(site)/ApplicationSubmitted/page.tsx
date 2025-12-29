@@ -4,7 +4,7 @@ export default function ApplicationSubmittedPage() {
     return (
         <main className="min-h-screen px-6 pt-16">
             <div className="flex flex-col items-center">
-                {/* Card */}
+                {/* Next Steps */}
                 <div className="max-w-3xl w-full bg-white rounded-xl shadow-md p-8">
                     <h1 className="text-3xl font-extrabold mb-4 text-center">
                         Application Submitted
@@ -60,7 +60,7 @@ export default function ApplicationSubmittedPage() {
                     </p>
                 </div>
 
-                {/* Back link (outside the card) */}
+                {/* Back to home link */}
                 <div className="mt-6">
                     <Link
                         href="/"
