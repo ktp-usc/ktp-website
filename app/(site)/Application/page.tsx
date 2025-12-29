@@ -1,10 +1,7 @@
 "use client";
 
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
-import {Textarea} from "@/components/ui/textarea";
-import {toast} from "sonner";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
     Field,
     FieldContent,
@@ -14,9 +11,44 @@ import {
     FieldSeparator,
     FieldSet,
 } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import React from "react";
+import { toast } from "sonner";
 
 export default function Application() {
+        // --------------------------------------------
+        // Resume upload UI helpers
+        // --------------------------------------------
+        const resumeInputRef = React.useRef<HTMLInputElement | null>(null);
+        const [resumeName, setResumeName] = React.useState<string | null>(null);
+
+        function triggerResumeSelect() {
+            resumeInputRef.current?.click();
+        }
+
+        function onResumeChange(e: React.ChangeEvent<HTMLInputElement>) {
+            const file = e.target.files?.[0];
+            if (!file) {
+                setResumeName(null);
+                return;
+            }
+            if (!file.type.includes("pdf")) {
+                toast.error("Resume must be a PDF file.");
+                e.target.value = "";
+                setResumeName(null);
+                return;
+            }
+            setResumeName(file.name);
+        }
+
+        function clearResume() {
+            if (resumeInputRef.current) {
+                resumeInputRef.current.value = "";
+            }
+            setResumeName(null);
+        }
     // --------------------------------------------
     // REAL SUBMIT HANDLER — sends FormData to API
     // --------------------------------------------
@@ -25,6 +57,45 @@ export default function Application() {
 
         const form = e.currentTarget;
         const formData = new FormData(form);
+
+        // Validate USC email domain
+        const email = formData.get("email") as string;
+        const emailLower = email?.toLowerCase() || "";
+        
+        // Check for sc.edu (including subdomains like mailbox.sc.edu, email.sc.edu)
+        const isGeneralScEdu = emailLower.includes("@") && emailLower.split("@")[1]?.endsWith("sc.edu");
+
+        if (!isGeneralScEdu) {
+            toast.error("Please use a valid USC email address.");
+            return;
+        }
+
+        // Validate resume is PDF and required
+        const resume = formData.get("resume") as File;
+        if (!resume || resume.size === 0) {
+            toast.error("Please upload a resume.");
+            return;
+        }
+        if (!resume.type.includes("pdf")) {
+            toast.error("Resume must be a PDF file.");
+            return;
+        }
+
+        // Validate required photo upload (image only)
+        const photo = formData.get("photo") as File;
+        if (!photo || photo.size === 0) {
+            toast.error("Please upload a picture.");
+            return;
+        }
+        if (!photo.type.startsWith("image/")) {
+            toast.error("Picture must be an image file.");
+            return;
+        }
+        const rushEvents = formData.getAll("rushEvents");
+        if (rushEvents.length === 0) {
+            toast.error("Please select at least one rush event attended.");
+            return;
+        }
 
         // Submit to backend
         const res = await fetch("/api/applications", {
@@ -41,12 +112,89 @@ export default function Application() {
 
         toast.success("Application submitted!");
         form.reset();
+        // Reset local UI state
+        setPhotoPreview(null);
+        setPhotoName(null);
+        setResumeName(null);
+    }
+
+    // --------------------------------------------
+    // Picture upload (required) — client-side only
+    // --------------------------------------------
+    const photoInputRef = React.useRef<HTMLInputElement | null>(null);
+    const [photoPreview, setPhotoPreview] = React.useState<string | null>(null);
+    const [photoName, setPhotoName] = React.useState<string | null>(null);
+
+    function triggerPhotoSelect() {
+        photoInputRef.current?.click();
+    }
+
+    function onPhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) {
+            setPhotoPreview(null);
+            setPhotoName(null);
+            return;
+        }
+        // Limit to images
+        if (!file.type.startsWith("image/")) {
+            toast.error("Please select an image file.");
+            e.target.value = "";
+            setPhotoPreview(null);
+            setPhotoName(null);
+            return;
+        }
+        setPhotoName(file.name);
+        const url = URL.createObjectURL(file);
+        setPhotoPreview(url);
+    }
+
+    function clearPhoto() {
+        if (photoInputRef.current) {
+            photoInputRef.current.value = "";
+        }
+        setPhotoPreview(null);
+        setPhotoName(null);
     }
 
     return (
         <div className="overflow-x-hidden">
             <div className="max-w-3xl w-full mx-auto">
-                <h1 className="text-2xl p4 pt-4 pb-5 font-semibold">KTP Rush Application</h1>
+                <h1 className="text-4xl p4 pt-4 pb-6 font-bold">KTP Rush Application: Spring 2026</h1>
+                
+                {/* Introduction */}
+                <div className="mb-8 space-y-4 mt-4">
+                    <p>
+                        Thank you for your interest in becoming a member of Kappa Theta Pi!
+                    </p>
+                    <p>
+                        Kappa Theta Pi is a Professional Co-Ed Technology Fraternity founded in 2012, aiming to
+                        develop a talented slate of future computing professionals. The Alpha Theta Chapter at 
+                        the University of South Carolina welcomes you to its second recruitment cycle for its 
+                            Beta class.
+                    </p>
+                    <p>
+                        If you have any questions, please reach out to the executive board at {' '}
+                        <a href="mailto:soktp@mailbox.sc.edu" className="text-blue-500 underline">soktp@mailbox.sc.edu</a>.
+                        <em> Please note that this application will not save your progress.</em>
+                    </p>
+                </div>
+
+                {/* Info Card with grey background and float effect */}
+                <Card className="bg-gray-50/80 border-gray-200 shadow-md mb-8 float-left w-full h-fit clear-both">
+                    <CardContent className="pt-fit middle-align">
+                        <p className="font-bold text-gray-900 flex items-center gap-2">
+                            <svg className="w-5 h-5 text-[#315CA9] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            This application is due<u className="text-[#315CA9]">Friday, January 30th, 9 PM EST</u>
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1 italic">
+                            &emsp;&emsp;We will not accept responses after this time.
+                        </p>
+                    </CardContent>
+                </Card>
+
                 <div className="pb-20">
                     <form onSubmit={handleSubmit}>
                         <FieldGroup>
@@ -64,10 +212,23 @@ export default function Application() {
                                         />
                                     </Field>
 
+                                    {/* Preferred First Name (optional) */}
+                                    <Field>
+                                        <FieldLabel>Preferred First Name</FieldLabel>
+                                        <Input
+                                            id="preferredFirstName"
+                                            name="preferredFirstName"
+                                            placeholder="Optional"
+                                        />
+                                    </Field>
+
                                     {/* Email */}
                                     <Field>
                                         <FieldLabel htmlFor="email">USC Email<span
                                             className="text-red-500">*</span></FieldLabel>
+                                        <FieldDescription>
+                                            <em>Please ensure this is correct. All communications concerning the interview process will be sent via email.</em>
+                                        </FieldDescription>
                                         <Input
                                             id="email"
                                             name="email"
@@ -77,9 +238,24 @@ export default function Application() {
                                         />
                                     </Field>
 
-                                    {/* Classification */}
+                                    {/* Phone Number */}
                                     <Field>
-                                        <FieldLabel>Classification<span className="text-red-500">*</span></FieldLabel>
+                                        <FieldLabel>Phone Number<span className="text-red-500">*</span></FieldLabel>
+                                        <Input
+                                            id="phone"
+                                            name="phone"
+                                            type="tel"
+                                            required
+                                            placeholder="(555) 123-4567"
+                                        />
+                                    </Field>
+
+                                    {/* Year in School */}
+                                    <Field>
+                                        <FieldLabel>Year in School<span className="text-red-500">*</span></FieldLabel>
+                                        <FieldDescription>
+                                            <em>{`Not by credit hours. For example, "Freshman" means first-year in University.`}</em>
+                                        </FieldDescription>
                                         <Select name="classification">
                                             <SelectTrigger>
                                                 <SelectValue placeholder="None Selected"/>
@@ -91,9 +267,37 @@ export default function Application() {
                                                 <SelectItem value="senior">Senior</SelectItem>
                                             </SelectContent>
                                         </Select>
+                                    </Field>
+
+                                    {/* GPA */}
+                                    <Field>
+                                        <FieldLabel>GPA<span className="text-red-500">*</span></FieldLabel>
                                         <FieldDescription>
-                                            Select your classification.
+                                            <em>Kappa Theta Pi expects its brothers to maintain a minimum of a 3.00 GPA; however, we invite anyone interested in our organization to apply.</em>
                                         </FieldDescription>
+                                        <Input
+                                            id="gpa"
+                                            name="gpa"
+                                            type="text"
+                                            required
+                                            placeholder="e.g., 3.75"
+                                        />
+                                    </Field>
+
+                                    {/* Extenuating circumstances */}
+                                    <Field>
+                                        <FieldContent>
+                                            <FieldLabel>Extenuating Circumstances</FieldLabel>
+                                            <FieldDescription>
+                                                If your GPA is below a 3.00, please use the following to explain any extenuating circumstances or hardships you would like us to take into consideration
+                                            </FieldDescription>
+                                        </FieldContent>
+                                        <Textarea
+                                            id="extenuatingCircumstances"
+                                            name="extenuatingCircumstances"
+                                            placeholder="Enter text here"
+                                            className="min-h-[100px] resize-none sm:min-w-[300px]"
+                                        />
                                     </Field>
 
                                     {/* Major */}
@@ -103,14 +307,86 @@ export default function Application() {
                                             id="major"
                                             name="major"
                                             required
-                                            placeholder="IT, CE, CS, etc..."
+                                            placeholder="IIT, CE, CS, etc..."
                                         />
+                                        <FieldDescription>
+                                            <em>KTP accepts all majors!</em>
+                                        </FieldDescription>
                                     </Field>
 
                                     {/* Minor */}
                                     <Field className="pb-3">
                                         <FieldLabel>Minor(s)</FieldLabel>
                                         <Input id="minor" name="minor" placeholder="optional"/>
+                                    </Field>
+
+                                    {/* Hometown, Home State */}
+                                    <Field>
+                                        <FieldLabel>Hometown</FieldLabel>
+                                        <Input
+                                            id="hometown"
+                                            name="hometown"
+                                            placeholder="City, State"
+                                        />
+                                    </Field>
+
+                                    {/* Picture Upload (required) */}
+                                    <Field>
+                                        <FieldContent>
+                                            <FieldLabel>
+                                                Upload Picture <span className="text-red-500">*</span>
+                                            </FieldLabel>
+                                            <FieldDescription>
+                                                Please include a headshot or photo to help us during the review process.
+                                            </FieldDescription>
+                                        </FieldContent>
+
+                                        {/* Hidden file input so we can use a styled button */}
+                                        <input
+                                            ref={photoInputRef}
+                                            id="photo"
+                                            name="photo"
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            required
+                                            onChange={onPhotoChange}
+                                        />
+
+                                        <div className="flex items-center gap-3 mt-2">
+                                            <Button
+                                                type="button"
+                                                onClick={triggerPhotoSelect}
+                                                className="px-4 py-2 cursor-pointer"
+                                            >
+                                                Upload Picture
+                                            </Button>
+                                            {photoName && (
+                                                <span className="text-sm text-muted-foreground truncate max-w-[200px]">
+                                                    {photoName}
+                                                </span>
+                                            )}
+                                            {photoName && (
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    className="text-red-600 hover:text-red-700 cursor-pointer"
+                                                    onClick={clearPhoto}
+                                                >
+                                                    Clear
+                                                </Button>
+                                            )}
+                                        </div>
+
+                                        {photoPreview && (
+                                            <div className="mt-3">
+                                                <img
+                                                    src={photoPreview}
+                                                    alt="Selected preview"
+                                                    className="h-28 w-28 rounded-md object-cover border"
+                                                />
+                                            </div>
+                                        )}
                                     </Field>
 
                                     <FieldSeparator/>
@@ -120,15 +396,69 @@ export default function Application() {
                                         <FieldLabel htmlFor="resume">Upload Resume/CV <span
                                             className="text-red-500">*</span></FieldLabel>
                                         <FieldDescription>
-                                            Please attach your resume (.pdf, .doc, .jpg, .png)
+                                            PDF format only.
+                                            <br/>
+                                            <br/>
+                                            <em>{`If you don't have a resume made, quickly write-up a bullet pointed list of
+                                                 your previous jobs, leadership positions, involvement, technical projects,
+                                                 etc. Don't worry if it's not polished, we're looking at the content, not formatting.`}</em>
                                         </FieldDescription>
 
-                                        <Input
+                                        {/* Hidden file input so we can style the control */}
+                                        <input
                                             id="resume"
                                             name="resume"
                                             type="file"
-                                            accept=".pdf,.jpg,.png,.doc,.docx"
+                                            accept=".pdf"
+                                            className="hidden"
                                             required
+                                            ref={resumeInputRef}
+                                            onChange={onResumeChange}
+                                        />
+
+                                        <div className="flex items-center gap-3 mt-2">
+                                            <Button type="button" onClick={triggerResumeSelect} className="px-4 py-2 cursor-pointer">
+                                                Upload Resume (PDF)
+                                            </Button>
+                                            {resumeName ? (
+                                                <span className="text-sm text-muted-foreground truncate max-w-[240px]">
+                                                    {resumeName}
+                                                </span>
+                                            ) : (
+                                                <span className="text-sm text-muted-foreground">No file selected</span>
+                                            )}
+                                            {resumeName && (
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    className="text-red-600 hover:text-red-700"
+                                                    onClick={clearResume}
+                                                >
+                                                    Clear
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </Field>
+
+                                    {/* LinkedIn (optional) */}
+                                    <Field>
+                                        <FieldLabel>LinkedIn (optional)</FieldLabel>
+                                        <Input
+                                            id="linkedin"
+                                            name="linkedin"
+                                            type="url"
+                                            placeholder="https://www.linkedin.com/in/username"
+                                        />
+                                    </Field>
+
+                                    {/* GitHub (optional) */}
+                                    <Field>
+                                        <FieldLabel>GitHub (optional)</FieldLabel>
+                                        <Input
+                                            id="github"
+                                            name="github"
+                                            type="url"
+                                            placeholder="https://github.com/username"
                                         />
                                     </Field>
 
@@ -138,20 +468,68 @@ export default function Application() {
                                     <Field>
                                         <FieldContent>
                                             <FieldLabel>
-                                                Why would you like to join KTP?
+                                                Why are you interested in joining Kappa Theta Pi? What talents/experiences could you bring to the organization?
                                                 <span className="text-red-500">*</span>
                                             </FieldLabel>
                                             <FieldDescription>
-                                                Answer in less than 250 words
+                                                Answer in less than 150 words.
                                             </FieldDescription>
                                         </FieldContent>
                                         <Textarea
                                             id="reason"
                                             name="reason"
-                                            placeholder="Enter text here"
+                                            placeholder="Note: this application will not save your progress"
                                             required
                                             className="min-h-[100px] resize-none sm:min-w-[300px]"
                                         />
+                                    </Field>
+
+                                    {/* Rush events attended (multi-select, required) */}
+                                    <Field>
+                                        <FieldContent>
+                                            <FieldLabel>Which rush events did you attend?<span className="text-red-500">*</span></FieldLabel>
+                                            <FieldDescription>
+                                                {`Check all that apply (at least one required). `}<em>{`If you're completing this application early,
+                                                 select the events you plan on attending. Reach out to our Executive Secretary in the GroupMe
+                                                 (Josiah White) if you're unable to attend an event.`}</em>
+                                            </FieldDescription>
+                                        </FieldContent>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="flex items-center gap-2">
+                                                <input type="checkbox" name="rushEvents" value="info-night" className="h-4 w-4 rounded border" />
+                                                <span>Info Night</span>
+                                            </label>
+                                            <label className="flex items-center gap-2">
+                                                <input type="checkbox" name="rushEvents" value="field-day" className="h-4 w-4 rounded border" />
+                                                <span>Field Day</span>
+                                            </label>
+                                            <label className="flex items-center gap-2">
+                                                <input type="checkbox" name="rushEvents" value="technical-workshop" className="h-4 w-4 rounded border" />
+                                                <span>Technical Workshop</span>
+                                            </label>
+                                            <label className="flex items-center gap-2">
+                                                <input type="checkbox" name="rushEvents" value="pitch-night" className="h-4 w-4 rounded border" />
+                                                <span>Pitch Night</span>
+                                            </label>
+                                        </div>
+                                    </Field>
+
+                                    <FieldSeparator/>
+
+                                    {/* Affirmation */}
+                                    <Field>
+                                        <FieldLabel>I affirm this application is complete and correct to the best of my knowledge.<span className="text-red-500">*</span></FieldLabel>
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                id="affirmation"
+                                                name="affirmation"
+                                                type="checkbox"
+                                                value="yes"
+                                                required
+                                                className="h-4 w-4 rounded border"
+                                            />
+                                            <label htmlFor="affirmation">Yes</label>
+                                        </div>
                                     </Field>
 
                                 </FieldGroup>
