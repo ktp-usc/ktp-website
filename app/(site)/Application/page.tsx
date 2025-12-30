@@ -184,16 +184,37 @@ export default function Application() {
                 <Card className="bg-gray-50/80 border-gray-200 shadow-md mb-8 float-left w-full h-fit clear-both">
                     <CardContent className="pt-fit middle-align">
                         <p className="font-bold text-gray-900 flex items-center gap-2">
-                            <svg className="w-5 h-5 text-[#315CA9] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <svg
+                                className="w-5 h-5 text-[#315CA9] flex-shrink-0"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
                             </svg>
-                            This application is due<u className="text-[#315CA9]">Friday, January 30th, 9 PM EST</u>
+
+                            This application is due{" "}
+                            <a
+                                href="https://calendar.google.com/calendar/event?action=TEMPLATE&tmeid=MG5qaDU2c3M0b3A5a2lucTMxZGtiM2FzZ2IgMWIyMDM0Mzc1MWQwMTMwNzRlNWY1ZjgyYmZjYjcwYTljZjRmZmJhN2E1YTU5ZDkzYzkyZjNiMjg5NGY3ZWY2NkBn&tmsrc=1b20343751d013074e5f5f82bfcb70a9cf4ffba7a5a59d93c92f3b2894f7ef66%40group.calendar.google.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-[#315CA9] underline hover:text-[#003166]"
+                            >
+                                Friday, January 30th, 9 PM EST
+                            </a>
                         </p>
+
                         <p className="text-sm text-gray-600 mt-1 italic">
                             &emsp;&emsp;We will not accept responses after this time.
                         </p>
                     </CardContent>
                 </Card>
+
 
                 <div className="pb-20">
                     <form onSubmit={handleSubmit}>
