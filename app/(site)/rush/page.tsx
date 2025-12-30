@@ -1,19 +1,19 @@
 "use client"
 
-import React from "react";
 import Link from "next/link";
 
+import CalendarIcon from "@/components/CalendarIcon";
+import PinIcon from "@/components/PinIcon";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import CalendarIcon from "@/components/CalendarIcon";
-import PinIcon from "@/components/PinIcon";
 
 export default function Page2() {
   return (
+    <>
     <main className="relative">
       {/* Background blobs */}
       <div className="relative bg-white w-full">
@@ -221,5 +221,6 @@ export default function Page2() {
         </section>
       </div>
     </main>
+    </>
   );
 }
