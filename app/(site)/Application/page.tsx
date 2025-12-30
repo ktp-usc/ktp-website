@@ -207,6 +207,7 @@ export default function Application() {
                             >
                                 Friday, January 30th, 9 PM EST
                             </a>
+
                         </p>
 
                         <p className="text-sm text-gray-600 mt-1 italic">
