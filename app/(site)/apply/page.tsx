@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import React from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function Application() {
         // --------------------------------------------
@@ -23,8 +24,9 @@ export default function Application() {
         // --------------------------------------------
         const resumeInputRef = React.useRef<HTMLInputElement | null>(null);
         const [resumeName, setResumeName] = React.useState<string | null>(null);
+        const router = useRouter();
 
-        function triggerResumeSelect() {
+    function triggerResumeSelect() {
             resumeInputRef.current?.click();
         }
 
@@ -110,7 +112,7 @@ export default function Application() {
             return;
         }
 
-        toast.success("Application submitted!");
+        router.push("/next-steps");
         form.reset();
         // Reset local UI state
         setPhotoPreview(null);
@@ -161,7 +163,7 @@ export default function Application() {
         <div className="overflow-x-hidden">
             <h1 className="text-5xl p4 pt-12 pb-3 font-bold text-center">Rush Application</h1>
             <h2 className="text-3xl p4 pb-6 text-[#315CA9] italic font-bold text-center">Spring 2026</h2>
-            <div className="max-w-3xl w-full mx-auto">                
+            <div className="max-w-3xl w-full mx-auto">
                 {/* Introduction */}
                 <div className="text-md mb-8 space-y-4 mt-4">
                     <p>
