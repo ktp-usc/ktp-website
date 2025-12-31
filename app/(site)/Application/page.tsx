@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import Image from "next/image";
 import {
     Field,
     FieldContent,
@@ -402,10 +403,12 @@ export default function Application() {
 
                                         {photoPreview && (
                                             <div className="mt-3">
-                                                <img
+                                                <Image
                                                     src={photoPreview}
                                                     alt="Selected preview"
-                                                    className="h-28 w-28 rounded-md object-cover border"
+                                                    width={112}
+                                                    height={112}
+                                                    className="rounded-md object-cover border"
                                                 />
                                             </div>
                                         )}

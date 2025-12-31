@@ -51,7 +51,7 @@ export default function Page2() {
             <p className="text-gray-600 text-lg sm:text-xl mb-2">
                 Also, join our{" "}
                 <a
-                    href="https://calendar.google.com/calendar/embed?src=1b20343751d013074e5f5f82bfcb70a9cf4ffba7a5a59d93c92f3b2894f7ef66%40group.calendar.google.com&ctz=America%2FNew_York"
+                    href="https://calendar.google.com/calendar/u/0?cid=1b20343751d013074e5f5f82bfcb70a9cf4ffba7a5a59d93c92f3b2894f7ef66@group.calendar.google.com"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[#315CA9] font-semibold hover:underline"
@@ -60,6 +60,7 @@ export default function Page2() {
                 </a>{" "}
                 to see the dates, times, and locations of all Rush events.
             </p>
+
 
         </section>
 
