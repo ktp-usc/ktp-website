@@ -28,30 +28,36 @@ const STATUS_MAP: Record<number, string> = {
 export default function ExecApplicationViewer({ initialApplication }: { initialApplication?: AppShape | null }) {
     const router = useRouter();
     const [app, setApp] = useState<AppShape | null>(initialApplication ?? null);
-    const [fullscreenResume, setFullscreenResume] = useState<string | null>(null);
-    const [adjacent, setAdjacent] = useState<{ prevId?: number | null; nextId?: number | null }>({});
 
+    const [adjacent, setAdjacent] = useState<{ prevId?: string | null; nextId?: string | null }>({});
+    const [fullscreenResume, setFullscreenResume] = useState<string | null>(null);
+    const [statusUpdating, setStatusUpdating] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+
+    // load prev/next application ids
     useEffect(() => {
         if (!app?.id) return;
-        fetch(`/api/applications/adjacent?id=${app.id}`)
-            .then((r) => (r.ok ? r.json() : null))
-            .then((j) => {
-                if (j && typeof j === 'object') setAdjacent({ prevId: j.prevId ?? null, nextId: j.nextId ?? null });
-            })
-            .catch(() => {
-                fetch('/api/applications?limit=200')
-                    .then((r) => (r.ok ? r.json() : null))
-                    .then((j) => {
-                        const rows = Array.isArray(j?.data) ? j.data : [];
-                        const ids = rows.map((x: any) => x.id);
-                        const idx = ids.indexOf(app.id);
-                        setAdjacent({
-                            prevId: idx > 0 ? ids[idx - 1] : null,
-                            nextId: idx >= 0 && idx < ids.length - 1 ? ids[idx + 1] : null,
-                        });
-                    })
-                    .catch(() => {});
-            });
+
+        const idForQuery = encodeURIComponent(String(app.id));
+
+        async function loadAdjacent() {
+            try {
+                const res = await fetch(`/api/applications/adjacent?id=${idForQuery}`);
+                if (!res.ok) {
+                    setAdjacent({ prevId: null, nextId: null });
+                    return;
+                }
+                const payload = await res.json();
+                setAdjacent({
+                    prevId: payload?.prevId != null ? String(payload.prevId) : null,
+                    nextId: payload?.nextId != null ? String(payload.nextId) : null,
+                });
+            } catch {
+                setAdjacent({ prevId: null, nextId: null });
+            }
+        }
+
+        loadAdjacent();
     }, [app?.id]);
 
     function goBack() {
@@ -62,35 +68,49 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
         }
     }
 
-    function goTo(id?: number | null) {
-        if (!id) return;
-        router.push(`/exec/applications/${id}`);
+    function goTo(id?: string | number | null) {
+        if (!id && id !== 0) return;
+        const safe = encodeURIComponent(String(id));
+        router.push(`/exec/applications/${safe}`);
     }
 
     async function updateStatus(newStatus: number) {
         if (!app?.id) return;
+        if (app.status === newStatus) return;
+        setStatusUpdating(true);
         try {
-            const res = await fetch(`/api/applications/${app.id}`, {
+            const res = await fetch(`/api/applications/${encodeURIComponent(String(app.id))}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: newStatus }),
             });
-            if (res.ok) setApp({ ...app, status: newStatus });
-        } catch (e) {
-            console.error('Status update error', e);
+            if (res.ok) {
+                setApp((prev) => (prev ? { ...prev, status: newStatus } : prev));
+            } else {
+                alert('Unable to update status');
+            }
+        } catch {
+            alert('Network error while updating status');
+        } finally {
+            setStatusUpdating(false);
         }
     }
 
     async function handleDelete() {
         if (!app?.id) return;
         if (!confirm('Delete this application?')) return;
+        setDeleting(true);
         try {
-            const res = await fetch(`/api/applications/${app.id}`, { method: 'DELETE' });
-            if (res.ok) router.push('/exec/applications');
-            else alert('Delete failed');
-        } catch (e) {
-            console.error(e);
+            const res = await fetch(`/api/applications/${encodeURIComponent(String(app.id))}`, { method: 'DELETE' });
+            if (res.ok) {
+                router.push('/exec/applications');
+            } else {
+                alert('Delete failed');
+            }
+        } catch {
             alert('Delete failed (network)');
+        } finally {
+            setDeleting(false);
         }
     }
 
@@ -104,48 +124,40 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
                     <div className="app-responses-answer">{qa.answer ?? 'N/A'}</div>
                 </div>
             ));
-        try {
-            return Object.entries(r).map(([q, a]) => (
-                <div key={q} style={{ marginBottom: 16 }}>
-                    <div className="app-responses-question">{q}</div>
-                    <div className="app-responses-answer">{a ?? 'N/A'}</div>
-                </div>
-            ));
-        } catch (e) {
-            console.error('renderResponses error', e);
-            return <div style={{ color: '#666' }}>Unable to show responses</div>;
-        }
+        return Object.entries(r).map(([q, a]) => (
+            <div key={q} style={{ marginBottom: 16 }}>
+                <div className="app-responses-question">{q}</div>
+                <div className="app-responses-answer">{a ?? 'N/A'}</div>
+            </div>
+        ));
     }
 
-    const fullName = app?.full_name ?? 'Unnamed Applicant';
-    const [firstName, ...rest] = fullName.split(' ');
-    const lastName = rest.join(' ');
+    const fullName = (app?.full_name ?? 'Unnamed Applicant').trim();
+    const nameParts = fullName.length ? fullName.split(/\s+/) : ['Unnamed', 'Applicant'];
+    const firstName = nameParts[0];
+    const lastName = nameParts.slice(1).join(' ');
 
     const rightArrowOffset = 'calc(360px + 24px)';
 
     return (
         <div className="page-content" style={{ display: 'flex', gap: 20 }}>
-            <header className="exec-topbar" aria-hidden>
+            <header className="exec-topbar">
                 <div className="inner">
                     <div className="left-area">
-                        <button
-                            className="back-link button-match-select header-back"
-                            onClick={goBack}
-                        >
+                        <button className="back-link button-match-select header-back" onClick={goBack}>
                             ← Back
                         </button>
                     </div>
 
-
                     <div className="right-area">
-                        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }} className="status-select-wrapper">
+                        <div className="status-select-wrapper" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                             <span className="status-text">Status</span>
                             <select
                                 value={typeof app?.status === 'number' ? String(app!.status) : '1'}
-                                onChange={(e) => updateStatus(Number(e.target.value ?? '1'))}
+                                onChange={(e) => updateStatus(Number(e.target.value))}
                                 className="status-select control-tall"
-                                aria-label="Application status"
                                 style={{ minWidth: 140 }}
+                                disabled={statusUpdating}
                             >
                                 {Object.entries(STATUS_MAP).map(([num, label]) => (
                                     <option key={num} value={num}>
@@ -158,10 +170,10 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
                         <button
                             onClick={handleDelete}
                             className="control-delete"
-                            title="Delete application"
                             style={{ marginLeft: 12 }}
+                            disabled={deleting}
                         >
-                            Delete
+                            {deleting ? 'Deleting…' : 'Delete'}
                         </button>
                     </div>
                 </div>
@@ -169,7 +181,6 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
 
             {/* previous arrow */}
             <button
-                aria-label="Previous"
                 onClick={() => goTo(adjacent.prevId)}
                 disabled={!adjacent.prevId}
                 className={`nav-arrow left ${adjacent.prevId ? 'enabled' : 'disabled'}`}
@@ -180,7 +191,6 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
 
             {/* next arrow */}
             <button
-                aria-label="Next"
                 onClick={() => goTo(adjacent.nextId)}
                 disabled={!adjacent.nextId}
                 className={`nav-arrow right ${adjacent.nextId ? 'enabled' : 'disabled'}`}
@@ -190,8 +200,6 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
             </button>
 
             <div style={{ flex: 1, maxWidth: 1000, margin: '0 auto', position: 'relative' }}>
-
-                {/* header */}
                 <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 10 }}>
                     <div style={{ width: 120, textAlign: 'center' }}>
                         <ImageViewer src={app?.headshot_url ?? '/placeholder-headshot.png'} alt={fullName} />
@@ -206,64 +214,46 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
                     <div style={{ width: 120 }} />
                 </div>
 
-                {/* resume */}
-                <div style={{ marginTop: 8 }}>
+                <div style={{ marginTop: 40 }}>
                     {app?.resume_url ? (
-                        <div className="resume-box surface-card" onClick={() => setFullscreenResume(app.resume_url ?? null)} style={{ cursor: 'zoom-in' }}>
-                            <ResumeViewer url={app.resume_url!} />
+                        <div
+                            className="resume-iframe-wrapper"
+                            style={{ position: 'relative', cursor: 'zoom-in' }}
+                            onClick={() => setFullscreenResume(app.resume_url ?? null)}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') setFullscreenResume(app.resume_url ?? null);
+                            }}
+                        >
+                            <ResumeViewer url={app.resume_url} height={520} />
+                            <div className="resume-iframe-overlay" style={{ position: 'absolute', inset: 0, zIndex: 2, background: 'transparent' }} />
                         </div>
                     ) : (
                         <div style={{ padding: 24, color: '#666' }}>No resume attached</div>
                     )}
                 </div>
 
-                {/* responses */}
                 <div style={{ marginTop: 40 }}>
                     <h2 className="app-responses-title">Application Responses</h2>
                     <div style={{ marginTop: 8 }}>{renderResponses()}</div>
                 </div>
             </div>
 
-            {/* comments sidebar */}
             <div style={{ width: 360 }}>
                 <div className="sidebar-elevated" style={{ padding: 16 }}>
                     <CommentsSidebar applicationId={app?.id} />
                 </div>
             </div>
 
-            {/* fullscreen resume */}
             {fullscreenResume && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 300 }}>
-                    <div
-                        style={{
-                            width: '90%',
-                            height: '90%',
-                            margin: '40px auto',
-                            background: '#fff',
-                            borderRadius: 8,
-                            overflow: 'hidden',
-                            position: 'relative',
-                        }}
-                    >
-                        <button
-                            onClick={() => setFullscreenResume(null)}
-                            style={{
-                                position: 'absolute',
-                                right: 12,
-                                top: 12,
-                                zIndex: 30,
-                                padding: 8,
-                                borderRadius: 6,
-                                border: '1px solid rgba(0,0,0,0.08)',
-                                background: '#fff',
-                                cursor: 'pointer',
-                            }}
-                        >
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 32 }}>
+                    <div style={{ width: '90%', height: '90%', background: '#fff', borderRadius: 8, overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'column' }}>
+                        <button onClick={() => setFullscreenResume(null)} style={{ position: 'absolute', right: 12, top: 12, zIndex: 30, padding: 8, borderRadius: 6, border: '1px solid rgba(0,0,0,0.08)', background: '#fff', cursor: 'pointer' }}>
                             ✕
                         </button>
 
                         <div style={{ width: '100%', height: '100%' }}>
-                            <ResumeViewer url={fullscreenResume} />
+                            <ResumeViewer url={fullscreenResume} height="100%" />
                         </div>
                     </div>
                 </div>

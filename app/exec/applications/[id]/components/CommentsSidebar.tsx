@@ -18,7 +18,7 @@ type Comment = {
     replies?: Reply[];
 };
 
-//replace with current user
+//replace with actual current user from auth
 const CURRENT_USER_NAME = 'You';
 
 export default function CommentsSidebar({ applicationId }: { applicationId?: number | string }) {
@@ -30,8 +30,9 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
 
     const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
 
-    const menusRef = useRef<Map<string, HTMLDivElement | null>>(new Map());
+    const menusRef = useRef<Record<string, HTMLDivElement | null>>({});
 
+    // load comments
     useEffect(() => {
         if (!applicationId) return;
         fetch(`/api/applications/${applicationId}/comments`)
@@ -44,27 +45,25 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
                 }));
                 setComments(normalized);
             })
-            .catch(() => setComments([]));
+            .catch(() => {
+                setComments([]);
+            });
     }, [applicationId]);
 
     useEffect(() => {
-        function onDocClick(e: Event) {
-            const openId = menuOpenId;
-            if (!openId) return;
-            const el = menusRef.current.get(openId) ?? null;
-            if (!el) {
+        function onDocClick(e: MouseEvent) {
+            if (!menuOpenId) return;
+            const el = menusRef.current[menuOpenId];
+            if (!el || !el.contains(e.target as Node)) {
                 setMenuOpenId(null);
-                return;
             }
-            const target = e.target as Node | null;
-            if (!target || !el.contains(target)) setMenuOpenId(null);
         }
         document.addEventListener('click', onDocClick);
         return () => document.removeEventListener('click', onDocClick);
     }, [menuOpenId]);
 
     async function post() {
-        if (!text.trim()) return;
+        if (!text.trim() || !applicationId) return;
         const newComment: Comment = {
             id: `local-${Date.now()}`,
             authorName: CURRENT_USER_NAME,
@@ -81,9 +80,7 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ text: newComment.text }),
             });
-        } catch (e) {
-            console.error('post comment failed', e);
-        }
+        } catch {}
     }
 
     function openReplyBox(commentId: number | string) {
@@ -94,8 +91,9 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
         setReplyTo(null);
         setReplyText('');
     }
+
     async function submitReply(parentId: number | string) {
-        if (!replyText.trim()) return;
+        if (!replyText.trim() || !applicationId) return;
         const newReply: Reply = {
             id: `local-reply-${Date.now()}`,
             authorName: CURRENT_USER_NAME,
@@ -104,7 +102,11 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
             createdAt: new Date().toISOString(),
         };
         setComments((prev) =>
-            prev.map((c) => (String(c.id) === String(parentId) ? { ...c, replies: [...(c.replies ?? []), newReply] } : c))
+            prev.map((c) =>
+                String(c.id) === String(parentId)
+                    ? { ...c, replies: [...(c.replies ?? []), newReply] }
+                    : c
+            )
         );
         setReplyText('');
         setReplyTo(null);
@@ -114,9 +116,7 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ text: newReply.text, parentId }),
             });
-        } catch (e) {
-            console.error('post reply failed', e);
-        }
+        } catch {}
     }
 
     function openMenuForComment(commentId: number | string) {
@@ -126,22 +126,28 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
         setMenuOpenId(`r:${parentId}:${replyId}`);
     }
 
+    // delete comment
     async function deleteComment(commentId: number | string) {
+        if (!applicationId) return;
         if (!confirm('Delete this comment?')) return;
         setComments((prev) => prev.filter((c) => String(c.id) !== String(commentId)));
         setMenuOpenId(null);
         try {
-            await fetch(`/api/applications/${applicationId}/comments/${commentId}`, { method: 'DELETE' });
-        } catch (e) {
-            console.error('delete comment failed', e);
-        }
+            await fetch(`/api/applications/${applicationId}/comments/${commentId}`, {
+                method: 'DELETE',
+            });
+        } catch {}
     }
 
+    // delete reply
     async function deleteReply(parentId: number | string, replyId: number | string) {
+        if (!applicationId) return;
         if (!confirm('Delete this reply?')) return;
         setComments((prev) =>
             prev.map((c) =>
-                String(c.id) === String(parentId) ? { ...c, replies: (c.replies ?? []).filter((r) => String(r.id) !== String(replyId)) } : c
+                String(c.id) === String(parentId)
+                    ? { ...c, replies: (c.replies ?? []).filter((r) => String(r.id) !== String(replyId)) }
+                    : c
             )
         );
         setMenuOpenId(null);
@@ -151,9 +157,7 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ parentId }),
             });
-        } catch (e) {
-            console.error('delete reply failed', e);
-        }
+        } catch {}
     }
 
     return (
@@ -178,26 +182,14 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
                 <button
                     onClick={post}
                     disabled={!text.trim()}
-                    style={
-                        text.trim()
-                            ? {
-                                background: '#0366d6',
-                                color: '#fff',
-                                border: 'none',
-                                padding: '8px 12px',
-                                borderRadius: 8,
-                                cursor: 'pointer',
-                                transition: 'transform .12s',
-                            }
-                            : {
-                                background: '#d1d5db',
-                                color: '#fff',
-                                border: 'none',
-                                padding: '8px 12px',
-                                borderRadius: 8,
-                                cursor: 'default',
-                            }
-                    }
+                    style={{
+                        background: text.trim() ? '#0366d6' : '#d1d5db',
+                        color: '#fff',
+                        border: 'none',
+                        padding: '8px 12px',
+                        borderRadius: 8,
+                        cursor: text.trim() ? 'pointer' : 'default',
+                    }}
                 >
                     Post Comment
                 </button>
@@ -225,77 +217,82 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                                     <div style={{ display: 'flex', gap: 8, alignItems: 'baseline' }}>
                                         <div style={{ fontWeight: 700 }}>{c.authorName}</div>
-                                        <div style={{ fontSize: 12, color: '#9aa6b8' }}>{c.createdAt ? new Date(c.createdAt).toLocaleString() : ''}</div>
+                                        <div style={{ fontSize: 12, color: '#9aa6b8' }}>
+                                            {c.createdAt ? new Date(c.createdAt).toLocaleString() : ''}
+                                        </div>
                                     </div>
 
-                                    <div style={{ position: 'relative' }}>
-                                        {String(c.authorName) === String(CURRENT_USER_NAME) && (
-                                            <div style={{ display: 'inline-flex', alignItems: 'center' }}>
-                                                <button
-                                                    aria-label="Open menu"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        openMenuForComment(c.id);
+                                    {String(c.authorName) === String(CURRENT_USER_NAME) && (
+                                        <div style={{ position: 'relative' }}>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    openMenuForComment(c.id);
+                                                }}
+                                                style={{
+                                                    border: 'none',
+                                                    background: 'transparent',
+                                                    cursor: 'pointer',
+                                                    padding: '4px 8px',
+                                                    fontSize: 18,
+                                                    color: '#6b7280',
+                                                }}
+                                            >
+                                                ⋯
+                                            </button>
+
+                                            {menuOpenId === `c:${c.id}` && (
+                                                <div
+                                                    ref={(el) => {
+                                                        const key = `c:${c.id}`;
+                                                        if (el) menusRef.current[key] = el;
+                                                        else delete menusRef.current[key];
                                                     }}
                                                     style={{
-                                                        border: 'none',
-                                                        background: 'transparent',
-                                                        cursor: 'pointer',
-                                                        padding: '4px 8px',
-                                                        fontSize: 18,
-                                                        color: '#6b7280',
+                                                        position: 'absolute',
+                                                        right: 0,
+                                                        top: 28,
+                                                        background: '#fff',
+                                                        border: '1px solid rgba(0,0,0,0.08)',
+                                                        borderRadius: 8,
+                                                        boxShadow: '0 8px 24px rgba(6,25,40,0.12)',
+                                                        zIndex: 60,
+                                                        minWidth: 120,
                                                     }}
                                                 >
-                                                    ⋯
-                                                </button>
-
-                                                {menuOpenId === `c:${c.id}` && (
-                                                    <div
-                                                        ref={(el) => {
-                                                            const key = `c:${c.id}`;
-                                                            if (el) menusRef.current.set(key, el);
-                                                            else menusRef.current.delete(key);
-                                                        }}
+                                                    <button
+                                                        onClick={() => deleteComment(c.id)}
                                                         style={{
-                                                            position: 'absolute',
-                                                            right: 0,
-                                                            top: 28,
-                                                            background: '#fff',
-                                                            border: '1px solid rgba(0,0,0,0.08)',
-                                                            borderRadius: 8,
-                                                            boxShadow: '0 8px 24px rgba(6,25,40,0.12)',
-                                                            zIndex: 60,
-                                                            minWidth: 120,
-                                                            overflow: 'hidden',
+                                                            width: '100%',
+                                                            textAlign: 'left',
+                                                            padding: '8px 12px',
+                                                            background: 'transparent',
+                                                            border: 'none',
+                                                            cursor: 'pointer',
+                                                            color: '#e04836',
                                                         }}
                                                     >
-                                                        <button
-                                                            onClick={() => deleteComment(c.id)}
-                                                            style={{
-                                                                display: 'block',
-                                                                width: '100%',
-                                                                textAlign: 'left',
-                                                                padding: '8px 12px',
-                                                                background: 'transparent',
-                                                                border: 'none',
-                                                                cursor: 'pointer',
-                                                                color: '#e04836',
-                                                            }}
-                                                        >
-                                                            Delete
-                                                        </button>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
 
-                                <div style={{ marginTop: 6, borderRadius: 10, border: '1px solid #eef2f6', padding: 10, background: '#fbfdff', color: '#222' }}>
+                                <div
+                                    style={{
+                                        marginTop: 6,
+                                        borderRadius: 10,
+                                        border: '1px solid #eef2f6',
+                                        padding: 10,
+                                        background: '#fbfdff',
+                                    }}
+                                >
                                     {c.text}
                                 </div>
 
-                                <div style={{ marginTop: 8, display: 'flex', gap: 8, alignItems: 'center' }}>
+                                <div style={{ marginTop: 8 }}>
                                     <button
                                         onClick={() => openReplyBox(c.id)}
                                         style={{
@@ -312,19 +309,10 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
                                 </div>
 
                                 {String(replyTo) === String(c.id) && (
-                                    <div style={{ marginTop: 8, display: 'flex', gap: 8, alignItems: 'center' }}>
+                                    <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
                                         <input
-                                            autoFocus
                                             value={replyText}
                                             onChange={(e) => setReplyText(e.target.value)}
-                                            onKeyDown={(e) => {
-                                                if (e.key === 'Enter') {
-                                                    e.preventDefault();
-                                                    submitReply(c.id);
-                                                } else if (e.key === 'Escape') {
-                                                    cancelReply();
-                                                }
-                                            }}
                                             placeholder="Write a reply..."
                                             style={{
                                                 flex: 1,
@@ -332,7 +320,6 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
                                                 padding: '6px 10px',
                                                 borderRadius: 8,
                                                 border: '1px solid #e6eaf0',
-                                                outline: 'none',
                                             }}
                                         />
                                         <button
@@ -367,76 +354,16 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
                                     <div key={r.id} style={{ marginTop: 10, display: 'flex', gap: 10 }}>
                                         <div style={{ width: 40 }} />
                                         <div style={{ flex: 1 }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                                                <div style={{ display: 'flex', gap: 8, alignItems: 'baseline' }}>
-                                                    <div style={{ fontWeight: 700, fontSize: 13 }}>{r.authorName}</div>
-                                                    <div style={{ fontSize: 12, color: '#9aa6b8' }}>{r.createdAt ? new Date(r.createdAt).toLocaleString() : ''}</div>
-                                                </div>
-
-                                                <div style={{ position: 'relative' }}>
-                                                    {String(r.authorName) === String(CURRENT_USER_NAME) && (
-                                                        <div style={{ display: 'inline-flex', alignItems: 'center' }}>
-                                                            <button
-                                                                aria-label="Open menu"
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    openMenuForReply(c.id, r.id);
-                                                                }}
-                                                                style={{
-                                                                    border: 'none',
-                                                                    background: 'transparent',
-                                                                    cursor: 'pointer',
-                                                                    padding: '4px 8px',
-                                                                    fontSize: 18,
-                                                                    color: '#6b7280',
-                                                                }}
-                                                            >
-                                                                ⋯
-                                                            </button>
-
-                                                            {menuOpenId === `r:${c.id}:${r.id}` && (
-                                                                <div
-                                                                    ref={(el) => {
-                                                                        const key = `r:${c.id}:${r.id}`;
-                                                                        if (el) menusRef.current.set(key, el);
-                                                                        else menusRef.current.delete(key);
-                                                                    }}
-                                                                    style={{
-                                                                        position: 'absolute',
-                                                                        right: 0,
-                                                                        top: 28,
-                                                                        background: '#fff',
-                                                                        border: '1px solid rgba(0,0,0,0.08)',
-                                                                        borderRadius: 8,
-                                                                        boxShadow: '0 8px 24px rgba(6,25,40,0.12)',
-                                                                        zIndex: 60,
-                                                                        minWidth: 120,
-                                                                        overflow: 'hidden',
-                                                                    }}
-                                                                >
-                                                                    <button
-                                                                        onClick={() => deleteReply(c.id, r.id)}
-                                                                        style={{
-                                                                            display: 'block',
-                                                                            width: '100%',
-                                                                            textAlign: 'left',
-                                                                            padding: '8px 12px',
-                                                                            background: 'transparent',
-                                                                            border: 'none',
-                                                                            cursor: 'pointer',
-                                                                            color: '#e04836',
-                                                                        }}
-                                                                    >
-                                                                        Delete
-                                                                    </button>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-
-                                            <div style={{ marginTop: 6, borderRadius: 10, border: '1px solid #eef2f6', padding: 10, background: '#fff', color: '#222' }}>
+                                            <div style={{ fontWeight: 700, fontSize: 13 }}>{r.authorName}</div>
+                                            <div
+                                                style={{
+                                                    marginTop: 6,
+                                                    borderRadius: 10,
+                                                    border: '1px solid #eef2f6',
+                                                    padding: 10,
+                                                    background: '#fff',
+                                                }}
+                                            >
                                                 {r.text}
                                             </div>
                                         </div>

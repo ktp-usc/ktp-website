@@ -1,12 +1,53 @@
 'use client';
 import React from 'react';
-import DocViewer, { DocViewerRenderers } from 'react-doc-viewer';
 
-export default function ResumeViewer({ url }: { url: string }) {
-    const docs = [{ uri: url }];
+type Props = {
+    url: string;
+    height?: number | string;
+    fill?: boolean;
+    onClick?: () => void;
+    disableClickOverlay?: boolean;
+};
+
+export default function ResumeViewer({
+                                         url,
+                                         height,
+                                         fill = false,
+                                         onClick,
+                                         disableClickOverlay = false,
+                                     }: Props) {
+    const wrapperStyle: React.CSSProperties = fill
+        ? { width: '100%', height: '100%', position: 'relative' }
+        : {
+            width: '100%',
+            height: typeof height === 'number' ? `${height}px` : height ?? '520px',
+            position: 'relative',
+        };
+
     return (
-        <div style={{ width: '100%', height: '520px' }}>
-            <DocViewer documents={docs} pluginRenderers={DocViewerRenderers as any} />
+        <div style={wrapperStyle}>
+            <iframe
+                src={url}
+                title="Resume"
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    border: 'none',
+                    display: 'block',
+                }}
+            />
+
+            {!disableClickOverlay && onClick && (
+                <div
+                    onClick={onClick}
+                    style={{
+                        position: 'absolute',
+                        inset: 0,
+                        cursor: 'zoom-in',
+                        background: 'transparent',
+                    }}
+                />
+            )}
         </div>
     );
 }
