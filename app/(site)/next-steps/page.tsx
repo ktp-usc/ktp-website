@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function ApplicationSubmittedPage() {
+export default function NextStepsPage() {
     return (
         <main className="min-h-screen px-6 pt-16">
             <div className="flex flex-col items-center">

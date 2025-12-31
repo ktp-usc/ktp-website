@@ -112,7 +112,7 @@ export default function Application() {
             return;
         }
 
-        router.push("/ApplicationSubmitted");
+        router.push("/next-steps");
         form.reset();
         // Reset local UI state
         setPhotoPreview(null);
