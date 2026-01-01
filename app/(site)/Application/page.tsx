@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import React from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Application() {
         // --------------------------------------------
@@ -182,6 +183,13 @@ export default function Application() {
                         <em> Please note that this application will not save your progress.</em>
                     </p>
                 </div>
+
+                <Link
+                    href="/exec/applications"
+                    className="px-6 py-3 bg-[#315CA9] text-white rounded-lg font-semibold hover:bg-[#23498F] transition-colors"
+                >
+                    Portal Page 9
+                </Link>
 
                 {/* Info Card with grey background and float effect */}
                 <Card className="bg-gray-50/80 border-gray-200 shadow-md mb-8 float-left w-full h-fit clear-both">
