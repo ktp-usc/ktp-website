@@ -38,8 +38,8 @@ function StatusPill({ status }: { status: ApplicationStatus }) {
 
     return (
         <span className={`px-3 py-1 rounded-full text-xs font-medium ${color}`}>
-      {STATUS_LABELS[status]}
-    </span>
+            {STATUS_LABELS[status]}
+        </span>
     );
 }
 
@@ -85,12 +85,18 @@ export default function ExecApplicationsPage() {
             app.name.toLowerCase().includes(search.toLowerCase())
         );
 
+        // Filter by status if not "all"
+        if (emailStatus !== "all") {
+            list = list.filter((app) => app.status === emailStatus);
+        }
+
         if (sortByStatus) {
             list = [...list].sort((a, b) => b.status - a.status);
         }
 
         return list;
-    }, [applications, search, sortByStatus]);
+    }, [applications, search, sortByStatus, emailStatus]);
+
 
     const emailList = useMemo(() => {
         const list =
@@ -174,7 +180,7 @@ export default function ExecApplicationsPage() {
                         {Object.entries(STATUS_LABELS)
                             .sort(([a], [b]) => Number(b) - Number(a))
                             .map(([key, label]) => (
-                                <option key={key} value={key}>
+                                <option key={key} value={Number(key)}>
                                     {label}
                                 </option>
                             ))}
@@ -198,8 +204,8 @@ export default function ExecApplicationsPage() {
                                         <StatusPill status={app.status} />
                                         {app.flagged && (
                                             <span className="text-red-500 text-xs font-medium">
-                        Flagged
-                      </span>
+                                                Flagged
+                                            </span>
                                         )}
                                     </div>
                                     <p className="text-sm text-gray-600 mt-1">{app.email}</p>
