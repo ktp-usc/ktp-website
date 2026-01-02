@@ -22,7 +22,7 @@ export default function Footer() {
                                 className="object-contain"
                                 priority
                             />
-                            <h3 className="text-xl font-bold text-white">KTP</h3>
+                            <h3 className="text-xl font-bold text-white">Kappa Theta Pi</h3>
                         </div>
 
                         <div className="text-white max-w-sm">
@@ -123,7 +123,7 @@ export default function Footer() {
 
                 {/* Divider */}
                 <div className="border-t border-white/20 mt-12 pt-6 text-sm text-white text-center">
-                    © 2025 Kappa Theta Pi. All rights reserved.
+                    © 2025 Kappa Theta Pi Alpha Theta. All rights reserved.
                 </div>
             </div>
         </footer>
