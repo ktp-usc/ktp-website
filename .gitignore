@@ -44,3 +44,14 @@ next-env.d.ts
 
 /lib/generated/prisma
 .env*.local
+
+# vs code
+.vscode/
+*.code-workspace
+
+# cursor
+.cursor/
+.cursorignore
+
+# mcp / tool artifacts
+*.mcp.json
