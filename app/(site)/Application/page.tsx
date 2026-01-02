@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
+import NextImage from "next/image";
 import {
     Field,
     FieldContent,
@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import React from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import Cropper from "react-easy-crop";
 
 export default function Application() {
         // --------------------------------------------
@@ -127,6 +128,11 @@ export default function Application() {
     const photoInputRef = React.useRef<HTMLInputElement | null>(null);
     const [photoPreview, setPhotoPreview] = React.useState<string | null>(null);
     const [photoName, setPhotoName] = React.useState<string | null>(null);
+    const [showCropper, setShowCropper] = React.useState(false);
+    const [crop, setCrop] = React.useState({ x: 0, y: 0 });
+    const [zoom, setZoom] = React.useState(1);
+    const [croppedAreaPixels, setCroppedAreaPixels] = React.useState<any>(null);
+    const [originalFile, setOriginalFile] = React.useState<File | null>(null);
 
     function triggerPhotoSelect() {
         photoInputRef.current?.click();
@@ -137,6 +143,7 @@ export default function Application() {
         if (!file) {
             setPhotoPreview(null);
             setPhotoName(null);
+            setShowCropper(false);
             return;
         }
         // Limit to images
@@ -145,11 +152,89 @@ export default function Application() {
             e.target.value = "";
             setPhotoPreview(null);
             setPhotoName(null);
+            setShowCropper(false);
             return;
         }
         setPhotoName(file.name);
+        setOriginalFile(file);
         const url = URL.createObjectURL(file);
         setPhotoPreview(url);
+        setShowCropper(true);
+        setCrop({ x: 0, y: 0 });
+        setZoom(1);
+    }
+
+    const onCropComplete = (croppedArea: any, croppedAreaPixels: any) => {
+        setCroppedAreaPixels(croppedAreaPixels);
+    };
+
+    async function createImage(url: string): Promise<HTMLImageElement> {
+        return new Promise((resolve, reject) => {
+            const image = new Image();
+            image.addEventListener("load", () => resolve(image));
+            image.addEventListener("error", (err) => reject(err));
+            image.setAttribute("crossOrigin", "anonymous");
+            image.src = url;
+        });
+    }
+
+    async function getCroppedImg(
+        imageSrc: string,
+        pixelCrop: any
+    ): Promise<Blob> {
+        const image = await createImage(imageSrc);
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        if (!ctx) throw new Error("No 2d context");
+
+        canvas.width = pixelCrop.width;
+        canvas.height = pixelCrop.height;
+
+        ctx.drawImage(
+            image,
+            pixelCrop.x,
+            pixelCrop.y,
+            pixelCrop.width,
+            pixelCrop.height,
+            0,
+            0,
+            pixelCrop.width,
+            pixelCrop.height
+        );
+
+        return new Promise((resolve) => {
+            canvas.toBlob((blob) => {
+                resolve(blob as Blob);
+            }, "image/jpeg");
+        });
+    }
+
+    async function handleSaveCrop() {
+        try {
+            if (!photoPreview || !croppedAreaPixels || !originalFile) return;
+
+            const croppedImage = await getCroppedImg(photoPreview, croppedAreaPixels);
+            const croppedFile = new File([croppedImage], originalFile.name, {
+                type: "image/jpeg",
+            });
+
+            // Update the file input with the cropped image
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(croppedFile);
+            if (photoInputRef.current) {
+                photoInputRef.current.files = dataTransfer.files;
+            }
+
+            // Update preview
+            const croppedUrl = URL.createObjectURL(croppedImage);
+            setPhotoPreview(croppedUrl);
+            setShowCropper(false);
+            toast.success("Photo cropped successfully");
+        } catch (e) {
+            toast.error("Failed to crop image");
+            console.error(e);
+        }
     }
 
     function clearPhoto() {
@@ -158,6 +243,7 @@ export default function Application() {
         }
         setPhotoPreview(null);
         setPhotoName(null);
+        setShowCropper(false);
     }
 
     return (
@@ -403,15 +489,73 @@ export default function Application() {
                                             )}
                                         </div>
 
-                                        {photoPreview && (
-                                            <div className="mt-3">
-                                                <Image
+                                        {/* Crop Modal */}
+                                        {showCropper && photoPreview && (
+                                            <div className="mt-4 border rounded-lg p-4 bg-gray-50">
+                                                <div className="mb-4">
+                                                    <label className="text-sm font-medium mb-2 block">
+                                                        Zoom: {(zoom * 100).toFixed(0)}%
+                                                    </label>
+                                                    <input
+                                                        type="range"
+                                                        min={1}
+                                                        max={3}
+                                                        step={0.1}
+                                                        value={zoom}
+                                                        onChange={(e) => setZoom(Number(e.target.value))}
+                                                        className="w-full"
+                                                    />
+                                                </div>
+                                                <div className="relative w-full h-64 bg-gray-900 rounded-md overflow-hidden mb-4">
+                                                    <Cropper
+                                                        image={photoPreview}
+                                                        crop={crop}
+                                                        zoom={zoom}
+                                                        aspect={1 / 1}
+                                                        showGrid={true}
+                                                        onCropChange={setCrop}
+                                                        onCropComplete={onCropComplete}
+                                                        onZoomChange={setZoom}
+                                                    />
+                                                </div>
+                                                <div className="flex gap-2">
+                                                    <Button
+                                                        type="button"
+                                                        onClick={handleSaveCrop}
+                                                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white"
+                                                    >
+                                                        Save Crop
+                                                    </Button>
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        onClick={() => setShowCropper(false)}
+                                                        className="px-4 py-2"
+                                                    >
+                                                        Cancel
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {photoPreview && !showCropper && (
+                                            <div className="mt-3 flex flex-col gap-2">
+                                                <p className="text-sm text-gray-600">Preview:</p>
+                                                <NextImage
                                                     src={photoPreview}
                                                     alt="Selected preview"
                                                     width={112}
                                                     height={112}
                                                     className="rounded-md object-cover border"
                                                 />
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    onClick={() => setShowCropper(true)}
+                                                    className="w-fit text-sm"
+                                                >
+                                                    Edit Crop
+                                                </Button>
                                             </div>
                                         )}
                                     </Field>
