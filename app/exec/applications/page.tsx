@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Flag } from "lucide-react";
 
 /* ---------------- Types ---------------- */
 
@@ -37,7 +38,7 @@ function StatusPill({ status }: { status: ApplicationStatus }) {
                 : "bg-gray-100 text-gray-700";
 
     return (
-        <span className={`px-3 py-1 rounded-full text-xs font-medium ${color}`}>
+        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${color}`}>
             {STATUS_LABELS[status]}
         </span>
     );
@@ -49,34 +50,17 @@ export default function ExecApplicationsPage() {
     const router = useRouter();
 
     const [applications, setApplications] = useState<Application[]>([
-        {
-            id: "1",
-            name: "Emily Johnson",
-            email: "emily.j@email.com",
-            status: 4,
-            flagged: true,
-        },
-        {
-            id: "2",
-            name: "Michael Brown",
-            email: "mbrown@email.com",
-            status: 2,
-            flagged: false,
-        },
-        {
-            id: "3",
-            name: "John Smith",
-            email: "john.smith@email.com",
-            status: 5,
-            flagged: false,
-        },
+        { id: "1", name: "Emily Johnson", email: "emily.j@email.com", status: 4, flagged: true },
+        { id: "2", name: "Michael Brown", email: "mbrown@email.com", status: 2, flagged: false },
+        { id: "3", name: "John Smith", email: "john.smith@email.com", status: 5, flagged: false },
+        { id: "4", name: "Sarah Williams", email: "swilliams@email.com", status: 3, flagged: false },
+        { id: "5", name: "Daniel Lee", email: "dlee@email.com", status: 1, flagged: true },
+        { id: "6", name: "Olivia Martinez", email: "omartinez@email.com", status: 2, flagged: false },
     ]);
 
     const [search, setSearch] = useState("");
     const [sortByStatus, setSortByStatus] = useState(true);
-    const [emailStatus, setEmailStatus] = useState<ApplicationStatus | "all">(
-        "all"
-    );
+    const [emailStatus, setEmailStatus] = useState<ApplicationStatus | "all">("all");
 
     /* ---------------- Derived Data ---------------- */
 
@@ -85,7 +69,6 @@ export default function ExecApplicationsPage() {
             app.name.toLowerCase().includes(search.toLowerCase())
         );
 
-        // Filter by status if not "all"
         if (emailStatus !== "all") {
             list = list.filter((app) => app.status === emailStatus);
         }
@@ -96,7 +79,6 @@ export default function ExecApplicationsPage() {
 
         return list;
     }, [applications, search, sortByStatus, emailStatus]);
-
 
     const emailList = useMemo(() => {
         const list =
@@ -110,15 +92,30 @@ export default function ExecApplicationsPage() {
     /* ---------------- Actions ---------------- */
 
     const toggleFlag = (id: string) => {
+        const app = applications.find((a) => a.id === id);
+        if (!app) return;
+
+        const confirmed = window.confirm(
+            app.flagged
+                ? "Remove flag from this application?"
+                : "Flag this application?"
+        );
+        if (!confirmed) return;
+
         setApplications((apps) =>
-            apps.map((app) =>
-                app.id === id ? { ...app, flagged: !app.flagged } : app
+            apps.map((a) =>
+                a.id === id ? { ...a, flagged: !a.flagged } : a
             )
         );
     };
 
     const deleteApplication = (id: string) => {
-        setApplications((apps) => apps.filter((app) => app.id !== id));
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this application? This cannot be undone."
+        );
+        if (!confirmed) return;
+
+        setApplications((apps) => apps.filter((a) => a.id !== id));
     };
 
     const copyEmails = async () => {
@@ -135,10 +132,13 @@ export default function ExecApplicationsPage() {
     return (
         <div className="min-h-screen bg-gray-50">
             <div className="max-w-6xl mx-auto px-6 py-10">
+
                 {/* Header */}
                 <div className="mb-8">
                     <div className="flex items-center justify-between">
-                        <h1 className="text-3xl font-bold">Exec - Rush Applications</h1>
+                        <h1 className="text-3xl font-bold">
+                            Exec - Rush Applications
+                        </h1>
                         <Button variant="outline" onClick={() => router.push("/")}>
                             Home
                         </Button>
@@ -186,7 +186,9 @@ export default function ExecApplicationsPage() {
                             ))}
                     </select>
 
-                    <Button onClick={copyEmails}>Copy Emails</Button>
+                    <Button onClick={copyEmails}>
+                        Copy Emails
+                    </Button>
                 </div>
 
                 {/* Applications List */}
@@ -197,18 +199,20 @@ export default function ExecApplicationsPage() {
                             onClick={() => router.push(`/exec/applications/${app.id}`)}
                             className="cursor-pointer hover:shadow-md transition"
                         >
-                            <CardContent className="p-6 flex items-center justify-between">
+                            <CardContent className="px-4 py-3 flex items-center justify-between">
                                 <div>
-                                    <div className="flex items-center gap-3">
-                                        <h2 className="text-lg font-semibold">{app.name}</h2>
+                                    <div className="flex items-center gap-2">
+                                        <h2 className="text-base font-semibold">
+                                            {app.name}
+                                        </h2>
                                         <StatusPill status={app.status} />
                                         {app.flagged && (
-                                            <span className="text-red-500 text-xs font-medium">
-                                                Flagged
-                                            </span>
+                                            <Flag className="w-4 h-4 text-red-500" />
                                         )}
                                     </div>
-                                    <p className="text-sm text-gray-600 mt-1">{app.email}</p>
+                                    <p className="text-xs text-gray-600 leading-tight">
+                                        {app.email}
+                                    </p>
                                 </div>
 
                                 <div
@@ -217,6 +221,7 @@ export default function ExecApplicationsPage() {
                                 >
                                     <Button
                                         size="sm"
+                                        className="h-8 px-3"
                                         variant="outline"
                                         onClick={() => toggleFlag(app.id)}
                                     >
@@ -225,16 +230,18 @@ export default function ExecApplicationsPage() {
 
                                     <Button
                                         size="sm"
+                                        className="h-8 px-3"
                                         variant="destructive"
                                         onClick={() => deleteApplication(app.id)}
                                     >
                                         Delete
                                     </Button>
 
-                                    <span className="text-gray-400 ml-2">›</span>
+                                    <span className="text-gray-400 ml-1">›</span>
                                 </div>
                             </CardContent>
                         </Card>
+
                     ))}
 
                     {filteredApplications.length === 0 && (
