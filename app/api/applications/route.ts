@@ -76,7 +76,8 @@ async function createNeonAuthUser(email: string, name: string) {
         console.log(`Verification email sent to ${ email }`);
     }
 
-    return { id: data.id, email: data.email, password: password };
+    // neon auth only returns id
+    return { id: data.id, email: email, password: password };
 
 }
 

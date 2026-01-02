@@ -148,6 +148,7 @@ model verification {
 }
 
 model accounts {
+  id              String        @id @db.Uuid
   firstName       String        @default("john")
   lastName        String        @default("smith")
   majors          String[]
@@ -158,7 +159,6 @@ model accounts {
   gradSemester    gradSemester?
   headshotBlobURL String?       @unique
   resumeBlobURL   String?       @unique
-  id              String        @id @db.Uuid
   leaderType      leaderType?   @default(N_A)
   phoneNum        String?
   isNew           Boolean?
