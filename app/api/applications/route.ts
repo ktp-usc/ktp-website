@@ -70,14 +70,20 @@ async function createNeonAuthUser(email: string, name: string)
   //returns Neon Auth user object to link with accounts table entry
   const data = await response.json();
 
+  const appOrigin = process.env.ORIGIN_URL || "http://localhost:3000";
   //Sends password reset email to user to set their own password
-  // await fetch(`${authUrl}/reset-password`, {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json"},
-  //   body: JSON.stringify({ email, redirectTo: "https://ktp.org/login" }),
-  // });
+  const emailResponse = await fetch(`${authUrl}/request-password-reset`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json", "Origin": appOrigin},
+    body: JSON.stringify({ email, redirectTo: `${appOrigin}/Reset-Password` }),
+  });
 
+  if (!emailResponse.ok) {
+    console.warn(`User created, but failed to send reset email: ${emailResponse.status}`, emailResponse.text());
+  } else {
+    console.log(`Verification email sent to ${email}`);
+  }
 
   return {id: data.id, email: data.email, password:password};
 
