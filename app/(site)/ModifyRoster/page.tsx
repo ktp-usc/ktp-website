@@ -20,6 +20,17 @@ import {
 } from "@/components/ui/table";
 import membersData from "../Members/members.json";
 
+// Let's... let's not talk about this [sorry Braden :( ]
+interface MemberData {
+  name: string;
+  year?: string;
+  major?: string;
+  role?: string;
+  imageUrl?: string;
+  category?: string;
+  linkedin?: string;
+}
+
 interface Member {
   id: number;
   name: string;
@@ -50,7 +61,7 @@ export default function ModifyRoster() {
     let id = 1;
 
     // Add E-Board members as Exec
-    membersData.eBoard.forEach((member: any) => {
+    membersData.eBoard.forEach((member: MemberData) => {
       members.push({
         id: id++,
         name: member.name,
@@ -62,7 +73,7 @@ export default function ModifyRoster() {
     });
 
     // Add Chairs as Exec
-    membersData.chairs.forEach((member: any) => {
+    membersData.chairs.forEach((member: MemberData) => {
       members.push({
         id: id++,
         name: member.name,
@@ -74,7 +85,7 @@ export default function ModifyRoster() {
     });
 
     // Add Actives
-    membersData.actives.forEach((member: any) => {
+    membersData.actives.forEach((member: MemberData) => {
       members.push({
         id: id++,
         name: member.name,
