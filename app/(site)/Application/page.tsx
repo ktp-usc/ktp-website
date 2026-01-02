@@ -20,6 +20,13 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Cropper from "react-easy-crop";
 
+interface PixelCrop {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 export default function Application() {
         // --------------------------------------------
         // Resume upload UI helpers
@@ -131,7 +138,7 @@ export default function Application() {
     const [showCropper, setShowCropper] = React.useState(false);
     const [crop, setCrop] = React.useState({ x: 0, y: 0 });
     const [zoom, setZoom] = React.useState(1);
-    const [croppedAreaPixels, setCroppedAreaPixels] = React.useState<any>(null);
+    const [croppedAreaPixels, setCroppedAreaPixels] = React.useState<PixelCrop | null>(null);
     const [originalFile, setOriginalFile] = React.useState<File | null>(null);
 
     function triggerPhotoSelect() {
@@ -164,7 +171,7 @@ export default function Application() {
         setZoom(1);
     }
 
-    const onCropComplete = (croppedArea: any, croppedAreaPixels: any) => {
+    const onCropComplete = (croppedArea: unknown, croppedAreaPixels: PixelCrop) => {
         setCroppedAreaPixels(croppedAreaPixels);
     };
 
@@ -180,7 +187,7 @@ export default function Application() {
 
     async function getCroppedImg(
         imageSrc: string,
-        pixelCrop: any
+        pixelCrop: PixelCrop
     ): Promise<Blob> {
         const image = await createImage(imageSrc);
         const canvas = document.createElement("canvas");
