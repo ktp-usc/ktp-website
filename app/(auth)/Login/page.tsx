@@ -123,6 +123,7 @@ export default function LoginPage() {
 
               <button
                 type="submit"
+                onClick={() => router.push("/homepage")}
                 className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 py-3 text-white font-semibold hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-lg shadow-blue-500/30"
               >
                 Sign In
