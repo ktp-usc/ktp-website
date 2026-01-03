@@ -19,9 +19,11 @@ export default function SettingsPage() {
     phone: '',
     major: '',
     minor: '',
-    classification: '',
+    graduation: '',
     gpa: '',
     headshot: '',
+    LinkedIn: '',
+    bio: '',
     // Non-editable fields
     type: '',
     exec: false,
@@ -75,8 +77,10 @@ export default function SettingsPage() {
           phone: user.phone,
           major: user.major,
           minor: user.minor,
-          classification: user.classification,
+          graduation: user.graduation,
           gpa: user.gpa,
+          LinkedIn: user.LinkedIn,
+          bio: user.bio,
         }),
       });
 
@@ -250,25 +254,55 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <label htmlFor="classification" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Classification
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  LinkedIn
+                </label>
+                <input
+                  type="text"
+                  id="LinkedIn"
+                  name="LinkedIn"
+                  value={user.LinkedIn}
+                  onChange={handleInputChange}
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="bio" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Bio
+                </label>
+                <input
+                  type="text"
+                  id="bio"
+                  name="bio"
+                  value={user.bio}
+                  onChange={handleInputChange}
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                />
+             </div>
+
+
+              <div>
+                <label htmlFor="graduation" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Graduation Year
                 </label>
                 <select
-                  id="classification"
-                  name="classification"
-                  value={user.classification}
+                  id="graduation"
+                  name="graduation"
+                  value={user.graduation}
                   onChange={handleInputChange}
                   className="w-full rounded-lg border appearance-none border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                 >
-                  <option value="">Select Classification</option>
-                  <option value="freshman">Freshman</option>
-                  <option value="sophomore">Sophomore</option>
-                  <option value="junior">Junior</option>
-                  <option value="senior">Senior</option>
+                  <option value="">Select Graduation Year</option>
+                  <option value="2026">2026</option>
+                  <option value="2027">2027</option>
+                  <option value="2028">2028</option>
+                  <option value="2029">2029</option>
                 </select>
               </div>
             </div>
           </div>
+        
 
           {/* Academic Information */}
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
@@ -370,7 +404,7 @@ export default function SettingsPage() {
             </button>
             <button
               type="button"
-              onClick={() => router.push('/')}
+              onClick={() => router.push('/homepage')}
               className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
             >
               Cancel

@@ -8,7 +8,7 @@ import { ca } from 'date-fns/locale';
 // Mock user data - replace with actual auth/data fetching
 const mockUser = {
   name: "John Doe",
-  role: "member", // "exec, applicant, member"
+  role: "applicant", // "exec, applicant, member"
   headshot: "/placeholder-headshot.jpg",
   application: {
     id: "app-001",
@@ -16,7 +16,8 @@ const mockUser = {
     submittedDate: "Dec 15, 2024",
     major: "Computer Science",
     year: "Junior",
-    gpa: "3.8"
+    gpa: "3.8",
+    LinkedIn: "https://linkedin.com/in/johndoe"
   }
 };
 
@@ -25,11 +26,7 @@ export default function HomePage() {
   const [user, setUser] = useState(mockUser);
   
 
-  useEffect(() => {
-    // Ensure dark mode on homepage
-    document.documentElement.classList.add('dark');
-    <ThemeToggle />;
-  }, []);
+
 
   const getStatusColor = (status: number) => {
     switch (status) {
