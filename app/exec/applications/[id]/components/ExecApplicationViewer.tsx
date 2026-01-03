@@ -16,80 +16,70 @@ const STATUS_MAP: Record<number, string> = {
     6: 'Bid Accepted',
 };
 
-export default function ExecApplicationViewer({ initialApplication }: { initialApplication?: Application | null }) {
+type Mode = 'exec' | 'applicant';
+
+export default function ExecApplicationViewer({
+                                                  initialApplication,
+                                                  mode = 'exec',
+                                              }: {
+    initialApplication?: Application | null;
+    mode?: Mode;
+}) {
     const router = useRouter();
     const [app, setApp] = useState<Application | null>(initialApplication ?? null);
     const [adjacent, setAdjacent] = useState<{ prevId?: string | null; nextId?: string | null }>({});
     const [fullscreenResume, setFullscreenResume] = useState<string | null>(null);
-    const [statusUpdating, setStatusUpdating] = useState(false);
-    const [deleting, setDeleting] = useState(false);
 
-    // get previous/next applications
+    // load previous/next applications only for exec
     useEffect(() => {
-        if (!app?.id) return;
+        if (mode !== 'exec' || !app?.id) return;
 
-        const id = app.id;
-
-        async function loadAdjacent() {
-            try {
-                const res = await fetch(`/api/applications/adjacent?id=${id}`);
-                if (!res.ok) {
-                    setAdjacent({ prevId: null, nextId: null });
-                    return;
-                }
-                const payload: any = await res.json();
-                setAdjacent({
-                    prevId: payload?.prevId ?? null,
-                    nextId: payload?.nextId ?? null,
-                });
-            } catch {
-                setAdjacent({ prevId: null, nextId: null });
-            }
-        }
-
-        loadAdjacent();
-    }, [app?.id]);
+        fetch(`/api/applications/adjacent?id=${app.id}`)
+            .then((res) => {
+                if (!res.ok) return {};
+                return res.json();
+            })
+            .then((payload: any) => {
+                setAdjacent({ prevId: payload?.prevId ?? null, nextId: payload?.nextId ?? null });
+            })
+            .catch(console.error);
+    }, [app?.id, mode]);
 
     function goBack() {
-        try { router.back(); } catch { router.push('/exec/applications'); }
+        router.back();
     }
 
     function goTo(id?: string | number | null) {
-        if (id == null) return;
+        if (!id) return;
         router.push(`/exec/applications/${id}`);
     }
 
-    async function updateStatus(newStatus: number) {
+    function updateStatus(newStatus: number) {
+        if (mode !== 'exec') return;
         if (!app?.id || app.status === newStatus) return;
-        setStatusUpdating(true);
-        try {
-            const res = await fetch(`/api/applications/${app.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: newStatus }),
-            });
-            if (res.ok) setApp((p) => (p ? { ...p, status: newStatus } : p));
-            else alert('Failed to update status');
-        } catch {
-            alert('Network error updating status');
-        } finally {
-            setStatusUpdating(false);
-        }
+
+        fetch(`/api/applications/${app.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus }),
+        })
+            .then((res) => {
+                if (res.ok) setApp((p) => (p ? { ...p, status: newStatus } : p));
+                else console.error('Failed to update status');
+            })
+            .catch(console.error);
     }
 
-    async function handleDelete() {
-        if (!app?.id) return;
+    function handleDelete() {
+        if (mode !== 'exec' || !app?.id) return;
         if (!confirm('Delete this application?')) return;
-        setDeleting(true);
-        try {
-            const res = await fetch(`/api/applications/${app.id}`, { method: 'DELETE' });
-            if (res.ok) router.push('/exec/applications');
-            else alert('Delete failed');
-        } catch {
-            alert('Delete failed (network)');
-        } finally {
-            setDeleting(false);
-        }
+
+        fetch(`/api/applications/${app.id}`, { method: 'DELETE' })
+            .then((res) => {
+                if (res.ok) router.push('/exec/applications');
+                else console.error('Delete failed');
+            })
+            .catch(console.error);
     }
 
     function getField(key: string) {
@@ -97,16 +87,13 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
         const top = (app as any)[key];
         if (top !== undefined) return top;
         const r = app.responses;
-        if (!r) return undefined;
-        if (Array.isArray(r)) {
-            const found = (r as any[]).find((x) => x && (x.question === key || (typeof x.question === 'string' && x.question.toLowerCase().includes(key.toLowerCase()))));
-            return found?.answer ?? undefined;
-        }
-        if (typeof r === 'object') return (r as any)[key];
-        return undefined;
+        if (!Array.isArray(r)) return undefined;
+        const found = (r as any[]).find((x) =>
+            x && (x.question === key || (typeof x.question === 'string' && x.question.toLowerCase().includes(key.toLowerCase())))
+        );
+        return found?.answer;
     }
 
-    // header: First (Preferred) Last only if preferred exists
     function formattedHeaderName(a?: Application | null) {
         const full = (a?.full_name ?? '').trim();
         if (!full) return 'Unnamed Applicant';
@@ -123,11 +110,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
             <div style={{ marginBottom: 12 }}>
                 <div className="app-responses-question">{label}</div>
                 <div className="app-responses-answer">
-                    {value ? (
-                        <div style={{ whiteSpace: 'pre-wrap' }}>{value}</div>
-                    ) : (
-                        <div style={{ color: '#9aa6b8', fontStyle: 'italic' }}>No response provided.</div>
-                    )}
+                    {value ? <div style={{ whiteSpace: 'pre-wrap' }}>{value}</div> : <div style={{ color: '#9aa6b8', fontStyle: 'italic' }}>No response provided.</div>}
                 </div>
             </div>
         );
@@ -143,8 +126,8 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
     const linkedin = getField('linkedin') ?? app?.linkedin ?? '';
     const github = getField('github') ?? app?.github ?? '';
     const extenuating = getField('extenuating') ?? app?.extenuating ?? '';
-    const rushEventsRaw = getField('rushEvents') ?? getField('rush_events') ?? getField('rush') ?? app?.rushEvents ?? '';
-    const rushEvents = Array.isArray(rushEventsRaw) ? (rushEventsRaw as string[]).join(', ') : (rushEventsRaw ?? '');
+    const rushEventsRaw = getField('rushEvents') ?? getField('rush_events') ?? app?.rushEvents ?? '';
+    const rushEvents = Array.isArray(rushEventsRaw) ? (rushEventsRaw as string[]).join(', ') : rushEventsRaw ?? '';
     const why = getField('reason') ?? getField('why') ?? '';
 
     return (
@@ -154,29 +137,39 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
                     <div className="left-area">
                         <button className="back-link" onClick={goBack}>← Back</button>
                     </div>
-                    <div className="right-area">
-                        <div className="status-select-wrapper" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+
+                    <div className="right-area" style={{ alignItems: 'center' }}>
+                        <div className={`status-select-wrapper ${mode === 'exec' ? '' : 'is-readonly'}`} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                             <span className="status-text">Status</span>
-                            <select
-                                className="status-select"
-                                value={typeof app?.status === 'number' ? String(app!.status) : '1'}
-                                onChange={(e) => updateStatus(Number(e.target.value))}
-                                disabled={statusUpdating}
-                            >
-                                {Object.entries(STATUS_MAP).map(([num, label]) => <option key={num} value={num}>{label}</option>)}
-                            </select>
+
+                            {mode === 'exec' ? (
+                                <select className="status-select" value={typeof app?.status === 'number' ? String(app!.status) : '1'} onChange={(e) => updateStatus(Number(e.target.value))}>
+                                    {Object.entries(STATUS_MAP).map(([num, label]) => <option key={num} value={num}>{label}</option>)}
+                                </select>
+                            ) : (
+                                <select className="status-select" value={typeof app?.status === 'number' ? String(app!.status) : '1'} disabled aria-readonly>
+                                    {Object.entries(STATUS_MAP).map(([num, label]) => <option key={num} value={num}>{label}</option>)}
+                                </select>
+                            )}
                         </div>
-                        <button onClick={handleDelete} className="control-delete" style={{ marginLeft: 12 }} disabled={deleting}>
-                            {deleting ? 'Deleting…' : 'Delete'}
-                        </button>
+
+                        {mode === 'exec' && (
+                            <button onClick={handleDelete} className="control-delete" style={{ marginLeft: 12 }}>
+                                Delete
+                            </button>
+                        )}
                     </div>
                 </div>
             </header>
 
-            <button onClick={() => goTo(adjacent.prevId)} disabled={!adjacent.prevId} className={`nav-arrow left ${adjacent.prevId ? 'enabled' : 'disabled'}`}>←</button>
-            <button onClick={() => goTo(adjacent.nextId)} disabled={!adjacent.nextId} className={`nav-arrow right ${adjacent.nextId ? 'enabled' : 'disabled'}`}>→</button>
+            {mode === 'exec' && (
+                <>
+                    <button onClick={() => goTo(adjacent.prevId)} disabled={!adjacent.prevId} className={`nav-arrow left ${adjacent.prevId ? 'enabled' : 'disabled'}`}>←</button>
+                    <button onClick={() => goTo(adjacent.nextId)} disabled={!adjacent.nextId} className={`nav-arrow right ${adjacent.nextId ? 'enabled' : 'disabled'}`}>→</button>
+                </>
+            )}
 
-            <div className="exec-application-layout">
+            <div className={`exec-application-layout ${mode === 'exec' ? '' : 'no-sidebar'}`}>
                 <div className="left-column">
                     {app?.resume_url ? (
                         <div
@@ -190,7 +183,9 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
                             <ResumeViewer url={app.resume_url} height="100%" disableClickOverlay />
                             <div className="resume-iframe-overlay" />
                         </div>
-                    ) : <div style={{ padding: 24, color: '#666' }}>No resume attached</div>}
+                    ) : (
+                        <div style={{ padding: 24, color: '#666' }}>No resume attached</div>
+                    )}
                 </div>
 
                 <div className="middle-column" style={{ position: 'relative' }}>
@@ -217,7 +212,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                boxShadow: '0 4px 14px rgba(0,0,0,0.06)'
+                                boxShadow: '0 4px 14px rgba(0,0,0,0.06)',
                             }}
                         >
                             <ImageViewer src={app?.headshot_url ?? '/placeholder-headshot.png'} alt={formattedHeaderName(app)} />
@@ -237,16 +232,20 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
 
                         <div style={{ marginTop: 6 }}>
                             <div className="app-responses-question">Why are you interested in joining Kappa Theta Pi? What talents/experiences could you bring to the organization?</div>
-                            <div className="app-responses-answer">{why ? <div style={{ whiteSpace: 'pre-wrap' }}>{why}</div> : <div style={{ color: '#9aa6b8', fontStyle: 'italic' }}>No response provided.</div>}</div>
+                            <div className="app-responses-answer">
+                                {why ? <div style={{ whiteSpace: 'pre-wrap' }}>{why}</div> : <div style={{ color: '#9aa6b8', fontStyle: 'italic' }}>No response provided.</div>}
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="right-column">
-                    <div className="sidebar-elevated">
-                        <CommentsSidebar applicationId={app?.id} />
+                {mode === 'exec' && (
+                    <div className="right-column">
+                        <div className="sidebar-elevated">
+                            <CommentsSidebar applicationId={app?.id} />
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
 
             {fullscreenResume && (
