@@ -1,48 +1,47 @@
 import React from 'react';
 import ExecApplicationViewer from './components/ExecApplicationViewer';
+import type { Application } from '../types';
 
 type Props = { params: { id: string } };
 
-//add fields later if needed
-type AppShape = {
-    id: string | number;
-    full_name?: string;
-    email?: string;
-    major?: string | null;
-    resume_url?: string | null;
-    headshot_url?: string | null;
-    responses?: Record<string, any> | Array<{ question?: string; answer?: string }>;
-    status?: number;
-};
-
 export default async function Page({ params }: Props) {
     const { id } = params;
-    const base = process.env.NEXT_PUBLIC_API_BASE ?? '';
+    const base = process.env.NEXT_PUBLIC_API_BASE || '';
 
-    let application: AppShape | null = null;
+    let application: Application | null = null;
 
     try {
         const res = await fetch(`${base}/api/applications/${id}`, { cache: 'no-store' });
         if (res.ok) {
             const payload = await res.json();
-            application = (payload && typeof payload === 'object' && 'data' in payload) ? payload.data : payload;
+            application = (payload.data ?? payload) as Application;
         } else {
-            console.error(`Failed to fetch application ${id}: ${res.status} ${res.statusText}`);
+            console.error(`Failed to fetch application ${id}: ${res.status}`);
         }
     } catch (err) {
         console.error('Error fetching application:', err);
     }
 
-    // dev fallback cause no API
+    // dev fallback
     if (!application) {
         application = {
             id,
             full_name: 'Dev Fallback Applicant',
+            preferred_first_name: null,
             email: 'fallback@dev.com',
+            phone: 'xxx-xxx-xxxx',
+            year: 'Year',
+            gpa: '0.0',
+            extenuating: null,
             major: 'Major',
-            resume_url: '/images/insert-resume.pdf',
-            headshot_url: '/images/insert-headshot.png',
-            responses: [{ question: 'Why KTP?', answer: 'Because I like coding.' }],
+            minor: null,
+            hometown: null,
+            headshot_url: '/images/fallback-headshot.jpg',
+            resume_url: '/images/fallback-resume.pdf',
+            linkedin: null,
+            github: null,
+            responses: [],
+            rushEvents: [],
             status: 1,
         };
     }

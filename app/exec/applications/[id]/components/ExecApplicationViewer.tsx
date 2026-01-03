@@ -4,53 +4,43 @@ import { useRouter } from 'next/navigation';
 import ResumeViewer from './ResumeViewer';
 import CommentsSidebar from './CommentsSidebar';
 import ImageViewer from './ImageViewer';
-
-type AppShape = {
-    id: number | string;
-    full_name?: string;
-    major?: string | null;
-    year?: string | null;
-    resume_url?: string | null;
-    headshot_url?: string | null;
-    responses?: Record<string, any> | Array<{ question?: string; answer?: string }>;
-    status?: number;
-};
+import type { Application } from '../../types';
 
 const STATUS_MAP: Record<number, string> = {
-    5: 'Bid Accepted',
+    0: 'Closed',
+    1: 'Under Review',
+    2: 'Interviews',
+    3: 'Waitlist',
     4: 'Bid Offered',
-    3: 'Interviewed',
-    2: 'Reviewed',
-    1: 'Submitted',
-    0: 'Rejected',
+    5: 'Bid Declined',
+    6: 'Bid Accepted',
 };
 
-export default function ExecApplicationViewer({ initialApplication }: { initialApplication?: AppShape | null }) {
+export default function ExecApplicationViewer({ initialApplication }: { initialApplication?: Application | null }) {
     const router = useRouter();
-    const [app, setApp] = useState<AppShape | null>(initialApplication ?? null);
-
+    const [app, setApp] = useState<Application | null>(initialApplication ?? null);
     const [adjacent, setAdjacent] = useState<{ prevId?: string | null; nextId?: string | null }>({});
     const [fullscreenResume, setFullscreenResume] = useState<string | null>(null);
     const [statusUpdating, setStatusUpdating] = useState(false);
     const [deleting, setDeleting] = useState(false);
 
-    // load prev/next application ids
+    // get previous/next applications
     useEffect(() => {
         if (!app?.id) return;
 
-        const idForQuery = encodeURIComponent(String(app.id));
+        const id = app.id;
 
         async function loadAdjacent() {
             try {
-                const res = await fetch(`/api/applications/adjacent?id=${idForQuery}`);
+                const res = await fetch(`/api/applications/adjacent?id=${id}`);
                 if (!res.ok) {
                     setAdjacent({ prevId: null, nextId: null });
                     return;
                 }
-                const payload = await res.json();
+                const payload: any = await res.json();
                 setAdjacent({
-                    prevId: payload?.prevId != null ? String(payload.prevId) : null,
-                    nextId: payload?.nextId != null ? String(payload.nextId) : null,
+                    prevId: payload?.prevId ?? null,
+                    nextId: payload?.nextId ?? null,
                 });
             } catch {
                 setAdjacent({ prevId: null, nextId: null });
@@ -61,36 +51,27 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
     }, [app?.id]);
 
     function goBack() {
-        try {
-            router.back();
-        } catch {
-            router.push('/exec/applications');
-        }
+        try { router.back(); } catch { router.push('/exec/applications'); }
     }
 
     function goTo(id?: string | number | null) {
-        if (!id && id !== 0) return;
-        const safe = encodeURIComponent(String(id));
-        router.push(`/exec/applications/${safe}`);
+        if (id == null) return;
+        router.push(`/exec/applications/${id}`);
     }
 
     async function updateStatus(newStatus: number) {
-        if (!app?.id) return;
-        if (app.status === newStatus) return;
+        if (!app?.id || app.status === newStatus) return;
         setStatusUpdating(true);
         try {
-            const res = await fetch(`/api/applications/${encodeURIComponent(String(app.id))}`, {
+            const res = await fetch(`/api/applications/${app.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: newStatus }),
             });
-            if (res.ok) {
-                setApp((prev) => (prev ? { ...prev, status: newStatus } : prev));
-            } else {
-                alert('Unable to update status');
-            }
+            if (res.ok) setApp((p) => (p ? { ...p, status: newStatus } : p));
+            else alert('Failed to update status');
         } catch {
-            alert('Network error while updating status');
+            alert('Network error updating status');
         } finally {
             setStatusUpdating(false);
         }
@@ -101,12 +82,9 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
         if (!confirm('Delete this application?')) return;
         setDeleting(true);
         try {
-            const res = await fetch(`/api/applications/${encodeURIComponent(String(app.id))}`, { method: 'DELETE' });
-            if (res.ok) {
-                router.push('/exec/applications');
-            } else {
-                alert('Delete failed');
-            }
+            const res = await fetch(`/api/applications/${app.id}`, { method: 'DELETE' });
+            if (res.ok) router.push('/exec/applications');
+            else alert('Delete failed');
         } catch {
             alert('Delete failed (network)');
         } finally {
@@ -114,146 +92,169 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
         }
     }
 
-    function renderResponses() {
-        const r = app?.responses;
-        if (!r) return <div style={{ textAlign: 'center', color: '#666' }}>N/A</div>;
-        if (Array.isArray(r))
-            return r.map((qa, i) => (
-                <div key={i} style={{ marginBottom: 16 }}>
-                    <div className="app-responses-question">{qa.question ?? 'Question'}</div>
-                    <div className="app-responses-answer">{qa.answer ?? 'N/A'}</div>
-                </div>
-            ));
-        return Object.entries(r).map(([q, a]) => (
-            <div key={q} style={{ marginBottom: 16 }}>
-                <div className="app-responses-question">{q}</div>
-                <div className="app-responses-answer">{a ?? 'N/A'}</div>
-            </div>
-        ));
+    function getField(key: string) {
+        if (!app) return undefined;
+        const top = (app as any)[key];
+        if (top !== undefined) return top;
+        const r = app.responses;
+        if (!r) return undefined;
+        if (Array.isArray(r)) {
+            const found = (r as any[]).find((x) => x && (x.question === key || (typeof x.question === 'string' && x.question.toLowerCase().includes(key.toLowerCase()))));
+            return found?.answer ?? undefined;
+        }
+        if (typeof r === 'object') return (r as any)[key];
+        return undefined;
     }
 
-    const fullName = (app?.full_name ?? 'Unnamed Applicant').trim();
-    const nameParts = fullName.length ? fullName.split(/\s+/) : ['Unnamed', 'Applicant'];
-    const firstName = nameParts[0];
-    const lastName = nameParts.slice(1).join(' ');
+    // header: First (Preferred) Last only if preferred exists
+    function formattedHeaderName(a?: Application | null) {
+        const full = (a?.full_name ?? '').trim();
+        if (!full) return 'Unnamed Applicant';
+        const parts = full.split(/\s+/);
+        const preferred = (a?.preferred_first_name ?? '')?.toString().trim();
+        if (parts.length === 1) return preferred ? `${preferred} (${parts[0]})` : parts[0];
+        const first = parts[0];
+        const last = parts.slice(1).join(' ');
+        return preferred ? `${first} (${preferred}) ${last}` : `${first} ${last}`;
+    }
 
-    const rightArrowOffset = 'calc(360px + 24px)';
+    function LabeledBox({ label, value }: { label: string; value?: any }) {
+        return (
+            <div style={{ marginBottom: 12 }}>
+                <div className="app-responses-question">{label}</div>
+                <div className="app-responses-answer">
+                    {value ? (
+                        <div style={{ whiteSpace: 'pre-wrap' }}>{value}</div>
+                    ) : (
+                        <div style={{ color: '#9aa6b8', fontStyle: 'italic' }}>No response provided.</div>
+                    )}
+                </div>
+            </div>
+        );
+    }
+
+    const email = getField('email') ?? app?.email ?? '';
+    const phone = getField('phone') ?? app?.phone ?? '';
+    const year = getField('year') ?? app?.year ?? '';
+    const gpa = getField('gpa') ?? app?.gpa ?? '';
+    const major = getField('major') ?? app?.major ?? '';
+    const minor = getField('minor') ?? app?.minor ?? '';
+    const hometown = getField('hometown') ?? app?.hometown ?? '';
+    const linkedin = getField('linkedin') ?? app?.linkedin ?? '';
+    const github = getField('github') ?? app?.github ?? '';
+    const extenuating = getField('extenuating') ?? app?.extenuating ?? '';
+    const rushEventsRaw = getField('rushEvents') ?? getField('rush_events') ?? getField('rush') ?? app?.rushEvents ?? '';
+    const rushEvents = Array.isArray(rushEventsRaw) ? (rushEventsRaw as string[]).join(', ') : (rushEventsRaw ?? '');
+    const why = getField('reason') ?? getField('why') ?? '';
 
     return (
-        <div className="page-content" style={{ display: 'flex', gap: 20 }}>
+        <div className="page-content">
             <header className="exec-topbar">
                 <div className="inner">
                     <div className="left-area">
-                        <button className="back-link button-match-select header-back" onClick={goBack}>
-                            ← Back
-                        </button>
+                        <button className="back-link" onClick={goBack}>← Back</button>
                     </div>
-
                     <div className="right-area">
                         <div className="status-select-wrapper" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                             <span className="status-text">Status</span>
                             <select
+                                className="status-select"
                                 value={typeof app?.status === 'number' ? String(app!.status) : '1'}
                                 onChange={(e) => updateStatus(Number(e.target.value))}
-                                className="status-select control-tall"
-                                style={{ minWidth: 140 }}
                                 disabled={statusUpdating}
                             >
-                                {Object.entries(STATUS_MAP).map(([num, label]) => (
-                                    <option key={num} value={num}>
-                                        {label}
-                                    </option>
-                                ))}
+                                {Object.entries(STATUS_MAP).map(([num, label]) => <option key={num} value={num}>{label}</option>)}
                             </select>
                         </div>
-
-                        <button
-                            onClick={handleDelete}
-                            className="control-delete"
-                            style={{ marginLeft: 12 }}
-                            disabled={deleting}
-                        >
+                        <button onClick={handleDelete} className="control-delete" style={{ marginLeft: 12 }} disabled={deleting}>
                             {deleting ? 'Deleting…' : 'Delete'}
                         </button>
                     </div>
                 </div>
             </header>
 
-            {/* previous arrow */}
-            <button
-                onClick={() => goTo(adjacent.prevId)}
-                disabled={!adjacent.prevId}
-                className={`nav-arrow left ${adjacent.prevId ? 'enabled' : 'disabled'}`}
-                style={{ left: 12 }}
-            >
-                ←
-            </button>
+            <button onClick={() => goTo(adjacent.prevId)} disabled={!adjacent.prevId} className={`nav-arrow left ${adjacent.prevId ? 'enabled' : 'disabled'}`}>←</button>
+            <button onClick={() => goTo(adjacent.nextId)} disabled={!adjacent.nextId} className={`nav-arrow right ${adjacent.nextId ? 'enabled' : 'disabled'}`}>→</button>
 
-            {/* next arrow */}
-            <button
-                onClick={() => goTo(adjacent.nextId)}
-                disabled={!adjacent.nextId}
-                className={`nav-arrow right ${adjacent.nextId ? 'enabled' : 'disabled'}`}
-                style={{ right: rightArrowOffset }}
-            >
-                →
-            </button>
-
-            <div style={{ flex: 1, maxWidth: 1000, margin: '0 auto', position: 'relative' }}>
-                <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 10 }}>
-                    <div style={{ width: 120, textAlign: 'center' }}>
-                        <ImageViewer src={app?.headshot_url ?? '/placeholder-headshot.png'} alt={fullName} />
-                    </div>
-
-                    <div style={{ flex: 1, textAlign: 'center' }}>
-                        <div style={{ fontSize: 28, fontWeight: 800 }}>{firstName} {lastName}</div>
-                        <div style={{ marginTop: 6, fontWeight: 700 }}>{app?.major ?? 'N/A'}</div>
-                        <div style={{ marginTop: 4, color: '#666' }}>{app?.year ?? 'N/A'}</div>
-                    </div>
-
-                    <div style={{ width: 120 }} />
-                </div>
-
-                <div style={{ marginTop: 40 }}>
+            <div className="exec-application-layout">
+                <div className="left-column">
                     {app?.resume_url ? (
                         <div
                             className="resume-iframe-wrapper"
-                            style={{ position: 'relative', cursor: 'zoom-in' }}
-                            onClick={() => setFullscreenResume(app.resume_url ?? null)}
+                            role="button"
                             tabIndex={0}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') setFullscreenResume(app.resume_url ?? null);
+                            onClick={() => setFullscreenResume(app.resume_url ?? null)}
+                            onKeyDown={(e) => { if (e.key === 'Enter') setFullscreenResume(app.resume_url ?? null); }}
+                            aria-label="Open resume fullscreen"
+                        >
+                            <ResumeViewer url={app.resume_url} height="100%" disableClickOverlay />
+                            <div className="resume-iframe-overlay" />
+                        </div>
+                    ) : <div style={{ padding: 24, color: '#666' }}>No resume attached</div>}
+                </div>
+
+                <div className="middle-column" style={{ position: 'relative' }}>
+                    <div style={{ position: 'relative', paddingTop: 8, paddingBottom: 60 }}>
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontSize: 28, fontWeight: 700 }}>{formattedHeaderName(app)}</div>
+                            <div style={{ marginTop: 2, fontSize: 20, fontWeight: 600 }}>{major ?? 'N/A'}</div>
+                            <div style={{ marginTop: 1, color: '#666', fontSize: 15 }}>{year ?? 'N/A'}</div>
+                        </div>
+
+                        <div
+                            aria-hidden
+                            className="app-headshot-box"
+                            style={{
+                                position: 'absolute',
+                                left: 'calc(50% - 335px)',
+                                top: 0,
+                                width: 120,
+                                height: 120,
+                                overflow: 'hidden',
+                                borderRadius: 6,
+                                border: '1px solid #e6eaf0',
+                                background: '#fff',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                boxShadow: '0 4px 14px rgba(0,0,0,0.06)'
                             }}
                         >
-                            <ResumeViewer url={app.resume_url} height={520} />
-                            <div className="resume-iframe-overlay" style={{ position: 'absolute', inset: 0, zIndex: 2, background: 'transparent' }} />
+                            <ImageViewer src={app?.headshot_url ?? '/placeholder-headshot.png'} alt={formattedHeaderName(app)} />
                         </div>
-                    ) : (
-                        <div style={{ padding: 24, color: '#666' }}>No resume attached</div>
-                    )}
+                    </div>
+
+                    <div className="responses-scroll">
+                        <LabeledBox label="Email" value={email} />
+                        <LabeledBox label="Phone" value={phone} />
+                        <LabeledBox label="GPA" value={gpa} />
+                        <LabeledBox label="Rush Events Attended" value={rushEvents || undefined} />
+                        {extenuating ? <LabeledBox label="Extenuating Circumstances" value={extenuating} /> : null}
+                        {minor ? <LabeledBox label="Minor(s)" value={minor} /> : null}
+                        {hometown ? <LabeledBox label="Hometown" value={hometown} /> : null}
+                        {linkedin ? <LabeledBox label="LinkedIn" value={linkedin} /> : null}
+                        {github ? <LabeledBox label="GitHub" value={github} /> : null}
+
+                        <div style={{ marginTop: 6 }}>
+                            <div className="app-responses-question">Why are you interested in joining Kappa Theta Pi? What talents/experiences could you bring to the organization?</div>
+                            <div className="app-responses-answer">{why ? <div style={{ whiteSpace: 'pre-wrap' }}>{why}</div> : <div style={{ color: '#9aa6b8', fontStyle: 'italic' }}>No response provided.</div>}</div>
+                        </div>
+                    </div>
                 </div>
 
-                <div style={{ marginTop: 40 }}>
-                    <h2 className="app-responses-title">Application Responses</h2>
-                    <div style={{ marginTop: 8 }}>{renderResponses()}</div>
-                </div>
-            </div>
-
-            <div style={{ width: 360 }}>
-                <div className="sidebar-elevated" style={{ padding: 16 }}>
-                    <CommentsSidebar applicationId={app?.id} />
+                <div className="right-column">
+                    <div className="sidebar-elevated">
+                        <CommentsSidebar applicationId={app?.id} />
+                    </div>
                 </div>
             </div>
 
             {fullscreenResume && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 32 }}>
-                    <div style={{ width: '90%', height: '90%', background: '#fff', borderRadius: 8, overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'column' }}>
-                        <button onClick={() => setFullscreenResume(null)} style={{ position: 'absolute', right: 12, top: 12, zIndex: 30, padding: 8, borderRadius: 6, border: '1px solid rgba(0,0,0,0.08)', background: '#fff', cursor: 'pointer' }}>
-                            ✕
-                        </button>
-
+                <div className="fullscreen-overlay" onClick={() => setFullscreenResume(null)}>
+                    <div className="fullscreen-modal" onClick={(e) => e.stopPropagation()}>
+                        <button className="fullscreen-close" onClick={() => setFullscreenResume(null)} aria-label="Close resume">✕</button>
                         <div style={{ width: '100%', height: '100%' }}>
-                            <ResumeViewer url={fullscreenResume} height="100%" />
+                            <ResumeViewer url={fullscreenResume} fill />
                         </div>
                     </div>
                 </div>

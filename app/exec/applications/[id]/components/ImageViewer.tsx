@@ -12,15 +12,16 @@ export default function ImageViewer({ src, alt }: Props) {
             src={src || '/placeholder-headshot.png'}
             alt={alt || 'Headshot'}
             onError={(e) => {
-                (e.currentTarget as HTMLImageElement).src = '/insert-headshot.png';
+                e.currentTarget.src = '/insert-headshot.png';
             }}
             style={{
-                width: 160,
-                height: 160,
+                width: 96,
+                height: 96,
                 objectFit: 'cover',
-                borderRadius: 8,
+                borderRadius: 0,
                 border: '1px solid #e6eaf0',
                 background: '#f6f8fb',
+                display: 'block',
             }}
         />
     );

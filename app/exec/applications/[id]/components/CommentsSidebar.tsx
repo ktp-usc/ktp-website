@@ -18,7 +18,6 @@ type Comment = {
     replies?: Reply[];
 };
 
-//replace with actual current user from auth
 const CURRENT_USER_NAME = 'You';
 
 export default function CommentsSidebar({ applicationId }: { applicationId?: number | string }) {
@@ -35,19 +34,27 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
     // load comments
     useEffect(() => {
         if (!applicationId) return;
-        fetch(`/api/applications/${applicationId}/comments`)
-            .then((r) => (r.ok ? r.json() : null))
-            .then((j: any) => {
+
+        async function loadComments() {
+            try {
+                const res = await fetch(`/api/applications/${applicationId}/comments`);
+                if (!res.ok) {
+                    setComments([]);
+                    return;
+                }
+                const j = await res.json();
                 const data = j?.comments ?? j ?? [];
                 const normalized: Comment[] = (Array.isArray(data) ? data : []).map((c: any) => ({
                     ...c,
                     replies: Array.isArray(c.replies) ? c.replies : [],
                 }));
-                setComments(normalized);
-            })
-            .catch(() => {
+                setComments(normalized.slice().reverse());
+            } catch {
                 setComments([]);
-            });
+            }
+        }
+
+        loadComments();
     }, [applicationId]);
 
     useEffect(() => {
@@ -72,7 +79,7 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
             createdAt: new Date().toISOString(),
             replies: [],
         };
-        setComments((c) => [...c, newComment]);
+        setComments((c) => [newComment, ...c]);
         setText('');
         try {
             await fetch(`/api/applications/${applicationId}/comments`, {
@@ -103,7 +110,7 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
         };
         setComments((prev) =>
             prev.map((c) =>
-                String(c.id) === String(parentId)
+                c.id == parentId
                     ? { ...c, replies: [...(c.replies ?? []), newReply] }
                     : c
             )
@@ -122,15 +129,11 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
     function openMenuForComment(commentId: number | string) {
         setMenuOpenId(`c:${commentId}`);
     }
-    function openMenuForReply(parentId: number | string, replyId: number | string) {
-        setMenuOpenId(`r:${parentId}:${replyId}`);
-    }
 
-    // delete comment
     async function deleteComment(commentId: number | string) {
         if (!applicationId) return;
         if (!confirm('Delete this comment?')) return;
-        setComments((prev) => prev.filter((c) => String(c.id) !== String(commentId)));
+        setComments((prev) => prev.filter((c) => c.id != commentId));
         setMenuOpenId(null);
         try {
             await fetch(`/api/applications/${applicationId}/comments/${commentId}`, {
@@ -139,17 +142,18 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
         } catch {}
     }
 
-    // delete reply
     async function deleteReply(parentId: number | string, replyId: number | string) {
         if (!applicationId) return;
         if (!confirm('Delete this reply?')) return;
+
         setComments((prev) =>
             prev.map((c) =>
-                String(c.id) === String(parentId)
-                    ? { ...c, replies: (c.replies ?? []).filter((r) => String(r.id) !== String(replyId)) }
+                c.id == parentId
+                    ? { ...c, replies: (c.replies ?? []).filter((r) => r.id != replyId) }
                     : c
             )
         );
+
         setMenuOpenId(null);
         try {
             await fetch(`/api/applications/${applicationId}/comments/${replyId}`, {
@@ -222,7 +226,7 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
                                         </div>
                                     </div>
 
-                                    {String(c.authorName) === String(CURRENT_USER_NAME) && (
+                                    {c.authorName == CURRENT_USER_NAME && (
                                         <div style={{ position: 'relative' }}>
                                             <button
                                                 onClick={(e) => {
@@ -308,18 +312,19 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
                                     </button>
                                 </div>
 
-                                {String(replyTo) === String(c.id) && (
-                                    <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
+                                {replyTo == c.id && (
+                                    <div style={{ marginTop: 8, display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
                                         <input
                                             value={replyText}
                                             onChange={(e) => setReplyText(e.target.value)}
                                             placeholder="Write a reply..."
                                             style={{
-                                                flex: 1,
+                                                flex: '1 1 160px',
                                                 height: 36,
                                                 padding: '6px 10px',
                                                 borderRadius: 8,
                                                 border: '1px solid #e6eaf0',
+                                                minWidth: 120,
                                             }}
                                         />
                                         <button
@@ -338,14 +343,18 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
                                         </button>
                                         <button
                                             onClick={cancelReply}
+                                            aria-label="Cancel reply"
                                             style={{
                                                 background: 'transparent',
                                                 border: 'none',
                                                 color: '#6b7280',
                                                 cursor: 'pointer',
+                                                fontSize: 18,
+                                                lineHeight: '1',
+                                                padding: '4px 8px',
                                             }}
                                         >
-                                            Cancel
+                                            ✕
                                         </button>
                                     </div>
                                 )}
@@ -354,7 +363,72 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
                                     <div key={r.id} style={{ marginTop: 10, display: 'flex', gap: 10 }}>
                                         <div style={{ width: 40 }} />
                                         <div style={{ flex: 1 }}>
-                                            <div style={{ fontWeight: 700, fontSize: 13 }}>{r.authorName}</div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                                                <div style={{ display: 'flex', gap: 8, alignItems: 'baseline' }}>
+                                                    <div style={{ fontWeight: 700, fontSize: 13 }}>{r.authorName}</div>
+                                                    <div style={{ fontSize: 12, color: '#9aa6b8' }}>
+                                                        {r.createdAt ? new Date(r.createdAt).toLocaleString() : ''}
+                                                    </div>
+                                                </div>
+
+                                                {r.authorName == CURRENT_USER_NAME && (
+                                                    <div style={{ position: 'relative' }}>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setMenuOpenId(`r:${c.id}:${r.id}`);
+                                                            }}
+                                                            style={{
+                                                                border: 'none',
+                                                                background: 'transparent',
+                                                                cursor: 'pointer',
+                                                                padding: '4px 8px',
+                                                                fontSize: 18,
+                                                                color: '#6b7280',
+                                                            }}
+                                                        >
+                                                            ⋯
+                                                        </button>
+
+                                                        {menuOpenId === `r:${c.id}:${r.id}` && (
+                                                            <div
+                                                                ref={(el) => {
+                                                                    const key = `r:${c.id}:${r.id}`;
+                                                                    if (el) menusRef.current[key] = el;
+                                                                    else delete menusRef.current[key];
+                                                                }}
+                                                                style={{
+                                                                    position: 'absolute',
+                                                                    right: 0,
+                                                                    top: 28,
+                                                                    background: '#fff',
+                                                                    border: '1px solid rgba(0,0,0,0.08)',
+                                                                    borderRadius: 8,
+                                                                    boxShadow: '0 8px 24px rgba(6,25,40,0.12)',
+                                                                    zIndex: 60,
+                                                                    minWidth: 120,
+                                                                }}
+                                                            >
+                                                                <button
+                                                                    onClick={() => deleteReply(c.id, r.id)}
+                                                                    style={{
+                                                                        width: '100%',
+                                                                        textAlign: 'left',
+                                                                        padding: '8px 12px',
+                                                                        background: 'transparent',
+                                                                        border: 'none',
+                                                                        cursor: 'pointer',
+                                                                        color: '#e04836',
+                                                                    }}
+                                                                >
+                                                                    Delete
+                                                                </button>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+
                                             <div
                                                 style={{
                                                     marginTop: 6,

@@ -20,21 +20,25 @@ export default function ResumeViewer({
         ? { width: '100%', height: '100%', position: 'relative' }
         : {
             width: '100%',
-            height: typeof height === 'number' ? `${height}px` : height ?? '520px',
+            height: typeof height === 'number' ? `${height}px` : height || '520px',
             position: 'relative',
         };
+
+    const iframeSrc = url.toLowerCase().endsWith('.pdf') ? `${url}#toolbar=0` : url;
 
     return (
         <div style={wrapperStyle}>
             <iframe
-                src={url}
+                src={iframeSrc}
                 title="Resume"
                 style={{
                     width: '100%',
                     height: '100%',
                     border: 'none',
                     display: 'block',
+                    background: '#fff',
                 }}
+                allow="fullscreen"
             />
 
             {!disableClickOverlay && onClick && (
