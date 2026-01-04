@@ -38,7 +38,7 @@ export default function ResumeViewer({
                     display: 'block',
                     background: '#fff',
                 }}
-                allow="fullscreen"
+                allowFullScreen
             />
 
             {!disableClickOverlay && onClick && (

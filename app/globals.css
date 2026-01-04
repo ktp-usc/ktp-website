@@ -424,11 +424,17 @@ button:disabled{cursor:default;opacity:.9;transform:none !important}
     display:flex;
     align-items:center;
     justify-content:space-between;
+    gap:12px;
 }
 .exec-topbar .left-area,
-.exec-topbar .right-area{display:flex;align-items:center;gap:24px}
-.exec-topbar .left-area{margin-left:-140px}
-.exec-topbar .right-area{margin-right:-140px}
+.exec-topbar .right-area{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+}
+.exec-topbar .left-area{margin-left:0}
+.exec-topbar .right-area{margin-right:0}
 
 .back-link{
     background:#fff;
@@ -453,6 +459,7 @@ button:disabled{cursor:default;opacity:.9;transform:none !important}
     appearance:none;
     font-weight:600;
     min-width:140px;
+    color: #111827;
 }
 .status-select-wrapper{position:relative;display:inline-flex;align-items:center;gap:8px}
 .status-select-wrapper::after{
@@ -517,8 +524,8 @@ button:disabled{cursor:default;opacity:.9;transform:none !important}
 .resume-iframe-wrapper iframe{width:90%;height:100%;border:none;display:block;background:#fff}
 .resume-iframe-overlay{position:absolute;inset:0;cursor:zoom-in}
 
-.fullscreen-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px}
-.fullscreen-modal{width:100%;max-width:1400px;height:calc(100vh - 48px);background:#fff;border-radius:10px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.fullscreen-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:12px}
+.fullscreen-modal{width:100%;max-width:1400px;height:calc(100vh - 24px);background:#fff;border-radius:10px;overflow:hidden;position:relative;display:flex;flex-direction:column}
 .fullscreen-modal .fullscreen-close{
     position:absolute;
     right:12px;
@@ -638,6 +645,11 @@ button:disabled{cursor:default;opacity:.9;transform:none !important}
 .comments-reply-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .comments-reply-row input,.comments-reply-row textarea{flex:1 1 160px;min-width:120px}
 .comments-reply-row button{flex:0 0 auto}
+
+@media (max-width:900px){
+    .fullscreen-overlay{padding:0}
+    .fullscreen-modal{height:100vh; border-radius:0; max-width:none}
+}
 
 @media (max-width:1100px){
     .page-content{padding-left:16px;padding-right:16px}
