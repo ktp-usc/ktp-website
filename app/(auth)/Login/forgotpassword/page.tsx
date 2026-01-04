@@ -23,7 +23,7 @@ export default function ForgotPasswordPage() {
         <Background className="absolute inset-0" />
         <button
         onClick={handleHomeClick}
-        className="fixed top-6 left-12 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium text-sm"
+        className="fixed top-6 cursor-pointer left-12 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium text-sm"
         aria-label="Return to homepage"
       >
         <svg
@@ -89,7 +89,7 @@ export default function ForgotPasswordPage() {
           {/* Form Container */}
           <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl dark:shadow-gray-900/50 p-8 lg:p-10 transition-colors duration-300 border dark:border-gray-700">
             <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Reset Password</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-5">Enter your email address and we'll send you a reset code</p>
+            <p className="text-gray-600 dark:text-gray-400 mb-5">{`Enter your email address and we'll send you a reset code`}</p>
             
             <form className="space-y-5">
               <div>
@@ -106,7 +106,7 @@ export default function ForgotPasswordPage() {
 
               <button
                 type="button"
-                className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 py-3 text-white font-semibold hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-lg shadow-blue-500/30"
+                className="w-full cursor-pointer rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 py-3 text-white font-semibold hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-lg shadow-blue-500/30"
               >
                 Reset Password
               </button>
