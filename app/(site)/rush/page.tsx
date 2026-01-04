@@ -2,17 +2,18 @@
 
 import Link from "next/link";
 
+import CalendarIcon from "@/components/CalendarIcon";
+import PinIcon from "@/components/PinIcon";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import CalendarIcon from "@/components/CalendarIcon";
-import PinIcon from "@/components/PinIcon";
 
 export default function Page2() {
   return (
+    <>
     <main className="relative">
       {/* Background blobs */}
       <div className="relative bg-white w-full">
@@ -41,7 +42,7 @@ export default function Page2() {
                     hover:scale-110 hover: drop-shadow-md"
           >
             <Link
-              href="/Application"
+              href="/apply"
               className="px-6 py-3 bg-[#315CA9] text-white rounded-lg font-semibold hover:bg-[#23498F] transition-colors"
             >
               Application Link
@@ -234,5 +235,6 @@ export default function Page2() {
         </section>
       </div>
     </main>
+    </>
   );
 }
