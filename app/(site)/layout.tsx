@@ -1,5 +1,5 @@
-import {Header} from "@/components/Header";
 import Footer from "@/app/Footer";
+import { Header } from "@/components/Header";
 
 export default function SiteLayout({
   children,
@@ -7,10 +7,12 @@ export default function SiteLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <Header />
-      {children}
-      <Footer />
-    </>
+      <>
+          <Header />
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+            {children}
+          </div>
+        <Footer />
+      </>
   );
 }

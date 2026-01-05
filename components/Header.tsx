@@ -38,15 +38,14 @@ export function Header() {
                 {/*NavBar*/}
                 <div className='flex flex-wrap justify-center text-base sm:text-md md:text-lg space-x-3 sm:space-x-8 md:space-x-12 lg:space-x-16'>
                     {/*<Link className="hover:text-[#315CA9] font-medium" href="/">Home</Link>*/}
-                    <Link className="hover:text-[#315CA9] font-medium" href="/about">About Us</Link>
-                    <Link className="hover:text-[#315CA9] font-medium" href="/Members">Members</Link>
-                    <Link className="hover:text-[#315CA9] font-medium" href="/Rush">Rush</Link>
-                    <Link className="hover:text-[#315CA9] font-medium" href="/Application">Apply</Link>
+                    <Link className="hover:text-[#315CA9] font-medium" href="/members">Members</Link>
+                    <Link className="hover:text-[#315CA9] font-medium" href="/rush">Rush</Link>
+                    <Link className="hover:text-[#315CA9] font-medium" href="/apply">Apply</Link>
                 </div>
                 <div className="absolute right-1 sm:right-6 md:right-12 lg:right-16 xl:right-20">
                     <Link
                         className="bg-[#315CA9] text-white font-medium px-4 py-2 rounded-md hover:bg-[#23498F] transition-all duration-300 transform shadow-lg hover:drop-shadow-lg" 
-                        href="/Login">
+                        href="/login">
                         Login
                     </Link>
                 </div>

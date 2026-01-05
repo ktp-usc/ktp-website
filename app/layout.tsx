@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Kappa Theta Pi",
-  description: "The official website for Kappa Theta Pi",
+  title: "Kappa Theta Pi - University of South Carolina",
+  description: "The University of South Carolina's premier technology fraternity",
 };
 
 export default function RootLayout({
