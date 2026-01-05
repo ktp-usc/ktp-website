@@ -14,6 +14,7 @@ export function Header() {
             setIsScrolled(scrollTop > 0);
         };
 
+        // Set initial state based on current scroll position
         const scrollTop = window.scrollY;
         setIsScrolled(scrollTop > 0);
 
@@ -29,28 +30,26 @@ export function Header() {
 
                 {/* Logo - Scales from w-8 (mobile) back to your original w-11 (desktop) */}
                 <Link href="/" className="absolute left-2 sm:left-6 md:left-12 lg:left-16 xl:left-20">
-                    <Image 
-                        src={logo} 
-                        alt="Logo" 
-                        width={45} 
-                        height={45}  
-                        className="w-8 h-8 sm:w-11 sm:h-11 transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_15px_rgba(49,92,169,1)]" 
+                    <Image
+                        src={logo}
+                        alt="Logo"
+                        width={45}
+                        height={45}
+                        className="w-8 h-8 sm:w-11 sm:h-11 transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_15px_rgba(49,92,169,1)]"
                     />
                 </Link>
 
-                {/* NavBar - Scales from text-xs/space-x-4 (mobile) to your original text-lg/space-x-12+ (desktop) */}
+                {/*NavBar*/}
                 <nav className='flex flex-wrap justify-center text-xs sm:text-md md:text-lg space-x-4 sm:space-x-8 md:space-x-12 lg:space-x-16'>
-                    <Link className="hover:text-[#315CA9] font-medium transition-colors" href="/">Home</Link>
-                    <Link className="hover:text-[#315CA9] font-medium transition-colors" href="/Members">Members</Link>
-                    <Link className="hover:text-[#315CA9] font-medium transition-colors" href="/Rush">Rush</Link>
-                    <Link className="hover:text-[#315CA9] font-medium transition-colors" href="/Application">Apply</Link>
+                    {/*<Link className="hover:text-[#315CA9] font-medium" href="/">Home</Link>*/}
+                    <Link className="hover:text-[#315CA9] font-medium transition-colors" href="/members">Members</Link>
+                    <Link className="hover:text-[#315CA9] font-medium transition-colors" href="/rush">Rush</Link>
+                    <Link className="hover:text-[#315CA9] font-medium transition-colors" href="/apply">Apply</Link>
                 </nav>
-
-                {/* Login Button - Slightly smaller on mobile to maintain the line layout */}
-                <div className="absolute right-2 sm:right-6 md:right-12 lg:right-16 xl:right-20">
+                <div className="absolute right-1 sm:right-6 md:right-12 lg:right-16 xl:right-20">
                     <Link
-                        className="bg-[#315CA9] text-white font-medium px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-xs sm:text-base hover:bg-[#23498F] transition-all duration-300 transform shadow-lg hover:drop-shadow-lg" 
-                        href="/Login">
+                        className="bg-[#315CA9] text-white font-medium px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-xs sm:text-base hover:bg-[#23498F] transition-all duration-300 transform shadow-lg hover:drop-shadow-lg"
+                        href="/login">
                         Login
                     </Link>
                 </div>

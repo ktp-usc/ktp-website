@@ -102,9 +102,9 @@ export default function Footer() {
                     <div className="flex flex-col gap-3 md:items-start md:mx-auto">
                         <h4 className="font-semibold text-white">Quick Links</h4>
                         <Link href="/" className="text-white hover:text-gray-300">Home</Link>
-                        <Link href="/Members" className="text-white hover:text-gray-300">Members</Link>
-                        <Link href="/Rush" className="text-white hover:text-gray-300">Rush</Link>
-                        <Link href="/Application" className="text-white hover:text-gray-300">Apply</Link>
+                        <Link href="/members" className="text-white hover:text-gray-300">Members</Link>
+                        <Link href="/rush" className="text-white hover:text-gray-300">Rush</Link>
+                        <Link href="/apply" className="text-white hover:text-gray-300">Apply</Link>
                     </div>
 
                     {/* Right: Contact */}
