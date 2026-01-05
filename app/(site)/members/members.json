@@ -3,83 +3,83 @@
       {
         "name": "Luke Jannazzo",
         "imageUrl": "/Images/Screenshot Luke.png",
-        "category": "E-Board",
+        "category": "Executive Board",
         "role": "President",
         "linkedin": "https://www.linkedin.com/in/lukejannazzo/",
         "major": "Computer Engineering",
-        "year": "Junior"
+        "year": "Class of 2027"
       },
       {
         "name": "Gwendalyn Krauss",
         "imageUrl": "/Images/Gwendalyn.jpg",
-        "category": "E-Board",
+        "category": "Executive Board",
         "role": "Vice President",
         "linkedin": "https://www.linkedin.com/in/gwendalynkrauss/",
         "major": "Integrated Information Technology",
-        "year": "Junior"
+        "year": "Class of 2027"
       },
       {
         "name": "Josiah White",
         "imageUrl": "/Images/Screenshot Josiah.png",
-        "category": "E-Board",
+        "category": "Executive Board",
         "role": "Executive Secretary",
         "linkedin": "https://www.linkedin.com/in/josiahawhite/",
         "major": "Computer Science",
-        "year": "Junior"
+        "year": "Class of 2027"
       },
       {
         "name": "Samuel Tadamatla",
         "imageUrl": "/Images/Samuel.jpg",
-        "category": "E-Board",
+        "category": "Executive Board",
         "role": "Director of Outreach",
         "linkedin": "https://www.linkedin.com/in/tadamatla/",
         "major": "Computer Science",
-        "year": "Freshman"
+        "year": "Class of 2029"
       },
       {
         "name": "Alexa Adams",
         "imageUrl": "/Images/Alexa.jpg",
-        "category": "E-Board",
+        "category": "Executive Board",
         "role": "Director of Marketing",
         "linkedin": "https://www.linkedin.com/in/alexaadams1/",
         "major": "Computer Science",
-        "year": "Freshman"
+        "year": "Class of 2029"
       },
       {
         "name": "Neya Murugesan",
         "imageUrl": "/Images/Neya.jpg",
-        "category": "E-Board",
+        "category": "Executive Board",
         "role": "Director of Finance",
         "linkedin": "https://www.linkedin.com/in/neyamurugesan/",
         "major": "Computer Science",
-        "year": "Sophomore"
+        "year": "Class of 2028"
       },
       {
         "name": "Braden Guliano",
         "imageUrl": "/Images/Screenshot Braden.png",
-        "category": "E-Board",
+        "category": "Executive Board",
         "role": "Director of Technical Development",
         "linkedin": "https://www.linkedin.com/in/bguliano/",
         "major": "Integrated Information Technology",
-        "year": "Senior"
+        "year": "Class of 2026"
       },
       {
         "name": "Dao Bui",
         "imageUrl": "/Images/Dao.jpg",
-        "category": "E-Board",
+        "category": "Executive Board",
         "role": "Director of Professional Development",
         "linkedin": "https://www.linkedin.com/in/daotbui/",
         "major": "Computer Science",
-        "year": "Freshman"
+        "year": "Class of 2029"
       },
       {
         "name": "Galen Miller",
         "imageUrl": "/Images/Galen.jpg",
-        "category": "E-Board",
+        "category": "Executive Board",
         "role": "Director of Engagement",
         "linkedin": "https://www.linkedin.com/in/galenemiller/",
         "major": "Integrated Information Technology",
-        "year": "Sophomore"
+        "year": "Class of 2028"
       }
     ],
     "chairs": [
@@ -90,7 +90,7 @@
         "role": "Conferences & Hackathons Chair",
         "linkedin": "https://www.linkedin.com/in/brett-eckstrom-19b964382/",
         "major": "Computer Science",
-        "year": "Freshman"
+        "year": "Class of 2029"
       },
       {
         "name": "Christian Wolff",
@@ -99,7 +99,7 @@
         "role": "Infrastructure Chair",
         "linkedin": "https://www.linkedin.com/in/christiangwolff/",
         "major": "Computer Science",
-        "year": "Sophomore"
+        "year": "Class of 2028"
       }
     ],
     "foundingClass": [
@@ -110,7 +110,7 @@
         "linkedin": "https://www.linkedin.com/in/owencoulam/",
         "category": "Founding Class",
         "major": "Computer Science",
-        "year": "Junior"
+        "year": "Class of 2027"
       },
       {
         "name": "Darssan Eswaramoorthi",
@@ -119,7 +119,7 @@
         "linkedin": "https://www.linkedin.com/in/ledarssan/",
         "category": "Founding Class",
         "major": "Computer Engineering",
-        "year": "Senior"
+        "year": "Class of 2026"
       },
       {
         "name": "Josiah White",
@@ -128,7 +128,7 @@
         "linkedin": "https://www.linkedin.com/in/josiahawhite/",
         "category": "Founding Class",
         "major": "Computer Science",
-        "year": "Junior"
+        "year": "Class of 2027"
       },
       {
         "name": "Luke Jannazzo",
@@ -137,7 +137,7 @@
         "linkedin": "https://www.linkedin.com/in/lukejannazzo/",
         "category": "Founding Class",
         "major": "Computer Engineering",
-        "year": "Junior"
+        "year": "Class of 2027"
       },
       {
         "name": "Braden Guliano",
@@ -146,7 +146,7 @@
         "linkedin": "https://www.linkedin.com/in/bguliano/",
         "category": "Founding Class",
         "major": "Integrated Information Technology",
-        "year": "Senior"
+        "year": "Class of 2026"
       },
       {
         "name": "Sara Muthuselvam",
@@ -155,7 +155,7 @@
         "linkedin": "https://www.linkedin.com/in/sara-muthu/",
         "category": "Founding Class",
         "major": "Computer Engineering",
-        "year": "Senior"
+        "year": "Class of 2026"
       },
       {
         "name": "Katie Jones",
@@ -164,7 +164,7 @@
         "linkedin": "https://www.linkedin.com/in/katiejones404/",
         "category": "Founding Class",
         "major": "Computer Science",
-        "year": "Senior"
+        "year": "Class of 2026"
       },
       {
         "name": "Tarun Ramkumar",
@@ -173,7 +173,7 @@
         "linkedin": "https://www.linkedin.com/in/tarun-ramkumar/",
         "category": "Founding Class",
         "major": "Computer Science",
-        "year": "Junior"
+        "year": "Class of 2027"
       },
       {
         "name": "Sai Kotapalli",
@@ -182,7 +182,7 @@
         "linkedin": "https://www.linkedin.com/in/sai-kottapali-153695288/",
         "category": "Founding Class",
         "major": "Computer Science",
-        "year": "Junior"
+        "year": "Class of 2027"
       }
     ],
     "actives": [
@@ -192,7 +192,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/alexaadams1/",
         "major": "Computer Science",
-        "year": "Freshman"
+        "year": "Class of 2029"
       },
       {
         "name": "Kaden Anderson",
@@ -200,7 +200,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/kadeneanderson/",
         "major": "Integrated Information Technology",
-        "year": "Sophomore"
+        "year": "Class of 2028"
       },
       {
         "name": "Samirah Anderson",
@@ -208,7 +208,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/samirah-anderson/",
         "major": "Computer Information Systems",
-        "year": "Sophomore"
+        "year": "Class of 2028"
       },
       {
         "name": "Jazmine Baker",
@@ -216,7 +216,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/jazmineabaker/",
         "major": "Integrated Information Technology",
-        "year": "Junior"
+        "year": "Class of 2027"
       },
       {
         "name": "Sebastian Boscan",
@@ -224,7 +224,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/sebastianboscan/",
         "major": "Computer Science",
-        "year": "Sophomore"
+        "year": "Class of 2028"
       },
       {
         "name": "Dao Bui",
@@ -232,7 +232,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/daotbui/",
         "major": "Computer Science",
-        "year": "Freshman"
+        "year": "Class of 2029"
       },
       {
         "name": "Brett Eckstrom",
@@ -240,7 +240,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/brett-eckstrom-19b964382/",
         "major": "Computer Science",
-        "year": "Freshman"
+        "year": "Class of 2029"
       },
       {
         "name": "Darssan Eswaramoorthi",
@@ -248,7 +248,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/ledarssan/",
         "major": "Computer Engineering",
-        "year": "Senior"
+        "year": "Class of 2026"
       },
       {
         "name": "Braden Guliano",
@@ -256,7 +256,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/bguliano/",
         "major": "Integrated Information Technology",
-        "year": "Senior"
+        "year": "Class of 2026"
       },
       {
         "name": "Luke Jannazzo",
@@ -264,7 +264,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/lukejannazzo/",
         "major": "Computer Engineering",
-        "year": "Junior"
+        "year": "Class of 2027"
       },
       {
         "name": "Katie Jones",
@@ -272,7 +272,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/katiejones404/",
         "major": "Computer Science",
-        "year": "Senior"
+        "year": "Class of 2026"
       },
       {
         "name": "Gwendalyn Krauss",
@@ -280,7 +280,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/gwendalynkrauss/",
         "major": "Integrated Information Technology",
-        "year": "Junior"
+        "year": "Class of 2027"
       },
       {
         "name": "Elle Mehltretter",
@@ -288,7 +288,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/elle-mehltretter/",
         "major": "Cyber Policy & Global Studies",
-        "year": "Sophomore"
+        "year": "Class of 2028"
       },
       {
         "name": "Galen Miller",
@@ -296,7 +296,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/galenemiller/",
         "major": "Integrated Information Technology",
-        "year": "Sophomore"
+        "year": "Class of 2028"
       },
       {
         "name": "Neya Murugesan",
@@ -304,7 +304,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/neyamurugesan/",
         "major": "Computer Science",
-        "year": "Sophomore"
+        "year": "Class of 2028"
       },
       {
         "name": "Sara Muthuselvam",
@@ -312,7 +312,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/sara-muthu/",
         "major": "Computer Engineering",
-        "year": "Senior"
+        "year": "Class of 2026"
       },
       {
         "name": "William Raiford",
@@ -320,7 +320,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/williamraiford/",
         "major": "Integrated Information Technology",
-        "year": "Sophomore"
+        "year": "Class of 2028"
       },
       {
         "name": "Nishant Shah",
@@ -328,7 +328,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/nishantmshah07/",
         "major": "Computer Engineering",
-        "year": "Freshman"
+        "year": "Class of 2029"
       },
       {
         "name": "Wynter Stroman",
@@ -336,7 +336,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/wynterstroman/",
         "major": "Computer Engineering",
-        "year": "Junior"
+        "year": "Class of 2027"
       },
       {
         "name": "Samuel Tadamatla",
@@ -344,7 +344,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/tadamatla/",
         "major": "Computer Science",
-        "year": "Freshman"
+        "year": "Class of 2029"
       },
       {
         "name": "Marvin Thomas",
@@ -352,7 +352,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/marvin-o-thomas/",
         "major": "Integrated Information Technology",
-        "year": "Sophomore"
+        "year": "Class of 2027"
       },
       {
         "name": "Josiah White",
@@ -360,7 +360,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/josiahawhite/",
         "major": "Computer Science",
-        "year": "Junior"
+        "year": "Class of 2027"
       },
       {
         "name": "Christian Wolff",
@@ -368,8 +368,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/christiangwolff/",
         "major": "Computer Science",
-        "year": "Sophomore",
-        "bio": ""
+        "year": "Class of 2028"
       },
 
       {
@@ -378,8 +377,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/owencoulam/",
         "major": "Computer Science",
-        "year": "Junior",
-        "bio": ""
+        "year": "Class of 2027"
       },
 
       {
@@ -388,8 +386,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/sai-kottapali-153695288/",
         "major": "Computer Science",
-        "year": "Junior",
-        "bio": ""
+        "year": "Class of 2027"
       },
 
       {
@@ -398,8 +395,7 @@
         "category": "Actives",
         "linkedin": "https://www.linkedin.com/in/tarun-ramkumar/",
         "major": "Computer Science",
-        "year": "Junior",
-        "bio": ""
+        "year": "Class of 2027"
       }
 
     ]
