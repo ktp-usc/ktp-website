@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@cyntler/react-doc-viewer": "^1.17.1",
     "@hookform/resolvers": "^5.2.2",
     "@neondatabase/serverless": "^1.0.2",
     "@prisma/client": "^6.19.0",
