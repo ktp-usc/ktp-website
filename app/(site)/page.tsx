@@ -158,19 +158,16 @@ function TypeTwoLines({
             </div>
 
             <style jsx>{`
-        .animate-blink {
-          animation: blink 1s steps(2, start) infinite;
-        }
-        @keyframes blink {
-          0%,
-          100% {
-            opacity: 0;
-          }
-          50% {
-            opacity: 1;
-          }
-        }
-      `}</style>
+                @keyframes blink {
+                    0%,
+                    100% {
+                        opacity: 0;
+                    }
+                    50% {
+                        opacity: 1;
+                    }
+                }
+            `}</style>
         </div>
     );
 }
@@ -209,7 +206,7 @@ export default function Home() {
 
                                     <div className="mt-8 max-w-xl mx-auto flex justify-center">
                                         <a
-                                            href="/Rush"
+                                            href="/rush"
                                             className="inline-flex items-center justify-center bg-[#315CA9] text-white px-6 py-3 rounded-lg font-medium transform transition-transform duration-300 hover:-translate-y-1"
                                         >
                                             Rush KTP →
@@ -325,45 +322,25 @@ export default function Home() {
                                     </div>
 
                                     <style jsx>{`
-                                        .collage-scale {
-                                            transition: transform 200ms ease;
-                                            transform-origin: center;
-                                            display: inline-block;
-                                        }
 
                                         /* desktop */
                                         @media (min-width: 1025px) {
-                                            .collage-scale {
-                                                transform: scale(1);
-                                            }
                                         }
 
                                         /* large tablets/smaller desktops */
                                         @media (max-width: 1024px) {
-                                            .collage-scale {
-                                                transform: scale(0.98);
-                                            }
                                         }
 
                                         /* tablet */
                                         @media (max-width: 900px) {
-                                            .collage-scale {
-                                                transform: scale(0.9);
-                                            }
                                         }
 
                                         /* small tablets/large phones */
                                         @media (max-width: 700px) {
-                                            .collage-scale {
-                                                transform: scale(0.82);
-                                            }
                                         }
 
                                         /* phones */
                                         @media (max-width: 480px) {
-                                            .collage-scale {
-                                                transform: scale(0.74);
-                                            }
                                         }
                                     `}</style>
                                 </div>
@@ -433,10 +410,26 @@ export default function Home() {
                                         <div className="w-full lg:w-3/5 text-left relative z-10">
                                             <h2 className="text-center text-2xl sm:text-4xl font-black mb-10">President&apos;s Welcome</h2>
                                             <div className="text-base sm:text-lg leading-relaxed space-y-4">
-                                                <p>Welcome to Kappa Theta Pi, USC&apos;s premier professional technology fraternity. On behalf of our chapter, I’m excited to welcome you to our fraternity&apos;s new website, where you can catch a glimpse of the passion and excellence that our chapter celebrates.</p>
-                                                <p>Kappa Theta Pi offers brothers the support to be extraordinary during their time at South Carolina with resources centered around professional development, alumni connections, social growth, technological advancement, and academic support. From nonprofit project teams and study groups to professional development workshops and hackathons, we foster a culture of growth encouraging members to pursue their tech passions. Our chapter values diversity, with brothers contributing unique experiences and excelling as student leaders. We celebrate our diverse brotherhood, welcoming all united by a passion for technology.</p>
-                                                <p>Founding the South Carolina chapter of KTP has been the most impactful part of my college experience. I’ve had the immense privilege of building this community and watching it grow into a home for USC&apos;s most exceptional and ambitious professionals, seeing first-hand the incredible things they do. Our nonprofit consulting initiative, undertaken by no other KTP chapter nationally, has seen immense success with 5 clients in the span of a single semester. Most importantly, this chapter is built upon the promise of not only professional excellence, but also creating lifelong bonds that will serve as a constant source of inspiration and support for every member to be their full and best self.</p>
-                                                <p>Sincerely,<br />Owen Coulam<br />President, 2025</p>
+                                                <p>Welcome to the Alpha Theta Chapter of Kappa Theta Pi, a co-ed professional technology fraternity
+                                                    at the University of South Carolina. On behalf of our chapter, I welcome you to our website,
+                                                    where you can learn about the work we do and the values we strive to embody. I believe that
+                                                    we offer our members unmatched professional and technical development opportunities that build
+                                                    skills applicable in the workplace and beyond.</p>
+
+                                                <p>Our chapter is set apart by being the first nationally to pioneer an innovative nonprofit
+                                                    consulting initiative. Each semester, we take on 3-4 nonprofit clients, and assign a student
+                                                    team to work on a project to help further their goals. This creates a win-win arrangement:
+                                                    nonprofits get pro bono support that helps them focus resources on their core mission, while
+                                                    students get real-world technology project experience using industry-standard tools.</p>
+
+                                                <p>From being a founding member to becoming its president, I’ve been honored to be a part of this
+                                                    organization. Beyond the professional work, I’ve had so much fun getting to know the incredible
+                                                    community that makes every event something to look forward to. We welcome new members from all
+                                                    majors and all backgrounds, brought together by our shared commitment to personal and professional
+                                                    growth. Whether you’re a student looking for opportunities while in college or a nonprofit
+                                                    interested in working with us, we would love to hear from you!</p>
+
+                                                <p>Sincerely,<br />Luke Jannazzo<br />President, Spring 2026</p>
                                             </div>
                                         </div>
                                     </div>
