@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import Image from "next/image";
 import {
     Field,
     FieldContent,
@@ -16,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import React from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function Application() {
         // --------------------------------------------
@@ -23,8 +25,9 @@ export default function Application() {
         // --------------------------------------------
         const resumeInputRef = React.useRef<HTMLInputElement | null>(null);
         const [resumeName, setResumeName] = React.useState<string | null>(null);
+        const router = useRouter();
 
-        function triggerResumeSelect() {
+    function triggerResumeSelect() {
             resumeInputRef.current?.click();
         }
 
@@ -110,7 +113,7 @@ export default function Application() {
             return;
         }
 
-        toast.success("Application submitted!");
+        router.push("/next-steps");
         form.reset();
         // Reset local UI state
         setPhotoPreview(null);
@@ -159,11 +162,11 @@ export default function Application() {
 
     return (
         <div className="overflow-x-hidden">
+            <h1 className="text-5xl p4 pt-12 pb-3 font-bold text-center">Rush Application</h1>
+            <h2 className="text-3xl p4 pb-6 text-[#315CA9] italic font-bold text-center">Spring 2026</h2>
             <div className="max-w-3xl w-full mx-auto">
-                <h1 className="text-4xl p4 pt-4 pb-6 font-bold">KTP Rush Application: Spring 2026</h1>
-                
                 {/* Introduction */}
-                <div className="mb-8 space-y-4 mt-4">
+                <div className="text-md mb-8 space-y-4 mt-4">
                     <p>
                         Thank you for your interest in becoming a member of Kappa Theta Pi!
                     </p>
@@ -184,16 +187,38 @@ export default function Application() {
                 <Card className="bg-gray-50/80 border-gray-200 shadow-md mb-8 float-left w-full h-fit clear-both">
                     <CardContent className="pt-fit middle-align">
                         <p className="font-bold text-gray-900 flex items-center gap-2">
-                            <svg className="w-5 h-5 text-[#315CA9] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <svg
+                                className="w-5 h-5 text-[#315CA9] flex-shrink-0"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
                             </svg>
-                            This application is due<u className="text-[#315CA9]">Friday, January 30th, 9 PM EST</u>
+
+                            This application is due{" "}
+                            <a
+                                href="https://calendar.google.com/calendar/event?action=TEMPLATE&tmeid=MG5qaDU2c3M0b3A5a2lucTMxZGtiM2FzZ2IgMWIyMDM0Mzc1MWQwMTMwNzRlNWY1ZjgyYmZjYjcwYTljZjRmZmJhN2E1YTU5ZDkzYzkyZjNiMjg5NGY3ZWY2NkBn&tmsrc=1b20343751d013074e5f5f82bfcb70a9cf4ffba7a5a59d93c92f3b2894f7ef66%40group.calendar.google.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-[#315CA9] underline hover:text-[#003166]"
+                            >
+                                Friday, January 30th, 9 PM EST
+                            </a>
+
                         </p>
+
                         <p className="text-sm text-gray-600 mt-1 italic">
                             &emsp;&emsp;We will not accept responses after this time.
                         </p>
                     </CardContent>
                 </Card>
+
 
                 <div className="pb-20">
                     <form onSubmit={handleSubmit}>
@@ -203,7 +228,7 @@ export default function Application() {
 
                                     {/* Full Name */}
                                     <Field>
-                                        <FieldLabel>Full Name<span className="text-red-500">*</span></FieldLabel>
+                                        <FieldLabel className="text-md">Full Name<span className="text-red-500">*</span></FieldLabel>
                                         <Input
                                             id="name"
                                             name="name"
@@ -214,7 +239,7 @@ export default function Application() {
 
                                     {/* Preferred First Name (optional) */}
                                     <Field>
-                                        <FieldLabel>Preferred First Name</FieldLabel>
+                                        <FieldLabel className="text-md">Preferred First Name</FieldLabel>
                                         <Input
                                             id="preferredFirstName"
                                             name="preferredFirstName"
@@ -224,7 +249,7 @@ export default function Application() {
 
                                     {/* Email */}
                                     <Field>
-                                        <FieldLabel htmlFor="email">USC Email<span
+                                        <FieldLabel className="text-md" htmlFor="email">USC Email<span
                                             className="text-red-500">*</span></FieldLabel>
                                         <FieldDescription>
                                             <em>Please ensure this is correct. All communications concerning the interview process will be sent via email.</em>
@@ -240,7 +265,7 @@ export default function Application() {
 
                                     {/* Phone Number */}
                                     <Field>
-                                        <FieldLabel>Phone Number<span className="text-red-500">*</span></FieldLabel>
+                                        <FieldLabel className="text-md">Phone Number<span className="text-red-500">*</span></FieldLabel>
                                         <Input
                                             id="phone"
                                             name="phone"
@@ -252,7 +277,7 @@ export default function Application() {
 
                                     {/* Year in School */}
                                     <Field>
-                                        <FieldLabel>Year in School<span className="text-red-500">*</span></FieldLabel>
+                                        <FieldLabel className="text-md">Year in School<span className="text-red-500">*</span></FieldLabel>
                                         <FieldDescription>
                                             <em>{`Not by credit hours. For example, "Freshman" means first-year in University.`}</em>
                                         </FieldDescription>
@@ -271,7 +296,7 @@ export default function Application() {
 
                                     {/* GPA */}
                                     <Field>
-                                        <FieldLabel>GPA<span className="text-red-500">*</span></FieldLabel>
+                                        <FieldLabel className="text-md">GPA<span className="text-red-500">*</span></FieldLabel>
                                         <FieldDescription>
                                             <em>Kappa Theta Pi expects its brothers to maintain a minimum of a 3.00 GPA; however, we invite anyone interested in our organization to apply.</em>
                                         </FieldDescription>
@@ -287,7 +312,7 @@ export default function Application() {
                                     {/* Extenuating circumstances */}
                                     <Field>
                                         <FieldContent>
-                                            <FieldLabel>Extenuating Circumstances</FieldLabel>
+                                            <FieldLabel className="text-md">Extenuating Circumstances</FieldLabel>
                                             <FieldDescription>
                                                 If your GPA is below a 3.00, please use the following to explain any extenuating circumstances or hardships you would like us to take into consideration
                                             </FieldDescription>
@@ -302,7 +327,7 @@ export default function Application() {
 
                                     {/* Major */}
                                     <Field>
-                                        <FieldLabel>Major(s) <span className="text-red-500">*</span> </FieldLabel>
+                                        <FieldLabel className="text-md">Major(s) <span className="text-red-500">*</span> </FieldLabel>
                                         <Input
                                             id="major"
                                             name="major"
@@ -316,13 +341,13 @@ export default function Application() {
 
                                     {/* Minor */}
                                     <Field className="pb-3">
-                                        <FieldLabel>Minor(s)</FieldLabel>
+                                        <FieldLabel className="text-md">Minor(s)</FieldLabel>
                                         <Input id="minor" name="minor" placeholder="optional"/>
                                     </Field>
 
                                     {/* Hometown, Home State */}
                                     <Field>
-                                        <FieldLabel>Hometown</FieldLabel>
+                                        <FieldLabel className="text-md">Hometown</FieldLabel>
                                         <Input
                                             id="hometown"
                                             name="hometown"
@@ -334,7 +359,7 @@ export default function Application() {
                                     <Field>
                                         <FieldContent>
                                             <FieldLabel>
-                                                Upload Picture <span className="text-red-500">*</span>
+                                                <span className="text-md">Upload Picture <span className="text-red-500">*</span></span>
                                             </FieldLabel>
                                             <FieldDescription>
                                                 Please include a headshot or photo to help us during the review process.
@@ -380,10 +405,12 @@ export default function Application() {
 
                                         {photoPreview && (
                                             <div className="mt-3">
-                                                <img
+                                                <Image
                                                     src={photoPreview}
                                                     alt="Selected preview"
-                                                    className="h-28 w-28 rounded-md object-cover border"
+                                                    width={112}
+                                                    height={112}
+                                                    className="rounded-md object-cover border"
                                                 />
                                             </div>
                                         )}
@@ -393,7 +420,7 @@ export default function Application() {
 
                                     {/* Resume Upload */}
                                     <Field>
-                                        <FieldLabel htmlFor="resume">Upload Resume/CV <span
+                                        <FieldLabel className="text-md" htmlFor="resume">Upload Resume/CV <span
                                             className="text-red-500">*</span></FieldLabel>
                                         <FieldDescription>
                                             PDF format only.
@@ -442,7 +469,7 @@ export default function Application() {
 
                                     {/* LinkedIn (optional) */}
                                     <Field>
-                                        <FieldLabel>LinkedIn (optional)</FieldLabel>
+                                        <FieldLabel className="text-md">LinkedIn (optional)</FieldLabel>
                                         <Input
                                             id="linkedin"
                                             name="linkedin"
@@ -453,7 +480,7 @@ export default function Application() {
 
                                     {/* GitHub (optional) */}
                                     <Field>
-                                        <FieldLabel>GitHub (optional)</FieldLabel>
+                                        <FieldLabel className="text-md">GitHub (optional)</FieldLabel>
                                         <Input
                                             id="github"
                                             name="github"
@@ -467,7 +494,7 @@ export default function Application() {
                                     {/* Why KTP */}
                                     <Field>
                                         <FieldContent>
-                                            <FieldLabel>
+                                            <FieldLabel className="text-md">
                                                 Why are you interested in joining Kappa Theta Pi? What talents/experiences could you bring to the organization?
                                                 <span className="text-red-500">*</span>
                                             </FieldLabel>
@@ -487,7 +514,7 @@ export default function Application() {
                                     {/* Rush events attended (multi-select, required) */}
                                     <Field>
                                         <FieldContent>
-                                            <FieldLabel>Which rush events did you attend?<span className="text-red-500">*</span></FieldLabel>
+                                            <FieldLabel className="text-md">Which rush events did you attend?<span className="text-red-500">*</span></FieldLabel>
                                             <FieldDescription>
                                                 {`Check all that apply (at least one required). `}<em>{`If you're completing this application early,
                                                  select the events you plan on attending. Reach out to our Executive Secretary in the GroupMe
@@ -518,7 +545,7 @@ export default function Application() {
 
                                     {/* Affirmation */}
                                     <Field>
-                                        <FieldLabel>I affirm this application is complete and correct to the best of my knowledge.<span className="text-red-500">*</span></FieldLabel>
+                                        <FieldLabel className="text-md">I affirm this application is complete and correct to the best of my knowledge.<span className="text-red-500">*</span></FieldLabel>
                                         <div className="flex items-center gap-2">
                                             <input
                                                 id="affirmation"
