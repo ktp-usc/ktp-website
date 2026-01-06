@@ -8,26 +8,41 @@ import { useState } from 'react';
 
 
 
-export default function ForgotPasswordPage() {
+export default function ResetPasswordPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [isEmailValid, setIsEmailValid] = useState(true);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
+  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
+  const [showNewPasswordError, setShowNewPasswordError] = useState(false);
 
   const handleHomeClick = () => {
     document.documentElement.classList.remove('dark');
     router.push('/');
   };
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setEmail(value);
-    setIsEmailValid(value.trim().length > 0);
+  const validatePassword = (password: string) => {
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+    const hasMinLength = password.length >= 8;
+    return hasUppercase && hasLowercase && hasNumber && hasSymbol && hasMinLength;
   };
 
-  const handleResetClick = () => {
-    if (email.trim().length > 0) {
-      router.push('/Login/resetpassword');
-    }
+  const handleNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setNewPassword(value);
+    const valid = validatePassword(value);
+    setIsNewPasswordValid(valid);
+    setShowNewPasswordError(!valid && value.length > 0);
+  };
+
+  const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setConfirmPassword(value);
+    const matches = value === newPassword && value.length > 0;
+    setIsConfirmPasswordValid(matches);
   };
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 dark:bg-gray-900 transition-colors duration-300">
@@ -105,21 +120,44 @@ export default function ForgotPasswordPage() {
           {/* Form Container */}
           <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl dark:shadow-gray-900/50 p-8 lg:p-10 transition-colors duration-300 border dark:border-gray-700">
             <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Reset Password</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-5">Enter your email address and we'll send you a reset code</p>
+            <p className="text-gray-600 dark:text-gray-400 mb-5">Enter and confirm your new password</p>
             
             <form className="space-y-5">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Email Address
+                <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Enter new password
                 </label>
                 <input
-                  id="email"
-                  type="email"
-                  placeholder="example@email.sc.edu"
-                  value={email}
-                  onChange={handleEmailChange}
+                  id="newPassword"
+                  type="password"
+                  placeholder="••••••••"
+                  value={newPassword}
+                  onChange={handleNewPasswordChange}
                   className={`w-full rounded-lg border px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                    !isEmailValid ? 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-600' :
+                    showNewPasswordError ? 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-600' :
+                    'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800'
+                  }`}
+                />
+                {showNewPasswordError && (
+                  <p className="text-sm text-red-600 dark:text-red-400 mt-1">
+                    Require 1 uppercase, 1 lowercase, 1 number, 1 symbol, with a total of 8 or more characters
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Confirm new password
+                </label>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="••••••••"
+                  value={confirmPassword}
+                  onChange={handleConfirmPasswordChange}
+                  className={`w-full rounded-lg border px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
+                    !isConfirmPasswordValid && confirmPassword.length > 0 ? 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-600' :
+                    isConfirmPasswordValid && confirmPassword.length > 0 ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-600' :
                     'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800'
                   }`}
                 />
@@ -127,13 +165,7 @@ export default function ForgotPasswordPage() {
 
               <button
                 type="button"
-                onClick={handleResetClick}
-                disabled={!isEmailValid}
-                className={`w-full rounded-lg py-3 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-lg shadow-blue-500/30 ${
-                  !isEmailValid 
-                    ? 'bg-gray-400 cursor-not-allowed' 
-                    : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800'
-                }`}
+                className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 py-3 text-white font-semibold hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-lg shadow-blue-500/30"
               >
                 Reset Password
               </button>
