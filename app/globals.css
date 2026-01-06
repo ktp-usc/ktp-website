@@ -376,6 +376,7 @@
     --ktp-bg-end: #eef5fb;
     --header-h: 72px;
     --sidebar-width: 360px;
+    --detail-width: 800px;
 }
 
 *{box-sizing:border-box}
@@ -389,7 +390,7 @@ body{
 }
 
 .page-content{
-    padding-top:calc(var(--header-h) + 20px);
+    padding-top: var(--header-h);
     min-height:calc(100vh - calc(var(--header-h) + 20px));
     width:100%;
     overflow:hidden;
@@ -420,7 +421,7 @@ button:disabled{cursor:default;opacity:.9;transform:none !important}
     width:100%;
     max-width:1400px;
     margin:0 auto;
-    padding:0 28px;
+    padding:0 16px;
     display:flex;
     align-items:center;
     justify-content:space-between;
@@ -502,48 +503,33 @@ button:disabled{cursor:default;opacity:.9;transform:none !important}
     z-index:150;
 }
 .nav-arrow.left{left:12px}
-.nav-arrow.right{right:calc(var(--sidebar-width) + 8px)}
+.nav-arrow.right{right:calc(var(--sidebar-width) + 4px)}
 .nav-arrow.enabled:hover{transform:translateY(-50%) translateY(-4px);box-shadow:0 14px 30px rgba(10,20,30,0.12)}
 .nav-arrow.disabled{background:#f2f4f6;color:#aab4bd;box-shadow:none}
 
 .resume-iframe-wrapper{
     width:100%;
     max-width:100%;
-    height:540px;
+    height:787px;
     margin:0;
     position:relative;
     border-radius:8px;
-    overflow:hidden;
+    overflow:visible;
     background:#fff;
     border:1px solid rgba(0,0,0,0.04);
     box-shadow:0 6px 18px rgba(6,25,40,0.04);
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    display:block;
+    padding:0;
+    box-sizing:border-box;
 }
-.resume-iframe-wrapper iframe{width:90%;height:100%;border:none;display:block;background:#fff}
-.resume-iframe-overlay{position:absolute;inset:0;cursor:zoom-in}
-
-.fullscreen-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:12px}
-.fullscreen-modal{width:100%;max-width:1400px;height:calc(100vh - 24px);background:#fff;border-radius:10px;overflow:hidden;position:relative;display:flex;flex-direction:column}
-.fullscreen-modal .fullscreen-close{
-    position:absolute;
-    right:12px;
-    top:12px;
-    z-index:40;
-    width:36px;
-    height:36px;
-    border-radius:18px;
+.resume-iframe-wrapper iframe{
+    width:100% !important;
+    height:100% !important;
     border:none;
-    background:rgba(0,0,0,0.6);
-    color:#fff;
-    font-size:18px;
-    font-weight:700;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    box-shadow:0 6px 18px rgba(0,0,0,0.28);
+    display:block;
+    background:#fff;
+    margin:0;
+    padding:0;
 }
 
 .app-responses-question{font-weight:700;margin-bottom:8px;font-size:13px}
@@ -563,59 +549,62 @@ button:disabled{cursor:default;opacity:.9;transform:none !important}
 
 .exec-application-layout{
     display:flex;
-    gap:16px;
+    gap:12px;
     align-items:stretch;
-    padding:8px 1px 5px 50px;
+    padding:8px 16px 5px 40px;
     height:calc(100vh - var(--header-h) - 32px);
     box-sizing:border-box;
-    overflow:hidden;
+    overflow:visible;
 }
 
 .exec-application-layout .left-column{
-    padding-top:35px;
-    width:420px;
+    width:var(--detail-width);
     min-width:320px;
-    max-width:520px;
+    max-width:var(--detail-width);
     display:flex;
     flex-direction:column;
     gap:8px;
     align-items:flex-start;
 }
 
-.exec-application-layout .headshot-column{
-    width:120px;
-    min-width:120px;
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
-    padding-top:8px;
-    box-sizing:border-box;
-}
-
 .app-headshot-box{
     width:120px;
     height:120px;
     overflow:hidden;
-    border-radius:6px;
+    border-radius:8px;
     border:1px solid #e6eaf0;
     background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
-.app-headshot-box img,
-.app-headshot-box img{width:120px;height:120px;object-fit:cover;display:block}
+.app-headshot-box img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
 
 .exec-application-layout .middle-column{
-    flex:1 1 auto;
-    min-width:420px;
-    max-width:calc(100% - var(--sidebar-width) - 420px - 5px);
+    flex: 1 1 auto;
+    min-width: 320px;
+    max-width: none;
+    width: auto;
     display:flex;
     flex-direction:column;
     overflow:hidden;
-    padding-right:24px;
+    padding-right: 0;
 }
-.exec-application-layout .middle-column .app-header-text{text-align:center;padding:8px 0 22px}
-.app-header-text .name{font-size:22px;font-weight:700}
-.app-header-text .major{font-size:15px;font-weight:600;margin-top:6px}
-.app-header-text .year{color:#666;margin-top:4px;font-size:13px}
+
+.exec-application-layout .middle-column .app-header-text,
+.app-header-text {
+    text-align:center !important;
+    padding:0;
+}
+.app-header-text .name{font-size:28px;font-weight:700}
+.app-header-text .major{font-size:20px;font-weight:600;margin-top:6px}
+.app-header-text .year{color:#666;margin-top:4px;font-size:15px}
+
 .exec-application-layout .middle-column .responses-scroll{
     flex:1;
     overflow-y:auto;
@@ -634,7 +623,7 @@ button:disabled{cursor:default;opacity:.9;transform:none !important}
     width:var(--sidebar-width);
     height:calc(100vh - var(--header-h));
     margin:0;
-    padding:24px 12px 12px 10px;
+    padding:24px 12px 12px 0;
     box-sizing:border-box;
     overflow:hidden;
     display:flex;
@@ -647,17 +636,15 @@ button:disabled{cursor:default;opacity:.9;transform:none !important}
 .comments-reply-row button{flex:0 0 auto}
 
 @media (max-width:900px){
-    .fullscreen-overlay{padding:0}
-    .fullscreen-modal{height:100vh; border-radius:0; max-width:none}
+    .exec-application-layout{padding:8px}
 }
-
 @media (max-width:1100px){
     .page-content{padding-left:16px;padding-right:16px}
     .nav-arrow{display:none}
     .exec-application-layout{flex-direction:column;height:auto;padding:12px}
     .exec-application-layout .left-column,.exec-application-layout .middle-column,.exec-application-layout .right-column{width:100%;min-width:auto}
     .exec-application-layout .right-column .sidebar-elevated{position:static;width:100%;height:auto;margin-top:12px;border-radius:14px}
-    .resume-iframe-wrapper{height:420px;margin-top:8px}
+    .resume-iframe-wrapper{height:520px;margin-top:8px}
     .app-headshot-box{display:none}
 }
 
