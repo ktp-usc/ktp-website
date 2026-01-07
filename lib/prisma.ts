@@ -10,7 +10,6 @@ const require = createRequire(import.meta.url);
 const { neonConfig } = require("@neondatabase/serverless") as typeof import("@neondatabase/serverless");
 const ws = require("ws") as typeof import("ws");
 
-neonConfig.webSocketConstructor = ws;
 
 const connectionString = process.env.DATABASE_URL!;
 
