@@ -26,7 +26,7 @@ export default function ForgotPasswordPage() {
 
   const handleResetClick = () => {
     if (email.trim().length > 0) {
-      router.push('/Login/resetpassword');
+      router.push('/login/resetpassword');
     }
   };
   return (
