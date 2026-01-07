@@ -105,7 +105,7 @@ export default function ForgotPasswordPage() {
           {/* Form Container */}
           <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl dark:shadow-gray-900/50 p-8 lg:p-10 transition-colors duration-300 border dark:border-gray-700">
             <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Reset Password</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-5">Enter your email address and we'll send you a reset code</p>
+            <p className="text-gray-600 dark:text-gray-400 mb-5">Enter your email address and we&apos;ll send you a reset code</p>
             
             <form className="space-y-5">
               <div>
