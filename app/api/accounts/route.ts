@@ -3,6 +3,8 @@ import { put } from "@vercel/blob";
 import { Prisma } from "@prisma/client";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
+import { number } from "zod";
+import { gradSemester } from "@prisma/client";
 
 export const runtime = "nodejs";
 
@@ -33,16 +35,6 @@ function splitCommaList(value: string | null): string[] {
         .filter(Boolean);
 }
 
-//Splits full name into first and last name
-function parseName(fullName: string, preferredFirstName: string | null) {
-    const parts = fullName.trim().split(/\s+/).filter(Boolean);
-    const fallbackFirst = parts[0] || fullName.trim();
-    const lastName = parts.length > 1 ? parts.slice(1).join(" ") : "";
-    return {
-        firstName: preferredFirstName || fallbackFirst,
-        lastName,
-    };
-}
 
 function parseStringList(values: FormDataEntryValue[]): string[] {
     return values
@@ -50,6 +42,15 @@ function parseStringList(values: FormDataEntryValue[]): string[] {
         .map((value) => value.trim())
         .filter(Boolean);
 }
+
+// function parseGradSemester(value: string | null): Prisma.gradSemester | null {
+//     if (!value) return null;
+//     const normalized = value.trim().toUpperCase();
+//     if (normalized === "FALL" || normalized === "SPRING") {
+//         return normalized as Prisma.gradSemester;
+//     }
+//     return null;
+// }
 
 function isPdf(file: File) {
     return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
@@ -59,7 +60,6 @@ function isImage(file: File) {
     return file.type.startsWith("image/");
 }
 
-//Upload file to Vercel Blob Storage and returns Blob URL
 async function uploadBlobFile(file: File, prefix: string, token: string) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -76,9 +76,7 @@ async function uploadBlobFile(file: File, prefix: string, token: string) {
 }
 
 
-//Creates Neon Auth User using the given email and name
-async function createNeonAuthUser(email: string, name: string) {
-    const password = crypto.randomBytes(12).toString("hex");
+async function createNeonAuthUser(email: string, name: string, password: string) {
     const authUrl =
         process.env.NEXT_NEON_AUTH_URL || process.env.NEXT_PUBLIC_NEON_AUTH_URL;
 
@@ -87,7 +85,6 @@ async function createNeonAuthUser(email: string, name: string) {
         return;
     }
 
-    //Sets the app origin and then calls the Neon Auth sign-up endpoint
     const appOrigin = process.env.ORIGIN_URL || "http://localhost:3000";
     const response = await fetch(`${ authUrl }/sign-up/email`, {
         method: "POST",
@@ -113,45 +110,77 @@ async function createNeonAuthUser(email: string, name: string) {
         console.error("Neon Auth sign-up response missing user id.");
         return;
     }
-    //Sends password reset email to user to set their own password, @TODO REDIRECT Reset URL BACK HERE 
-    // const emailResponse = await fetch(`${ authUrl }/request-password-reset`, {
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/json", "Origin": appOrigin
-    //         },
-    //     body: JSON.stringify({ email, redirectTo: `${ appOrigin }/Reset-Password` })
-    //     });
 
-    return { id: userId, email: email, password: password };
+    return { id: userId, email: email, password };
 
 }
 
-// ---------- POST /api/applications ----------
+// ---------- POST /api/accounts ----------
 export async function POST(req: Request) {
     try {
         const formData = await req.formData();
 
-        const fullName = norm(formData.get("name"));
-        const preferredFirstName = norm(formData.get("preferredFirstName"));
+        const firstName = norm(formData.get("firstName"));
+        const lastName = norm(formData.get("lastName"));
+        const password = norm(formData.get("password"));
         const email = norm(formData.get("email"));
         const phone = norm(formData.get("phone"));
-        const classification = norm(formData.get("classification"));
-        const gpa = norm(formData.get("gpa"));
-        const extenuatingCircumstances = norm(formData.get("extenuatingCircumstances"));
+        const gradYearRaw = norm(formData.get("gradYear"));
         const major = norm(formData.get("major"));
         const minor = norm(formData.get("minor"));
         const hometown = norm(formData.get("hometown"));
-        const reason = norm(formData.get("reason"));
         const linkedin = norm(formData.get("linkedin"));
         const github = norm(formData.get("github"));
-        const affirmation = norm(formData.get("affirmation"));
-        const eventsAttended = parseStringList(formData.getAll("rushEvents"));
-        const signUp = norm(formData.get("signUp"));
+        const gradSemesterRaw = norm(formData.get("gradSemester"));
+        const pledgeClass = norm(formData.get("pledgeClass"));
+
+        // const gradSemester = parseGradSemester(
+        //     gradSemesterRaw || classificationValues[0] || null
+        // );
+
+        if (
+            !firstName ||
+            !lastName ||
+            !email ||
+            !phone ||
+            !major ||
+            !linkedin ||
+            !github ||
+            !gradYearRaw
+        ) {
+            return NextResponse.json(
+                { error: "Missing required signup fields." },
+                { status: 400 }
+            );
+        }
+
+        if (!password) {
+            return NextResponse.json(
+                { error: "Password is required." },
+                { status: 400 }
+            );
+        }
 
         
-        if (!fullName || !email || !phone || !gpa || !major || !reason) {
+        const gradSem: gradSemester = gradSemesterRaw as gradSemester;
+
+        if (!isFinite((Number.parseInt(gradYearRaw)))) {
             return NextResponse.json(
-                { error: "Missing required application fields." },
+                { error: "Grad year must be a valid number." },
+                { status: 400 }
+            );
+        }
+
+        if (!gradSemester) {
+            return NextResponse.json(
+                { error: "Graduating semester is required." },
+                { status: 400 }
+            );
+        }
+
+        if (!pledgeClass) {
+            return NextResponse.json(
+                { error: "Pledge class is required." },
                 { status: 400 }
             );
         }
@@ -160,20 +189,6 @@ export async function POST(req: Request) {
         if (!emailDomain || !emailDomain.endsWith("sc.edu")) {
             return NextResponse.json(
                 { error: "Please use a valid USC email address." },
-                { status: 400 }
-            );
-        }
-
-        if (affirmation !== "yes") {
-            return NextResponse.json(
-                { error: "Application affirmation is required." },
-                { status: 400 }
-            );
-        }
-
-        if (eventsAttended.length === 0) {
-            return NextResponse.json(
-                { error: "Please select at least one rush event attended." },
                 { status: 400 }
             );
         }
@@ -228,21 +243,19 @@ export async function POST(req: Request) {
             );
         }
 
-        const { firstName, lastName } = parseName(fullName, preferredFirstName);
-        const authUser = await createNeonAuthUser(email, fullName);
+        const fullName = `${ firstName } ${ lastName }`.trim();
+        const authUser = await createNeonAuthUser(email, fullName, password);
         if (!authUser) {
             return NextResponse.json({ error: "Failed to create user authentication." }, { status: 500 });
         }
 
-        const { id: userId, email: userEmail, password: password } = authUser;
+        const { id: userId, email: userEmail } = authUser;
         const majors = splitCommaList(major);
         const minors = splitCommaList(minor);
-
         // ------------------------------
         // Insert into Neon using Prisma
         // ------------------------------
 
-        //@TODO need to add logic for converting class to gradyear
         await prisma.accounts.create({
             data: {
                 id: userId,
@@ -257,33 +270,20 @@ export async function POST(req: Request) {
                 type: "APPLICANT",
                 resumeBlobURL: resumeUrl,
                 headshotBlobURL: headshotUrl,
+                gradYear:Number.parseInt(gradYearRaw),
+                gradSemester: gradSem,
+                pledgeClass,
                 linkedin: linkedin,
                 github: github
             }
         });
 
-        await prisma.applications.create({
-            data: {
-                fullName,
-                email,
-                classification,
-                major,
-                minor,
-                reason,
-                resumeUrl,
-                eventsAttended,
-                linkedin,
-                github,
-                accounts: {
-                    connect: { id: userId },
-                },
-            },
-        })
+        console.log(`[EMAIL MOCK] To: ${ email }, Password: ${ password }`);
 
         return NextResponse.json({ ok: true, id: userId });
 
     } catch (err: unknown) {
-        console.error("POST /api/applications error:", err);
+        console.error("POST /api/accounts error:", err);
 
         // Handle unique constraint violations (e.g., duplicate email/resume)
         if (
@@ -291,7 +291,7 @@ export async function POST(req: Request) {
             err.code === "P2002"
         ) {
             return NextResponse.json(
-                { error: "An account with this email or resume already exists." },
+                { error: "An account with this email or file already exists." },
                 { status: 409 }
             );
         }
@@ -312,33 +312,30 @@ export async function POST(req: Request) {
     }
 }
 
-// ---------- GET /api/applications ----------
+// ---------- GET /api/accounts ----------
 // Simple listing endpoint for an admin dashboard later
 export async function GET(req: Request) {
     try {
         const { searchParams } = new URL(req.url);
         const limit = parseLimit(searchParams.get("limit"));
 
-        const applications = await prisma.applications.findMany({
-            take: limit,
-            orderBy: {
-                createdAt: "desc"
-            }
+        const accounts = await prisma.accounts.findMany({
+            take: limit
         });
 
-        return NextResponse.json({ ok: true, data: applications });
+        return NextResponse.json({ ok: true, data: accounts });
     } catch (err) {
         if (
             err instanceof Prisma.PrismaClientKnownRequestError &&
             err.code === "P2021" // table or view not found
         ) {
             return NextResponse.json(
-                { error: "Table \"applications\" not found. Ensure migrations have been applied." },
+                { error: "Table \"accounts\" not found. Ensure migrations have been applied." },
                 { status: 500 }
             );
         }
 
-        console.error("GET /api/applications error:", err);
+        console.error("GET /api/accounts error:", err);
         return NextResponse.json({ error: "Server error" }, { status: 500 });
     }
 }

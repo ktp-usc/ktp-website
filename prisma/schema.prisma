@@ -48,6 +48,7 @@ model applications {
   isFlagged      Boolean?
   lastModified   DateTime? @db.Timestamptz(6)
   userId         String    @unique @db.Uuid
+  gpa            Float?
   accounts       accounts  @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "userCheck")
 
   @@schema("public")
