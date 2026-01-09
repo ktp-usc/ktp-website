@@ -126,7 +126,7 @@ function NonprofitAccordion({
   );
 }
 
-export default function OurWork() {
+export default function Clients() {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
 
   return (
