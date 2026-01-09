@@ -47,19 +47,15 @@ export function Header() {
           <Link className="hover:text-[#315CA9] font-medium" href="/">
             Home
           </Link>
-          <Link className="hover:text-[#315CA9] font-medium" href="/Members">
+          <Link className="hover:text-[#315CA9] font-medium" href="/members">
             Members
           </Link>
-          <Link className="hover:text-[#315CA9] font-medium" href="/OurWork">
-            Our Work
-          </Link>
-
-          <Link className="hover:text-[#315CA9] font-medium" href="/Rush">
+          <Link className="hover:text-[#315CA9] font-medium" href="/rush">
             Rush
           </Link>
           <Link
             className="hover:text-[#315CA9] font-medium"
-            href="/Application"
+            href="/apply"
           >
             Apply
           </Link>

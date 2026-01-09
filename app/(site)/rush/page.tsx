@@ -1,19 +1,19 @@
 "use client"
 
-import React from "react";
 import Link from "next/link";
 
+import CalendarIcon from "@/components/CalendarIcon";
+import PinIcon from "@/components/PinIcon";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import CalendarIcon from "@/components/CalendarIcon";
-import PinIcon from "@/components/PinIcon";
 
 export default function Page2() {
   return (
+    <>
     <main className="relative">
       {/* Background blobs */}
       <div className="relative bg-white w-full">
@@ -42,12 +42,26 @@ export default function Page2() {
                     hover:scale-110 hover: drop-shadow-md"
           >
             <Link
-              href="/Application"
+              href="/apply"
               className="px-6 py-3 bg-[#315CA9] text-white rounded-lg font-semibold hover:bg-[#23498F] transition-colors"
             >
               Application Link
             </Link>
           </div>
+            <p className="text-gray-600 text-lg sm:text-xl mb-2">
+                Also, join our{" "}
+                <a
+                    href="https://calendar.google.com/calendar/u/0?cid=1b20343751d013074e5f5f82bfcb70a9cf4ffba7a5a59d93c92f3b2894f7ef66@group.calendar.google.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#315CA9] font-semibold hover:underline"
+                >
+                    Spring 2025 Rush Google Calendar
+                </a>{" "}
+                to see the dates, times, and locations of all Rush events.
+            </p>
+
+
         </section>
 
         {/* ===== Timeline Section ===== */}
@@ -221,5 +235,6 @@ export default function Page2() {
         </section>
       </div>
     </main>
+    </>
   );
 }
