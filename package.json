@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@cyntler/react-doc-viewer": "^1.17.1",
     "@hookform/resolvers": "^5.2.2",
     "@neondatabase/serverless": "^1.0.2",
     "@prisma/client": "^6.19.0",
@@ -53,8 +54,10 @@
     "prisma": "^6.19.0",
     "react": "19.1.0",
     "react-day-picker": "^9.11.1",
+    "react-doc-viewer": "^0.1.15",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.66.1",
+    "react-pdf": "^10.3.0",
     "react-resizable-panels": "^3.0.6",
     "react-scroll": "^1.9.3",
     "react-type-animation": "^3.2.0",
