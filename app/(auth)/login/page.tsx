@@ -1,18 +1,50 @@
 "use client"
 import Background from "@/components/Background";
 import ThemeToggle from "@/components/ui/themeToggle";
-import { useRouter } from 'next/navigation';
+import { authClient } from "@/app/auth";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from 'next/link';
 import Image from "next/image";
+import { useState, type FormEvent } from "react";
+
 
 
 
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handleHomeClick = () => {
     document.documentElement.classList.remove('dark');
     router.push('/');
+  };
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setErrorMessage(null);
+    if (!email || !password) {
+      setErrorMessage("Email and password are required.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await authClient.signIn.email({
+        email,
+        password,
+        fetchOptions: { throw: true },
+      });
+      router.push(searchParams.get("redirectTo") ?? "/");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Sign in failed. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 dark:bg-gray-900 transition-colors duration-300">
@@ -92,7 +124,15 @@ export default function LoginPage() {
             <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Sign In</h2>
             <p className="text-gray-600 dark:text-gray-400 mb-5">Enter your credentials to access your account</p>
             
-            <form className="space-y-5">
+            <form className="space-y-5" onSubmit={handleSubmit}>
+              {errorMessage ? (
+                <div
+                  className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+                  role="alert"
+                >
+                  {errorMessage}
+                </div>
+              ) : null}
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Email Address
@@ -100,6 +140,11 @@ export default function LoginPage() {
                 <input
                   id="email"
                   type="email"
+                  name="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  disabled={isSubmitting}
                   placeholder="example@email.sc.edu"
                   className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
@@ -117,6 +162,11 @@ export default function LoginPage() {
                 <input
                   id="password"
                   type="password"
+                  name="password"
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  disabled={isSubmitting}
                   placeholder="••••••••"
                   className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
@@ -124,10 +174,11 @@ export default function LoginPage() {
               {/* Testing Purposes */}
               <button
                 type="submit"
+                disabled={isSubmitting}
                 //onClick={() => router.push("/homepage")}
-                className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 py-3 text-white font-semibold hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-lg shadow-blue-500/30"
+                className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 py-3 text-white font-semibold hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-lg shadow-blue-500/30 disabled:cursor-not-allowed disabled:opacity-70"
               >
-                Sign In
+                {isSubmitting ? "Signing In..." : "Sign In"}
               </button>
             </form>
           </div>
