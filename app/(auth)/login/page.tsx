@@ -45,7 +45,7 @@ export default function LoginPage() {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }; 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 dark:bg-gray-900 transition-colors duration-300">
       <ThemeToggle />
