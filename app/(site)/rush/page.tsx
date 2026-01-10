@@ -56,7 +56,7 @@ export default function Page2() {
                     rel="noopener noreferrer"
                     className="text-[#315CA9] font-semibold hover:underline"
                 >
-                    Spring 2025 Rush Google Calendar
+                    Spring 2026 Rush Google Calendar
                 </a>{" "}
                 to see the dates, times, and locations of all Rush events.
             </p>
@@ -77,33 +77,51 @@ export default function Page2() {
               {/* Event 1 */}
               <div className="relative pl-8 pb-10">
                 <div className="absolute -left-0.5 top-1 w-3 h-3 rounded-full bg-[#315CA9]"></div>
-                <h3 className="text-lg font-semibold mb-1">Info Session</h3>
+                <h3 className="text-lg font-semibold mb-1">Info Night #1</h3>
                 <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
                   <CalendarIcon />
-                  <span>Tuesday, January 20, 6:00-7:30 PM</span>
+                  <span>Thursday, January 22, 7:00-8:00 PM</span>
                 </p>
                 <p className="text-sm text-gray-600 flex items-center gap-2 mb-3">
                   <PinIcon />
                   <span>300 Main St. Room B201</span>
                 </p>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  Want to learn more about what KTP has to offer? Join us for
-                  this exciting start to a new experience. Food and refreshments
-                  will be provided.
+                  Want to learn more about what KTP has to offer? We'll give a presentation 
+                   about what it means to be a brother in KTP; then, you'll have a chance to 
+                   ask our brothers any questions related to rush, the professional fraternity 
+                   experience, or anything else you may be wondering!
+                </p>
+              </div>
+
+              <div className="relative pl-8 pb-10">
+                <div className="absolute -left-0.5 top-1 w-3 h-3 rounded-full bg-[#315CA9]"></div>
+                <h3 className="text-lg font-semibold mb-1">Info Night #2</h3>
+                <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
+                  <CalendarIcon />
+                  <span>Monday, January 26, 7:00-8:00 PM</span>
+                </p>
+                <p className="text-sm text-gray-600 flex items-center gap-2 mb-3">
+                  <PinIcon />
+                  <span>300 Main St. Room B201</span>
+                </p>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  Same as above; you only need to attend one of our info nights!
+                   Choose whichever one works best for you.
                 </p>
               </div>
 
               {/* Event 2 */}
               <div className="relative pl-8 pb-10">
                 <div className="absolute -left-0.5 top-1 w-3 h-3 rounded-full bg-[#315CA9]"></div>
-                <h3 className="text-lg font-semibold mb-1">KTP Field Day</h3>
+                <h3 className="text-lg font-semibold mb-1">Field Day</h3>
                 <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
                   <CalendarIcon />
-                  <span>Wednesday, January 21, 8:00-10:00 PM</span>
+                  <span>Tuesday, January 27, 6:00-7:30 PM</span>
                 </p>
                 <p className="text-sm text-gray-600 flex items-center gap-2 mb-3">
                   <PinIcon />
-                  <span>Strom Thurmond Gym</span>
+                  <span>Strom Thurmond Fitness and Wellness Center</span>
                 </p>
                 <p className="text-sm text-gray-600 leading-relaxed">
                   Join us for this casual social event where you&apos;ll get to
@@ -120,16 +138,15 @@ export default function Page2() {
                 </h3>
                 <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
                   <CalendarIcon />
-                  <span>Thursday, January 22, 7:00-9:00 PM</span>
+                  <span>Wednesday, January 28, 7:00-9:00 PM</span>
                 </p>
                 <p className="text-sm text-gray-600 flex items-center gap-2 mb-3">
                   <PinIcon />
-                  <span>Innovation Center Room 2277</span>
+                  <span>Darla Moore School of Business</span>
                 </p>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  Want to get a glance of what it&apos;s like joining KTP? Join
-                  us for this enriching event that will teach you the basics
-                  about React applications and how to build your own website!
+                  Want to get a glance of what it&apos;s like joining KTP? At this event, 
+                   we'll teach you the basics of React and how to build your own website!
                 </p>
               </div>
 
@@ -139,22 +156,45 @@ export default function Page2() {
                 <h3 className="text-lg font-semibold mb-1">Pitch Night</h3>
                 <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
                   <CalendarIcon />
-                  <span>Friday, January 23, 6:30-8:00 PM</span>
+                  <span>Friday, January 30, 5:00-7:00 PM</span>
                 </p>
                 <p className="text-sm text-gray-600 flex items-center gap-2 mb-3">
                   <PinIcon />
                   <span>Darla Moore School of Business Room 140</span>
                 </p>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  It&apos;s time to showcase your collaboration skills. In this
-                  event you&apos;ll work with a team to pitch a solution to a
-                  technical challenge. You will need to dress business-casual
-                  for this event.
+                  It&apos;s time to showcase your collaboration skills. At this
+                  event, you&apos;ll work with a team to pitch a solution to a
+                  technical challenge. You&apos;ll need to dress business casual!
                 </p>
               </div>
             </div>
+
+            <div className="relative pl-8 pb-10">
+                <div className="absolute -left-0.5 top-1 w-3 h-3 rounded-full bg-[#315CA9]"></div>
+                <h3 className="text-lg font-semibold mb-1">
+                  Application Deadline
+                </h3>
+                <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
+                  <CalendarIcon />
+                  <span>Friday, January 30, 9:00 PM</span>
+                </p>
+                <div className="mt-3 mb-3">
+                  <Link
+                    href="/apply"
+                    className="inline-block px-6 py-3 bg-[#315CA9] text-white rounded-full font-semibold hover:bg-[#23498F] transition-colors"
+                  >
+                    Apply Here
+                  </Link>
+                </div>
+              </div>
+
           </div>
+
+          
         </section>
+
+        
 
         {/* ===== FAQ Accordion (added here) ===== */}
         <section className="max-w-4xl mx-auto mt-16 mb-24 px-4">
@@ -180,18 +220,29 @@ export default function Page2() {
 
             <AccordionItem value="q2">
               <AccordionTrigger className="py-6 text-left text-xl sm:text-2xl font-semibold text-black hover:bg-gray-50">
+                How much of a time commitment is the New Member Education process?
+              </AccordionTrigger>
+              <AccordionContent className="pb-6 text-gray-700 text-base leading-relaxed">
+                Should you accept a bid from us, you will be expected to attend 2-3 events per week,
+                (including technical workshops, professional workshops, social events, etc.) as well as 
+                actively contributing to your assigned nonprofit project.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="q3">
+              <AccordionTrigger className="py-6 text-left text-xl sm:text-2xl font-semibold text-black hover:bg-gray-50">
                 I&apos;m not able to attend one of the rush events. How will
                 this affect my chances?
               </AccordionTrigger>
               <AccordionContent className="pb-6 text-gray-700 text-base leading-relaxed">
                 We understand that various circumstances prevent applicants from
                 attending all of our events. Please contact our Executive
-                Secretary at least an hour before the event takes place if you
+                Secretary (Josiah White) via GroupMe DM at least an hour before the event takes place if you
                 aren&apos;t able to attend.
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="q3">
+            <AccordionItem value="q4">
               <AccordionTrigger className="py-6 text-left text-xl sm:text-2xl font-semibold text-black hover:bg-gray-50">
                 Can I rush multiple professional fraternities alongside Kappa
                 Theta Pi?
@@ -204,7 +255,7 @@ export default function Page2() {
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="q4">
+            <AccordionItem value="q5">
               <AccordionTrigger className="py-6 text-left text-xl sm:text-2xl font-semibold text-black hover:bg-gray-50">
                 How much are dues? Do I have to pay?
               </AccordionTrigger>
@@ -219,16 +270,15 @@ export default function Page2() {
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="q5">
+            <AccordionItem value="q6">
               <AccordionTrigger className="py-6 text-left text-xl sm:text-2xl font-semibold text-black hover:bg-gray-50">
                 If I&apos;m selected for an interview, what commitments should I
                 plan for?
               </AccordionTrigger>
               <AccordionContent className="pb-6 text-gray-700 text-base leading-relaxed">
-                In the event you advance in our recruitment process, please
-                clear your calendar for a 15-20 minute interview slot on TBD as
-                well as a finalist dinner on TBD. More details will be provided
-                over email via invitation to these events.
+                In the event you advance in our recruitment process, anticipate a 15-20 minute interview slot 
+                on the weekend of February 1st. More details will be provided
+                over email upon invitation.
               </AccordionContent>
             </AccordionItem>
           </Accordion>
