@@ -1,15 +1,10 @@
-<<<<<<< HEAD
+
 import { NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { Prisma } from "@prisma/client";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
-=======
 import { neon } from "@neondatabase/serverless";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { put } from "@vercel/blob";
-import { NextResponse } from "next/server";
->>>>>>> main
 
 export const runtime = "nodejs";
 
