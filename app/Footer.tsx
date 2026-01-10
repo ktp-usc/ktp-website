@@ -123,7 +123,7 @@ export default function Footer() {
 
                 {/* Divider */}
                 <div className="border-t border-white/20 mt-12 pt-6 text-sm text-white text-center">
-                    © 2025 Kappa Theta Pi Alpha Theta. All rights reserved.
+                    © 2026 Kappa Theta Pi Alpha Theta. All rights reserved.
                 </div>
             </div>
         </footer>
