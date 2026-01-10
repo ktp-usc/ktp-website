@@ -51,6 +51,17 @@ model applications {
   userId         String    @unique @db.Uuid
   gpa            Float?
   accounts       accounts  @relation(fields: [userId], references: [id], onDelete: Cascade, map: "userCheck")
+  comments       comment[]
+
+  @@schema("public")
+}
+
+model comment {
+  id             String             @id @default(uuid()) @db.Uuid
+  applications   applications       @relation(fields: [id], references: [id])
+  createdAt      DateTime?          @default(now()) @db.Timestamptz(6)
+  StatusOverride applicationStatus?
+  Commenter      String?
 
   @@schema("public")
 }
@@ -129,8 +140,6 @@ model organization {
   @@schema("neon_auth")
 }
 
-
-
 model session {
   id                   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   expiresAt            DateTime @db.Timestamptz(6)
@@ -168,8 +177,6 @@ model user {
 
   @@schema("neon_auth")
 }
-
-
 
 enum applicationStatus {
   CLOSED
