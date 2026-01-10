@@ -5,7 +5,7 @@ import type { Application } from '../types';
 type Props = { params: { id: string } };
 
 export default async function Page({ params }: Props) {
-    const { id } = params;
+    const { id } = await params;
     const base = process.env.NEXT_PUBLIC_API_BASE || '';
 
     let application: Application | null = null;
