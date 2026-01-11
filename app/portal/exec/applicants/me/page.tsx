@@ -2,6 +2,10 @@ import React from 'react';
 import ExecApplicationViewer from '../[id]/components/ExecApplicationViewer';
 import type { Application } from '../types';
 
+// explicitly tell next.js that this page is dynamic, not static
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default async function MyApplicationPage() {
     const base = process.env.NEXT_PUBLIC_API_BASE || '';
 
