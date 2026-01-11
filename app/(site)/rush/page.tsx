@@ -87,8 +87,8 @@ export default function Page2() {
                   <span>300 Main St. Room B201</span>
                 </p>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  Want to learn more about what KTP has to offer? We'll give a presentation 
-                   about what it means to be a brother in KTP; then, you'll have a chance to 
+                  Want to learn more about what KTP has to offer? We`&apos;`ll give a presentation
+                   about what it means to be a brother in KTP; then, you`&apos;`ll have a chance to
                    ask our brothers any questions related to rush, the professional fraternity 
                    experience, or anything else you may be wondering!
                 </p>
@@ -146,7 +146,7 @@ export default function Page2() {
                 </p>
                 <p className="text-sm text-gray-600 leading-relaxed">
                   Want to get a glance of what it&apos;s like joining KTP? At this event, 
-                   we'll teach you the basics of React and how to build your own website!
+                   we`&apos;`ll teach you the basics of React and how to build your own website!
                 </p>
               </div>
 

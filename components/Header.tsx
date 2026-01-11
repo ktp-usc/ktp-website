@@ -25,7 +25,7 @@ export function Header() {
     }, []);
 
     return (
-        <header className={`sticky top-0 w-full z-[9999] transition-all duration-700 p-2 sm:p-4 ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}>
+        <header className={`sticky top-0 w-full z-9999 transition-all duration-700 p-2 sm:p-4 ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}>
             <div className="relative flex items-center justify-center w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-2 sm:py-3 z-10">
 
                 {/* Logo - Scales from w-8 (mobile) back to your original w-11 (desktop) */}
@@ -43,10 +43,10 @@ export function Header() {
                 <nav className='flex flex-wrap justify-center text-xs sm:text-md md:text-lg space-x-4 sm:space-x-8 md:space-x-12 lg:space-x-16'>
                     {/*<Link className="hover:text-[#315CA9] font-medium" href="/">Home</Link>*/}
 
-                    <Link className="hover:text-[#315CA9] font-medium" href="/Members">Members</Link>
-                    <Link className="hover:text-[#315CA9] font-medium" href="/Rush">Rush</Link>
-                    <Link className="hover:text-[#315CA9] font-medium" href="/Clients">Our Work</Link>
-                    <Link className="hover:text-[#315CA9] font-medium" href="/Application">Apply</Link>
+                    <Link className="hover:text-[#315CA9] font-medium" href="/members">Members</Link>
+                    <Link className="hover:text-[#315CA9] font-medium" href="/rush">Rush</Link>
+                    <Link className="hover:text-[#315CA9] font-medium" href="/clients">Our Work</Link>
+                    <Link className="hover:text-[#315CA9] font-medium" href="/application">Apply</Link>
                 </nav>
 
                 <div className="absolute right-1 sm:right-6 md:right-12 lg:right-16 xl:right-20">

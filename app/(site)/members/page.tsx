@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { ReactTyped } from "react-typed";
-import membersData from "./members.json";
+import membersData from "@/data/members.json";
 
 interface Member {
   name: string;
