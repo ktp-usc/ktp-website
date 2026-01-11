@@ -1,8 +1,7 @@
-import { NextResponse } from "next/server";
 import { neon } from "@neondatabase/serverless";
-import { put } from "@vercel/blob";
-import { Prisma } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { put } from "@vercel/blob";
+import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
