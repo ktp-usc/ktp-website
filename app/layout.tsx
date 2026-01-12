@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner"
-import Footer from "@/app/Footer";
-import {Header} from "@/components/Header";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Kappa Theta Pi",
-  description: "The official website for Kappa Theta Pi",
+  title: "Kappa Theta Pi - University of South Carolina",
+  description: "The University of South Carolina's premier technology fraternity",
 };
 
 export default function RootLayout({

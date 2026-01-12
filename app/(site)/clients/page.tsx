@@ -155,8 +155,6 @@ export default function OurWork() {
     "/Images/symposium1.jpeg",
     "/Images/symposium2.jpeg",
     "/Images/symposium3.jpeg",
-    "/Images/symposium7.jpeg",
-    
   ];
 
   const photoHoverClasses =
