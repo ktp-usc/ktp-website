@@ -7,6 +7,7 @@ datasource db {
   schemas  = ["neon_auth", "public"]
 }
 
+//userProfile
 model accounts {
   id              String        @id @db.Uuid
   firstName       String        @default("john")

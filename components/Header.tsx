@@ -49,7 +49,7 @@ export function Header() {
                 <div className="absolute right-1 sm:right-6 md:right-12 lg:right-16 xl:right-20">
                     <Link
                         className="bg-[#315CA9] text-white font-medium px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-xs sm:text-base hover:bg-[#23498F] transition-all duration-300 transform shadow-lg hover:drop-shadow-lg"
-                        href="/login">
+                        href="/Login">
                         Login
                     </Link>
                 </div>
