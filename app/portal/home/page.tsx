@@ -17,7 +17,8 @@ const mockUser = {
     major: "Computer Science",
     year: "Junior",
     gpa: "3.8",
-    LinkedIn: "https://linkedin.com/in/johndoe"
+    LinkedIn: "https://linkedin.com/in/johndoe",
+    pc: "2026"
   }
 };
 
@@ -48,6 +49,18 @@ export default function HomePage() {
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
+
+  const [spin, setSpin] = useState(false);
+
+    useEffect(() => {
+      const interval = setInterval(() => {
+        setSpin(true);
+        setTimeout(() => setSpin(false), 800);
+      }, 4000);
+
+      return () => clearInterval(interval);
+    }, []);
+
 
   const getStatusText = (status: number) => {
     switch (status) {
@@ -119,7 +132,7 @@ export default function HomePage() {
               aria-label="Settings"
             >
               <svg
-                className="w-5 h-5 text-gray-600  dark:text-white transition-colors duration-300"
+                className="w-7 h-7 text-gray-600  dark:text-white transition-transform duration-400 hover:rotate-90"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -166,9 +179,10 @@ export default function HomePage() {
               className="bg-white rounded-xl shadow-md hover:shadow-lg dark:bg-gray-900 dark:border-gray-600 dark:hover:border-gray-400 transition-all cursor-pointer border border-gray-200 overflow-hidden group"
             >
               <div className="p-6">
-                <div className="flex items-start justify-between mb-4">
+                <div className="flex items-start justify-between gap-6 mb-4">
+
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
+                    <div className="flex items-center gap-3 mb-1">
                       <h4 className="text-lg font-semibold text-gray-900 dark:text-white transition-colors duration-300">
                         Spring 2026 Application
                       </h4>
@@ -180,39 +194,36 @@ export default function HomePage() {
                       Submitted on {user.application.submittedDate}
                     </p>
                   </div>
+
+                  <div className="flex gap-6 text-left">
+                    <div>
+                      <p className="text-xs text-gray-500 dark:text-white transition-colors duration-300">Major</p>
+                      <p className="text-sm mt-2 font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">
+                        {user.application.major}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 dark:text-white transition-colors duration-300">Year</p>
+                      <p className="text-sm mt-2 font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">
+                        {user.application.year}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Arrow */}
                   <svg
                     className="w-5 h-5 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
-                </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1 dark:text-white transition-colors duration-300">Major</p>
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">{user.application.major}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1 dark:text-white transition-colors duration-300">Year</p>
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">{user.application.year}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1 dark:text-white transition-colors duration-300">GPA</p>
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">{user.application.gpa}</p>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
-        )}
+          )}
 
         {/* Exec View */}
         {user.role === 'exec' && (

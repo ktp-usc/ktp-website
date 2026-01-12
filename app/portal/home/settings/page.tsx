@@ -4,6 +4,12 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { toast } from 'sonner';
 
+const [imageSrc, setImageSrc] = useState<string | null>(null);
+const [crop, setCrop] = useState({ x: 0, y: 0 });
+const [zoom, setZoom] = useState(1);
+const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+
+
 export default function SettingsPage() {
     const handleHomeClick = () => {
     document.documentElement.classList.remove('dark');
@@ -24,10 +30,12 @@ export default function SettingsPage() {
     headshot: '',
     LinkedIn: '',
     bio: '',
+    resume: '',
+    resumeLastUpdated: null as string | null,
     // Non-editable fields
     type: '',
     exec: false,
-    pc: false,
+    pc: '2026',
     });
 
   useEffect(() => {
@@ -81,6 +89,9 @@ export default function SettingsPage() {
           gpa: user.gpa,
           LinkedIn: user.LinkedIn,
           bio: user.bio,
+          pc: user.pc,
+          resume: user.resume,
+          resumeLastUpdated: user.resumeLastUpdated,
         }),
       });
 
@@ -117,6 +128,64 @@ export default function SettingsPage() {
       console.error('Error uploading headshot:', error);
       toast.error('Failed to upload headshot');
     }
+  };
+
+   const handleResumeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const validTypes = ['.pdf', '.doc', '.docx', '.jpg', '.png'];
+    const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+    if (!validTypes.includes(fileExtension)) {
+      toast.error('Please upload a valid file format (.pdf, .doc, .docx, .jpg, .png)');
+      return;
+    }
+
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('File size must be less than 5MB');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('resume', file);
+
+    try {
+      const response = await fetch('/api/user/resume', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error('Failed to upload resume');
+
+      const data = await response.json();
+      toast.success('Resume updated successfully!');
+    } catch (error) {
+      console.error('Error uploading resume:', error);
+      toast.error('Failed to upload resume');
+    }
+  };
+
+   const formatDate = (dateString: string | null) => {
+    if (!dateString) return 'Never uploaded';
+    
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMs = now.getTime() - date.getTime();
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+    
+    if (diffInDays === 0) return 'Today';
+    if (diffInDays === 1) return 'Yesterday';
+    if (diffInDays < 7) return `${diffInDays} days ago`;
+    if (diffInDays < 30) return `${Math.floor(diffInDays / 7)} weeks ago`;
+    if (diffInDays < 365) return `${Math.floor(diffInDays / 30)} months ago`;
+    
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
   };
 
   if (loading) {
@@ -235,6 +304,7 @@ export default function SettingsPage() {
                   onChange={handleInputChange}
                   className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                   required
+                  placeholder="example@email.sc.edu"
                 />
               </div>
 
@@ -355,6 +425,45 @@ export default function SettingsPage() {
             </div>
           </div>
 
+          {/* Resume Upload */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Resume/CV</h2>
+            <div className="space-y-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Upload a new resume to update your application materials
+              </p>
+              <div className="flex items-center gap-2 text-sm">
+                  <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Last updated: <span className="font-medium text-gray-900 dark:text-white">{formatDate(user.resumeLastUpdated)}</span>
+                  </span>
+                </div>
+              <div className="flex items-center gap-4">
+                <label
+                  htmlFor="resume"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                  Upload New Resume
+                </label>
+                <input
+                  id="resume"
+                  type="file"
+                  accept=".pdf,.doc,.docx,.jpg,.png"
+                  onChange={handleResumeChange}
+                  className="hidden"
+                />
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  PDF, DOC, JPG, PNG (max 5MB)
+                </span>
+              </div>
+            </div>
+          </div>
+
           {/* Account Information (Non-Editable) */}
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Account Information</h2>
@@ -372,7 +481,7 @@ export default function SettingsPage() {
               <div className="flex justify-between items-center py-2">
                 <span className="text-gray-700 dark:text-gray-300 font-medium">PC Member:</span>
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${user.pc ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'}`}>
-                  {user.pc ? 'Yes' : 'No'}
+                  {user.pc}
                 </span>
               </div>
             </div>
