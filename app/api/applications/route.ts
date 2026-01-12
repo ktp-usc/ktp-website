@@ -1,9 +1,9 @@
-
 import { NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { Prisma } from "@prisma/client";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
+import { headers } from "next/headers";
 
 export const runtime = "nodejs";
 
@@ -76,6 +76,13 @@ async function uploadBlobFile(file: File, prefix: string, token: string) {
     return blob.url;
 }
 
+export async function getCurrentDomain() {
+    const headersList = await headers();
+    const host = headersList.get('host'); // example.com
+    const protocol = headersList.get('x-forwarded-proto') ?? 'http';
+
+    return `${protocol}://${host}`;
+}
 
 //Creates Neon Auth User using the given email and name
 async function createNeonAuthUser(email: string, name: string) {
@@ -89,7 +96,7 @@ async function createNeonAuthUser(email: string, name: string) {
     }
 
     //Sets the app origin and then calls the Neon Auth sign-up endpoint
-    const appOrigin = process.env.ORIGIN_URL || "http://localhost:3000";
+    const appOrigin = await getCurrentDomain();
     const response = await fetch(`${ authUrl }/sign-up/email`, {
         method: "POST",
         headers: {
