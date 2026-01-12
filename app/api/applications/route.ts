@@ -116,13 +116,13 @@ async function createNeonAuthUser(email: string, name: string) {
         return;
     }
     //Sends password reset email to user to set their own password, @TODO REDIRECT Reset URL BACK HERE 
-    // const emailResponse = await fetch(`${ authUrl }/request-password-reset`, {
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/json", "Origin": appOrigin
-    //         },
-    //     body: JSON.stringify({ email, redirectTo: `${ appOrigin }/Reset-Password` })
-    //     });
+    const emailResponse = await fetch(`${ authUrl }/request-password-reset`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json", "Origin": appOrigin
+            },
+        body: JSON.stringify({ email, redirectTo: `${ appOrigin }/login/forgotpassword` })
+        });
 
     return { id: userId, email: email, password: password };
 
