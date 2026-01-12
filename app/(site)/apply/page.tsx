@@ -104,15 +104,6 @@ export default function Application() {
             toast.error("Picture must be an image file.");
             return;
         }
-        //Validate that image is 500pixels by 500pixels
-        const img = new window.Image();
-        img.src = window.URL.createObjectURL( photo );
-        const width = img.naturalWidth, height = img.naturalHeight;
-        window.URL.revokeObjectURL( img.src );
-
-        if(!(width == 500) && !(height == 500)) {
-            toast.error("Picture must be 500x500 pixels.");
-        }
 
         // Validate at least one rush event selected
         const rushEvents = formData.getAll("rushEvents");
