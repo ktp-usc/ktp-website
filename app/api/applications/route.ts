@@ -4,7 +4,6 @@ import { put } from "@vercel/blob";
 import { Prisma } from "@prisma/client";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
-import { neon } from "@neondatabase/serverless";
 
 export const runtime = "nodejs";
 
