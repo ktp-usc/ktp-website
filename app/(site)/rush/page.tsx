@@ -75,7 +75,12 @@ export default function Page2() {
         {/* ===== Timeline Section (no right column) ===== */}
         <section className="max-w-6xl mx-auto mt-9 px-4">
           <div>
-            <h2 className="text-2xl sm:text-2xl font-bold mb-8">Spring 2026 Rush Events</h2>
+            <h2 className="text-2xl sm:text-2xl font-bold mb-3">Spring 2026 Rush Events</h2>
+
+              <p className="text-gray-600 text-md italic sm:text-md mb-5 px-4">
+                  *All rush dates, times, and locations are subject to change. Join our Rush GroupMe
+                  to get updated on any changes that occur.*
+              </p>
 
             <div className="relative">
               {/* vertical line (left) */}
