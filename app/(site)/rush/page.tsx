@@ -29,7 +29,7 @@ export default function Page2() {
             Learn About Joining KTP!
           </h1>
           <p className="text-gray-600 text-xl sm:text-xl mb-4">
-              <strong>Welcome to Kappa Theta Pi's Winter 2026 Rush!</strong>
+              <strong>Welcome to Kappa Theta Pi's Spring 2026 Rush!</strong>
           </p>
           <p className="text-gray-600 text-xl sm:text-xl mb-4">
               <strong>Here's our rush schedule. Applications are due Friday, January 30, 2026.</strong>
@@ -75,7 +75,7 @@ export default function Page2() {
         {/* ===== Timeline Section (no right column) ===== */}
         <section className="max-w-6xl mx-auto mt-9 px-4">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold mb-8">Spring 2026 Rush Events</h2>
+            <h2 className="text-2xl sm:text-2xl font-bold mb-8">Spring 2026 Rush Events</h2>
 
             <div className="relative">
               {/* vertical line (left) */}
@@ -84,7 +84,7 @@ export default function Page2() {
               {/* Event 1 */}
               <div className="relative pl-10 pb-12">
                 <div className="absolute -left-1 top-1 w-4 h-4 rounded-full bg-[#315CA9]"></div>
-                <h3 className="text-xl sm:text-2xl font-semibold mb-2">Info Night #1</h3>
+                <h3 className="text-xl sm:text-xl font-semibold mb-2">Info Night #1</h3>
                 <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
                   <CalendarIcon />
                   <span>Thursday, January 22, 7:00-8:00 PM</span>
@@ -103,7 +103,7 @@ export default function Page2() {
 
               <div className="relative pl-10 pb-12">
                 <div className="absolute -left-1 top-1 w-4 h-4 rounded-full bg-[#315CA9]"></div>
-                <h3 className="text-xl sm:text-2xl font-semibold mb-2">Info Night #2</h3>
+                <h3 className="text-xl sm:text-xl font-semibold mb-2">Info Night #2</h3>
                 <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
                   <CalendarIcon />
                   <span>Monday, January 26, 7:00-8:00 PM</span>
@@ -121,7 +121,7 @@ export default function Page2() {
               {/* Event 2 */}
               <div className="relative pl-10 pb-12">
                 <div className="absolute -left-1 top-1 w-4 h-4 rounded-full bg-[#315CA9]"></div>
-                <h3 className="text-xl sm:text-2xl font-semibold mb-2">Field Day</h3>
+                <h3 className="text-xl sm:text-xl font-semibold mb-2">Field Day</h3>
                 <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
                   <CalendarIcon />
                   <span>Tuesday, January 27, 6:00-7:30 PM</span>
@@ -140,7 +140,7 @@ export default function Page2() {
               {/* Event 3 */}
               <div className="relative pl-10 pb-12">
                 <div className="absolute -left-1 top-1 w-4 h-4 rounded-full bg-[#315CA9]"></div>
-                <h3 className="text-xl sm:text-2xl font-semibold mb-2">
+                <h3 className="text-xl sm:text-xl font-semibold mb-2">
                   Technical Workshop
                 </h3>
                 <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
@@ -160,7 +160,7 @@ export default function Page2() {
               {/* Event 4 */}
               <div className="relative pl-10 pb-12">
                 <div className="absolute -left-1 top-1 w-4 h-4 rounded-full bg-[#315CA9]"></div>
-                <h3 className="text-xl sm:text-2xl font-semibold mb-2">Pitch Night</h3>
+                <h3 className="text-xl sm:text-xl font-semibold mb-2">Pitch Night</h3>
                 <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
                   <CalendarIcon />
                   <span>Friday, January 30, 5:00-7:00 PM</span>
@@ -179,7 +179,7 @@ export default function Page2() {
 
             <div className="relative pl-10 pb-12">
                 <div className="absolute -left-1 top-1 w-4 h-4 rounded-full bg-[#315CA9]"></div>
-                <h3 className="text-xl sm:text-2xl font-semibold mb-2">
+                <h3 className="text-xl sm:text-xl font-semibold mb-2">
                   Application Deadline
                 </h3>
                 <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
@@ -215,7 +215,7 @@ export default function Page2() {
             className="w-full divide-y divide-gray-200"
           >
             <AccordionItem value="q1">
-              <AccordionTrigger className="py-6 text-left text-2xl sm:text-3xl font-bold text-black hover:bg-gray-50">
+              <AccordionTrigger className="py-6 text-left !text-xl sm:!text-xl font-bold text-black hover:bg-gray-50">
                 I&apos;m not majoring in the MCEC, can I still apply?
               </AccordionTrigger>
               <AccordionContent className="pb-6 text-gray-700 text-lg leading-relaxed">
@@ -226,7 +226,7 @@ export default function Page2() {
             </AccordionItem>
 
             <AccordionItem value="q2">
-              <AccordionTrigger className="py-6 text-left text-2xl sm:text-3xl font-bold text-black hover:bg-gray-50">
+              <AccordionTrigger className="py-6 text-left !text-xl sm:!text-xl font-bold text-black hover:bg-gray-50">
                 How much of a time commitment is the New Member Education process?
               </AccordionTrigger>
               <AccordionContent className="pb-6 text-gray-700 text-lg leading-relaxed">
@@ -237,7 +237,7 @@ export default function Page2() {
             </AccordionItem>
 
             <AccordionItem value="q3">
-              <AccordionTrigger className="py-6 text-left text-2xl sm:text-3xl font-bold text-black hover:bg-gray-50">
+              <AccordionTrigger className="py-6 text-left !text-xl sm:!text-xl font-bold text-black hover:bg-gray-50">
                 I&apos;m not able to attend one of the rush events. How will
                 this affect my chances?
               </AccordionTrigger>
@@ -250,7 +250,7 @@ export default function Page2() {
             </AccordionItem>
 
             <AccordionItem value="q4">
-              <AccordionTrigger className="py-6 text-left text-2xl sm:text-3xl font-bold text-black hover:bg-gray-50">
+              <AccordionTrigger className="py-6 text-left !text-xl sm:!text-xl font-bold text-black hover:bg-gray-50">
                 Can I rush multiple professional fraternities alongside Kappa
                 Theta Pi?
               </AccordionTrigger>
@@ -263,7 +263,7 @@ export default function Page2() {
             </AccordionItem>
 
             <AccordionItem value="q5">
-              <AccordionTrigger className="py-6 text-left text-2xl sm:text-3xl font-bold text-black hover:bg-gray-50">
+              <AccordionTrigger className="py-6 text-left !text-xl sm:!text-xl font-bold text-black hover:bg-gray-50">
                 How much are dues? Do I have to pay?
               </AccordionTrigger>
               <AccordionContent className="pb-6 text-gray-700 text-lg leading-relaxed">
@@ -278,7 +278,7 @@ export default function Page2() {
             </AccordionItem>
 
             <AccordionItem value="q6">
-              <AccordionTrigger className="py-6 text-left text-2xl sm:text-3xl font-bold text-black hover:bg-gray-50">
+              <AccordionTrigger className="py-6 text-left !text-xl sm:!text-xl font-bold text-black hover:bg-gray-50">
                 If I&apos;m selected for an interview, what commitments should I
                 plan for?
               </AccordionTrigger>
