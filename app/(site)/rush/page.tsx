@@ -65,7 +65,7 @@ export default function Page2() {
                 >
                     Spring 2026 Rush Google Calendar
                 </a>{" "}
-                to see the dates, times, and locations of all our events.
+                to add all these events to your personal calendar!
             </p>
 
 
@@ -77,8 +77,8 @@ export default function Page2() {
           <div>
             <h2 className="text-2xl sm:text-2xl font-bold mb-3">Spring 2026 Rush Events</h2>
 
-              <p className="text-gray-600 text-md italic sm:text-md mb-5 px-4">
-                  *All rush dates, times, and locations are subject to change. Join our Rush GroupMe
+              <p className="text-gray-600 text-md italic font-bold sm:text-md mb-5 px-4">
+                  *All rush dates, times, and locations are subject to change. You must join our Rush GroupMe
                   to get updated on any changes that occur.*
               </p>
 
@@ -175,9 +175,9 @@ export default function Page2() {
                   <span>Darla Moore School of Business Room 140</span>
                 </p>
                 <p className="text-base text-gray-600 leading-relaxed">
-                  It&apos;s time to showcase your collaboration skills. At this
-                  event, you&apos;ll work with a team to pitch a solution to a
-                  technical challenge. You&apos;ll need to dress business casual!
+                  It&apos;s time to showcase your collaboration skills. First, we'll give you tips
+                    on your resume and LinkedIn; then, you&apos;ll work with a team to pitch a
+                    solution to a technical challenge. Please dress business casual!
                 </p>
               </div>
             </div>
@@ -191,7 +191,7 @@ export default function Page2() {
                   <CalendarIcon />
                   <span>Friday, January 30, 9:00 PM</span>
                 </p>
-                <div className="mt-3 mb-3">
+                <div className="mt-5 mb-3">
                   <Link
                     href="/apply"
                     className="inline-block px-6 py-3 bg-[#315CA9] text-white rounded-full font-semibold hover:bg-[#23498F] transition-colors"

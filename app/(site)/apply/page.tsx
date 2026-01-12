@@ -362,7 +362,8 @@ export default function Application() {
                                                 <span className="text-md">Upload Picture <span className="text-red-500">*</span></span>
                                             </FieldLabel>
                                             <FieldDescription>
-                                                Please include a headshot or photo to help us during the review process.
+                                                Upload an image file with your face, clearly visible. You may use a selfie, cropped group photo,
+                                                or headshot. The purpose of this is to allow us to put a face to your name.
                                             </FieldDescription>
                                         </FieldContent>
 
