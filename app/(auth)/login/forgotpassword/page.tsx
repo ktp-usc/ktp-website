@@ -1,6 +1,6 @@
 "use client"
 import Background from "@/components/Background";
-import ThemeToggle from "@/components/ui/themeToggle";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
 import { useState } from 'react';
