@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import {
     Carousel,
@@ -9,8 +8,9 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { Element } from "react-scroll";
-import React, { useEffect, useState, useRef } from "react";
 
 // Project data
 const data = [
@@ -201,7 +201,7 @@ export default function Home() {
                                     </h1>
 
                                     <p className="mt-6 text-lg md:text-xl text-gray-600 max-w-xl">
-                                        Professional technology fraternity at the University of South Carolina.
+                                        The University of South Carolina's premier professional technology fraternity
                                     </p>
 
                                     <div className="mt-8 max-w-xl mx-auto flex justify-center">
