@@ -85,6 +85,48 @@ const networkCompanies = [
     { src: "/network/united.png", alt: "United" },
 ];
 
+/* ---------------- Photo Strip ---------------- */
+
+function PhotoStrip({ images }: { images: string[] }) {
+    return (
+        <section className="w-full py-16">
+            <div className="max-w-screen-2xl mx-auto px-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {images.map((src, i) => (
+                        <div
+                            key={i}
+                            className="relative aspect-[3/2] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition"
+                        >
+                            <Image
+                                src={src}
+                                alt={`KTP collage ${i + 1}`}
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}
+
+
+/* ---------------- Data ---------------- */
+
+const collageTop = [
+    "/Images/collagephoto6.jpeg",
+    "/Images/collagephoto10.jpeg",
+    "/Images/collagephoto7.jpeg",
+];
+
+const collageBottom = [
+    "/Images/collagephoto9.jpeg",
+    "/Images/collagephoto11.jpeg",
+    "/Images/collagephoto12.png",
+];
+
+
 function TypeTwoLines({
                           line1 = "Kappa",
                           line2 = "Theta Pi",
@@ -347,8 +389,12 @@ export default function Home() {
                             </div>
                         </div>
 
+                        {/* ---------- COLLAGE BEFORE ABOUT ---------- */}
+                        <PhotoStrip images={collageTop} />
+
+
                         {/* About Us */}
-                        <section className="w-full py-45">
+                        <section className="w-full py-10">
                             <div className="relative max-w-6xl mx-auto bg-gray-50 rounded-2xl overflow-hidden">
                                 <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-8 lg:gap-12 px-6 sm:px-8 md:px-12 lg:px-16 py-12">
                                     {/* heading on left */}
@@ -389,6 +435,10 @@ export default function Home() {
                             </div>
                         </section>
 
+                        {/* ---------- COLLAGE AFTER ABOUT ---------- */}
+                        <PhotoStrip images={collageBottom} />
+
+
                         {/* President's Welcome */}
                         <div className="flex flex-col space-y-10">
                             <Element name="presidents-welcome-section" id="presidents-welcome-section">
@@ -409,7 +459,7 @@ export default function Home() {
 
                                         <div className="w-full lg:w-3/5 text-left relative z-10">
                                             <h2 className="text-center text-2xl sm:text-4xl font-black mb-10">President&apos;s Welcome</h2>
-                                            <div className="text-base sm:text-lg leading-relaxed space-y-4">
+                                            <div className="text-base sm:text-md leading-relaxed space-y-2">
                                                 <p>Welcome to the Alpha Theta Chapter of Kappa Theta Pi, a co-ed professional technology fraternity
                                                     at the University of South Carolina. On behalf of our chapter, I welcome you to our website,
                                                     where you can learn about the work we do and the values we strive to embody. I believe that
