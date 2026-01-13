@@ -455,8 +455,8 @@ export default function Application() {
                                                 <span className="text-md">Upload Picture <span className="text-red-500">*</span></span>
                                             </FieldLabel>
                                             <FieldDescription>
-                                                Upload an image file with your face, clearly visible. You may use a selfie, cropped group photo,
-                                                or headshot. The purpose of this is to allow us to put a face to your name.
+                                                Upload an image file with your face, clearly visible. The purpose of this is to allow us to put
+                                                a face to your name.
                                             </FieldDescription>
                                         </FieldContent>
 
