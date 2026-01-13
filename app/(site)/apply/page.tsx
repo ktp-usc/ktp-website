@@ -27,9 +27,6 @@ interface PixelCrop {
   height: number;
 }
 
-import NextImage from "next/image";
-import Cropper from "react-easy-crop";
-
 interface PixelCrop { 
   x: number;
   y: number;
