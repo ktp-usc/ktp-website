@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import logo from '../public/CircleLogo-Transparent.png';
 import { User } from 'lucide-react';
 
-import { useSessionQuery } from '@/lib/auth/useSessionQuery';
+import { useSessionQuery } from '@/hooks/useSessionQuery';
 
 const SIGN_IN_HREF = '/auth/sign-in';
 const SIGN_UP_HREF = '/auth/sign-up';

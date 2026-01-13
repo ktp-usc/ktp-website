@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-import { useSessionQuery } from '@/lib/auth/useSessionQuery';
+import { useSessionQuery } from '@/hooks/useSessionQuery';
 import ProfileDashboard from './ProfileDashboard';
 
 import type { accounts as Account, applications as Application } from '@prisma/client';

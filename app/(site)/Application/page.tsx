@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { useSessionQuery } from '@/lib/auth/useSessionQuery';
+import { useSessionQuery } from '@/hooks/useSessionQuery';
 import ApplicationSection from './ApplicationSection';
 
 export default function ApplicationPage() {
