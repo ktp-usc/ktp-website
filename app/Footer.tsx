@@ -22,7 +22,7 @@ export default function Footer() {
                                 className="object-contain"
                                 priority
                             />
-                            <h3 className="text-xl font-bold text-white">KTP</h3>
+                            <h3 className="text-xl font-bold text-white">Kappa Theta Pi</h3>
                         </div>
 
                         <div className="text-white max-w-sm">
@@ -102,9 +102,9 @@ export default function Footer() {
                     <div className="flex flex-col gap-3 md:items-start md:mx-auto">
                         <h4 className="font-semibold text-white">Quick Links</h4>
                         <Link href="/" className="text-white hover:text-gray-300">Home</Link>
-                        <Link href="/Members" className="text-white hover:text-gray-300">Members</Link>
-                        <Link href="/Rush" className="text-white hover:text-gray-300">Rush</Link>
-                        <Link href="/Application" className="text-white hover:text-gray-300">Apply</Link>
+                        <Link href="/members" className="text-white hover:text-gray-300">Members</Link>
+                        <Link href="/rush" className="text-white hover:text-gray-300">Rush</Link>
+                        <Link href="/apply" className="text-white hover:text-gray-300">Apply</Link>
                     </div>
 
                     {/* Right: Contact */}
@@ -123,7 +123,7 @@ export default function Footer() {
 
                 {/* Divider */}
                 <div className="border-t border-white/20 mt-12 pt-6 text-sm text-white text-center">
-                    © 2025 Kappa Theta Pi. All rights reserved.
+                    © 2026 Kappa Theta Pi Alpha Theta. All rights reserved.
                 </div>
             </div>
         </footer>

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import {
     Carousel,
@@ -9,8 +8,9 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { Element } from "react-scroll";
-import React, { useEffect, useState, useRef } from "react";
 
 // Project data
 const data = [
@@ -158,19 +158,16 @@ function TypeTwoLines({
             </div>
 
             <style jsx>{`
-        .animate-blink {
-          animation: blink 1s steps(2, start) infinite;
-        }
-        @keyframes blink {
-          0%,
-          100% {
-            opacity: 0;
-          }
-          50% {
-            opacity: 1;
-          }
-        }
-      `}</style>
+                @keyframes blink {
+                    0%,
+                    100% {
+                        opacity: 0;
+                    }
+                    50% {
+                        opacity: 1;
+                    }
+                }
+            `}</style>
         </div>
     );
 }
@@ -204,12 +201,12 @@ export default function Home() {
                                     </h1>
 
                                     <p className="mt-6 text-lg md:text-xl text-gray-600 max-w-xl">
-                                        Professional technology fraternity at the University of South Carolina.
+                                        The University of South Carolina's premier professional technology fraternity
                                     </p>
 
                                     <div className="mt-8 max-w-xl mx-auto flex justify-center">
                                         <a
-                                            href="/Rush"
+                                            href="/rush"
                                             className="inline-flex items-center justify-center bg-[#315CA9] text-white px-6 py-3 rounded-lg font-medium transform transition-transform duration-300 hover:-translate-y-1"
                                         >
                                             Rush KTP →
@@ -325,45 +322,25 @@ export default function Home() {
                                     </div>
 
                                     <style jsx>{`
-                                        .collage-scale {
-                                            transition: transform 200ms ease;
-                                            transform-origin: center;
-                                            display: inline-block;
-                                        }
 
                                         /* desktop */
                                         @media (min-width: 1025px) {
-                                            .collage-scale {
-                                                transform: scale(1);
-                                            }
                                         }
 
                                         /* large tablets/smaller desktops */
                                         @media (max-width: 1024px) {
-                                            .collage-scale {
-                                                transform: scale(0.98);
-                                            }
                                         }
 
                                         /* tablet */
                                         @media (max-width: 900px) {
-                                            .collage-scale {
-                                                transform: scale(0.9);
-                                            }
                                         }
 
                                         /* small tablets/large phones */
                                         @media (max-width: 700px) {
-                                            .collage-scale {
-                                                transform: scale(0.82);
-                                            }
                                         }
 
                                         /* phones */
                                         @media (max-width: 480px) {
-                                            .collage-scale {
-                                                transform: scale(0.74);
-                                            }
                                         }
                                     `}</style>
                                 </div>
