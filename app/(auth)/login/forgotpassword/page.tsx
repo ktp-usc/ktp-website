@@ -15,7 +15,7 @@ export default function ForgotPasswordPage() {
 
   const handleHomeClick = () => {
     document.documentElement.classList.remove('dark');
-    router.push('/');
+    router.push('/login');
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {

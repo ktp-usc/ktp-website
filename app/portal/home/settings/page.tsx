@@ -1,13 +1,10 @@
 "use client"
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { toast } from 'sonner';
 
-const [imageSrc, setImageSrc] = useState<string | null>(null);
-const [crop, setCrop] = useState({ x: 0, y: 0 });
-const [zoom, setZoom] = useState(1);
-const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+
 
 
 export default function SettingsPage() {
@@ -19,6 +16,13 @@ export default function SettingsPage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [isDark, setIsDark] = useState(false);
+    const [showCropModal, setShowCropModal] = useState(false);
+    const [imageSrc, setImageSrc] = useState<string | null>(null);
+    const [scale, setScale] = useState(1);
+    const [position, setPosition] = useState({ x: 0, y: 0 });
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const imageRef = useRef<HTMLImageElement | null>(null);
+    const [originalFile, setOriginalFile] = useState<File | null>(null);
     const [user, setUser] = useState({
     name: '',
     email: '',
@@ -110,10 +114,92 @@ export default function SettingsPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append('headshot', file);
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+
+    // Create preview URL
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImageSrc(reader.result as string);
+      setOriginalFile(file);
+      setShowCropModal(true);
+      setScale(1);
+      setPosition({ x: 0, y: 0 });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const drawCanvas = () => {
+    const canvas = canvasRef.current;
+    const image = imageRef.current;
+    if (!canvas || !image) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const size = 300;
+    canvas.width = size;
+    canvas.height = size;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, size, size);
+
+    // Save context state
+    ctx.save();
+
+    // Create circular clipping path
+    ctx.beginPath();
+    ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.clip();
+
+    // Calculate dimensions
+    const imgWidth = image.naturalWidth * scale;
+    const imgHeight = image.naturalHeight * scale;
+    const x = (size - imgWidth) / 2 + position.x;
+    const y = (size - imgHeight) / 2 + position.y;
+
+    // Draw image
+    ctx.drawImage(image, x, y, imgWidth, imgHeight);
+
+    // Restore context
+    ctx.restore();
+
+    // Draw circle border
+    ctx.beginPath();
+    ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+    ctx.strokeStyle = isDark ? '#60a5fa' : '#3b82f6';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  };
+
+  useEffect(() => {
+    if (showCropModal && imageRef.current) {
+      drawCanvas();
+    }
+  }, [scale, position, showCropModal, isDark]);
+
+  const handleCropSave = async () => {
+    const canvas = canvasRef.current;
+    if (!canvas || !originalFile) return;
 
     try {
+      const blob = await new Promise<Blob>((resolve) => {
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+        }, 'image/jpeg', 0.95);
+      });
+
+      const croppedFile = new File([blob], originalFile.name, {
+        type: 'image/jpeg',
+      });
+
+      const formData = new FormData();
+      formData.append('headshot', croppedFile);
+
       const response = await fetch('/api/user/headshot', {
         method: 'POST',
         body: formData,
@@ -124,10 +210,23 @@ export default function SettingsPage() {
       const data = await response.json();
       setUser(prev => ({ ...prev, headshot: data.url }));
       toast.success('Headshot updated successfully!');
+      
+      // Close modal and reset
+      setShowCropModal(false);
+      setImageSrc(null);
+      setScale(1);
+      setPosition({ x: 0, y: 0 });
     } catch (error) {
       console.error('Error uploading headshot:', error);
       toast.error('Failed to upload headshot');
     }
+  };
+
+  const handleCropCancel = () => {
+    setShowCropModal(false);
+    setImageSrc(null);
+    setScale(1);
+    setPosition({ x: 0, y: 0 });
   };
 
    const handleResumeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -201,6 +300,94 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+      {showCropModal && imageSrc && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-md w-full">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              Crop Your Headshot
+            </h3>
+            
+            <div className="flex flex-col items-center gap-4">
+              {/* Hidden image for loading */}
+              <img
+                ref={imageRef}
+                src={imageSrc}
+                alt="Source"
+                style={{ display: 'none' }}
+                onLoad={drawCanvas}
+              />
+              
+              {/* Canvas preview */}
+              <canvas
+                ref={canvasRef}
+                className="border-2 border-gray-300 dark:border-gray-600 rounded-full"
+                style={{ maxWidth: '300px', width: '100%', height: 'auto' }}
+              />
+
+              {/* Zoom control */}
+              <div className="w-full">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Zoom
+                </label>
+                <input
+                  type="range"
+                  min={.3}
+                  max={.4}
+                  step={0.01}
+                  value={scale}
+                  onChange={(e) => setScale(Number(e.target.value))}
+                  className="w-full"
+                />
+              </div>
+
+              {/* Position controls */}
+              <div className="w-full grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Horizontal
+                  </label>
+                  <input
+                    type="range"
+                    min={-100}
+                    max={100}
+                    value={position.x}
+                    onChange={(e) => setPosition(prev => ({ ...prev, x: Number(e.target.value) }))}
+                    className="w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Vertical
+                  </label>
+                  <input
+                    type="range"
+                    min={-70}
+                    max={70}
+                    value={position.y}
+                    onChange={(e) => setPosition(prev => ({ ...prev, y: Number(e.target.value) }))}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={handleCropSave}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              >
+                Save
+              </button>
+              <button
+                onClick={handleCropCancel}
+                className="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Theme Toggle */}
       <button
         onClick={toggleTheme}
@@ -220,7 +407,7 @@ export default function SettingsPage() {
 
       {/* Back Button */}
       <button
-        onClick={() => router.push('/homepage')}
+        onClick={() => router.push('/portal/home')}
         className="fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white font-medium text-sm"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -492,7 +679,7 @@ export default function SettingsPage() {
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Security</h2>
             <button
               type="button"
-              onClick={() => router.push('/forgotpassword')}
+              onClick={() => router.push('/login/forgotpassword')}
               className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -127,7 +127,7 @@ export default function HomePage() {
               </span>
             </div>
             <button
-              onClick={() => router.push('/settings')}
+              onClick={() => router.push('/portal/home/settings')}
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               aria-label="Settings"
             >
