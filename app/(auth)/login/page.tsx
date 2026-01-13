@@ -48,7 +48,7 @@ export default function LoginPage() {
             
             <div className="inline-block">
               <Image
-              src="KTPLettersW.svg"
+              src="/KTPLettersW.svg"
               alt="Kappa Theta Pi logo"
               width={220}
               height={140}

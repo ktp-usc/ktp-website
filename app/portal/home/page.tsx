@@ -92,7 +92,7 @@ export default function HomePage() {
             {/* Logo and Welcome */}
           <div className="flex items-center gap-6">
             <Image
-              src="KTPLettersW.svg"
+              src="/KTPLettersW.svg"
               alt="Kappa Theta Pi logo"
               className="hidden dark:block"
               width={100}
