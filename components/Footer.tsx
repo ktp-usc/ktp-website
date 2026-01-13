@@ -101,7 +101,7 @@ export default function Footer() {
                     {/* Middle: Quick Links */}
                     <div className="flex flex-col gap-3 md:items-start md:mx-auto">
                         <h4 className="font-semibold text-white">Quick Links</h4>
-                        <Link href="/public" className="text-white hover:text-gray-300">Home</Link>
+                        <Link href="/" className="text-white hover:text-gray-300">Home</Link>
                         <Link href="/members" className="text-white hover:text-gray-300">Members</Link>
                         <Link href="/rush" className="text-white hover:text-gray-300">Rush</Link>
                         <Link href="/clients" className="text-white hover:text-gray-300">Our Work</Link>
