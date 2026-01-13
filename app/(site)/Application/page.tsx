@@ -533,14 +533,6 @@ export default function Application() {
                                                     >
                                                         Save Crop
                                                     </Button>
-                                                    <Button
-                                                        type="button"
-                                                        variant="outline"
-                                                        onClick={() => setShowCropper(false)}
-                                                        className="px-4 py-2"
-                                                    >
-                                                        Cancel
-                                                    </Button>
                                                 </div>
                                             </div>
                                         )}
