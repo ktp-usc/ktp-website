@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import membersData from "../Members/members.json";
+import membersData from "../../../(site)/members/members.json";
 
 // Let's... let's not talk about this [sorry Braden :( ]
 interface MemberData {
