@@ -27,6 +27,13 @@ interface PixelCrop {
   height: number;
 }
 
+interface PixelCrop { 
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 export default function Application() {
         // --------------------------------------------
         // Resume upload UI helpers
@@ -92,6 +99,7 @@ export default function Application() {
             return;
         }
 
+        
         // Validate required photo upload (image only)
         const photo = formData.get("photo") as File;
         if (!photo || photo.size === 0) {
@@ -102,6 +110,8 @@ export default function Application() {
             toast.error("Picture must be an image file.");
             return;
         }
+
+        // Validate at least one rush event selected
         const rushEvents = formData.getAll("rushEvents");
         if (rushEvents.length === 0) {
             toast.error("Please select at least one rush event attended.");
@@ -252,6 +262,7 @@ export default function Application() {
         setPhotoName(null);
         setShowCropper(false);
     }
+
 
     return (
         <div className="overflow-x-hidden">
@@ -452,7 +463,7 @@ export default function Application() {
                                     <Field>
                                         <FieldContent>
                                             <FieldLabel>
-                                                <span className="text-md">Upload Picture <span className="text-red-500">*</span></span>
+                                                Upload Picture <span className="text-red-500">*</span>
                                             </FieldLabel>
                                             <FieldDescription>
                                                 Upload an image file with your face, clearly visible. The purpose of this is to allow us to put

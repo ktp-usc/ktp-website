@@ -201,7 +201,7 @@ export default function Home() {
                                     </h1>
 
                                     <p className="mt-6 text-lg md:text-xl text-gray-600 max-w-xl">
-                                        The University of South Carolina's premier professional technology fraternity
+                                        The University of South Carolina`&apos;`s premier professional technology fraternity
                                     </p>
 
                                     <div className="mt-8 max-w-xl mx-auto flex justify-center">
