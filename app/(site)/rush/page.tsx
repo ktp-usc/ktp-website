@@ -29,10 +29,10 @@ export default function Page2() {
             Learn About Joining KTP!
           </h1>
           <p className="text-gray-600 text-xl sm:text-xl mb-4">
-              <strong>Welcome to Kappa Theta Pi's Spring 2026 Rush!</strong>
+              <strong>Welcome to Kappa Theta Pi`&apos;`s Spring 2026 Rush!</strong>
           </p>
           <p className="text-gray-600 text-xl sm:text-xl mb-4">
-              <strong>Here's our rush schedule. Applications are due Friday, January 30, 2026.</strong>
+              <strong>Here`&apos;`s our rush schedule. Applications are due Friday, January 30, 2026.</strong>
           </p>
           <p className="text-gray-600 text-lg sm:text-xl mb-8">
             <span className="font-semibold text-black"></span>
@@ -99,8 +99,8 @@ export default function Page2() {
                   <span>300 Main St. Room B201</span>
                 </p>
                 <p className="text-base text-gray-600 leading-relaxed">
-                  Want to learn more about what KTP has to offer? We'll give a presentation 
-                   about what it means to be a brother in KTP; then, you'll have a chance to 
+                  Want to learn more about what KTP has to offer? We`&apos;`ll give a presentation
+                   about what it means to be a brother in KTP; then, you`&apos;`ll have a chance to
                    ask our brothers any questions related to rush, the professional fraternity 
                    experience, or anything else you may be wondering!
                 </p>
@@ -158,7 +158,7 @@ export default function Page2() {
                 </p>
                 <p className="text-base text-gray-600 leading-relaxed">
                   Want to get a glance of what it&apos;s like joining KTP? At this event, 
-                   we'll teach you the basics of React and how to build your own website!
+                   we`&apos;`ll teach you the basics of React and how to build your own website!
                 </p>
               </div>
 
@@ -175,7 +175,7 @@ export default function Page2() {
                   <span>Darla Moore School of Business Room 140</span>
                 </p>
                 <p className="text-base text-gray-600 leading-relaxed">
-                  It&apos;s time to showcase your collaboration skills. First, we'll give you tips
+                  It&apos;s time to showcase your collaboration skills. First, we`&apos;`ll give you tips
                     on your resume and LinkedIn; then, you&apos;ll work with a team to pitch a
                     solution to a technical challenge. Please dress business casual!
                 </p>
