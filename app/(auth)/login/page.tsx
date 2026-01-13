@@ -12,7 +12,7 @@ export default function LoginPage() {
   const router = useRouter();
   const handleHomeClick = () => {
     document.documentElement.classList.remove('dark');
-    router.push('/login');
+    router.push('/');
   };
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 dark:bg-gray-900 transition-colors duration-300">
