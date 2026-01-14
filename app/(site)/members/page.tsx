@@ -156,7 +156,7 @@ export default function Members() {
                 </div>
 
                 <div className="mb-8 sm:mb-12">
-                    <div className="flex sm:justify-center overflow-x-auto no-scrollbar gap-4 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+                    <div className="flex sm:justify-center overflow-x-auto no-scrollbar gap-4 pt-2 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
                         {categories.map((c) => (
                             <button
                                 key={c}
