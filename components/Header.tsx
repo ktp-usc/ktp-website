@@ -10,7 +10,7 @@ import { useSessionQuery } from '@/hooks/useSessionQuery';
 
 const SIGN_IN_HREF = '/auth/sign-in';
 const SIGN_UP_HREF = '/auth/sign-up';
-const PROFILE_HREF = '/profile';
+const PROFILE_HREF = '/portal';
 
 type AccountHeadshotResponse = { headshotBlobURL: string | null };
 

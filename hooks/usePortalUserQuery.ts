@@ -2,46 +2,26 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import type { Prisma } from '@prisma/client';
 
-type AccountType = 'APPLICANT' | 'PNM' | 'BROTHER' | 'LEADERSHIP' | 'ALUMNI' | null;
+export type PortalUser = Prisma.accountsGetPayload<{
+    include: { applications: true };
+}>;
 
-export type PortalApplication = {
-    id: string;
-    fullName: string;
-    email: string;
-    classification: string | null;
-    major: string | null;
-    minor: string | null;
-    createdAt: string | null;
-    submittedAt: string | null;
-    gpa: number | null;
-    linkedin: string | null;
-    github: string | null;
-};
-
-export type PortalAccount = {
-    id: string;
-    firstName: string;
-    lastName: string;
-    type: AccountType;
-    schoolEmail: string | null;
-    headshotBlobURL: string | null;
-    linkedin: string | null;
-    github: string | null;
-    applications: PortalApplication | null;
-};
-
-type PortalUserResponse = { data: PortalAccount };
-
-async function fetchPortalUser(userId: string): Promise<PortalUserResponse> {
+async function fetchPortalUser(userId: string): Promise<PortalUser> {
     const res = await fetch(`/api/accounts/${userId}`, {
         method: 'GET',
         cache: 'no-store',
         credentials: 'include'
     });
 
-    if (!res.ok) throw new Error('Failed to fetch portal user');
-    return (await res.json()) as PortalUserResponse;
+    if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.error ?? 'Failed to fetch portal user');
+    }
+
+    const json = (await res.json()) as { data: PortalUser };
+    return json.data;
 }
 
 export function usePortalUserQuery(userId: string | null) {

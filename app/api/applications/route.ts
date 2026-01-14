@@ -321,32 +321,56 @@ export async function POST(req: Request) {
 }
 
 // ---------- GET /api/applications ----------
-// Simple listing endpoint for an admin dashboard later
+async function getCurrentUserId() {
+    const session = await authServer.getSession();
+    // neon auth libs differ slightly; this covers both common shapes
+    return session?.data?.user?.id ?? session?.user?.id ?? null;
+}
+
+async function requireExec() {
+    const userId = await getCurrentUserId();
+    if (!userId) return { ok: false as const, status: 401 as const };
+
+    const account = await prisma.accounts.findUnique({
+        where: { id: userId },
+        select: { type: true, leaderType: true }
+    });
+
+    const isExec = account?.type === 'LEADERSHIP' || (account?.leaderType != null && account.leaderType !== 'N_A');
+    if (!isExec) return { ok: false as const, status: 403 as const };
+
+    return { ok: true as const, status: 200 as const };
+}
+
+// ---------- GET /api/applications ----------
 export async function GET(req: Request) {
     try {
+        const guard = await requireExec();
+        if (!guard.ok) {
+            return NextResponse.json({ error: guard.status === 401 ? 'Unauthorized' : 'Forbidden' }, { status: guard.status });
+        }
+
         const { searchParams } = new URL(req.url);
-        const limit = parseLimit(searchParams.get("limit"));
+        const limit = parseLimit(searchParams.get('limit'));
 
         const applications = await prisma.applications.findMany({
             take: limit,
-            orderBy: {
-                createdAt: "desc"
+            orderBy: { createdAt: 'desc' },
+            include: {
+                comments: { orderBy: { createdAt: 'desc' } }
             }
         });
 
         return NextResponse.json({ ok: true, data: applications });
     } catch (err) {
-        if (
-            err instanceof Prisma.PrismaClientKnownRequestError &&
-            err.code === "P2021" // table or view not found
-        ) {
+        if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2021') {
             return NextResponse.json(
-                { error: "Table \"applications\" not found. Ensure migrations have been applied." },
+                { error: 'Table "applications" not found. Ensure migrations have been applied.' },
                 { status: 500 }
             );
         }
 
-        console.error("GET /api/applications error:", err);
-        return NextResponse.json({ error: "Server error" }, { status: 500 });
+        console.error('GET /api/applications error:', err);
+        return NextResponse.json({ error: 'Server error' }, { status: 500 });
     }
 }
