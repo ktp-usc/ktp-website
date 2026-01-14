@@ -13,8 +13,12 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 
+interface FloatingImageProps {
+    className?: string;
+}
+
 /* floating cards image */
-const FloatingCardsImage = forwardRef(function FloatingCardsImage({ className = "" }, ref) {
+const FloatingCardsImage = forwardRef<HTMLDivElement, FloatingImageProps>(function FloatingCardsImage({ className = "" }, ref) {
     return (
         <div
             ref={ref}
@@ -29,7 +33,7 @@ const FloatingCardsImage = forwardRef(function FloatingCardsImage({ className = 
 });
 
 /* floating chips image */
-const AnimatedChipsImage = forwardRef(function AnimatedChipsImage({ className = "" }, ref) {
+const AnimatedChipsImage = forwardRef<HTMLDivElement, FloatingImageProps>(function AnimatedChipsImage({ className = "" }, ref) {
     return (
         <div
             ref={ref}
