@@ -29,7 +29,7 @@ export default function Page2() {
             Learn About Joining KTP!
           </h1>
           <p className="text-gray-600 text-xl sm:text-xl mb-4">
-              <strong>Welcome to Kappa Theta Pi&apos;s Spring 2026 Rush!</strong>
+              <strong>Go all in with Kappa Theta Pi&apos;s Spring 2026 Rush!</strong>
           </p>
           <p className="text-gray-600 text-xl sm:text-xl mb-4">
               <strong>Here&apos;s our rush schedule. Applications are due Friday, January 30, 2026.</strong>
@@ -88,7 +88,7 @@ export default function Page2() {
 
               {/* Event 1 */}
               <div className="relative pl-10 pb-12">
-                <div className="absolute -left-1 top-1 w-4 h-4 rounded-full bg-[#315CA9]"></div>
+                  <div className="absolute -left-1 top-0 text-[#315CA9] text-lg font-bold" aria-hidden="true">♠</div>
                 <h3 className="text-xl sm:text-xl font-semibold mb-2">Info Night #1</h3>
                 <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
                   <CalendarIcon />
@@ -107,7 +107,7 @@ export default function Page2() {
               </div>
 
               <div className="relative pl-10 pb-12">
-                <div className="absolute -left-1 top-1 w-4 h-4 rounded-full bg-[#315CA9]"></div>
+                  <div className="absolute -left-1 top-0 text-[#315CA9] text-lg font-bold" aria-hidden="true">♣</div>
                 <h3 className="text-xl sm:text-xl font-semibold mb-2">Info Night #2</h3>
                 <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
                   <CalendarIcon />
@@ -125,8 +125,8 @@ export default function Page2() {
 
               {/* Event 2 */}
               <div className="relative pl-10 pb-12">
-                <div className="absolute -left-1 top-1 w-4 h-4 rounded-full bg-[#315CA9]"></div>
-                <h3 className="text-xl sm:text-xl font-semibold mb-2">Field Day</h3>
+                  <div className="absolute -left-1 top-0 text-[#315CA9] text-lg font-bold" aria-hidden="true">♦</div>
+                  <h3 className="text-xl sm:text-xl font-semibold mb-2">Field Day</h3>
                 <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
                   <CalendarIcon />
                   <span>Tuesday, January 27, 6:00-7:30 PM</span>
@@ -144,7 +144,7 @@ export default function Page2() {
 
               {/* Event 3 */}
               <div className="relative pl-10 pb-12">
-                <div className="absolute -left-1 top-1 w-4 h-4 rounded-full bg-[#315CA9]"></div>
+                  <div className="absolute -left-1 top-0 text-[#315CA9] text-lg font-bold" aria-hidden="true">♥</div>
                 <h3 className="text-xl sm:text-xl font-semibold mb-2">
                   Technical Workshop
                 </h3>
@@ -164,7 +164,7 @@ export default function Page2() {
 
               {/* Event 4 */}
               <div className="relative pl-10 pb-12">
-                <div className="absolute -left-1 top-1 w-4 h-4 rounded-full bg-[#315CA9]"></div>
+                  <div className="absolute -left-1 top-0 text-[#315CA9] text-lg font-bold" aria-hidden="true">♠</div>
                 <h3 className="text-xl sm:text-xl font-semibold mb-2">Pitch Night</h3>
                 <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
                   <CalendarIcon />
@@ -183,7 +183,7 @@ export default function Page2() {
             </div>
 
             <div className="relative pl-10 pb-12">
-                <div className="absolute -left-1 top-1 w-4 h-4 rounded-full bg-[#315CA9]"></div>
+                <div className="absolute -left-1 top-0 text-[#315CA9] text-lg font-bold" aria-hidden="true">♦</div>
                 <h3 className="text-xl sm:text-xl font-semibold mb-2">
                   Application Deadline
                 </h3>
