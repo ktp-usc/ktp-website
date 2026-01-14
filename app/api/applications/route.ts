@@ -1,10 +1,10 @@
-
 import { NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { Prisma } from "@prisma/client";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { neon } from "@neondatabase/serverless";
+import { headers } from "next/headers";
 
 export const runtime = "nodejs";
 
@@ -90,7 +90,7 @@ async function createNeonAuthUser(email: string, name: string) {
     }
 
     //Sets the app origin and then calls the Neon Auth sign-up endpoint
-    const appOrigin = process.env.ORIGIN_URL || "http://localhost:3000";
+    const appOrigin = await getCurrentDomain();
     const response = await fetch(`${ authUrl }/sign-up/email`, {
         method: "POST",
         headers: {
