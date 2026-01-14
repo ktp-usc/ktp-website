@@ -35,38 +35,39 @@ interface PixelCrop {
 }
 
 export default function Application() {
-        // --------------------------------------------
-        // Resume upload UI helpers
-        // --------------------------------------------
-        const resumeInputRef = React.useRef<HTMLInputElement | null>(null);
-        const [resumeName, setResumeName] = React.useState<string | null>(null);
-        const router = useRouter();
+    // --------------------------------------------
+    // Resume upload UI helpers
+    // --------------------------------------------
+    const resumeInputRef = React.useRef<HTMLInputElement | null>(null);
+    const [resumeName, setResumeName] = React.useState<string | null>(null);
+    const router = useRouter();
 
     function triggerResumeSelect() {
-            resumeInputRef.current?.click();
-        }
+        resumeInputRef.current?.click();
+    }
 
-        function onResumeChange(e: React.ChangeEvent<HTMLInputElement>) {
-            const file = e.target.files?.[0];
-            if (!file) {
-                setResumeName(null);
-                return;
-            }
-            if (!file.type.includes("pdf")) {
-                toast.error("Resume must be a PDF file.");
-                e.target.value = "";
-                setResumeName(null);
-                return;
-            }
-            setResumeName(file.name);
-        }
-
-        function clearResume() {
-            if (resumeInputRef.current) {
-                resumeInputRef.current.value = "";
-            }
+    function onResumeChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) {
             setResumeName(null);
+            return;
         }
+        if (!file.type.includes("pdf")) {
+            toast.error("Resume must be a PDF file.");
+            e.target.value = "";
+            setResumeName(null);
+            return;
+        }
+        setResumeName(file.name);
+    }
+
+    function clearResume() {
+        if (resumeInputRef.current) {
+            resumeInputRef.current.value = "";
+        }
+        setResumeName(null);
+    }
+
     // --------------------------------------------
     // REAL SUBMIT HANDLER — sends FormData to API
     // --------------------------------------------
@@ -79,7 +80,7 @@ export default function Application() {
         // Validate USC email domain
         const email = formData.get("email") as string;
         const emailLower = email?.toLowerCase() || "";
-        
+
         // Check for sc.edu (including subdomains like mailbox.sc.edu, email.sc.edu)
         const isGeneralScEdu = emailLower.includes("@") && emailLower.split("@")[1]?.endsWith("sc.edu");
 
@@ -99,7 +100,7 @@ export default function Application() {
             return;
         }
 
-        
+
         // Validate required photo upload (image only)
         const photo = formData.get("photo") as File;
         if (!photo || photo.size === 0) {
@@ -146,7 +147,7 @@ export default function Application() {
     const [photoPreview, setPhotoPreview] = React.useState<string | null>(null);
     const [photoName, setPhotoName] = React.useState<string | null>(null);
     const [showCropper, setShowCropper] = React.useState(false);
-    const [crop, setCrop] = React.useState({ x: 0, y: 0 });
+    const [crop, setCrop] = React.useState({x: 0, y: 0});
     const [zoom, setZoom] = React.useState(1);
     const [croppedAreaPixels, setCroppedAreaPixels] = React.useState<PixelCrop | null>(null);
     const [originalFile, setOriginalFile] = React.useState<File | null>(null);
@@ -177,7 +178,7 @@ export default function Application() {
         const url = URL.createObjectURL(file);
         setPhotoPreview(url);
         setShowCropper(true);
-        setCrop({ x: 0, y: 0 });
+        setCrop({x: 0, y: 0});
         setZoom(1);
     }
 
@@ -265,32 +266,40 @@ export default function Application() {
 
 
     return (
-        <div className="overflow-x-hidden">
-            <h1 className="text-5xl p4 pt-12 pb-3 font-bold text-center">Rush Application</h1>
-            <h2 className="text-3xl p4 pb-6 text-[#315CA9] italic font-bold text-center">Spring 2026</h2>
-            <div className="max-w-3xl w-full mx-auto">
+        <div className="min-h-screen">
+            <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-3">
+                    Rush Application
+                </h1>
+                <h2 className="text-2xl sm:text-3xl text-[#315CA9] italic font-bold text-center mb-8">
+                    Spring 2026
+                </h2>
+
                 {/* Introduction */}
-                <div className="text-md mb-8 space-y-4 mt-4">
+                <div className="text-sm sm:text-base mb-8 space-y-4">
                     <p>
                         Thank you for your interest in becoming a member of Kappa Theta Pi!
                     </p>
                     <p>
                         Kappa Theta Pi is a Professional Co-Ed Technology Fraternity founded in 2012, aiming to
-                        develop a talented slate of future computing professionals. The Alpha Theta Chapter at 
-                        the University of South Carolina welcomes you to its second recruitment cycle for its 
-                            Beta class.
+                        develop a talented slate of future computing professionals. The Alpha Theta Chapter at
+                        the University of South Carolina welcomes you to its second recruitment cycle for its
+                        Beta class.
                     </p>
                     <p>
-                        If you have any questions, please reach out to the executive board at {' '}
-                        <a href="mailto:soktp@mailbox.sc.edu" className="text-blue-500 underline">soktp@mailbox.sc.edu</a>.
+                        If you have any questions, please reach out to the executive board at{' '}
+                        <a href="mailto:soktp@mailbox.sc.edu" className="text-blue-500 underline break-all">
+                            soktp@mailbox.sc.edu
+                        </a>.
                         <em> Please note that this application will not save your progress.</em>
                     </p>
                 </div>
 
-                {/* Info Card with grey background and float effect */}
-                <Card className="bg-gray-50/80 border-gray-200 shadow-md mb-8 float-left w-full h-fit clear-both">
-                    <CardContent className="pt-fit middle-align">
-                        <p className="font-bold text-gray-900 flex items-center gap-2">
+                {/* Info Card with grey background */}
+                <Card className="bg-gray-50/80 border-gray-200 shadow-md mb-8">
+                    <CardContent className="pt-2">
+                        <p className="font-bold text-gray-900 flex flex-col sm:flex-row sm:items-center gap-2 text-sm sm:text-base">
+                        <span className="flex items-center gap-2">
                             <svg
                                 className="w-5 h-5 text-[#315CA9] flex-shrink-0"
                                 fill="none"
@@ -304,8 +313,8 @@ export default function Application() {
                                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                                 />
                             </svg>
-
-                            This application is due{" "}
+                            This application is due
+                        </span>
                             <a
                                 href="https://calendar.google.com/calendar/event?action=TEMPLATE&tmeid=MG5qaDU2c3M0b3A5a2lucTMxZGtiM2FzZ2IgMWIyMDM0Mzc1MWQwMTMwNzRlNWY1ZjgyYmZjYjcwYTljZjRmZmJhN2E1YTU5ZDkzYzkyZjNiMjg5NGY3ZWY2NkBn&tmsrc=1b20343751d013074e5f5f82bfcb70a9cf4ffba7a5a59d93c92f3b2894f7ef66%40group.calendar.google.com"
                                 target="_blank"
@@ -314,15 +323,12 @@ export default function Application() {
                             >
                                 Friday, January 30th, 9 PM EST
                             </a>
-
                         </p>
-
-                        <p className="text-sm text-gray-600 mt-1 italic">
-                            &emsp;&emsp;We will not accept responses after this time.
+                        <p className="text-xs sm:text-sm text-gray-600 mt-2 italic ml-0 sm:ml-7">
+                            We will not accept responses after this time.
                         </p>
                     </CardContent>
                 </Card>
-
 
                 <div className="pb-20">
                     <form onSubmit={handleSubmit}>
@@ -332,31 +338,37 @@ export default function Application() {
 
                                     {/* Full Name */}
                                     <Field>
-                                        <FieldLabel className="text-md">Full Name<span className="text-red-500">*</span></FieldLabel>
+                                        <FieldLabel className="text-sm sm:text-base">
+                                            Full Name<span className="text-red-500">*</span>
+                                        </FieldLabel>
                                         <Input
                                             id="name"
                                             name="name"
                                             placeholder="First and Last Name"
                                             required
+                                            className="w-full"
                                         />
                                     </Field>
 
                                     {/* Preferred First Name (optional) */}
                                     <Field>
-                                        <FieldLabel className="text-md">Preferred First Name</FieldLabel>
+                                        <FieldLabel className="text-sm sm:text-base">Preferred First Name</FieldLabel>
                                         <Input
                                             id="preferredFirstName"
                                             name="preferredFirstName"
                                             placeholder="Optional"
+                                            className="w-full"
                                         />
                                     </Field>
 
                                     {/* Email */}
                                     <Field>
-                                        <FieldLabel className="text-md" htmlFor="email">USC Email<span
-                                            className="text-red-500">*</span></FieldLabel>
-                                        <FieldDescription>
-                                            <em>Please ensure this is correct. All communications concerning the interview process will be sent via email.</em>
+                                        <FieldLabel className="text-sm sm:text-base" htmlFor="email">
+                                            USC Email<span className="text-red-500">*</span>
+                                        </FieldLabel>
+                                        <FieldDescription className="text-xs sm:text-sm">
+                                            <em>Please ensure this is correct. All communications concerning the
+                                                interview process will be sent via email.</em>
                                         </FieldDescription>
                                         <Input
                                             id="email"
@@ -364,29 +376,36 @@ export default function Application() {
                                             type="email"
                                             required
                                             placeholder="user@email.sc.edu"
+                                            className="w-full"
                                         />
                                     </Field>
 
                                     {/* Phone Number */}
                                     <Field>
-                                        <FieldLabel className="text-md">Phone Number<span className="text-red-500">*</span></FieldLabel>
+                                        <FieldLabel className="text-sm sm:text-base">
+                                            Phone Number<span className="text-red-500">*</span>
+                                        </FieldLabel>
                                         <Input
                                             id="phone"
                                             name="phone"
                                             type="tel"
                                             required
                                             placeholder="(555) 123-4567"
+                                            className="w-full"
                                         />
                                     </Field>
 
                                     {/* Year in School */}
                                     <Field>
-                                        <FieldLabel className="text-md">Year in School<span className="text-red-500">*</span></FieldLabel>
-                                        <FieldDescription>
-                                            <em>{`Not by credit hours. For example, "Freshman" means first-year in University.`}</em>
+                                        <FieldLabel className="text-sm sm:text-base">
+                                            Year in School<span className="text-red-500">*</span>
+                                        </FieldLabel>
+                                        <FieldDescription className="text-xs sm:text-sm">
+                                            <em>Not by credit hours. For example, "Freshman" means first-year in
+                                                University.</em>
                                         </FieldDescription>
                                         <Select name="classification">
-                                            <SelectTrigger>
+                                            <SelectTrigger className="w-full">
                                                 <SelectValue placeholder="None Selected"/>
                                             </SelectTrigger>
                                             <SelectContent>
@@ -400,9 +419,12 @@ export default function Application() {
 
                                     {/* GPA */}
                                     <Field>
-                                        <FieldLabel className="text-md">GPA<span className="text-red-500">*</span></FieldLabel>
-                                        <FieldDescription>
-                                            <em>Kappa Theta Pi expects its brothers to maintain a minimum of a 3.00 GPA; however, we invite anyone interested in our organization to apply.</em>
+                                        <FieldLabel className="text-sm sm:text-base">
+                                            GPA<span className="text-red-500">*</span>
+                                        </FieldLabel>
+                                        <FieldDescription className="text-xs sm:text-sm">
+                                            <em>Kappa Theta Pi expects its brothers to maintain a minimum of a 3.00 GPA;
+                                                however, we invite anyone interested in our organization to apply.</em>
                                         </FieldDescription>
                                         <Input
                                             id="gpa"
@@ -410,63 +432,77 @@ export default function Application() {
                                             type="text"
                                             required
                                             placeholder="e.g., 3.75"
+                                            className="w-full"
                                         />
                                     </Field>
 
                                     {/* Extenuating circumstances */}
                                     <Field>
                                         <FieldContent>
-                                            <FieldLabel className="text-md">Extenuating Circumstances</FieldLabel>
-                                            <FieldDescription>
-                                                If your GPA is below a 3.00, please use the following to explain any extenuating circumstances or hardships you would like us to take into consideration
+                                            <FieldLabel className="text-sm sm:text-base">Extenuating
+                                                Circumstances</FieldLabel>
+                                            <FieldDescription className="text-xs sm:text-sm">
+                                                If your GPA is below a 3.00, please use the following to explain any
+                                                extenuating circumstances or hardships you would like us to take into
+                                                consideration
                                             </FieldDescription>
                                         </FieldContent>
                                         <Textarea
                                             id="extenuatingCircumstances"
                                             name="extenuatingCircumstances"
                                             placeholder="Enter text here"
-                                            className="min-h-[100px] resize-none sm:min-w-[300px]"
+                                            className="min-h-[100px] resize-none w-full"
                                         />
                                     </Field>
 
                                     {/* Major */}
                                     <Field>
-                                        <FieldLabel className="text-md">Major(s) <span className="text-red-500">*</span> </FieldLabel>
+                                        <FieldLabel className="text-sm sm:text-base">
+                                            Major(s) <span className="text-red-500">*</span>
+                                        </FieldLabel>
                                         <Input
                                             id="major"
                                             name="major"
                                             required
                                             placeholder="IIT, CE, CS, etc..."
+                                            className="w-full"
                                         />
-                                        <FieldDescription>
+                                        <FieldDescription className="text-xs sm:text-sm">
                                             <em>KTP accepts all majors!</em>
                                         </FieldDescription>
                                     </Field>
 
                                     {/* Minor */}
                                     <Field className="pb-3">
-                                        <FieldLabel className="text-md">Minor(s)</FieldLabel>
-                                        <Input id="minor" name="minor" placeholder="optional"/>
+                                        <FieldLabel className="text-sm sm:text-base">Minor(s)</FieldLabel>
+                                        <Input
+                                            id="minor"
+                                            name="minor"
+                                            placeholder="optional"
+                                            className="w-full"
+                                        />
                                     </Field>
 
                                     {/* Hometown, Home State */}
                                     <Field>
-                                        <FieldLabel className="text-md">Hometown</FieldLabel>
+                                        <FieldLabel className="text-sm sm:text-base">Hometown</FieldLabel>
                                         <Input
                                             id="hometown"
                                             name="hometown"
                                             placeholder="City, State"
+                                            className="w-full"
                                         />
                                     </Field>
 
                                     {/* Picture Upload (required) */}
                                     <Field>
                                         <FieldContent>
-                                            <FieldLabel>
+                                            <FieldLabel className="text-sm sm:text-base">
                                                 Upload Picture <span className="text-red-500">*</span>
                                             </FieldLabel>
-                                            <FieldDescription>
-                                                Upload an image file with your face, clearly visible. The purpose of this is to allow us to put
+                                            <FieldDescription className="text-xs sm:text-sm">
+                                                Upload an image file with your face, clearly visible. The purpose of
+                                                this is to allow us to put
                                                 a face to your name.
                                             </FieldDescription>
                                         </FieldContent>
@@ -483,24 +519,25 @@ export default function Application() {
                                             onChange={onPhotoChange}
                                         />
 
-                                        <div className="flex items-center gap-3 mt-2">
+                                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-2">
                                             <Button
                                                 type="button"
                                                 onClick={triggerPhotoSelect}
-                                                className="px-4 py-2 cursor-pointer"
+                                                className="px-4 py-2 cursor-pointer w-full sm:w-auto"
                                             >
                                                 Upload Picture
                                             </Button>
                                             {photoName && (
-                                                <span className="text-sm text-muted-foreground truncate max-w-[200px]">
-                                                    {photoName}
-                                                </span>
+                                                <span
+                                                    className="text-xs sm:text-sm text-muted-foreground truncate max-w-full sm:max-w-[200px]">
+                                                {photoName}
+                                            </span>
                                             )}
                                             {photoName && (
                                                 <Button
                                                     type="button"
                                                     variant="ghost"
-                                                    className="text-red-600 hover:text-red-700 cursor-pointer"
+                                                    className="text-red-600 hover:text-red-700 cursor-pointer w-full sm:w-auto"
                                                     onClick={clearPhoto}
                                                 >
                                                     Clear
@@ -510,9 +547,9 @@ export default function Application() {
 
                                         {/* Crop Modal */}
                                         {showCropper && photoPreview && (
-                                            <div className="mt-4 border rounded-lg p-4 bg-gray-50">
+                                            <div className="mt-4 border rounded-lg p-3 sm:p-4 bg-gray-50">
                                                 <div className="mb-4">
-                                                    <label className="text-sm font-medium mb-2 block">
+                                                    <label className="text-xs sm:text-sm font-medium mb-2 block">
                                                         Zoom: {(zoom * 100).toFixed(0)}%
                                                     </label>
                                                     <input
@@ -525,12 +562,13 @@ export default function Application() {
                                                         className="w-full"
                                                     />
                                                 </div>
-                                                <div className="relative w-full h-64 bg-gray-900 rounded-md overflow-hidden mb-4">
+                                                <div
+                                                    className="relative w-full h-48 sm:h-64 bg-gray-900 rounded-md overflow-hidden mb-4">
                                                     <Cropper
                                                         image={photoPreview}
                                                         crop={crop}
                                                         zoom={zoom}
-                                                        aspect={1 / 1}
+                                                        aspect={1}
                                                         showGrid={true}
                                                         onCropChange={setCrop}
                                                         onCropComplete={onCropComplete}
@@ -541,7 +579,7 @@ export default function Application() {
                                                     <Button
                                                         type="button"
                                                         onClick={handleSaveCrop}
-                                                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white"
+                                                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto"
                                                     >
                                                         Save Crop
                                                     </Button>
@@ -551,7 +589,7 @@ export default function Application() {
 
                                         {photoPreview && !showCropper && (
                                             <div className="mt-3 flex flex-col gap-2">
-                                                <p className="text-sm text-gray-600">Preview:</p>
+                                                <p className="text-xs sm:text-sm text-gray-600">Preview:</p>
                                                 <NextImage
                                                     src={photoPreview}
                                                     alt="Selected preview"
@@ -563,7 +601,7 @@ export default function Application() {
                                                     type="button"
                                                     variant="outline"
                                                     onClick={() => setShowCropper(true)}
-                                                    className="w-fit text-sm"
+                                                    className="w-fit text-xs sm:text-sm"
                                                 >
                                                     Edit Crop
                                                 </Button>
@@ -575,15 +613,19 @@ export default function Application() {
 
                                     {/* Resume Upload */}
                                     <Field>
-                                        <FieldLabel className="text-md" htmlFor="resume">Upload Resume/CV <span
-                                            className="text-red-500">*</span></FieldLabel>
-                                        <FieldDescription>
+                                        <FieldLabel className="text-sm sm:text-base" htmlFor="resume">
+                                            Upload Resume/CV <span className="text-red-500">*</span>
+                                        </FieldLabel>
+                                        <FieldDescription className="text-xs sm:text-sm">
                                             PDF format only.
                                             <br/>
                                             <br/>
-                                            <em>{`If you don't have a resume made, quickly write-up a bullet pointed list of
-                                                 your previous jobs, leadership positions, involvement, technical projects,
-                                                 etc. Don't worry if it's not polished, we're looking at the content, not formatting.`}</em>
+                                            <em>If you don't have a resume made, quickly write-up a bullet pointed list
+                                                of
+                                                your previous jobs, leadership positions, involvement, technical
+                                                projects,
+                                                etc. Don't worry if it's not polished, we're looking at the content, not
+                                                formatting.</em>
                                         </FieldDescription>
 
                                         {/* Hidden file input so we can style the control */}
@@ -598,22 +640,27 @@ export default function Application() {
                                             onChange={onResumeChange}
                                         />
 
-                                        <div className="flex items-center gap-3 mt-2">
-                                            <Button type="button" onClick={triggerResumeSelect} className="px-4 py-2 cursor-pointer">
+                                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-2">
+                                            <Button
+                                                type="button"
+                                                onClick={triggerResumeSelect}
+                                                className="px-4 py-2 cursor-pointer w-full sm:w-auto"
+                                            >
                                                 Upload Resume (PDF)
                                             </Button>
                                             {resumeName ? (
-                                                <span className="text-sm text-muted-foreground truncate max-w-[240px]">
-                                                    {resumeName}
-                                                </span>
+                                                <span
+                                                    className="text-xs sm:text-sm text-muted-foreground truncate max-w-full sm:max-w-[240px]">
+                                                {resumeName}
+                                            </span>
                                             ) : (
-                                                <span className="text-sm text-muted-foreground">No file selected</span>
+                                                <span className="text-xs sm:text-sm text-muted-foreground">No file selected</span>
                                             )}
                                             {resumeName && (
                                                 <Button
                                                     type="button"
                                                     variant="ghost"
-                                                    className="text-red-600 hover:text-red-700"
+                                                    className="text-red-600 hover:text-red-700 w-full sm:w-auto"
                                                     onClick={clearResume}
                                                 >
                                                     Clear
@@ -624,23 +671,25 @@ export default function Application() {
 
                                     {/* LinkedIn (optional) */}
                                     <Field>
-                                        <FieldLabel className="text-md">LinkedIn (optional)</FieldLabel>
+                                        <FieldLabel className="text-sm sm:text-base">LinkedIn (optional)</FieldLabel>
                                         <Input
                                             id="linkedin"
                                             name="linkedin"
                                             type="url"
                                             placeholder="https://www.linkedin.com/in/username"
+                                            className="w-full"
                                         />
                                     </Field>
 
                                     {/* GitHub (optional) */}
                                     <Field>
-                                        <FieldLabel className="text-md">GitHub (optional)</FieldLabel>
+                                        <FieldLabel className="text-sm sm:text-base">GitHub (optional)</FieldLabel>
                                         <Input
                                             id="github"
                                             name="github"
                                             type="url"
                                             placeholder="https://github.com/username"
+                                            className="w-full"
                                         />
                                     </Field>
 
@@ -649,11 +698,12 @@ export default function Application() {
                                     {/* Why KTP */}
                                     <Field>
                                         <FieldContent>
-                                            <FieldLabel className="text-md">
-                                                Why are you interested in joining Kappa Theta Pi? What talents/experiences could you bring to the organization?
+                                            <FieldLabel className="text-sm sm:text-base">
+                                                Why are you interested in joining Kappa Theta Pi? What
+                                                talents/experiences could you bring to the organization?
                                                 <span className="text-red-500">*</span>
                                             </FieldLabel>
-                                            <FieldDescription>
+                                            <FieldDescription className="text-xs sm:text-sm">
                                                 Answer in less than 150 words.
                                             </FieldDescription>
                                         </FieldContent>
@@ -662,35 +712,43 @@ export default function Application() {
                                             name="reason"
                                             placeholder="Note: this application will not save your progress"
                                             required
-                                            className="min-h-[100px] resize-none sm:min-w-[300px]"
+                                            className="min-h-[100px] resize-none w-full"
                                         />
                                     </Field>
 
                                     {/* Rush events attended (multi-select, required) */}
                                     <Field>
                                         <FieldContent>
-                                            <FieldLabel className="text-md">Which rush events did you attend?<span className="text-red-500">*</span></FieldLabel>
-                                            <FieldDescription>
-                                                {`Check all that apply (at least one required). `}<em>{`If you're completing this application early,
-                                                 select the events you plan on attending. Reach out to our Executive Secretary in the GroupMe
-                                                 (Josiah White) if you're unable to attend an event.`}</em>
+                                            <FieldLabel className="text-sm sm:text-base">
+                                                Which rush events did you attend?<span className="text-red-500">*</span>
+                                            </FieldLabel>
+                                            <FieldDescription className="text-xs sm:text-sm">
+                                                Check all that apply (at least one required). <em>If you're completing
+                                                this application early,
+                                                select the events you plan on attending. Reach out to our Executive
+                                                Secretary in the GroupMe
+                                                (Josiah White) if you're unable to attend an event.</em>
                                             </FieldDescription>
                                         </FieldContent>
-                                        <div className="flex flex-col gap-2">
-                                            <label className="flex items-center gap-2">
-                                                <input type="checkbox" name="rushEvents" value="info-night" className="h-4 w-4 rounded border" />
+                                        <div className="flex flex-col gap-3">
+                                            <label className="flex items-center gap-2 text-sm sm:text-base">
+                                                <input type="checkbox" name="rushEvents" value="info-night"
+                                                       className="h-4 w-4 rounded border flex-shrink-0"/>
                                                 <span>Info Night</span>
                                             </label>
-                                            <label className="flex items-center gap-2">
-                                                <input type="checkbox" name="rushEvents" value="field-day" className="h-4 w-4 rounded border" />
+                                            <label className="flex items-center gap-2 text-sm sm:text-base">
+                                                <input type="checkbox" name="rushEvents" value="field-day"
+                                                       className="h-4 w-4 rounded border flex-shrink-0"/>
                                                 <span>Field Day</span>
                                             </label>
-                                            <label className="flex items-center gap-2">
-                                                <input type="checkbox" name="rushEvents" value="technical-workshop" className="h-4 w-4 rounded border" />
+                                            <label className="flex items-center gap-2 text-sm sm:text-base">
+                                                <input type="checkbox" name="rushEvents" value="technical-workshop"
+                                                       className="h-4 w-4 rounded border flex-shrink-0"/>
                                                 <span>Technical Workshop</span>
                                             </label>
-                                            <label className="flex items-center gap-2">
-                                                <input type="checkbox" name="rushEvents" value="pitch-night" className="h-4 w-4 rounded border" />
+                                            <label className="flex items-center gap-2 text-sm sm:text-base">
+                                                <input type="checkbox" name="rushEvents" value="pitch-night"
+                                                       className="h-4 w-4 rounded border flex-shrink-0"/>
                                                 <span>Pitch Night</span>
                                             </label>
                                         </div>
@@ -700,7 +758,10 @@ export default function Application() {
 
                                     {/* Affirmation */}
                                     <Field>
-                                        <FieldLabel className="text-md">I affirm this application is complete and correct to the best of my knowledge.<span className="text-red-500">*</span></FieldLabel>
+                                        <FieldLabel className="text-sm sm:text-base">
+                                            I affirm this application is complete and correct to the best of my
+                                            knowledge.<span className="text-red-500">*</span>
+                                        </FieldLabel>
                                         <div className="flex items-center gap-2">
                                             <input
                                                 id="affirmation"
@@ -708,9 +769,9 @@ export default function Application() {
                                                 type="checkbox"
                                                 value="yes"
                                                 required
-                                                className="h-4 w-4 rounded border"
+                                                className="h-4 w-4 rounded border flex-shrink-0"
                                             />
-                                            <label htmlFor="affirmation">Yes</label>
+                                            <label htmlFor="affirmation" className="text-sm sm:text-base">Yes</label>
                                         </div>
                                     </Field>
 
@@ -720,7 +781,7 @@ export default function Application() {
                             <Field className="pt-4" orientation="horizontal">
                                 <Button
                                     type="submit"
-                                    className="px-6 py-3 bg-[#315CA9] text-white rounded-lg font-semibold transition-all duration-300 hover:bg-[#23498F] hover:scale-110 hover:drop-shadow-md cursor-pointer"
+                                    className="w-full sm:w-auto px-6 py-3 bg-[#315CA9] text-white rounded-lg font-semibold transition-all duration-300 hover:bg-[#23498F] hover:scale-105 hover:shadow-lg cursor-pointer"
                                 >
                                     Submit
                                 </Button>

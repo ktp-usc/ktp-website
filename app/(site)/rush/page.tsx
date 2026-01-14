@@ -24,7 +24,7 @@ export default function Page2() {
       </div>
 
       <div className="relative z-10">
-        <section className="text-center py-16 px-6">
+        <section className="text-center py-12 px-6">
           <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
             Learn About Joining KTP!
           </h1>
