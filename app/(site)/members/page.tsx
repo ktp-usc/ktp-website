@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ReactTyped } from "react-typed";
 import { motion, AnimatePresence } from "framer-motion";
-import membersData from @data/membersData.json;
+import { membersData } from "@/data/members";
 
 interface Member {
     name: string;
