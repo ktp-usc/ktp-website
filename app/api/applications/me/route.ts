@@ -112,8 +112,6 @@ export async function PATCH(req: Request) {
             minor: body.minor === undefined ? undefined : normalizeString(body.minor),
             resumeUrl: body.resumeUrl === undefined ? undefined : normalizeString(body.resumeUrl),
             reason: body.reason === undefined ? undefined : normalizeString(body.reason),
-            linkedin: body.linkedin === undefined ? undefined : normalizeString(body.linkedin),
-            github: body.github === undefined ? undefined : normalizeString(body.github),
             eventsAttended: normalizeStringArray(body.eventsAttended),
             gpa: normalizeGpa(body.gpa)
             // lastModified is @updatedAt so prisma handles it
@@ -158,8 +156,6 @@ export async function PATCH(req: Request) {
                 minor: data.minor ?? null,
                 resumeUrl: data.resumeUrl ?? null,
                 reason: data.reason ?? null,
-                linkedin: data.linkedin ?? null,
-                github: data.github ?? null,
                 gpa: data.gpa ?? null,
                 eventsAttended: Array.isArray(data.eventsAttended) ? data.eventsAttended : []
             }

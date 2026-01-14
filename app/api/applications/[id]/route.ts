@@ -47,8 +47,6 @@ export async function PATCH(req: Request, ctx: Ctx) {
                 resumeUrl: body.resumeUrl ?? undefined,
                 eventsAttended: body.eventsAttended ?? undefined,
                 reason: body.reason ?? undefined,
-                linkedin: body.linkedin ?? undefined,
-                github: body.github ?? undefined,
                 isFlagged: body.isFlagged ?? undefined,
                 submittedAt: body.submittedAt ?? undefined,
                 status: body.status ?? undefined,

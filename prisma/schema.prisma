@@ -43,13 +43,12 @@ model applications {
   createdAt      DateTime?         @default(now()) @db.Timestamptz(6)
   eventsAttended String[]          @default([])
   reason         String?
-  linkedin       String?
-  github         String?
   isFlagged      Boolean?
   lastModified   DateTime          @updatedAt @db.Timestamptz(6)
   submittedAt    DateTime?         @db.Timestamptz(6)
   userId         String            @unique @db.Uuid
   gpa            Float?
+  circumstance   String?
   accounts       accounts          @relation(fields: [userId], references: [id], onDelete: Cascade, map: "userCheck")
   comments       comment[]
   status         applicationStatus @default(UNDER_REVIEW)

@@ -41,7 +41,11 @@ export default function PortalHeader() {
         <header className="bg-white shadow-sm border-b border-gray-200 dark:bg-gray-900 dark:border-gray-700 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                 {/* logo + title */}
-                <div className="flex items-center gap-6">
+                <Link
+                    href="/portal"
+                    className="flex items-center gap-6 cursor-pointer"
+                    aria-label="Go to portal home"
+                >
                     <Image
                         src="/KTPLettersW.svg"
                         alt="Kappa Theta Pi logo"
@@ -61,7 +65,7 @@ export default function PortalHeader() {
                     <h1 className="text-xl font-semibold text-gray-900 hidden sm:block dark:text-white transition-colors duration-300">
                         Member Portal
                     </h1>
-                </div>
+                </Link>
 
                 {/* user + actions */}
                 <div className="flex items-center gap-4">
