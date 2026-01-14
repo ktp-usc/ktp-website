@@ -17,6 +17,21 @@ import { Textarea } from "@/components/ui/textarea";
 import React from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import Cropper from "react-easy-crop";
+
+interface PixelCrop {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+interface PixelCrop { 
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
 
 import NextImage from "next/image";
 import Cropper from "react-easy-crop";
@@ -181,9 +196,9 @@ export default function Application() {
 
     async function createImage(url: string): Promise<HTMLImageElement> {
         return new Promise((resolve, reject) => {
-            const image = new window.Image();
+            const image = new Image();
             image.addEventListener("load", () => resolve(image));
-            image.addEventListener("error", (event: Event) => reject(event));
+            image.addEventListener("error", (err) => reject(err));
             image.setAttribute("crossOrigin", "anonymous");
             image.src = url;
         });
@@ -460,7 +475,8 @@ export default function Application() {
                                                 Upload Picture <span className="text-red-500">*</span>
                                             </FieldLabel>
                                             <FieldDescription>
-                                                Please include a headshot or photo to help us during the review process.
+                                                Upload an image file with your face, clearly visible. The purpose of this is to allow us to put
+                                                a face to your name.
                                             </FieldDescription>
                                         </FieldContent>
 
