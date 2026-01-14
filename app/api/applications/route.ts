@@ -1,376 +1,50 @@
-import { NextResponse } from "next/server";
-import { put } from "@vercel/blob";
-import { Prisma } from "@prisma/client";
-import crypto from "crypto";
-import { prisma } from "@/lib/prisma";
-import { headers } from "next/headers";
+import { prisma } from '@/lib/prisma';
+import { requireAdmin } from '@/lib/auth/guards';
+import { ok, serverError } from '@/lib/http/responses';
 
-export const runtime = "nodejs";
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-
-// Normalize FormData values to clean strings or null
-function norm(v: FormDataEntryValue | null): string | null {
-    if (typeof v !== "string") return null;
-    const s = v.trim();
-    return s || null;
-}
-
-function parseLimit(v: string | null, fallback = 50, max = 200) {
-    const n = Number(v);
-    if (!Number.isFinite(n) || n <= 0) return fallback;
-    return Math.min(n, max);
-}
-
-function fileFromFormData(formData: FormData, key: string): File | null {
-    const value = formData.get(key);
-    return value instanceof File ? value : null;
-}
-
-function splitCommaList(value: string | null): string[] {
-    if (!value) return [];
-    return value
-        .split(",")
-        .map((entry) => entry.trim())
-        .filter(Boolean);
-}
-
-//Splits full name into first and last name
-function parseName(fullName: string, preferredFirstName: string | null) {
-    const parts = fullName.trim().split(/\s+/).filter(Boolean);
-    const fallbackFirst = parts[0] || fullName.trim();
-    const lastName = parts.length > 1 ? parts.slice(1).join(" ") : "";
-    return {
-        firstName: preferredFirstName || fallbackFirst,
-        lastName,
-    };
-}
-
-function parseStringList(values: FormDataEntryValue[]): string[] {
-    return values
-        .filter((value): value is string => typeof value === "string")
-        .map((value) => value.trim())
-        .filter(Boolean);
-}
-
-function isPdf(file: File) {
-    return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
-}
-
-function isImage(file: File) {
-    return file.type.startsWith("image/");
-}
-
-//Upload file to Vercel Blob Storage and returns Blob URL
-async function uploadBlobFile(file: File, prefix: string, token: string) {
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const blob = await put(
-        `${ prefix }/${ Date.now() }-${ file.name }`,
-        buffer,
-        {
-            access: "public",
-            contentType: file.type || "application/octet-stream",
-            token
-        }
-    );
-    return blob.url;
-}
-
-export async function getCurrentDomain() {
-    const headersList = await headers();
-    const host = headersList.get('host'); // example.com
-    const protocol = headersList.get('x-forwarded-proto') ?? 'http';
-
-    return `${protocol}://${host}`;
-}
-
-//Creates Neon Auth User using the given email and name
-async function createNeonAuthUser(email: string, name: string) {
-    const password = crypto.randomBytes(12).toString("hex");
-    const authUrl =
-        process.env.NEXT_NEON_AUTH_URL || process.env.NEXT_PUBLIC_NEON_AUTH_URL;
-
-    if (!authUrl) {
-        console.error("Missing NEXT_NEON_AUTH_URL for Neon Auth");
-        return;
-    }
-
-    //Sets the app origin and then calls the Neon Auth sign-up endpoint
-    const appOrigin = await getCurrentDomain();
-    const response = await fetch(`${ authUrl }/sign-up/email`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Origin": appOrigin
-        },
-        body: JSON.stringify({
-            email,
-            name,
-            password
-        })
-    });
-
-    if (!response.ok) {
-        console.error("Failed to create Neon Auth user:", await response.text());
-        return;
-    }
-
-    const data = await response.json();
-    const userId = data?.user?.id;
-    if (!userId) {
-        console.error("Neon Auth sign-up response missing user id.");
-        return;
-    }
-    //Sends password reset email to user to set their own password, @TODO REDIRECT Reset URL BACK HERE 
-    const emailResponse = await fetch(`${ authUrl }/request-password-reset`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json", "Origin": appOrigin
-            },
-        body: JSON.stringify({ email, redirectTo: `${ appOrigin }/login/forgotpassword` })
-        });
-
-    return { id: userId, email: email, password: password };
-
-}
-
-// ---------- POST /api/applications ----------
-export async function POST(req: Request) {
-    try {
-        const formData = await req.formData();
-
-        const fullName = norm(formData.get("name"));
-        const preferredFirstName = norm(formData.get("preferredFirstName"));
-        const email = norm(formData.get("email"));
-        const phone = norm(formData.get("phone"));
-        const classification = norm(formData.get("classification"));
-        const gpa = norm(formData.get("gpa"));
-        const extenuatingCircumstances = norm(formData.get("extenuatingCircumstances"));
-        const major = norm(formData.get("major"));
-        const minor = norm(formData.get("minor"));
-        const hometown = norm(formData.get("hometown"));
-        const reason = norm(formData.get("reason"));
-        const linkedin = norm(formData.get("linkedin"));
-        const github = norm(formData.get("github"));
-        const affirmation = norm(formData.get("affirmation"));
-        const eventsAttended = parseStringList(formData.getAll("rushEvents"));
-        const signUp = norm(formData.get("signUp"));
-
-        
-        if (!fullName || !email || !phone || !gpa || !major || !reason) {
-            return NextResponse.json(
-                { error: "Missing required application fields." },
-                { status: 400 }
-            );
-        }
-
-        const emailDomain = email.toLowerCase().split("@")[1];
-        if (!emailDomain || !emailDomain.endsWith("sc.edu")) {
-            return NextResponse.json(
-                { error: "Please use a valid USC email address." },
-                { status: 400 }
-            );
-        }
-
-        if (affirmation !== "yes") {
-            return NextResponse.json(
-                { error: "Application affirmation is required." },
-                { status: 400 }
-            );
-        }
-
-        if (eventsAttended.length === 0) {
-            return NextResponse.json(
-                { error: "Please select at least one rush event attended." },
-                { status: 400 }
-            );
-        }
-
-        const resumeFile = fileFromFormData(formData, "resume");
-        if (!resumeFile || resumeFile.size === 0) {
-            return NextResponse.json(
-                { error: "Please upload a resume." },
-                { status: 400 }
-            );
-        }
-        if (!isPdf(resumeFile)) {
-            return NextResponse.json(
-                { error: "Resume must be a PDF file." },
-                { status: 400 }
-            );
-        }
-
-        const photoFile = fileFromFormData(formData, "photo");
-        if (!photoFile || photoFile.size === 0) {
-            return NextResponse.json(
-                { error: "Please upload a headshot photo." },
-                { status: 400 }
-            );
-        }
-        if (!isImage(photoFile)) {
-            return NextResponse.json(
-                { error: "Headshot must be an image file." },
-                { status: 400 }
-            );
-        }
-
-        const token = process.env.BLOB_READ_WRITE_TOKEN;
-        if (!token) {
-            console.error("Missing BLOB_READ_WRITE_TOKEN env var");
-            return NextResponse.json(
-                { error: "Missing blob storage configuration." },
-                { status: 500 }
-            );
-        }
-
-        let resumeUrl: string | null = null;
-        let headshotUrl: string | null = null;
-        try {
-            resumeUrl = await uploadBlobFile(resumeFile, "ktp-resumes", token);
-            headshotUrl = await uploadBlobFile(photoFile, "ktp-headshots", token);
-        } catch (uploadErr) {
-            console.error("File upload failed:", uploadErr);
-            return NextResponse.json(
-                { error: "File upload failed." },
-                { status: 500 }
-            );
-        }
-
-        const { firstName, lastName } = parseName(fullName, preferredFirstName);
-        const authUser = await createNeonAuthUser(email, fullName);
-        if (!authUser) {
-            return NextResponse.json({ error: "Failed to create user authentication." }, { status: 500 });
-        }
-
-        const { id: userId, email: userEmail, password: password } = authUser;
-        const majors = splitCommaList(major);
-        const minors = splitCommaList(minor);
-
-        // ------------------------------
-        // Insert into Neon using Prisma
-        // ------------------------------
-
-        //@TODO need to add logic for converting class to gradyear
-        await prisma.accounts.create({
-            data: {
-                id: userId,
-                firstName,
-                lastName,
-                schoolEmail: userEmail,
-                personalEmail: userEmail,
-                phoneNum: phone,
-                hometown: hometown,
-                majors,
-                minors,
-                type: "APPLICANT",
-                resumeBlobURL: resumeUrl,
-                headshotBlobURL: headshotUrl,
-                linkedin: linkedin,
-                github: github
-            }
-        });
-
-        await prisma.applications.create({
-            data: {
-                fullName,
-                email,
-                classification,
-                major,
-                minor,
-                reason,
-                resumeUrl,
-                eventsAttended,
-                linkedin,
-                github,
-                accounts: {
-                    connect: { id: userId },
-                },
-            },
-        })
-
-        return NextResponse.json({ ok: true, id: userId });
-
-    } catch (err: unknown) {
-        console.error("POST /api/applications error:", err);
-
-        // Handle unique constraint violations (e.g., duplicate email/resume)
-        if (
-            err instanceof Prisma.PrismaClientKnownRequestError &&
-            err.code === "P2002"
-        ) {
-            return NextResponse.json(
-                { error: "An account with this email or resume already exists." },
-                { status: 409 }
-            );
-        }
-
-        // Generic error handling with safe narrowing
-        if (err instanceof Error) {
-            return NextResponse.json(
-                { error: err.message || "Server error" },
-                { status: 500 }
-            );
-        }
-
-        // Fallback for non-Error values
-        return NextResponse.json(
-            { error: "Server error" },
-            { status: 500 }
-        );
-    }
-}
-
-// ---------- GET /api/applications ----------
-async function getCurrentUserId() {
-    const session = await authServer.getSession();
-    // neon auth libs differ slightly; this covers both common shapes
-    return session?.data?.user?.id ?? session?.user?.id ?? null;
-}
-
-async function requireExec() {
-    const userId = await getCurrentUserId();
-    if (!userId) return { ok: false as const, status: 401 as const };
-
-    const account = await prisma.accounts.findUnique({
-        where: { id: userId },
-        select: { type: true, leaderType: true }
-    });
-
-    const isExec = account?.type === 'LEADERSHIP' || (account?.leaderType != null && account.leaderType !== 'N_A');
-    if (!isExec) return { ok: false as const, status: 403 as const };
-
-    return { ok: true as const, status: 200 as const };
-}
-
-// ---------- GET /api/applications ----------
 export async function GET(req: Request) {
+    const authed = await requireAdmin();
+    if ('response' in authed) return authed.response;
+
     try {
-        const guard = await requireExec();
-        if (!guard.ok) {
-            return NextResponse.json({ error: guard.status === 401 ? 'Unauthorized' : 'Forbidden' }, { status: guard.status });
-        }
-
         const { searchParams } = new URL(req.url);
-        const limit = parseLimit(searchParams.get('limit'));
 
-        const applications = await prisma.applications.findMany({
-            take: limit,
-            orderBy: { createdAt: 'desc' },
-            include: {
-                comments: { orderBy: { createdAt: 'desc' } }
-            }
-        });
+        const q = searchParams.get('q')?.trim() || '';
+        const status = searchParams.get('status') || '';
+        const flagged = searchParams.get('flagged');
+        const take = Math.min(parseInt(searchParams.get('take') || '25', 10), 100);
+        const skip = Math.max(parseInt(searchParams.get('skip') || '0', 10), 0);
 
-        return NextResponse.json({ ok: true, data: applications });
-    } catch (err) {
-        if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2021') {
-            return NextResponse.json(
-                { error: 'Table "applications" not found. Ensure migrations have been applied.' },
-                { status: 500 }
-            );
-        }
+        const where: any = {
+            ...(status ? { status } : {}),
+            ...(flagged === 'true' ? { isFlagged: true } : {}),
+            ...(flagged === 'false' ? { isFlagged: false } : {}),
+            ...(q
+                ? {
+                    OR: [
+                        { fullName: { contains: q, mode: 'insensitive' } },
+                        { email: { contains: q, mode: 'insensitive' } }
+                    ]
+                }
+                : {})
+        };
 
-        console.error('GET /api/applications error:', err);
-        return NextResponse.json({ error: 'Server error' }, { status: 500 });
+        const [items, total] = await Promise.all([
+            prisma.applications.findMany({
+                where,
+                orderBy: [{ isFlagged: 'desc' }, { lastModified: 'desc' }],
+                take,
+                skip
+            }),
+            prisma.applications.count({ where })
+        ]);
+
+        return ok({ items, total, take, skip });
+    } catch (e) {
+        console.error(e);
+        return serverError();
     }
 }

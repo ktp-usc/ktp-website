@@ -3,25 +3,28 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import logo from '../public/CircleLogo-Transparent.png';
 import { User } from 'lucide-react';
 
-import { useSessionQuery } from '@/hooks/useSessionQuery';
+import logo from '../public/CircleLogo-Transparent.png';
+
+// new setup: only use the client hooks layer we created
+import { useSessionQuery } from '@/client/hooks/auth';
+import { useMyAccountQuery } from '@/client/hooks/accounts';
 
 const SIGN_IN_HREF = '/auth/sign-in';
 const SIGN_UP_HREF = '/auth/sign-up';
 const PROFILE_HREF = '/portal';
 
-type AccountHeadshotResponse = { headshotBlobURL: string | null };
-
 export function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
 
-    const { data, isFetching } = useSessionQuery();
-    const userId = data?.user?.id ?? null;
-    const isSignedIn = !!userId;
+    const { data: sessionData, isFetching: sessionFetching } = useSessionQuery();
+    const isSignedIn = Boolean(sessionData?.user?.id);
 
-    const [headshotUrl, setHeadshotUrl] = useState<string | null>(null);
+    // new setup: headshot url comes from the account row (no separate headshot query)
+    const { data: account, isFetching: accountFetching } = useMyAccountQuery();
+
+    const headshotUrl = account?.headshotBlobURL ?? null;
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 0);
@@ -30,36 +33,9 @@ export function Header() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    useEffect(() => {
-        if (!userId) {
-            setHeadshotUrl(null);
-            return;
-        }
-
-        let cancelled = false;
-
-        async function load() {
-            try {
-                const res = await fetch(`/api/accounts/${userId}/headshot`, { cache: 'no-store' });
-                if (!res.ok) {
-                    if (!cancelled) setHeadshotUrl(null);
-                    return;
-                }
-                const body = (await res.json()) as AccountHeadshotResponse;
-                if (!cancelled) setHeadshotUrl(body.headshotBlobURL ?? null);
-            } catch {
-                if (!cancelled) setHeadshotUrl(null);
-            }
-        }
-
-        load();
-        return () => {
-            cancelled = true;
-        };
-    }, [userId]);
-
     const rightSide = useMemo(() => {
-        if (isFetching) return null;
+        // don’t flash buttons while session is resolving
+        if (sessionFetching) return null;
 
         if (isSignedIn) {
             return (
@@ -78,8 +54,8 @@ export function Header() {
                         />
                     ) : (
                         <span className="h-9 w-9 rounded-full bg-white/15 flex items-center justify-center">
-              <User className="h-5 w-5 text-white" />
-            </span>
+                            <User className={`h-5 w-5 text-white ${accountFetching ? 'opacity-60' : ''}`} />
+                        </span>
                     )}
                 </Link>
             );
@@ -101,7 +77,7 @@ export function Header() {
                 </Link>
             </>
         );
-    }, [headshotUrl, isFetching, isSignedIn]);
+    }, [sessionFetching, isSignedIn, headshotUrl, accountFetching]);
 
     return (
         <header

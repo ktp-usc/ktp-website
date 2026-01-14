@@ -3,15 +3,40 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { User } from 'lucide-react';
+import { User, LogOut } from 'lucide-react';
 
-type PortalHeaderProps = {
-    headshotUrl: string | null;
-    fullName: string;
-    isLoading: boolean;
-};
+import { useSessionQuery } from '@/client/hooks/auth';
+import { useMyAccountQuery } from '@/client/hooks/accounts';
 
-export default function PortalHeader({ headshotUrl, fullName, isLoading }: PortalHeaderProps) {
+function buildDisplayName(account: any | null, sessionUser: any | null) {
+    const first = (account?.firstName ?? '').trim();
+    const last = (account?.lastName ?? '').trim();
+    const full = `${first} ${last}`.trim();
+    if (full) return full;
+
+    const sessionName = (sessionUser?.name ?? '').trim();
+    if (sessionName) return sessionName;
+
+    const sessionEmail = (sessionUser?.email ?? '').trim();
+    if (sessionEmail) return sessionEmail;
+
+    return 'User';
+}
+
+export default function PortalHeader() {
+    const session = useSessionQuery();
+    const account = useMyAccountQuery();
+
+    const sessionUser = session.data?.user ?? null;
+    const accountData = account.data ?? null;
+
+    const isLoading = session.isLoading || account.isLoading;
+
+    const headshotUrl: string | null =
+        (accountData?.headshotBlobURL as string | null | undefined) ?? null;
+
+    const fullName = buildDisplayName(accountData, sessionUser);
+
     return (
         <header className="bg-white shadow-sm border-b border-gray-200 dark:bg-gray-900 dark:border-gray-700 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -38,13 +63,13 @@ export default function PortalHeader({ headshotUrl, fullName, isLoading }: Porta
                     </h1>
                 </div>
 
-                {/* user + settings */}
+                {/* user + actions */}
                 <div className="flex items-center gap-4">
                     <span className="h-10 w-10 rounded-full border-2 border-blue-200 dark:border-gray-600 overflow-hidden flex items-center justify-center bg-white/30 dark:bg-gray-800 transition-colors duration-300">
                         {headshotUrl ? (
                             <Image
                                 src={headshotUrl}
-                                alt={fullName || 'Profile'}
+                                alt={fullName}
                                 width={40}
                                 height={40}
                                 className="h-10 w-10 object-cover"
@@ -55,7 +80,7 @@ export default function PortalHeader({ headshotUrl, fullName, isLoading }: Porta
                     </span>
 
                     <span className="text-sm font-medium text-gray-700 hidden md:block dark:text-white transition-colors duration-300">
-                        {isLoading ? 'Loading…' : fullName || 'User'}
+                        {isLoading ? 'Loading…' : fullName}
                     </span>
 
                     <Link
@@ -78,6 +103,17 @@ export default function PortalHeader({ headshotUrl, fullName, isLoading }: Porta
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     </Link>
+
+                    <button
+                        type="button"
+                        onClick={() => {
+                            window.location.href = '/api/auth/sign-out';
+                        }}
+                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer inline-flex"
+                        aria-label="Logout"
+                    >
+                        <LogOut className="w-5 h-5 text-gray-600 dark:text-white transition-colors duration-300" />
+                    </button>
                 </div>
             </div>
         </header>

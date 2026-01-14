@@ -1,9 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-type SessionResponse = { user: { id: string; name?: string | null; email?: string | null } | null };
+type SessionResponse = {
+    user: { id: string; name?: string | null; email?: string | null } | null;
+};
 
 async function fetchSession(): Promise<SessionResponse> {
-    const res = await fetch('/api/auth/get-session', {
+    const res = await fetch('/api/auth/session', {
         method: 'GET',
         cache: 'no-store',
         credentials: 'include'

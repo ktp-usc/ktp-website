@@ -1,15 +1,17 @@
-// app/portal/page.tsx  (update to remove the header + outer wrapper)
+// app/portal/page.tsx
 'use client';
 
 import { useMemo } from 'react';
-import { useRouter } from 'next/navigation';
-import type { type as AccountType } from '@prisma/client';
+import { useRouter, useSearchParams } from 'next/navigation';
+import type { applicationStatus, type as AccountType } from '@prisma/client';
 
-import { useSessionQuery } from '@/hooks/useSessionQuery';
-import { usePortalUserQuery } from '@/hooks/usePortalUserQuery';
+import { useSessionQuery } from '@/client/hooks/auth';
+import { useMyAccountQuery } from '@/client/hooks/accounts';
 
 type PortalRole = 'exec' | 'applicant' | 'member';
-type ApplicationViewStatus = 'NOT_STARTED' | 'DRAFT' | 'SUBMITTED';
+
+// ✅ new: can be "not started", "in progress", or the submitted status enum
+type ApplicationViewStatus = 'NOT_STARTED' | 'IN_PROGRESS' | applicationStatus;
 
 function toPortalRole(typeValue: AccountType | null | undefined): PortalRole {
     if (typeValue === 'LEADERSHIP') return 'exec';
@@ -24,67 +26,131 @@ function formatDate(dateLike: string | Date | null | undefined): string {
     return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
+function isPristineApplication(app: any): boolean {
+    if (!app) return true;
+
+    const hasAnyField =
+        Boolean(app.classification?.trim?.()) ||
+        Boolean(app.major?.trim?.()) ||
+        Boolean(app.minor?.trim?.()) ||
+        app.gpa != null ||
+        Boolean(app.linkedin?.trim?.()) ||
+        Boolean(app.github?.trim?.()) ||
+        Boolean(app.reason?.trim?.()) ||
+        Boolean(app.resumeUrl?.trim?.()) ||
+        (Array.isArray(app.eventsAttended) && app.eventsAttended.length > 0);
+
+    if (hasAnyField) return false;
+
+    // if timestamps are basically the same, treat as never modified
+    const createdAt = app.createdAt ? new Date(app.createdAt) : null;
+    const lastModified = app.lastModified ? new Date(app.lastModified) : null;
+
+    if (!createdAt || !lastModified) return true;
+
+    const diffMs = Math.abs(lastModified.getTime() - createdAt.getTime());
+    return diffMs < 2000; // 2s tolerance
+}
+
+function statusLabel(status: ApplicationViewStatus): string {
+    if (status === 'NOT_STARTED') return 'Not started';
+    if (status === 'IN_PROGRESS') return 'In progress';
+
+    switch (status) {
+        case 'UNDER_REVIEW':
+            return 'Under review';
+        case 'INTERVIEW':
+            return 'Interview';
+        case 'WAITLIST':
+            return 'Waitlist';
+        case 'BID_OFFERED':
+            return 'Bid offered';
+        case 'BID_DECLINED':
+            return 'Bid declined';
+        case 'BID_ACCEPTED':
+            return 'Bid accepted';
+        case 'CLOSED':
+            return 'Closed';
+        default:
+            return String(status);
+    }
+}
+
+function statusPillClasses(status: ApplicationViewStatus): string {
+    if (status === 'NOT_STARTED') return 'bg-gray-100 text-gray-800 border-gray-200';
+    if (status === 'IN_PROGRESS') return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+
+    switch (status) {
+        case 'BID_ACCEPTED':
+            return 'bg-green-100 text-green-800 border-green-200';
+        case 'BID_OFFERED':
+            return 'bg-blue-100 text-blue-800 border-blue-200';
+        case 'INTERVIEW':
+            return 'bg-purple-100 text-purple-800 border-purple-200';
+        case 'WAITLIST':
+            return 'bg-orange-100 text-orange-800 border-orange-200';
+        case 'BID_DECLINED':
+            return 'bg-red-100 text-red-800 border-red-200';
+        case 'CLOSED':
+            return 'bg-gray-200 text-gray-900 border-gray-300';
+        case 'UNDER_REVIEW':
+        default:
+            return 'bg-slate-100 text-slate-800 border-slate-200';
+    }
+}
+
 export default function PortalHomePage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
 
-    const { data: sessionData, isFetching: sessionFetching } = useSessionQuery();
-    const userId = sessionData?.user?.id ?? null;
+    const redirectTo = useMemo(() => searchParams.get('redirectTo') ?? '/portal', [searchParams]);
 
-    const { data: account, isFetching: portalUserFetching } = usePortalUserQuery(userId);
+    // sources of truth
+    const session = useSessionQuery();
+    const userId = session.data?.user?.id ?? null;
 
-    const isLoading = sessionFetching || portalUserFetching;
+    const account = useMyAccountQuery();
 
-    const role = useMemo<PortalRole>(() => toPortalRole(account?.type ?? null), [account?.type]);
-    const firstName = useMemo(() => account?.firstName?.trim() || 'there', [account?.firstName]);
+    const isLoading = session.isFetching || account.isFetching;
 
+    const role = useMemo<PortalRole>(() => toPortalRole(account.data?.type ?? null), [account.data?.type]);
+    const firstName = useMemo(() => account.data?.firstName?.trim() || 'there', [account.data?.firstName]);
+
+    const app = (account.data as any)?.applications ?? null;
+
+    // ✅ updated status logic
     const appStatus = useMemo<ApplicationViewStatus>(() => {
-        const app = account?.applications ?? null;
+        const app = (account.data as any)?.applications ?? null;
+
         if (!app) return 'NOT_STARTED';
-        if (!app.submittedAt) return 'DRAFT';
-        return 'SUBMITTED';
-    }, [account?.applications]);
 
-    const getStatusColor = (status: ApplicationViewStatus) => {
-        switch (status) {
-            case 'SUBMITTED':
-                return 'bg-blue-100 text-blue-800 border-blue-200';
-            case 'DRAFT':
-                return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-            case 'NOT_STARTED':
-            default:
-                return 'bg-gray-100 text-gray-800 border-gray-200';
-        }
-    };
+        // once submitted, show the real workflow status
+        if (app.submittedAt) return (app.status as applicationStatus) ?? 'UNDER_REVIEW';
 
-    const getStatusText = (status: ApplicationViewStatus) => {
-        switch (status) {
-            case 'SUBMITTED':
-                return 'Submitted';
-            case 'DRAFT':
-                return 'Draft';
-            case 'NOT_STARTED':
-            default:
-                return 'Not started';
-        }
-    };
+        // ✅ your rule: any change reflected by lastModified => in progress
+        // (note: lastModified will be present as soon as the row exists, IF it’s selected by the API)
+        if (app.lastModified) return 'IN_PROGRESS';
+
+        return 'NOT_STARTED';
+    }, [account.data]);
 
     return (
         <main className="max-w-7xl mx-auto px-6 py-8 bg-transparent transition-colors duration-300">
             {/* signed out */}
-            {!userId && !sessionFetching ? (
+            {!userId && !session.isFetching ? (
                 <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">You’re not signed in</h2>
                     <p className="text-gray-600 dark:text-gray-400 mb-4">Sign in to access the portal.</p>
                     <div className="flex gap-2">
                         <button
-                            onClick={() => router.push('/auth/sign-in')}
+                            onClick={() => router.push(`/auth/sign-in?redirectTo=${encodeURIComponent(redirectTo)}`)}
                             className="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors cursor-pointer"
                             type="button"
                         >
                             Sign In
                         </button>
                         <button
-                            onClick={() => router.push('/auth/sign-up')}
+                            onClick={() => router.push(`/auth/sign-up?redirectTo=${encodeURIComponent(redirectTo)}`)}
                             className="px-4 py-2 rounded-lg bg-gray-100 text-gray-900 font-semibold hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 transition-colors cursor-pointer"
                             type="button"
                         >
@@ -111,14 +177,12 @@ export default function PortalHomePage() {
             {/* applicant view */}
             {userId && role === 'applicant' ? (
                 <div className="space-y-6">
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white transition-colors duration-300">
-                        Your Application
-                    </h3>
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white transition-colors duration-300">Your Application</h3>
 
                     <div
-                        onClick={() => router.push('/application/view')}
+                        onClick={() => router.push('/portal/application')}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') router.push('/application/view');
+                            if (e.key === 'Enter' || e.key === ' ') router.push('/portal/application');
                         }}
                         className="bg-white rounded-xl shadow-md hover:shadow-lg dark:bg-gray-900 dark:border-gray-600 dark:hover:border-gray-400 transition-all cursor-pointer border border-gray-200 overflow-hidden group"
                         role="button"
@@ -131,17 +195,18 @@ export default function PortalHomePage() {
                                         <h4 className="text-lg font-semibold text-gray-900 dark:text-white transition-colors duration-300">
                                             Spring 2026 Application
                                         </h4>
-                                        <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(appStatus)}`}>
-                                            {getStatusText(appStatus)}
+
+                                        <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusPillClasses(appStatus)}`}>
+                                            {statusLabel(appStatus)}
                                         </span>
                                     </div>
 
                                     <p className="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-300">
-                                        {appStatus === 'SUBMITTED'
-                                            ? `Submitted on ${formatDate(account?.applications?.submittedAt)}`
-                                            : appStatus === 'DRAFT'
-                                                ? `Created on ${formatDate(account?.applications?.createdAt)}`
-                                                : 'No application started yet'}
+                                        {appStatus === 'NOT_STARTED'
+                                            ? 'Not started yet'
+                                            : app?.submittedAt
+                                                ? `Submitted on ${formatDate(app.submittedAt)}`
+                                                : `Last saved on ${formatDate(app?.lastModified ?? app?.createdAt)}`}
                                     </p>
                                 </div>
 
@@ -159,19 +224,19 @@ export default function PortalHomePage() {
                                 <div>
                                     <p className="text-xs text-gray-500 mb-1 dark:text-white transition-colors duration-300">Major</p>
                                     <p className="text-sm font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">
-                                        {account?.applications?.major ?? '—'}
+                                        {app?.major ?? '—'}
                                     </p>
                                 </div>
                                 <div>
                                     <p className="text-xs text-gray-500 mb-1 dark:text-white transition-colors duration-300">Year</p>
                                     <p className="text-sm font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">
-                                        {account?.applications?.classification ?? '—'}
+                                        {app?.classification ?? '—'}
                                     </p>
                                 </div>
                                 <div>
                                     <p className="text-xs text-gray-500 mb-1 dark:text-white transition-colors duration-300">GPA</p>
                                     <p className="text-sm font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">
-                                        {account?.applications?.gpa != null ? String(account.applications.gpa) : '—'}
+                                        {app?.gpa != null ? String(app.gpa) : '—'}
                                     </p>
                                 </div>
                             </div>
@@ -250,9 +315,7 @@ export default function PortalHomePage() {
             {/* member view */}
             {userId && role === 'member' ? (
                 <div className="space-y-6">
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white transition-colors duration-300">
-                        Member Dashboard
-                    </h3>
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white transition-colors duration-300">Member Dashboard</h3>
                 </div>
             ) : null}
         </main>

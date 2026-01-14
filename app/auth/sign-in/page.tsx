@@ -5,10 +5,11 @@ import ThemeToggle from '@/components/ThemeToggle';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { useActionState } from 'react';
 
 import { signInWithEmail } from './actions';
+import { useSessionQuery } from '@/client/hooks/auth';
 
 type SignInState = { error?: string } | null;
 
@@ -16,15 +17,19 @@ export default function SignInPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    // keep your controlled inputs (same design / UX)
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    // backend-driven state
     const [state, formAction, isPending] = useActionState<SignInState, FormData>(signInWithEmail, null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    const redirectTo = searchParams.get('redirectTo') ?? '/portal';
+    const redirectTo = useMemo(() => searchParams.get('redirectTo') ?? '/portal', [searchParams]);
+
+    // session-aware redirect (prevents signed-in users from seeing sign-in)
+    const session = useSessionQuery();
+    useEffect(() => {
+        if (session.data?.user) router.replace(redirectTo);
+    }, [session.data?.user, router, redirectTo]);
 
     useEffect(() => {
         setErrorMessage(state?.error ?? null);
@@ -35,22 +40,22 @@ export default function SignInPage() {
         router.push('/');
     };
 
-    // optional client-side validation (backend still validates)
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         setErrorMessage(null);
 
         if (!email || !password) {
             event.preventDefault();
             setErrorMessage('Email and password are required.');
-            return;
         }
     };
+
+    const blockForm = session.isLoading || Boolean(session.data?.user);
 
     return (
         <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 dark:bg-gray-900 transition-colors duration-300">
             <ThemeToggle />
 
-            {/* left side - gradient background section */}
+            {/* left side */}
             <div className="relative hidden md:flex">
                 <Background className="absolute inset-0" />
 
@@ -80,23 +85,25 @@ export default function SignInPage() {
                 </div>
             </div>
 
-            {/* right side - login form */}
+            {/* right side */}
             <div className="flex items-center justify-center px-6 py-12 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
                 <div className="w-full max-w-md">
-                    {/* mobile logo */}
                     <div className="flex justify-center mb-6">
                         <Image src="/KTPLettersW.svg" alt="Kappa Theta Pi logo" className="hidden dark:block" width={120} height={40} />
                         <Image src="/KTPLetters.svg" alt="Kappa Theta Pi logo" className="block dark:hidden" width={120} height={40} />
                     </div>
 
-                    {/* form container */}
                     <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl dark:shadow-gray-900/50 p-8 lg:p-10 transition-colors duration-300 border dark:border-gray-700">
                         <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Sign In</h2>
                         <p className="text-gray-600 dark:text-gray-400 mb-5">Enter your credentials to access your account</p>
 
-                        {/* key change: server action handles auth (backend), not authClient */}
+                        {session.isLoading ? (
+                            <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+                                Checking your session…
+                            </div>
+                        ) : null}
+
                         <form className="space-y-5" action={formAction} onSubmit={handleSubmit}>
-                            {/* pass through redirect target to the backend action */}
                             <input type="hidden" name="callbackURL" value={redirectTo} />
 
                             {errorMessage ? (
@@ -116,9 +123,9 @@ export default function SignInPage() {
                                     autoComplete="email"
                                     value={email}
                                     onChange={(event) => setEmail(event.target.value)}
-                                    disabled={isPending}
+                                    disabled={isPending || blockForm}
                                     placeholder="example@email.sc.edu"
-                                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-70"
                                 />
                             </div>
 
@@ -141,15 +148,15 @@ export default function SignInPage() {
                                     autoComplete="current-password"
                                     value={password}
                                     onChange={(event) => setPassword(event.target.value)}
-                                    disabled={isPending}
+                                    disabled={isPending || blockForm}
                                     placeholder="••••••••"
-                                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-70"
                                 />
                             </div>
 
                             <button
                                 type="submit"
-                                disabled={isPending}
+                                disabled={isPending || blockForm}
                                 className="w-full rounded-lg bg-linear-to-r from-blue-600 to-blue-700 py-3 text-white font-semibold hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-lg shadow-blue-500/30 disabled:cursor-not-allowed disabled:opacity-70"
                             >
                                 {isPending ? 'Signing In...' : 'Sign In'}
@@ -158,7 +165,7 @@ export default function SignInPage() {
                             <div className="text-sm text-gray-600 dark:text-gray-400 text-center">
                                 Don&apos;t have an account?{' '}
                                 <Link
-                                    href="/auth/sign-up"
+                                    href={`/auth/sign-up?redirectTo=${encodeURIComponent(redirectTo)}`}
                                     className="text-blue-900 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 font-medium"
                                 >
                                     Sign up

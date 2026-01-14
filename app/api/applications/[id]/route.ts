@@ -14,9 +14,13 @@ export async function GET(_: Request, ctx: Ctx) {
     const { id } = await ctx.params;
 
     try {
-        const account = await prisma.accounts.findUnique({ where: { id } });
-        if (!account) return badRequest('account_not_found');
-        return ok(account);
+        const app = await prisma.applications.findUnique({
+            where: { id },
+            include: { comments: { orderBy: { createdAt: 'desc' } } }
+        });
+
+        if (!app) return badRequest('application_not_found');
+        return ok(app);
     } catch (e) {
         console.error(e);
         return serverError();
@@ -32,27 +36,23 @@ export async function PATCH(req: Request, ctx: Ctx) {
     try {
         const body = await req.json();
 
-        const updated = await prisma.accounts.update({
+        const updated = await prisma.applications.update({
             where: { id },
             data: {
-                firstName: body.firstName ?? undefined,
-                lastName: body.lastName ?? undefined,
-                majors: body.majors ?? undefined,
-                minors: body.minors ?? undefined,
-                type: body.type ?? undefined,
-                schoolEmail: body.schoolEmail ?? undefined,
-                personalEmail: body.personalEmail ?? undefined,
-                gradSemester: body.gradSemester ?? undefined,
-                headshotBlobURL: body.headshotBlobURL ?? undefined,
-                resumeBlobURL: body.resumeBlobURL ?? undefined,
-                leaderType: body.leaderType ?? undefined,
-                phoneNum: body.phoneNum ?? undefined,
-                isNew: body.isNew ?? undefined,
-                gradYear: body.gradYear ?? undefined,
-                pledgeClass: body.pledgeClass ?? undefined,
-                hometown: body.hometown ?? undefined,
+                fullName: body.fullName ?? undefined,
+                email: body.email ?? undefined,
+                classification: body.classification ?? undefined,
+                major: body.major ?? undefined,
+                minor: body.minor ?? undefined,
+                resumeUrl: body.resumeUrl ?? undefined,
+                eventsAttended: body.eventsAttended ?? undefined,
+                reason: body.reason ?? undefined,
                 linkedin: body.linkedin ?? undefined,
-                github: body.github ?? undefined
+                github: body.github ?? undefined,
+                isFlagged: body.isFlagged ?? undefined,
+                submittedAt: body.submittedAt ?? undefined,
+                status: body.status ?? undefined,
+                gpa: body.gpa ?? undefined
             }
         });
 
@@ -70,7 +70,7 @@ export async function DELETE(_: Request, ctx: Ctx) {
     const { id } = await ctx.params;
 
     try {
-        await prisma.accounts.delete({ where: { id } });
+        await prisma.applications.delete({ where: { id } });
         return ok({ ok: true });
     } catch (e) {
         console.error(e);

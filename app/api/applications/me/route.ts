@@ -1,93 +1,173 @@
+// app/api/applications/me/route.ts
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { authServer } from '@/lib/auth/server';
+import { requireUser } from '@/lib/auth/guards';
+import { ok, created, badRequest, serverError } from '@/lib/http/responses';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export async function GET() {
-    const { data } = await authServer.getSession();
-    const userId = data?.user?.id ?? null;
-
-    if (!userId) return NextResponse.json({ application: null }, { status: 401 });
-
-    const application = await prisma.applications.findUnique({
-        where: { userId }
-    });
-
-    return NextResponse.json(
-        { application },
-        { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0' } }
-    );
+function normalizeString(v: unknown): string | null {
+    if (v === null || v === undefined) return null;
+    if (typeof v !== 'string') return null;
+    const s = v.trim();
+    return s.length ? s : null;
 }
 
-export async function PUT(req: Request) {
-    const { data } = await authServer.getSession();
-    const userId = data?.user?.id ?? null;
-    const email = data?.user?.email ?? null;
+function normalizeStringArray(v: unknown): string[] | undefined {
+    // undefined => don't change
+    if (v === undefined) return undefined;
 
-    if (!userId) return NextResponse.json({ error: 'Not signed in.' }, { status: 401 });
+    // null => clear
+    if (v === null) return [];
 
-    const body = (await req.json()) as {
-        classification?: string | null;
-        major?: string | null;
-        minor?: string | null;
-        gpa?: number | null;
-        linkedin?: string | null;
-        github?: string | null;
-        reason?: string | null;
-        eventsAttended?: string[] | null;
-    };
+    if (!Array.isArray(v)) return undefined;
 
-    const account = await prisma.accounts.findUnique({
-        where: { id: userId },
-        select: { firstName: true, lastName: true, resumeBlobURL: true }
-    });
+    return v
+        .map((x) => (typeof x === 'string' ? x.trim() : ''))
+        .filter(Boolean);
+}
 
-    if (!account) return NextResponse.json({ error: 'Account not found.' }, { status: 404 });
+function normalizeGpa(v: unknown): number | null | undefined {
+    // undefined => don't change
+    if (v === undefined) return undefined;
 
-    const fullName = `${account.firstName} ${account.lastName}`.trim();
+    // null/empty => clear
+    if (v === null || v === '') return null;
 
-    const existing = await prisma.applications.findUnique({ where: { userId } });
+    const n = Number(v);
+    if (!Number.isFinite(n)) return null;
+    return n;
+}
 
-    // ✅ if already submitted, block edits
-    if (existing?.submittedAt) {
-        return NextResponse.json({ error: 'Application already submitted.' }, { status: 400 });
+export async function GET() {
+    const authed = await requireUser();
+    if ('response' in authed) return authed.response;
+
+    try {
+        const app = await prisma.applications.findUnique({
+            where: { userId: authed.user.id },
+            include: { comments: { orderBy: { createdAt: 'desc' } } }
+        });
+
+        return ok(app);
+    } catch (e) {
+        console.error(e);
+        return serverError();
     }
+}
 
-    const application = await prisma.applications.upsert({
-        where: { userId },
-        create: {
-            userId,
-            fullName,
-            email: email ?? '',
-            classification: body.classification ?? null,
-            major: body.major ?? null,
-            minor: body.minor ?? null,
-            gpa: body.gpa ?? null,
-            linkedin: body.linkedin ?? null,
-            github: body.github ?? null,
-            reason: body.reason ?? null,
-            eventsAttended: body.eventsAttended ?? [],
-            resumeUrl: account.resumeBlobURL ?? null,
-            lastModified: new Date()
-        },
-        update: {
-            classification: body.classification ?? null,
-            major: body.major ?? null,
-            minor: body.minor ?? null,
-            gpa: body.gpa ?? null,
-            linkedin: body.linkedin ?? null,
-            github: body.github ?? null,
-            reason: body.reason ?? null,
-            eventsAttended: body.eventsAttended ?? [],
-            resumeUrl: account.resumeBlobURL ?? existing?.resumeUrl ?? null,
-            lastModified: new Date()
+export async function POST(req: Request) {
+    const authed = await requireUser();
+    if ('response' in authed) return authed.response;
+
+    try {
+        const body = await req.json().catch(() => null);
+        if (!body) return badRequest('invalid_json');
+
+        const fullName = normalizeString(body.fullName);
+        const email = normalizeString(body.email);
+
+        if (!fullName || !email) {
+            return badRequest('fullName and email are required');
         }
-    });
 
-    return NextResponse.json(
-        { application },
-        { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0' } }
-    );
+        const app = await prisma.applications.create({
+            data: {
+                userId: authed.user.id,
+                fullName,
+                email,
+                classification: normalizeString(body.classification),
+                major: normalizeString(body.major),
+                minor: normalizeString(body.minor),
+                resumeUrl: normalizeString(body.resumeUrl),
+                reason: normalizeString(body.reason),
+                linkedin: normalizeString(body.linkedin),
+                github: normalizeString(body.github),
+                gpa: normalizeGpa(body.gpa) ?? null,
+                eventsAttended: normalizeStringArray(body.eventsAttended) ?? []
+            }
+        });
+
+        return created(app);
+    } catch (e: any) {
+        // unique violation: userId is unique
+        console.error(e);
+        return NextResponse.json({ error: 'application_already_exists' }, { status: 409 });
+    }
+}
+
+export async function PATCH(req: Request) {
+    const authed = await requireUser();
+    if ('response' in authed) return authed.response;
+
+    try {
+        const body = await req.json().catch(() => null);
+        if (!body) return badRequest('invalid_json');
+
+        // only allow draft fields to be patched
+        const data = {
+            classification: body.classification === undefined ? undefined : normalizeString(body.classification),
+            major: body.major === undefined ? undefined : normalizeString(body.major),
+            minor: body.minor === undefined ? undefined : normalizeString(body.minor),
+            resumeUrl: body.resumeUrl === undefined ? undefined : normalizeString(body.resumeUrl),
+            reason: body.reason === undefined ? undefined : normalizeString(body.reason),
+            linkedin: body.linkedin === undefined ? undefined : normalizeString(body.linkedin),
+            github: body.github === undefined ? undefined : normalizeString(body.github),
+            eventsAttended: normalizeStringArray(body.eventsAttended),
+            gpa: normalizeGpa(body.gpa)
+            // lastModified is @updatedAt so prisma handles it
+        } as const;
+
+        // update-first (don’t create automatically on page load — only when user saves)
+        try {
+            const updated = await prisma.applications.update({
+                where: { userId: authed.user.id },
+                data
+            });
+            return ok(updated);
+        } catch (e: any) {
+            // not found -> create on save
+            if (e?.code !== 'P2025') throw e;
+        }
+
+        // create fallback requires fullName/email (use body if provided, else derive from accounts)
+        const account = await prisma.accounts.findUnique({
+            where: { id: authed.user.id },
+            select: { firstName: true, lastName: true, schoolEmail: true, personalEmail: true }
+        });
+
+        const derivedFullName =
+            normalizeString(body.fullName) ??
+            normalizeString(`${account?.firstName ?? 'john'} ${account?.lastName ?? 'smith'}`) ??
+            'john smith';
+
+        const derivedEmail =
+            normalizeString(body.email) ??
+            normalizeString(account?.schoolEmail) ??
+            normalizeString(account?.personalEmail) ??
+            'unknown@sc.edu';
+
+        const createdApp = await prisma.applications.create({
+            data: {
+                userId: authed.user.id,
+                fullName: derivedFullName,
+                email: derivedEmail,
+                classification: data.classification ?? null,
+                major: data.major ?? null,
+                minor: data.minor ?? null,
+                resumeUrl: data.resumeUrl ?? null,
+                reason: data.reason ?? null,
+                linkedin: data.linkedin ?? null,
+                github: data.github ?? null,
+                gpa: data.gpa ?? null,
+                eventsAttended: Array.isArray(data.eventsAttended) ? data.eventsAttended : []
+            }
+        });
+
+        return ok(createdApp);
+    } catch (e) {
+        console.error(e);
+        return serverError();
+    }
 }

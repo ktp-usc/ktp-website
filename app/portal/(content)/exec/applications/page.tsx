@@ -8,7 +8,9 @@ import { Button } from '@/components/ui/button';
 import { Flag } from 'lucide-react';
 import type { applicationStatus } from '@prisma/client';
 
-import { useApplicationsQuery, type ApplicationWithComments } from '@/hooks/useApplicationsQuery';
+import { fetchJson } from '@/client/api/fetcher';
+import { qk } from '@/client/queries/keys';
+import { useApplicationsQuery } from '@/client/hooks/applications';
 
 /* ---------------- Types ---------------- */
 
@@ -54,8 +56,10 @@ function mapOverrideToUi(override: applicationStatus): ApplicationStatusUI {
     }
 }
 
-function deriveUiStatus(app: ApplicationWithComments): ApplicationStatusUI {
-    const latestOverride = app.comments?.[0]?.StatusOverride ?? null;
+function deriveUiStatus(app: any): ApplicationStatusUI {
+    // ✅ new schema field name is `statusOverride` (lowercase)
+    // this assumes your API returns comments sorted newest-first
+    const latestOverride = app.comments?.[0]?.statusOverride ?? null;
     if (latestOverride) return mapOverrideToUi(latestOverride);
 
     // fallback: if submittedAt exists, treat as applied
@@ -78,16 +82,18 @@ function StatusPill({ status }: { status: ApplicationStatusUI }) {
 
 export default function ExecApplicationsPage() {
     const router = useRouter();
-    const queryClient = useQueryClient();
+    const qc = useQueryClient();
 
-    const { data: apps, isFetching, isError } = useApplicationsQuery();
+    // ✅ new hook returns { items, total }
+    const { data, isFetching, isError } = useApplicationsQuery({});
+    const apps = data?.items ?? [];
 
     const [search, setSearch] = useState('');
     const [sortByStatus, setSortByStatus] = useState(true);
     const [emailStatus, setEmailStatus] = useState<ApplicationStatusUI | 'all'>('all');
 
     const applications = useMemo<ApplicationRow[]>(() => {
-        return (apps ?? []).map((a) => ({
+        return (apps ?? []).map((a: any) => ({
             id: a.id,
             name: a.fullName,
             email: a.email,
@@ -115,31 +121,23 @@ export default function ExecApplicationsPage() {
         return list.map((a) => a.email).join('; ');
     }, [applications, emailStatus]);
 
-    const flagMutation = useMutation({
-        mutationFn: async (id: string) => {
-            const res = await fetch(`/api/applications/${id}/flag`, {
+    // ✅ new spec: PATCH /api/applications/[id]/flag { isFlagged: boolean }
+    const setFlagMutation = useMutation({
+        mutationFn: ({ id, isFlagged }: { id: string; isFlagged: boolean }) =>
+            fetchJson(`/api/applications/${id}/flag`, {
                 method: 'PATCH',
-                cache: 'no-store',
-                credentials: 'include'
-            });
-            if (!res.ok) throw new Error('Failed to toggle flag');
-        },
-        onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: ['applications'] });
+                body: JSON.stringify({ isFlagged })
+            }),
+        onSuccess: async (_data, vars) => {
+            await qc.invalidateQueries({ queryKey: qk.application(vars.id) });
+            await qc.invalidateQueries({ queryKey: qk.applications({}) });
         }
     });
 
     const deleteMutation = useMutation({
-        mutationFn: async (id: string) => {
-            const res = await fetch(`/api/applications/${id}`, {
-                method: 'DELETE',
-                cache: 'no-store',
-                credentials: 'include'
-            });
-            if (!res.ok) throw new Error('Failed to delete');
-        },
+        mutationFn: ({ id }: { id: string }) => fetchJson(`/api/applications/${id}`, { method: 'DELETE' }),
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: ['applications'] });
+            await qc.invalidateQueries({ queryKey: qk.applications({}) });
         }
     });
 
@@ -147,17 +145,18 @@ export default function ExecApplicationsPage() {
         const app = applications.find((a) => a.id === id);
         if (!app) return;
 
-        const confirmed = window.confirm(app.flagged ? 'Remove flag from this application?' : 'Flag this application?');
+        const next = !app.flagged;
+        const confirmed = window.confirm(next ? 'Flag this application?' : 'Remove flag from this application?');
         if (!confirmed) return;
 
-        flagMutation.mutate(id);
+        setFlagMutation.mutate({ id, isFlagged: next });
     };
 
     const deleteApplication = (id: string) => {
         const confirmed = window.confirm('Are you sure you want to delete this application? This cannot be undone.');
         if (!confirmed) return;
 
-        deleteMutation.mutate(id);
+        deleteMutation.mutate({ id });
     };
 
     const copyEmails = async () => {
@@ -243,9 +242,7 @@ export default function ExecApplicationsPage() {
                             <div className="flex items-start justify-between gap-4">
                                 <div className="min-w-0">
                                     <div className="flex items-center gap-3 flex-wrap">
-                                        <h2 className="text-base font-semibold text-gray-900 dark:text-white transition-colors duration-300">
-                                            {app.name}
-                                        </h2>
+                                        <h2 className="text-base font-semibold text-gray-900 dark:text-white transition-colors duration-300">{app.name}</h2>
 
                                         <StatusPill status={app.status} />
 
@@ -261,7 +258,13 @@ export default function ExecApplicationsPage() {
                                         e.stopPropagation();
                                     }}
                                 >
-                                    <Button size="sm" className="h-8 px-3" variant="outline" onClick={() => toggleFlag(app.id)} disabled={flagMutation.isPending}>
+                                    <Button
+                                        size="sm"
+                                        className="h-8 px-3"
+                                        variant="outline"
+                                        onClick={() => toggleFlag(app.id)}
+                                        disabled={setFlagMutation.isPending}
+                                    >
                                         {app.flagged ? 'Unflag' : 'Flag'}
                                     </Button>
 

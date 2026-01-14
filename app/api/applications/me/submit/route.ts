@@ -1,56 +1,32 @@
-import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { authServer } from '@/lib/auth/server';
+import { requireUser } from '@/lib/auth/guards';
+import { ok, badRequest, serverError } from '@/lib/http/responses';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-function isValidUrl(s: string | null) {
-    if (!s) return false;
-    try {
-        new URL(s);
-        return true;
-    } catch {
-        return false;
-    }
-}
-
 export async function POST() {
-    const { data } = await authServer.getSession();
-    const userId = data?.user?.id ?? null;
+    const authed = await requireUser();
+    if ('response' in authed) return authed.response;
 
-    if (!userId) return NextResponse.json({ error: 'Not signed in.' }, { status: 401 });
+    try {
+        const existing = await prisma.applications.findUnique({
+            where: { userId: authed.user.id }
+        });
 
-    const app = await prisma.applications.findUnique({ where: { userId } });
-    if (!app) return NextResponse.json({ error: 'No draft application found.' }, { status: 400 });
+        if (!existing) return badRequest('no_application_to_submit');
 
-    if (app.submittedAt) {
-        return NextResponse.json({ error: 'Application already submitted.' }, { status: 400 });
+        const submitted = await prisma.applications.update({
+            where: { userId: authed.user.id },
+            data: {
+                submittedAt: new Date(),
+                status: 'UNDER_REVIEW'
+            }
+        });
+
+        return ok(submitted);
+    } catch (e) {
+        console.error(e);
+        return serverError();
     }
-
-    // ✅ minimal validation (adjust as you want)
-    if (!app.reason || app.reason.trim().length < 20) {
-        return NextResponse.json({ error: 'Please add a longer reason (at least 20 characters).' }, { status: 400 });
-    }
-
-    if (app.linkedin && !isValidUrl(app.linkedin)) {
-        return NextResponse.json({ error: 'LinkedIn must be a valid URL.' }, { status: 400 });
-    }
-
-    if (app.github && !isValidUrl(app.github)) {
-        return NextResponse.json({ error: 'GitHub must be a valid URL.' }, { status: 400 });
-    }
-
-    const updated = await prisma.applications.update({
-        where: { userId },
-        data: {
-            submittedAt: new Date(),
-            lastModified: new Date()
-        }
-    });
-
-    return NextResponse.json(
-        { application: updated },
-        { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0' } }
-    );
 }

@@ -50,10 +50,25 @@ CREATE TABLE "applications" (
     "linkedin" TEXT,
     "github" TEXT,
     "isFlagged" BOOLEAN,
-    "lastModified" TIMESTAMPTZ(6),
+    "lastModified" TIMESTAMPTZ(6) NOT NULL,
+    "submittedAt" TIMESTAMPTZ(6),
     "userId" UUID NOT NULL,
+    "gpa" DOUBLE PRECISION,
+    "status" "applicationStatus" NOT NULL DEFAULT 'UNDER_REVIEW',
 
     CONSTRAINT "applications_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "comment" (
+    "id" UUID NOT NULL,
+    "applicationId" UUID NOT NULL,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "statusOverride" "applicationStatus",
+    "commenter" TEXT,
+    "body" TEXT,
+
+    CONSTRAINT "comment_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -65,5 +80,11 @@ CREATE UNIQUE INDEX "accounts_resumeBlobURL_key" ON "accounts"("resumeBlobURL");
 -- CreateIndex
 CREATE UNIQUE INDEX "applications_userId_key" ON "applications"("userId");
 
+-- CreateIndex
+CREATE INDEX "comment_applicationId_idx" ON "comment"("applicationId");
+
 -- AddForeignKey
-ALTER TABLE "applications" ADD CONSTRAINT "userCheck" FOREIGN KEY ("userId") REFERENCES "accounts"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "applications" ADD CONSTRAINT "userCheck" FOREIGN KEY ("userId") REFERENCES "accounts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "comment" ADD CONSTRAINT "comment_applicationId_fkey" FOREIGN KEY ("applicationId") REFERENCES "applications"("id") ON DELETE CASCADE ON UPDATE CASCADE;

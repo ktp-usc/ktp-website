@@ -33,36 +33,41 @@ model accounts {
 }
 
 model applications {
-  id             String    @id @default(uuid()) @db.Uuid
+  id             String            @id @default(uuid()) @db.Uuid
   fullName       String
   email          String
   classification String?
   major          String?
   minor          String?
   resumeUrl      String?
-  createdAt      DateTime? @default(now()) @db.Timestamptz(6)
-  eventsAttended String[]  @default([])
+  createdAt      DateTime?         @default(now()) @db.Timestamptz(6)
+  eventsAttended String[]          @default([])
   reason         String?
   linkedin       String?
   github         String?
   isFlagged      Boolean?
-  lastModified   DateTime? @db.Timestamptz(6)
-  submittedAt    DateTime? @db.Timestamptz(6)
-  userId         String    @unique @db.Uuid
+  lastModified   DateTime          @updatedAt @db.Timestamptz(6)
+  submittedAt    DateTime?         @db.Timestamptz(6)
+  userId         String            @unique @db.Uuid
   gpa            Float?
-  accounts       accounts  @relation(fields: [userId], references: [id], onDelete: Cascade, map: "userCheck")
+  accounts       accounts          @relation(fields: [userId], references: [id], onDelete: Cascade, map: "userCheck")
   comments       comment[]
+  status         applicationStatus @default(UNDER_REVIEW)
 
   @@schema("public")
 }
 
 model comment {
-  id             String             @id @default(uuid()) @db.Uuid
-  applications   applications       @relation(fields: [id], references: [id])
-  createdAt      DateTime?          @default(now()) @db.Timestamptz(6)
-  StatusOverride applicationStatus?
-  Commenter      String?
+  id            String       @id @default(uuid()) @db.Uuid
+  applicationId String       @db.Uuid
+  application   applications @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
+  createdAt      DateTime           @default(now()) @db.Timestamptz(6)
+  statusOverride applicationStatus?
+  commenter      String?
+  body           String?
+
+  @@index([applicationId])
   @@schema("public")
 }
 

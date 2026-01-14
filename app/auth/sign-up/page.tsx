@@ -5,11 +5,12 @@ import ThemeToggle from '@/components/ThemeToggle';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { useActionState } from 'react';
 
 import { signUpWithEmail } from './actions';
 import { passwordMeetsRequirements } from '@/lib/passwordMeetsRequirements';
+import { useSessionQuery } from '@/client/hooks/auth';
 
 type SignUpState = { error?: string } | null;
 
@@ -26,7 +27,16 @@ export default function SignUpPage() {
     const [state, formAction, isPending] = useActionState<SignUpState, FormData>(signUpWithEmail, null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    const redirectTo = searchParams.get('redirectTo') || '/portal';
+    // where to go after sign-up
+    const redirectTo = useMemo(() => searchParams.get('redirectTo') || '/portal', [searchParams]);
+
+    // session-aware redirect (prevents signed-in users from seeing sign-up)
+    const session = useSessionQuery();
+    useEffect(() => {
+        if (session.data?.user) {
+            router.replace(redirectTo);
+        }
+    }, [session.data?.user, router, redirectTo]);
 
     useEffect(() => {
         setErrorMessage(state?.error ?? null);
@@ -60,6 +70,9 @@ export default function SignUpPage() {
             setErrorMessage('Password does not meet requirements.');
         }
     };
+
+    // avoid form flicker if session is still loading
+    const blockForm = session.isLoading || Boolean(session.data?.user);
 
     return (
         <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 dark:bg-gray-900 transition-colors duration-300">
@@ -109,8 +122,14 @@ export default function SignUpPage() {
                         <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Sign Up</h2>
                         <p className="text-gray-600 dark:text-gray-400 mb-5">Create your account to get started</p>
 
+                        {session.isLoading ? (
+                            <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+                                Checking your session…
+                            </div>
+                        ) : null}
+
                         <form className="space-y-5" action={formAction} onSubmit={handleSubmit}>
-                            {/* pass through redirect target to the backend action (if your action uses it) */}
+                            {/* keep callbackURL name: action expects it */}
                             <input type="hidden" name="callbackURL" value={redirectTo} />
 
                             {errorMessage ? (
@@ -130,9 +149,9 @@ export default function SignUpPage() {
                                     autoComplete="name"
                                     value={name}
                                     onChange={(event) => setName(event.target.value)}
-                                    disabled={isPending}
+                                    disabled={isPending || blockForm}
                                     placeholder="John Doe"
-                                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-70"
                                 />
                             </div>
 
@@ -147,9 +166,9 @@ export default function SignUpPage() {
                                     autoComplete="email"
                                     value={email}
                                     onChange={(event) => setEmail(event.target.value)}
-                                    disabled={isPending}
+                                    disabled={isPending || blockForm}
                                     placeholder="example@email.sc.edu"
-                                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-70"
                                 />
                             </div>
 
@@ -164,15 +183,18 @@ export default function SignUpPage() {
                                     autoComplete="new-password"
                                     value={password}
                                     onChange={(event) => setPassword(event.target.value)}
-                                    disabled={isPending}
+                                    disabled={isPending || blockForm}
                                     placeholder="••••••••"
-                                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-70"
                                 />
+                                <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                    Use a strong password that meets the portal requirements.
+                                </p>
                             </div>
 
                             <button
                                 type="submit"
-                                disabled={isPending}
+                                disabled={isPending || blockForm}
                                 className="w-full rounded-lg bg-linear-to-r from-blue-600 to-blue-700 py-3 text-white font-semibold hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-lg shadow-blue-500/30 disabled:cursor-not-allowed disabled:opacity-70"
                             >
                                 {isPending ? 'Creating Account...' : 'Create Account'}
@@ -181,7 +203,7 @@ export default function SignUpPage() {
                             <div className="text-sm text-gray-600 dark:text-gray-400 text-center">
                                 Already have an account?{' '}
                                 <Link
-                                    href="/auth/sign-in"
+                                    href={`/auth/sign-in?redirectTo=${encodeURIComponent(redirectTo)}`}
                                     className="text-blue-900 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 font-medium"
                                 >
                                     Sign in
