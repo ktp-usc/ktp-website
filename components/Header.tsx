@@ -44,9 +44,9 @@ export function Header() {
                     {/*<Link className="hover:text-[#315CA9] font-medium" href="/">Home</Link>*/}
 
                     <Link className="hover:text-[#315CA9] font-medium" href="/members">Members</Link>
-                    <Link className="hover:text-[#315CA9] font-medium" href="/rush">Rush</Link>
                     <Link className="hover:text-[#315CA9] font-medium" href="/clients">Our Work</Link>
-                    <Link className="hover:text-[#315CA9] font-medium" href="/application">Apply</Link>
+                    <Link className="hover:text-[#315CA9] font-medium" href="/rush">Rush</Link>
+                    <Link className="hover:text-[#315CA9] font-medium" href="/apply">Apply</Link>
                 </nav>
 
                 <div className="absolute right-1 sm:right-6 md:right-12 lg:right-16 xl:right-20">

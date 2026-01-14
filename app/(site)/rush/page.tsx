@@ -19,10 +19,10 @@ const FloatingCardsImage = forwardRef(function FloatingCardsImage({ className = 
         <div
             ref={ref}
             aria-hidden="true"
-            className={`pointer-events-none hidden sm:block absolute -left-2 top-4 w-44 h-44 ktp-float-cards ${className}`}
+            className={`pointer-events-none hidden sm:block absolute -left-80 top-0 w-44 h-44 ktp-float-cards ${className}`}
         >
             <div className="relative w-full h-full">
-                <Image src="/images/cards.png" alt="" fill style={{ objectFit: "contain" }} />
+                <Image src="/Images/cards.png" alt="" fill style={{ objectFit: "contain" }} />
             </div>
         </div>
     );
@@ -34,10 +34,10 @@ const AnimatedChipsImage = forwardRef(function AnimatedChipsImage({ className = 
         <div
             ref={ref}
             aria-hidden="true"
-            className={`pointer-events-none hidden sm:block absolute -right-2 top-4 w-40 h-40 ktp-chips-anim ${className}`}
+            className={`pointer-events-none hidden sm:block absolute -right-80 top-0 w-40 h-40 ktp-chips-anim ${className}`}
         >
             <div className="relative w-full h-full">
-                <Image src="/images/chips.png" alt="" fill style={{ objectFit: "contain" }} />
+                <Image src="/Images/chips.png" alt="" fill style={{ objectFit: "contain" }} />
             </div>
         </div>
     );
@@ -60,10 +60,12 @@ export default function Page2() {
 
                 <div className="relative z-10">
                     <section className="text-center py-16 px-6 relative overflow-visible">
-                        <FloatingCardsImage ref={cardsRef} />
-                        <AnimatedChipsImage ref={chipsRef} />
+                        <div className="relative inline-block">
+                            <FloatingCardsImage ref={cardsRef} />
+                            <AnimatedChipsImage ref={chipsRef} />
 
-                        <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">Learn About Joining KTP!</h1>
+                            <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">Learn About Joining KTP!</h1>
+                        </div>
                         <p className="text-gray-600 text-xl sm:text-xl mb-4">
                             <strong>Go all in with Kappa Theta Pi for Spring 2026 Rush!</strong>
                         </p>
@@ -121,7 +123,7 @@ export default function Page2() {
 
                                 {/* Event 1 */}
                                 <div className="relative pl-10 pb-12">
-                                    <div className="absolute -left-1 top-0 text-[#315CA9] text-lg font-bold" aria-hidden="true">
+                                    <div className="absolute -left-3 text-2xl top-0 text-[#315CA9] font-bold" aria-hidden="true">
                                         ♠
                                     </div>
                                     <h3 className="text-xl sm:text-xl font-semibold mb-2">Info Night #1</h3>
@@ -141,7 +143,7 @@ export default function Page2() {
                                 </div>
 
                                 <div className="relative pl-10 pb-12">
-                                    <div className="absolute -left-1 top-0 text-[#315CA9] text-lg font-bold" aria-hidden="true">
+                                    <div className="absolute -left-3 text-2xl top-0 text-[#315CA9] font-bold" aria-hidden="true">
                                         ♣
                                     </div>
                                     <h3 className="text-xl sm:text-xl font-semibold mb-2">Info Night #2</h3>
@@ -160,7 +162,7 @@ export default function Page2() {
 
                                 {/* Event 2 */}
                                 <div className="relative pl-10 pb-12">
-                                    <div className="absolute -left-1 top-0 text-[#315CA9] text-lg font-bold" aria-hidden="true">
+                                    <div className="absolute -left-3 text-2xl top-0 text-[#315CA9] font-bold" aria-hidden="true">
                                         ♦
                                     </div>
                                     <h3 className="text-xl sm:text-xl font-semibold mb-2">Field Day</h3>
@@ -180,7 +182,7 @@ export default function Page2() {
 
                                 {/* Event 3 */}
                                 <div className="relative pl-10 pb-12">
-                                    <div className="absolute -left-1 top-0 text-[#315CA9] text-lg font-bold" aria-hidden="true">
+                                    <div className="absolute -left-3 text-2xl top-0 text-[#315CA9] font-bold" aria-hidden="true">
                                         ♥
                                     </div>
                                     <h3 className="text-xl sm:text-xl font-semibold mb-2">Technical Workshop</h3>
@@ -200,7 +202,7 @@ export default function Page2() {
 
                                 {/* Event 4 */}
                                 <div className="relative pl-10 pb-12">
-                                    <div className="absolute -left-1 top-0 text-[#315CA9] text-lg font-bold" aria-hidden="true">
+                                    <div className="absolute -left-3 top-0 text-[#315CA9] text-2xl font-bold" aria-hidden="true">
                                         ♠
                                     </div>
                                     <h3 className="text-xl sm:text-xl font-semibold mb-2">Pitch Night</h3>
@@ -221,7 +223,7 @@ export default function Page2() {
                             </div>
 
                             <div className="relative pl-10 pb-12">
-                                <div className="absolute -left-1 top-0 text-[#315CA9] text-lg font-bold" aria-hidden="true">
+                                <div className="absolute -left-3 text-2xl top-0 text-[#315CA9] font-bold" aria-hidden="true">
                                     ♦
                                 </div>
                                 <h3 className="text-xl sm:text-xl font-semibold mb-2">Application Deadline</h3>
