@@ -96,7 +96,7 @@ export default function Page2() {
                 </p>
                 <p className="text-base text-gray-600 flex items-center gap-2 mb-4">
                   <PinIcon />
-                  <span>300 Main St. Room B201</span>
+                  <span>Darla Moore School of Business Room 136</span>
                 </p>
                 <p className="text-base text-gray-600 leading-relaxed">
                   Want to learn more about what KTP has to offer? We&apos;ll give a presentation
@@ -115,7 +115,7 @@ export default function Page2() {
                 </p>
                 <p className="text-base text-gray-600 flex items-center gap-2 mb-4">
                   <PinIcon />
-                  <span>300 Main St. Room B201</span>
+                  <span>Swearingen Room 1C01</span>
                 </p>
                 <p className="text-base text-gray-600 leading-relaxed">
                   Same as above; you only need to attend one of our info nights!
@@ -150,11 +150,11 @@ export default function Page2() {
                 </h3>
                 <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
                   <CalendarIcon />
-                  <span>Wednesday, January 28, 7:00-9:00 PM</span>
+                  <span>Wednesday, January 28, 7:00-8:30 PM</span>
                 </p>
                 <p className="text-base text-gray-600 flex items-center gap-2 mb-4">
                   <PinIcon />
-                  <span>Darla Moore School of Business</span>
+                  <span>Innovation Room 1400</span>
                 </p>
                 <p className="text-base text-gray-600 leading-relaxed">
                   Want to get a glance of what it&apos;s like joining KTP? At this event, 
