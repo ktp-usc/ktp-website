@@ -442,22 +442,31 @@ export default function Home() {
                         {/* President's Welcome */}
                         <div className="flex flex-col space-y-10">
                             <Element name="presidents-welcome-section" id="presidents-welcome-section">
-                                <section className="px-6 sm:px-8 md:px-16 lg:px-24 xl:px-32 py-8 sm:py-12 md:py-16">
-                                    <div className="relative flex flex-col items-center lg:flex-row lg:items-start space-y-12 lg:space-y-0 lg:space-x-12 pb-10">
-                                        <div className="relative w-full lg:w-2/5 flex justify-center">
-                                            <div className="absolute blob-c z-0 flex justify-center items-center">
-                                                <div className="shape-blob eight absolute" />
-                                                <div className="shape-blob nine absolute" />
-                                            </div>
-                                            <img
-                                                src="/Images/presidentheadshot.png"
-                                                alt="President's Headshot"
-                                                className="relative z-10 w-3/4 h-auto rounded-full border-8 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg transform transition-transform duration-300 hover:-translate-y-3"
-                                                style={{ borderLeftColor: "#d1fae5", borderRightColor: "#d1fae5", borderTopColor: "#e5e7eb", borderBottomColor: "#e5e7eb" }}
-                                            />
+                                <section className="w-full relative-ml-[50vw] -mr-[50vw] py-16 sm:py-20 md:py-24 bg-transparent">
+                                <div className="relative flex flex-col items-center lg:flex-row lg:items-start space-y-12 lg:space-y-0 lg:space-x-12 pb-10">
+                                    <div className="relative w-full lg:w-2/5 flex justify-center overflow-visible translate-y-12 sm:translate-y-16 md:translate-y-10">
+                                        <div className="absolute inset-x-0 -top-16 h-[200%] blob-c z-0 flex justify-center items-center pointer-events-none">
+                                            <div className="shape-blob eight absolute" />
+                                            <div className="shape-blob nine absolute" />
                                         </div>
 
-                                        <div className="w-full lg:w-3/5 text-left relative z-10">
+                                        <img
+                                            src="/Images/presidentheadshot.png"
+                                            alt="President's Headshot"
+                                            className="relative z-10 w-3/4 h-auto rounded-full border-8 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg transform transition-transform duration-300 hover:-translate-y-3"
+                                            style={{
+                                                borderLeftColor: "#d1fae5",
+                                                borderRightColor: "#d1fae5",
+                                                borderTopColor: "#e5e7eb",
+                                                borderBottomColor: "#e5e7eb",
+                                            }}
+                                        />
+                                    </div>
+
+
+
+
+                                    <div className="w-full lg:w-3/5 text-left relative z-10">
                                             <h2 className="text-center text-2xl sm:text-4xl font-black mb-10">President&apos;s Welcome</h2>
                                             <div className="text-base sm:text-md leading-relaxed space-y-2">
                                                 <p>Welcome to the Alpha Theta Chapter of Kappa Theta Pi, a co-ed professional technology fraternity
