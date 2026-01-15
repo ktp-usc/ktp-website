@@ -45,7 +45,7 @@ export default async function MyApplicationPage() {
 
     return (
         <div style={{ padding: 24 }}>
-            <ExecApplicationViewer initialApplication={application} mode="applicant" />
+            <ExecApplicationViewer initialApplication={application} />
         </div>
     );
 }
