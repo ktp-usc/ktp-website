@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, ChevronDown } from "lucide-react";
 import nonprofits from "./nonprofits.json";
 
 type Nonprofit = {
@@ -9,6 +9,7 @@ type Nonprofit = {
   image: string;
   description: string;
   website: string;
+  logo?: string;
 };
 
 interface NonprofitAccordionProps {
@@ -40,6 +41,23 @@ function NonprofitAccordion({
         ${align === "left" ? "ml-0 mr-auto" : "mr-0 ml-auto"}`}
         onClick={onClick}
       >
+        {/* Logo Badge - positioned in top corner */}
+        <div className={`absolute top-6 ${nonprofit.name === "SC Economics" ? "left-6" : "right-6"} z-20`}>
+          {nonprofit.logo ? (
+            <img 
+              src={nonprofit.logo} 
+              alt={`${nonprofit.name} logo`}
+              className={`w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl object-contain shadow-lg border-2 border-gray-200 bg-white ${
+                nonprofit.name === "SC Economics" ? "p--2" : "p-0.5"
+              }`}
+            />
+          ) : (
+            <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl bg-white flex items-center justify-center shadow-lg border-2 border-gray-200">
+              <span className="text-gray-400 text-xs">Logo</span>
+            </div>
+          )}
+        </div>
+
         <div className="relative z-10 p-5 md:p-8">
           <div
             className={`flex w-full flex-col ${
@@ -75,7 +93,7 @@ function NonprofitAccordion({
                 align === "left" ? "items-start text-left" : "items-end text-right"
               }`}
             >
-              {/* Smaller title */}
+              {/* Title */}
               <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 mb-2 leading-snug">
                 {nonprofit.name}
               </h2>
@@ -85,6 +103,11 @@ function NonprofitAccordion({
                 <span className="text-[#315CA9] text-xs sm:text-sm font-medium">
                   {expanded ? "Click to collapse" : "Click to learn more"}
                 </span>
+                <ChevronDown 
+                  className={`w-4 h-4 text-[#315CA9] transition-transform duration-300 ${
+                    expanded ? "rotate-180" : ""
+                  }`}
+                />
               </div>
             </div>
           </div>
@@ -144,12 +167,12 @@ export default function OurWork() {
   // image paths (assuming public/Images/*.jpeg)
   const topRow = [
     "/Images/collagephoto1.JPG",
-    "/Images/symposium9.jpeg",
+    "/Images/collagephoto4.JPG",
     "/Images/collagephoto3.JPG",
     "/Images/symposium8.jpeg",
   ];
-  const middleLeft = "/Images/symposium5.jpeg";
-  const middleRight = "/Images/symposium6.jpeg";
+  const middleLeft = "/Images/symposium6.jpeg";
+  const middleRight = "/Images/symposium5.jpeg";
   const bottomRow = [
     "/Images/symposium4.jpeg",
     "/Images/symposium1.jpeg",
@@ -315,6 +338,22 @@ export default function OurWork() {
                   />
                 </div>
               ))}
+            </div>
+
+            {/* Symposium Description Card - below the grid */}
+            <div className="mt-8">
+              <div className="bg-white rounded-xl shadow-md border border-gray-200/60 p-6 md:p-8 max-w-4xl mx-auto">
+                <h3 className="text-2xl md:text-3xl font-black text-black mb-4 text-center"
+                    style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}>
+                  About Symposium Night
+                </h3>
+                <p className="text-sm md:text-base text-gray-600 text-center leading-relaxed font-medium">
+            Symposium night is an event where each team showcases the culmination of their work with the nonprofits they have partnered with
+              throughout the semester. It is an opportunity for teams to present their projects to clients, faculty advisors, and peers, highlighting
+              the impact of their contributions and celebrating the collaborative efforts that have driven positive change.
+
+                </p>
+              </div>
             </div>
           </div>
         </section>
