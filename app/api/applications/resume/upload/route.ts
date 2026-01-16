@@ -4,14 +4,13 @@ import { NextResponse } from "next/server";
 export const runtime = "nodejs";
 
 async function uploadFile(file: File, prefix: string, token: string) {
-  const arrayBuffer = await file.arrayBuffer();
   const buffer = await file.arrayBuffer();
   const blob = await put(`${prefix}/${Date.now()}-${file.name}`, buffer, {
     access: "public",
     addRandomSuffix: true,
     contentType: file.type || "application/octet-stream",
     token,
-  } as any);
+  });
   return blob.url;
 }
 
@@ -66,7 +65,7 @@ export async function POST(request: Request) {
       access: "public",
       addRandomSuffix: true,
       token, // REQUIRED for local dev
-    }as any);
+    });
 
     return NextResponse.json(blob);
   } catch (err) {
