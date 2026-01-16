@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ResumeViewer from './ResumeViewer';
 import CommentsSidebar from './CommentsSidebar';
@@ -51,6 +51,15 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
     ? (app as unknown as { userId: string }).userId
     : undefined;
 
+  const [checked, setChecked] = useState({
+    InfoNight1: false,
+    InfoNight2: false,
+    CasinoNight: false,
+    TechnicalWorkshop: false,
+    PitchNight: false,
+  });
+
+  // ---------- Helpers & loads ----------
   useEffect(() => {
     if (!app?.id) return;
     const id = app.id;
@@ -175,9 +184,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
         setApp((p) => (p ? { ...p, status: newStatus } : p));
         await postStatusNotification(oldStatus, newStatus);
         setCommentsRefresh((value) => value + 1);
-      }
-      else alert('Failed to update status');
-      
+      } else alert('Failed to update status');
     } catch {
       alert('Network error updating status');
     } finally {
@@ -193,8 +200,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
       const res = await fetch(`/api/applications/${encodeURIComponent(String(app.id))}`, { method: 'DELETE' });
       if (res.ok) router.push('/exec/applications');
       else alert('Delete failed');
-    } 
-    catch {
+    } catch {
       alert('Delete failed (network)');
     } finally {
       setDeleting(false);
@@ -286,6 +292,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
     );
   }
 
+  // ---------- Fields pulled from app ----------
   const email = (getField<string>('email') ?? (app?.email as string | undefined) ?? '') as string;
   const phone = (getField<string>('phone') ?? (app?.phone as string | undefined) ?? '') as string;
   const year = (getField<string>('year') ?? (app?.year as string | undefined) ?? '') as string;
@@ -300,11 +307,13 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
   const extenuating = (getField<string>('extenuating') ?? (app?.extenuating as string | undefined) ?? '') as string;
 
   const rushEventsRaw =
-    getField<unknown>('rushEvents') ??
+    getField<unknown>('eventsAttended') ??
     getField<unknown>('rush_events') ??
     getField<unknown>('rush') ??
     (app?.rushEvents as unknown | undefined) ??
     '';
+
+  // Original display string (kept for LabeledBox)
   const rushEvents =
     Array.isArray(rushEventsRaw) ? (rushEventsRaw as string[]).join(', ') : (rushEventsRaw ?? '').toString();
 
@@ -338,6 +347,105 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
   const resumeSrc = resumeFromAccount || (resumeFromApp ? String(resumeFromApp) : null);
   const headshotSrc = headshotFromAccount || (headshotFromApp ? String(headshotFromApp) : '') || '/placeholder-headshot.png';
 
+  // ---------- NEW: parse rushEventsRaw -> string[] ----------
+  function parseRushEvents(raw: unknown): string[] {
+    if (!raw) return [];
+    if (Array.isArray(raw)) return raw.map(String).map((s) => s.trim()).filter(Boolean);
+    const s = String(raw).trim();
+    if (!s) return [];
+    return s.split(',').map((p) => p.trim()).filter(Boolean);
+  }
+
+  const rushEventsArray = parseRushEvents(rushEventsRaw);
+
+  // ---------- NEW: prefill checked from rushEventsArray on load of a new application ----------
+  useEffect(() => {
+    if (!rushEventsArray || rushEventsArray.length === 0) return;
+
+    setChecked((prev) => {
+      const updated = { ...prev };
+      rushEventsArray.forEach((key) => {
+        if (key in updated) {
+          updated[key as keyof typeof updated] = true;
+        }
+      });
+      return updated;
+    });
+    // We only want to prefill when a new application is loaded.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [app?.id]);
+
+  // ---------- Reusable checkbox handler ----------
+  const handleCheckboxChange = (key: keyof typeof checked) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = e.target.checked;
+    setChecked((prev) => ({ ...prev, [key]: isChecked }));
+  };
+
+  // ---------- Auto-save (debounced) ----------
+  const saveTimerRef = useRef<number | null>(null);
+
+  function checkedKeys(obj: typeof checked): string[] {
+    return Object.entries(obj).filter(([, v]) => v).map(([k]) => k);
+  }
+
+  async function saveCheckedToServer(payloadEvents: string[]) {
+    if (!app?.id) return;
+    try {
+      const res = await fetch(`/api/applications/${encodeURIComponent(String(app.id))}/events`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ events: payloadEvents }),
+        credentials: 'include',
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        console.error('Save failed:', body);
+      }
+    } catch (err) {
+      console.error('Network error saving events', err);
+    }
+  }
+
+  useEffect(() => {
+    if (!app?.id) return;
+
+    // Clear previous timer
+    if (saveTimerRef.current) {
+      window.clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = null;
+    }
+
+    const delay = 700;
+    // @ts-ignore - window.setTimeout returns number in browsers
+    saveTimerRef.current = window.setTimeout(() => {
+      const eventsToSave = checkedKeys(checked);
+      saveCheckedToServer(eventsToSave);
+      saveTimerRef.current = null;
+    }, delay);
+
+    return () => {
+      if (saveTimerRef.current) {
+        window.clearTimeout(saveTimerRef.current);
+        saveTimerRef.current = null;
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checked]);
+
+  // ---------- Manual save (optional) ----------
+  async function handleManualSave() {
+    const eventsToSave = checkedKeys(checked);
+    try {
+      await saveCheckedToServer(eventsToSave);
+      // lightweight feedback
+      // replace with toast if you have one
+      alert('Saved events');
+    } catch {
+      alert('Failed to save events');
+    }
+  }
+
+  // ---------- Render ----------
   return (
     <div className="page-content">
       <header className="exec-topbar">
@@ -432,6 +540,36 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
               </div>
               <div className="app-responses-answer">
                 {why ? <div style={{ whiteSpace: 'pre-wrap' }}>{why}</div> : <div style={{ color: '#9aa6b8', fontStyle: 'italic' }}>No response provided.</div>}
+              </div>
+            </div>
+
+            <div>
+              <div className="app-responses-question">Events Attended</div>
+              <div className="bg-white flex flex-col gap-4 p-4 rounded-2xl">
+                <label>
+                  <input type="checkbox" checked={checked.InfoNight1} onChange={handleCheckboxChange('InfoNight1')} />
+                  Info Night 1
+                </label>
+                <label>
+                  <input type="checkbox" checked={checked.InfoNight2} onChange={handleCheckboxChange('InfoNight2')} />
+                  Info Night 2
+                </label>
+                <label>
+                  <input type="checkbox" checked={checked.CasinoNight} onChange={handleCheckboxChange('CasinoNight')} />
+                  Casino Night
+                </label>
+                <label>
+                  <input type="checkbox" checked={checked.TechnicalWorkshop} onChange={handleCheckboxChange('TechnicalWorkshop')} />
+                  Technical Workshop
+                </label>
+                <label>
+                  <input type="checkbox" checked={checked.PitchNight} onChange={handleCheckboxChange('PitchNight')} />
+                  Pitch Night
+                </label>
+
+                <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
+                  <button className="bg-blue-600 p-2 rounded-full text-white" onClick={handleManualSave}>Save Events</button>
+                </div>
               </div>
             </div>
 

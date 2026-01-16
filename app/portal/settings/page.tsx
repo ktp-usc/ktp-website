@@ -48,6 +48,7 @@ export default function SettingsPage() {
         graduation: "",
         headshot: "",
         LinkedIn: "",
+        GitHub: "",
         bio: "",
         type: "",
         exec: false,
@@ -78,6 +79,7 @@ export default function SettingsPage() {
             graduation: account.gradYear != null ? String(account.gradYear) : "",
             headshot: headshotUrl,
             LinkedIn: account.linkedin ?? "",
+            GitHub: account.github ?? "",
             bio: prev.bio ?? "",
             type: account.type ?? "",
             exec: account.type === "LEADERSHIP",
@@ -95,9 +97,26 @@ export default function SettingsPage() {
         document.documentElement.classList.toggle("dark");
     };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    function formatPhone(value: string) {
+        const digits = value.replace(/\D/g, '').slice(0, 10);
+
+        const parts = [];
+        if (digits.length > 0) parts.push('(' + digits.slice(0, 3));
+        if (digits.length >= 4) parts.push(') ' + digits.slice(3, 6));
+        if (digits.length >= 7) parts.push('-' + digits.slice(6, 10));
+
+        return parts.join('');
+    }
+
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
         const { name, value } = e.target;
-        setUser((prev) => ({ ...prev, [name]: value }));
+
+        setUser((prev) => ({
+            ...prev,
+            [name]: name === 'phone' ? formatPhone(value) : value
+        }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -123,6 +142,7 @@ export default function SettingsPage() {
                 phoneNum: user.phone.trim() || null,
                 gradYear: user.graduation ? Number(user.graduation) : null,
                 linkedin: user.LinkedIn.trim() || null,
+                github: user.GitHub.trim() || null,
 
                 // still persisted even though not shown anymore
                 majors: splitList(user.major),
@@ -358,21 +378,6 @@ export default function SettingsPage() {
                             </div>
 
                             <div>
-                                <label htmlFor="LinkedIn"
-                                       className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    LinkedIn
-                                </label>
-                                <input
-                                    type="text"
-                                    id="LinkedIn"
-                                    name="LinkedIn"
-                                    value={ user.LinkedIn }
-                                    onChange={ handleInputChange }
-                                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-                                />
-                            </div>
-
-                            <div>
                                 <label htmlFor="graduation"
                                        className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Graduation Year
@@ -390,6 +395,40 @@ export default function SettingsPage() {
                                     <option value="2028">2028</option>
                                     <option value="2029">2029</option>
                                 </select>
+                            </div>
+
+                            <div>
+                                <label htmlFor="LinkedIn"
+                                       className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    LinkedIn
+                                </label>
+                                <input
+                                    type="text"
+                                    id="LinkedIn"
+                                    name="LinkedIn"
+                                    value={ user.LinkedIn }
+                                    onChange={ handleInputChange }
+                                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                                    placeholder="https://linkedin.com/in/username"
+                                />
+                            </div>
+
+                            <div>
+                                <label
+                                    htmlFor="GitHub"
+                                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                                >
+                                    GitHub
+                                </label>
+                                <input
+                                    type="text"
+                                    id="GitHub"
+                                    name="GitHub"
+                                    value={ user.GitHub }
+                                    onChange={ handleInputChange }
+                                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                                    placeholder="https://github.com/username"
+                                />
                             </div>
                         </div>
                     </div>
