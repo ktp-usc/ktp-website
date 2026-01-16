@@ -129,7 +129,7 @@ const SVG_PLACEHOLDER_DATA_URI =
   encodeURIComponent(
     `<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'>
       <rect width='100%' height='100%' fill='#F3F4F6' />
-      <g fill='#9CA3AF' font-family='Inter, Arial, sans-serif' font-weight='600'>
+      <g font-family='Inter, Arial, sans-serif' font-weight='600'>
         <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='18'>Image unavailable</text>
       </g>
     </svg>`
@@ -157,10 +157,10 @@ export default function OurWork() {
     "/Images/symposium3.jpeg",
   ];
 
-  const photoHoverClasses =
-    "transform transition-all duration-300 hover:-translate-y-2 hover:scale-[1.03] hover:shadow-xl";
+    const photoHoverClasses =
+        "transform transition-all duration-300 md:hover:-translate-y-2 md:hover:scale-[1.03] md:hover:shadow-xl";
 
-  return (
+    return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Header */}
@@ -190,134 +190,123 @@ export default function OurWork() {
           ))}
         </div>
 
-        {/* Symposium section (center shows title only; no expand/collapse) */}
-        <section className="mt-24 mb-12">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-4 gap-4 items-stretch">
-              {/* Row 1 */}
-              {topRow.map((src, i) => (
-                <div
-                  key={`top-${i}`}
-                  className={`relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 ${photoHoverClasses}`}
-                >
-                  <img
-                    src={src}
-                    alt={`Symposium ${i + 1}`}
-                    className="w-full h-full object-cover object-center"
-                    onError={(e) => {
-                      const img = e.currentTarget;
-                      if (img.dataset.fallbackApplied === "true") return;
-                      img.dataset.fallbackApplied = "true";
-                      img.src = SVG_PLACEHOLDER_DATA_URI;
-                      img.alt = "Image unavailable";
-                    }}
-                  />
-                </div>
-              ))}
+          {/* Symposium section (center shows title only; no expand/collapse) */}
+          <section className="mt-24 mb-12">
+              <div className="max-w-6xl mx-auto">
+                  <div className="grid grid-cols-4 gap-4">
+                      {/* Row 1 */}
+                      {topRow.map((src, i) => (
+                          <div
+                              key={`top-${i}`}
+                              className={`relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 ${photoHoverClasses}`}
+                          >
+                              <img
+                                  src={src}
+                                  alt={`Symposium ${i + 1}`}
+                                  className="w-full h-full object-cover object-center"
+                                  onError={(e) => {
+                                      const img = e.currentTarget;
+                                      if (img.dataset.fallbackApplied === "true") return;
+                                      img.dataset.fallbackApplied = "true";
+                                      img.src = SVG_PLACEHOLDER_DATA_URI;
+                                      img.alt = "Image unavailable";
+                                  }}
+                              />
+                          </div>
+                      ))}
 
-              {/* Row 2 - left image */}
-              <div
-                className={`relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 ${photoHoverClasses}`}
-              >
-                <img
-                  src={middleLeft}
-                  alt="Symposium 5"
-                  className="w-full h-full object-cover object-center"
-                  onError={(e) => {
-                    const img = e.currentTarget;
-                    if (img.dataset.fallbackApplied === "true") return;
-                    img.dataset.fallbackApplied = "true";
-                    img.src = SVG_PLACEHOLDER_DATA_URI;
-                    img.alt = "Image unavailable";
-                  }}
-                />
-              </div>
+                      {/* Row 2 - left image */}
+                      <div
+                          className={`relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 ${photoHoverClasses}`}
+                      >
+                          <img
+                              src={middleLeft}
+                              alt="Symposium 5"
+                              className="w-full h-full object-cover object-center"
+                              onError={(e) => {
+                                  const img = e.currentTarget;
+                                  if (img.dataset.fallbackApplied === "true") return;
+                                  img.dataset.fallbackApplied = "true";
+                                  img.src = SVG_PLACEHOLDER_DATA_URI;
+                                  img.alt = "Image unavailable";
+                              }}
+                          />
+                      </div>
 
-              {/* CENTER TEXT CARD (col-span-2) - title only — fills the grid cell */}
-              <div className="col-span-2 flex items-stretch">
-                <div className="w-full flex-1 flex items-center justify-center px-2">
-                  {/* Desktop horizontal card (fills height) */}
-                  <div className="hidden md:flex items-center justify-center bg-white rounded-xl
-                              shadow-md border border-gray-200/60 p-6 md:p-8 lg:p-10 w-full h-full">
-                    <h2
-                      className="text-4xl md:text-5xl lg:text-6xl font-black text-black text-center"
-                      style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}
-                    >
-                      Symposium Night
-                    </h2>
+                      {/* CENTER TEXT CARD — original intrinsic size (NO aspect ratio) */}
+                      <div className="col-span-2 flex items-center justify-center px-4">
+                          <div
+                              className="bg-white rounded-xl border border-gray-200/60 shadow-sm
+          p-4 md:p-6 w-full text-center"
+                          >
+                              <h2
+                                  className="text-2xl md:text-6xl font-black text-black"
+                                  style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}
+                              >
+                                  Symposium Night
+                              </h2>
+                          </div>
+                      </div>
+
+                      {/* Row 2 - right image */}
+                      <div
+                          className={`relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 ${photoHoverClasses}`}
+                      >
+                          <img
+                              src={middleRight}
+                              alt="Symposium 6"
+                              className="w-full h-full object-cover object-center"
+                              onError={(e) => {
+                                  const img = e.currentTarget;
+                                  if (img.dataset.fallbackApplied === "true") return;
+                                  img.dataset.fallbackApplied = "true";
+                                  img.src = SVG_PLACEHOLDER_DATA_URI;
+                                  img.alt = "Image unavailable";
+                              }}
+                          />
+                      </div>
+
+                      {/* Row 3 - bottom-left image */}
+                      <div
+                          className={`relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 ${photoHoverClasses}`}
+                      >
+                          <img
+                              src={bottomRow[0]}
+                              alt="Symposium bottom left"
+                              className="w-full h-full object-cover object-center"
+                              onError={(e) => {
+                                  const img = e.currentTarget;
+                                  if (img.dataset.fallbackApplied === "true") return;
+                                  img.dataset.fallbackApplied = "true";
+                                  img.src = SVG_PLACEHOLDER_DATA_URI;
+                                  img.alt = "Image unavailable";
+                              }}
+                          />
+                      </div>
+
+                      {/* Row 3 - remaining images */}
+                      {bottomRow.slice(1).map((src, i) => (
+                          <div
+                              key={`bottom-${i}`}
+                              className={`relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 ${photoHoverClasses}`}
+                          >
+                              <img
+                                  src={src}
+                                  alt={`Symposium bottom ${i + 2}`}
+                                  className="w-full h-full object-cover object-center"
+                                  onError={(e) => {
+                                      const img = e.currentTarget;
+                                      if (img.dataset.fallbackApplied === "true") return;
+                                      img.dataset.fallbackApplied = "true";
+                                      img.src = SVG_PLACEHOLDER_DATA_URI;
+                                      img.alt = "Image unavailable";
+                                  }}
+                              />
+                          </div>
+                      ))}
                   </div>
-
-                  {/* Mobile band */}
-                  <div className="md:hidden bg-white rounded-xl shadow-sm border border-gray-200/60 p-4 w-full text-center">
-                    <h3
-                      className="text-2xl font-black"
-                      style={{ fontFamily: "Inter, sans-serif", letterSpacing: "-0.02em" }}
-                    >
-                      Symposium Night
-                    </h3>
-                  </div>
-                </div>
               </div>
-
-              {/* Row 2 - right image */}
-              <div
-                className={`relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 ${photoHoverClasses}`}
-              >
-                <img
-                  src={middleRight}
-                  alt="Symposium 6"
-                  className="w-full h-full object-cover object-center"
-                  onError={(e) => {
-                    const img = e.currentTarget;
-                    if (img.dataset.fallbackApplied === "true") return;
-                    img.dataset.fallbackApplied = "true";
-                    img.src = SVG_PLACEHOLDER_DATA_URI;
-                    img.alt = "Image unavailable";
-                  }}
-                />
-              </div>
-
-              {/* Row 3 - bottom-left image */}
-              <div
-                className={`relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 ${photoHoverClasses}`}
-              >
-                <img
-                  src={bottomRow[0]}
-                  alt="Symposium bottom left"
-                  className="w-full h-full object-cover object-center"
-                  onError={(e) => {
-                    const img = e.currentTarget;
-                    if (img.dataset.fallbackApplied === "true") return;
-                    img.dataset.fallbackApplied = "true";
-                    img.src = SVG_PLACEHOLDER_DATA_URI;
-                    img.alt = "Image unavailable";
-                  }}
-                />
-              </div>
-
-              {/* Row 3 - remaining images */}
-              {bottomRow.slice(1).map((src, i) => (
-                <div
-                  key={`bottom-${i}`}
-                  className={`relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 ${photoHoverClasses}`}
-                >
-                  <img
-                    src={src}
-                    alt={`Symposium bottom ${i + 2}`}
-                    className="w-full h-full object-cover object-center"
-                    onError={(e) => {
-                      const img = e.currentTarget;
-                      if (img.dataset.fallbackApplied === "true") return;
-                      img.dataset.fallbackApplied = "true";
-                      img.src = SVG_PLACEHOLDER_DATA_URI;
-                      img.alt = "Image unavailable";
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+          </section>
       </div>
     </div>
   );
