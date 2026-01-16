@@ -241,12 +241,26 @@ export default function PortalApplicationPage() {
     }, [loading, isSubmitted, application]);
 
     const headshotUrl = account?.headshotBlobURL ?? null;
-    const resumeUrl = account?.resumeBlobURL ?? application?.resumeUrl ?? null;
+    const resumeUrl = account?.resumeBlobURL ?? null;
+
+    function formatPhone(value: string) {
+        const digits = value.replace(/\D/g, '').slice(0, 10);
+
+        const parts = [];
+        if (digits.length > 0) parts.push('(' + digits.slice(0, 3));
+        if (digits.length >= 4) parts.push(') ' + digits.slice(3, 6));
+        if (digits.length >= 7) parts.push('-' + digits.slice(6, 10));
+
+        return parts.join('');
+    }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setDirty(true);
-        setForm((prev) => ({ ...prev, [name]: value }));
+        setForm((prev) => ({
+            ...prev,
+            [name]: name === 'phoneNum' ? formatPhone(value) : value
+        }));
     };
 
     function buildAccountPatchPayload() {
@@ -726,8 +740,7 @@ export default function PortalApplicationPage() {
                                 Upload Picture <span className="text-red-500">*</span>
                             </div>
                             <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-                                Headshots must be <span className="font-medium">square</span>. You will crop before
-                                uploading.
+                                Upload an image file with your face, clearly visible. The purpose of this is to allow us to put a face to your name.
                             </p>
 
                             <div className="flex items-center gap-4">
@@ -849,7 +862,10 @@ export default function PortalApplicationPage() {
                                         uploadResume.isPending ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
                                     }` }
                                 >
-                                    { uploadResume.isPending ? "Uploading…" : "Upload Resume (PDF)" }
+                                    { uploadResume.isPending
+                                        ? "Uploading…"
+                                        : (resumeUrl ? "Upload New Resume (PDF)" : "Upload Resume (PDF)")
+                                    }
                                 </label>
                                 <input
                                     id="resume"
