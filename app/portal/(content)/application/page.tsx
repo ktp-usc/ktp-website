@@ -1,29 +1,32 @@
 // app/portal/application/page.tsx
-"use client";
+'use client';
 
-import React, { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { toast } from "sonner";
-import { User } from "lucide-react";
+import React, { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { toast } from 'sonner';
+import { User } from 'lucide-react';
+import Cropper from 'react-easy-crop';
 
-import ThemeToggle from "@/components/ThemeToggle";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import ThemeToggle from '@/components/ThemeToggle';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import { useSessionQuery } from "@/client/hooks/auth";
-import {
-    useMyAccountQuery,
-    useUpdateMyAccountMutation,
-    useUploadHeadshotMutation,
-    useUploadResumeMutation
-} from "@/client/hooks/accounts";
+import { useSessionQuery } from '@/client/hooks/auth';
+import { useMyAccountQuery, useUpdateMyAccountMutation, useUploadHeadshotMutation, useUploadResumeMutation } from '@/client/hooks/accounts';
 import {
     useMyApplicationQuery,
     useCreateMyApplicationMutation,
     useUpdateMyApplicationMutation,
     useSubmitMyApplicationMutation
-} from "@/client/hooks/applications";
+} from '@/client/hooks/applications';
+
+interface PixelCrop {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+}
 
 type FormState = {
     // account-routed
@@ -52,36 +55,35 @@ type FormState = {
 };
 
 const RUSH_EVENT_LABELS: Record<string, string> = {
-    "info-night": "Info Night",
-    "field-day": "Field Day",
-    "technical-workshop": "Technical Workshop",
-    "pitch-night": "Pitch Night"
+    'info-night': 'Info Night',
+    'field-day': 'Field Day',
+    'technical-workshop': 'Technical Workshop',
+    'pitch-night': 'Pitch Night'
 };
 
 function normalizeString(v: unknown): string {
-    if (typeof v !== "string") return "";
+    if (typeof v !== 'string') return '';
     return v.trim();
 }
 
 function isValidScEduEmail(email: string): boolean {
     const emailLower = email.toLowerCase();
-    if (!emailLower.includes("@")) return false;
-    const domain = emailLower.split("@")[1] ?? "";
-    return domain.endsWith("sc.edu");
+    if (!emailLower.includes('@')) return false;
+    const domain = emailLower.split('@')[1] ?? '';
+    return domain.endsWith('sc.edu');
 }
 
 function prettyRushEvent(raw: string): string {
     const v = normalizeString(raw);
-    if (!v) return "Unknown";
+    if (!v) return 'Unknown';
     if (RUSH_EVENT_LABELS[v]) return RUSH_EVENT_LABELS[v];
 
-    // fallback: "technical_workshop" / "technical-workshop" -> "Technical Workshop"
     return v
-        .replace(/[_-]+/g, " ")
+        .replace(/[_-]+/g, ' ')
         .trim()
         .split(/\s+/)
         .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w))
-        .join(" ");
+        .join(' ');
 }
 
 function formFromSources(app: any | null, account: any | null): FormState {
@@ -110,8 +112,11 @@ function formFromSources(app: any | null, account: any | null): FormState {
         classification: normalizeString(app?.classification),
         major: normalizeString(app?.major),
         minor: normalizeString(app?.minor),
-        gpa: app?.gpa != null ? String(app.gpa) : "",
-        extenuating: normalizeString(app?.extenuating) || normalizeString(app?.extenuatingCircumstances) || normalizeString(app?.circumstance),
+        gpa: app?.gpa != null ? String(app.gpa) : '',
+        extenuating:
+            normalizeString(app?.extenuating) ||
+            normalizeString(app?.extenuatingCircumstances) ||
+            normalizeString(app?.circumstance),
         reason: normalizeString(app?.reason),
 
         // read-only from db
@@ -139,17 +144,53 @@ function getIdentityForCreate(account: any | null) {
     return { fullName, email };
 }
 
+async function createImage(url: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+        const img = new window.Image();
+        img.addEventListener('load', () => resolve(img));
+        img.addEventListener('error', (err) => reject(err));
+        img.setAttribute('crossOrigin', 'anonymous');
+        img.src = url;
+    });
+}
+
+async function getCroppedImg(imageSrc: string, pixelCrop: PixelCrop): Promise<Blob> {
+    const image = await createImage(imageSrc);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('No 2d context');
+
+    canvas.width = pixelCrop.width;
+    canvas.height = pixelCrop.height;
+
+    ctx.drawImage(
+        image,
+        pixelCrop.x,
+        pixelCrop.y,
+        pixelCrop.width,
+        pixelCrop.height,
+        0,
+        0,
+        pixelCrop.width,
+        pixelCrop.height
+    );
+
+    return new Promise((resolve) => {
+        canvas.toBlob((blob) => resolve(blob as Blob), 'image/jpeg');
+    });
+}
+
 export default function PortalApplicationPage() {
     const router = useRouter();
 
     const [isDark, setIsDark] = useState(false);
     useEffect(() => {
-        setIsDark(document.documentElement.classList.contains("dark"));
+        setIsDark(document.documentElement.classList.contains('dark'));
     }, []);
 
     const toggleTheme = () => {
         setIsDark((v) => !v);
-        document.documentElement.classList.toggle("dark");
+        document.documentElement.classList.toggle('dark');
     };
 
     // sources of truth
@@ -173,7 +214,7 @@ export default function PortalApplicationPage() {
 
     const loading = session.isFetching || accountQuery.isFetching || myAppQuery.isFetching;
 
-    // local form state (settings-page style)
+    // local form state
     const [form, setForm] = useState<FormState>(() => formFromSources(null, null));
     const [saving, setSaving] = useState(false);
     const [dirty, setDirty] = useState(false);
@@ -188,10 +229,10 @@ export default function PortalApplicationPage() {
     const canEdit = !!userId && !isSubmitted && !loading;
 
     const statusText = useMemo(() => {
-        if (loading) return "Loading…";
-        if (isSubmitted) return "Submitted";
-        if (application) return "Draft";
-        return "Not started";
+        if (loading) return 'Loading…';
+        if (isSubmitted) return 'Submitted';
+        if (application) return 'Draft';
+        return 'Not started';
     }, [loading, isSubmitted, application]);
 
     const headshotUrl = account?.headshotBlobURL ?? null;
@@ -216,11 +257,11 @@ export default function PortalApplicationPage() {
         const gpaParsed = parseGpa(form.gpa);
 
         if (gpaParsed !== null && Number.isNaN(gpaParsed)) {
-            toast.error("GPA must be a valid number (e.g., 3.75)");
+            toast.error('GPA must be a valid number (e.g., 3.75)');
             return null;
         }
         if (gpaParsed !== null && (gpaParsed < 0 || gpaParsed > 4)) {
-            toast.error("GPA must be between 0.0 and 4.0");
+            toast.error('GPA must be between 0.0 and 4.0');
             return null;
         }
 
@@ -235,18 +276,18 @@ export default function PortalApplicationPage() {
             preferredFirstName: form.preferredFirstName.trim() || null,
             extenuating: form.extenuating.trim() || null,
 
-            // read-only on this page, but still persisted to keep db in sync with what’s already recorded
+            // read-only on this page, but still persisted
             eventsAttended: form.rushEvents,
 
-            // keep application.resumeUrl in sync with uploaded resume (account is the source of truth)
+            // keep application.resumeUrl in sync with uploaded resume
             resumeUrl: (account?.resumeBlobURL ?? null) as string | null
         };
     }
 
     async function saveDraft() {
         if (!userId) {
-            toast.error("You must be signed in.");
-            router.push("/auth/sign-in?redirectTo=/portal/application");
+            toast.error('You must be signed in.');
+            router.push('/auth/sign-in?redirectTo=/portal/application');
             return;
         }
 
@@ -265,8 +306,8 @@ export default function PortalApplicationPage() {
             } else {
                 const identity = getIdentityForCreate(account);
                 if (!identity) {
-                    toast.error("Please complete your profile (name + email) before saving an application.");
-                    router.push("/portal/settings");
+                    toast.error('Please complete your profile (name + email) before saving an application.');
+                    router.push('/portal/settings');
                     return;
                 }
 
@@ -276,11 +317,11 @@ export default function PortalApplicationPage() {
                 });
             }
 
-            toast.success("Draft saved.");
+            toast.success('Draft saved.');
             setDirty(false);
             await myAppQuery.refetch();
         } catch (e: any) {
-            toast.error(e?.message ?? "Failed to save draft.");
+            toast.error(e?.message ?? 'Failed to save draft.');
         } finally {
             setSaving(false);
         }
@@ -288,46 +329,45 @@ export default function PortalApplicationPage() {
 
     async function submitApplication() {
         if (!userId) {
-            toast.error("You must be signed in.");
-            router.push("/auth/sign-in?redirectTo=/portal/application");
+            toast.error('You must be signed in.');
+            router.push('/auth/sign-in?redirectTo=/portal/application');
             return;
         }
         if (isSubmitted) return;
 
-        // email validation (old app semantics)
         if (!isValidScEduEmail(form.email)) {
-            toast.error("Please use a valid USC email address.");
-            router.push("/portal/settings");
+            toast.error('Please use a valid USC email address.');
+            router.push('/portal/settings');
             return;
         }
 
-        // required checks (old app semantics + new architecture)
+        // required checks
         if (!headshotUrl) {
-            toast.error("Please upload a picture before submitting.");
+            toast.error('Please upload a picture before submitting.');
             return;
         }
         if (!resumeUrl) {
-            toast.error("Please upload a resume (PDF) before submitting.");
+            toast.error('Please upload a resume (PDF) before submitting.');
             return;
         }
         if (!form.phoneNum.trim()) {
-            toast.error("Please add a phone number before submitting.");
+            toast.error('Please add a phone number before submitting.');
             return;
         }
         if (!form.classification.trim()) {
-            toast.error("Please select your year in school before submitting.");
+            toast.error('Please select your year in school before submitting.');
             return;
         }
         if (!form.gpa.trim()) {
-            toast.error("Please enter your GPA before submitting.");
+            toast.error('Please enter your GPA before submitting.');
             return;
         }
         if (!form.major.trim()) {
-            toast.error("Please enter your major(s) before submitting.");
+            toast.error('Please enter your major(s) before submitting.');
             return;
         }
         if (!form.reason.trim()) {
-            toast.error("Please complete “Why KTP” before submitting.");
+            toast.error('Please complete “Why KTP” before submitting.');
             return;
         }
 
@@ -338,16 +378,16 @@ export default function PortalApplicationPage() {
         }
 
         if (form.rushEvents.length === 0) {
-            toast.error("No rush events have been recorded yet. Attend at least one rush event, then try again.");
+            toast.error('No rush events have been recorded yet. Attend at least one rush event, then try again.');
             return;
         }
 
         if (!form.affirmation) {
-            toast.error("Please affirm the application is complete and correct.");
+            toast.error('Please affirm the application is complete and correct.');
             return;
         }
 
-        const confirmed = window.confirm("Submit your application now? You will not be able to edit after submitting.");
+        const confirmed = window.confirm('Submit your application now? You will not be able to edit after submitting.');
         if (!confirmed) return;
 
         setSaving(true);
@@ -360,20 +400,59 @@ export default function PortalApplicationPage() {
             const fresh = await myAppQuery.refetch();
             const nowApp = (fresh.data ?? null) as any | null;
             if (!nowApp) {
-                toast.error("Please save your application before submitting.");
+                toast.error('Please save your application before submitting.');
                 return;
             }
 
             await submitMyApp.mutateAsync();
 
-            toast.success("Application submitted!");
+            toast.success('Application submitted!');
             setDirty(false);
             await myAppQuery.refetch();
         } catch (e: any) {
-            toast.error(e?.message ?? "Submit failed.");
+            toast.error(e?.message ?? 'Submit failed.');
         } finally {
             setSaving(false);
         }
+    }
+
+    // --------------------------------------------
+    // headshot upload with REQUIRED square cropping
+    // --------------------------------------------
+    const headshotInputRef = React.useRef<HTMLInputElement | null>(null);
+
+    const [showHeadshotCropper, setShowHeadshotCropper] = React.useState(false);
+    const [headshotPreview, setHeadshotPreview] = React.useState<string | null>(null);
+    const [headshotOriginalFile, setHeadshotOriginalFile] = React.useState<File | null>(null);
+
+    const [headshotCrop, setHeadshotCrop] = React.useState({ x: 0, y: 0 });
+    const [headshotZoom, setHeadshotZoom] = React.useState(1);
+    const [headshotCroppedAreaPixels, setHeadshotCroppedAreaPixels] = React.useState<PixelCrop | null>(null);
+
+    useEffect(() => {
+        return () => {
+            if (headshotPreview) URL.revokeObjectURL(headshotPreview);
+        };
+    }, [headshotPreview]);
+
+    function triggerHeadshotSelect() {
+        headshotInputRef.current?.click();
+    }
+
+    const onHeadshotCropComplete = (_croppedArea: unknown, croppedAreaPixels: PixelCrop) => {
+        setHeadshotCroppedAreaPixels(croppedAreaPixels);
+    };
+
+    function clearHeadshotCropState() {
+        if (headshotInputRef.current) headshotInputRef.current.value = '';
+        if (headshotPreview) URL.revokeObjectURL(headshotPreview);
+
+        setShowHeadshotCropper(false);
+        setHeadshotPreview(null);
+        setHeadshotOriginalFile(null);
+        setHeadshotCrop({ x: 0, y: 0 });
+        setHeadshotZoom(1);
+        setHeadshotCroppedAreaPixels(null);
     }
 
     async function handleHeadshotChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -381,54 +460,93 @@ export default function PortalApplicationPage() {
         if (!file) return;
 
         if (!userId) {
-            toast.error("You must be signed in.");
-            router.push("/auth/sign-in?redirectTo=/portal/application");
+            toast.error('You must be signed in.');
+            router.push('/auth/sign-in?redirectTo=/portal/application');
+            e.target.value = '';
             return;
         }
 
-        if (!file.type.startsWith("image/")) {
-            toast.error("Picture must be an image file.");
-            e.target.value = "";
+        if (!file.type.startsWith('image/')) {
+            toast.error('Picture must be an image file.');
+            e.target.value = '';
             return;
         }
 
+        // clear input so selecting the same file again still triggers onChange
+        e.target.value = '';
+
+        // open cropper (no direct upload allowed)
+        const url = URL.createObjectURL(file);
+        setHeadshotOriginalFile(file);
+        setHeadshotPreview(url);
+        setShowHeadshotCropper(true);
+        setHeadshotCrop({ x: 0, y: 0 });
+        setHeadshotZoom(1);
+        setHeadshotCroppedAreaPixels(null);
+    }
+
+    async function handleSaveHeadshotCropAndUpload() {
         try {
-            await uploadHeadshot.mutateAsync(file);
+            if (!userId) {
+                toast.error('You must be signed in.');
+                router.push('/auth/sign-in?redirectTo=/portal/application');
+                return;
+            }
+
+            if (!headshotPreview || !headshotCroppedAreaPixels || !headshotOriginalFile) {
+                toast.error('Please crop your photo before uploading.');
+                return;
+            }
+
+            const croppedBlob = await getCroppedImg(headshotPreview, headshotCroppedAreaPixels);
+
+            // enforce square output (cropper is 1:1, but guard anyway)
+            if (headshotCroppedAreaPixels.width !== headshotCroppedAreaPixels.height) {
+                toast.error('Headshots must be square. Please adjust your crop.');
+                return;
+            }
+
+            const croppedFile = new File([croppedBlob], headshotOriginalFile.name, { type: 'image/jpeg' });
+
+            await uploadHeadshot.mutateAsync(croppedFile);
             await accountQuery.refetch();
-            toast.success("Profile picture updated!");
+
+            toast.success('Profile picture updated!');
+            clearHeadshotCropState();
         } catch (err) {
             console.error(err);
-            toast.error("Failed to upload profile picture");
-        } finally {
-            e.target.value = "";
+            toast.error('Failed to upload profile picture');
         }
     }
 
+    // --------------------------------------------
+    // resume upload
+    // --------------------------------------------
     async function handleResumeChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
         if (!file) return;
 
         if (!userId) {
-            toast.error("You must be signed in.");
-            router.push("/auth/sign-in?redirectTo=/portal/application");
+            toast.error('You must be signed in.');
+            router.push('/auth/sign-in?redirectTo=/portal/application');
             return;
         }
 
-        if (!file.type.includes("pdf")) {
-            toast.error("Resume must be a PDF file.");
-            e.target.value = "";
+        if (!file.type.includes('pdf')) {
+            toast.error('Resume must be a PDF file.');
+            e.target.value = '';
             return;
         }
 
         try {
             await uploadResume.mutateAsync(file);
             await accountQuery.refetch();
-            toast.success("Resume uploaded!");
+            toast.success('Resume uploaded!');
         } catch (err) {
             console.error(err);
-            toast.error("Failed to upload resume");
+            toast.error('Failed to upload resume');
         } finally {
-            e.target.value = "";
+            e.target.value = '';
         }
     }
 
@@ -453,14 +571,14 @@ export default function PortalApplicationPage() {
                         <p className="text-gray-600 dark:text-gray-400 mb-4">Sign in to complete your application.</p>
                         <div className="flex gap-2">
                             <button
-                                onClick={() => router.push("/auth/sign-in?redirectTo=/portal/application")}
+                                onClick={() => router.push('/auth/sign-in?redirectTo=/portal/application')}
                                 className="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors cursor-pointer"
                                 type="button"
                             >
                                 Sign In
                             </button>
                             <button
-                                onClick={() => router.push("/auth/sign-up?redirectTo=/portal/application")}
+                                onClick={() => router.push('/auth/sign-up?redirectTo=/portal/application')}
                                 className="px-4 py-2 rounded-lg bg-gray-100 text-gray-900 font-semibold hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 transition-colors cursor-pointer"
                                 type="button"
                             >
@@ -519,12 +637,11 @@ export default function PortalApplicationPage() {
                         </div>
 
                         <div className="shrink-0 text-right">
-                            <div className="text-xs text-gray-500 dark:text-gray-400">Status</div>
                             <div
                                 className={`inline-flex mt-1 px-3 py-1 rounded-full text-sm font-medium border ${
                                     isSubmitted
-                                        ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800"
-                                        : "bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
+                                        ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800'
+                                        : 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700'
                                 }`}
                             >
                                 {statusText}
@@ -543,7 +660,7 @@ export default function PortalApplicationPage() {
                             recruitment cycle for its Beta class.
                         </p>
                         <p className="text-gray-600 dark:text-gray-400">
-                            If you have any questions, please reach out to the executive board at{" "}
+                            If you have any questions, please reach out to the executive board at{' '}
                             <a href="mailto:soktp@mailbox.sc.edu" className="text-blue-600 dark:text-blue-400 underline hover:no-underline">
                                 soktp@mailbox.sc.edu
                             </a>
@@ -556,7 +673,7 @@ export default function PortalApplicationPage() {
                             <svg className="w-5 h-5 text-[#315CA9] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            This application is due{" "}
+                            This application is due{' '}
                             <a
                                 href="https://calendar.google.com/calendar/event?action=TEMPLATE&tmeid=MG5qaDU2c3M0b3A5a2lucTMxZGtiM2FzZ2IgMWIyMDM0Mzc1MWQwMTMwNzRlNWY1ZjgyYmZjYjcwYTljZjRmZmJhN2E1YTU5ZDkzYzkyZjNiMjg5NGY3ZWY2NkBn&tmsrc=1b20343751d013074e5f5f82bfcb70a9cf4ffba7a5a59d93c92f3b2894f7ef66%40group.calendar.google.com"
                                 target="_blank"
@@ -581,7 +698,7 @@ export default function PortalApplicationPage() {
                                 Upload Picture <span className="text-red-500">*</span>
                             </div>
                             <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-                                Upload an image file with your face clearly visible so we can put a face to your name.
+                                Headshots must be <span className="font-medium">square</span>. You will crop before uploading.
                             </p>
 
                             <div className="flex items-center gap-4">
@@ -599,16 +716,9 @@ export default function PortalApplicationPage() {
                                     </div>
                                 )}
 
-                                <div>
-                                    <label
-                                        htmlFor="headshot"
-                                        className={`inline-block px-4 py-2 rounded-lg text-white transition-colors cursor-pointer ${
-                                            uploadHeadshot.isPending ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
-                                        }`}
-                                    >
-                                        {uploadHeadshot.isPending ? "Uploading…" : "Upload Picture"}
-                                    </label>
+                                <div className="flex flex-col gap-2">
                                     <input
+                                        ref={headshotInputRef}
                                         id="headshot"
                                         type="file"
                                         accept="image/*"
@@ -616,9 +726,78 @@ export default function PortalApplicationPage() {
                                         className="hidden"
                                         disabled={!canEdit || uploadHeadshot.isPending}
                                     />
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">JPG/PNG recommended.</p>
+
+                                    <Button
+                                        type="button"
+                                        onClick={triggerHeadshotSelect}
+                                        className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white"
+                                        disabled={!canEdit || uploadHeadshot.isPending}
+                                    >
+                                        Upload Picture
+                                    </Button>
+
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">JPG/PNG recommended.</p>
                                 </div>
                             </div>
+
+                            {/* crop UI (required) */}
+                            {showHeadshotCropper && headshotPreview ? (
+                                <div className="mt-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4">
+                                    <div className="mb-4">
+                                        <label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2 block">
+                                            Zoom: {(headshotZoom * 100).toFixed(0)}%
+                                        </label>
+                                        <input
+                                            type="range"
+                                            min={1}
+                                            max={3}
+                                            step={0.1}
+                                            value={headshotZoom}
+                                            onChange={(e) => setHeadshotZoom(Number(e.target.value))}
+                                            className="w-full"
+                                            disabled={uploadHeadshot.isPending}
+                                        />
+                                    </div>
+
+                                    <div className="relative w-full h-64 bg-gray-900 rounded-md overflow-hidden mb-4">
+                                        <Cropper
+                                            image={headshotPreview}
+                                            crop={headshotCrop}
+                                            zoom={headshotZoom}
+                                            aspect={1 / 1}
+                                            showGrid
+                                            onCropChange={setHeadshotCrop}
+                                            onCropComplete={onHeadshotCropComplete}
+                                            onZoomChange={setHeadshotZoom}
+                                        />
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-2">
+                                        <Button
+                                            type="button"
+                                            onClick={handleSaveHeadshotCropAndUpload}
+                                            className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white"
+                                            disabled={!canEdit || uploadHeadshot.isPending}
+                                        >
+                                            {uploadHeadshot.isPending ? 'Uploading…' : 'Save Crop & Upload'}
+                                        </Button>
+
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            onClick={clearHeadshotCropState}
+                                            className="cursor-pointer text-red-600 hover:text-red-700"
+                                            disabled={uploadHeadshot.isPending}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </div>
+
+                                    <p className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+                                        Headshots must be square. Crop and upload to continue.
+                                    </p>
+                                </div>
+                            ) : null}
                         </div>
 
                         {/* resume */}
@@ -634,10 +813,10 @@ export default function PortalApplicationPage() {
                                 <label
                                     htmlFor="resume"
                                     className={`inline-block px-4 py-2 rounded-lg text-white transition-colors cursor-pointer ${
-                                        uploadResume.isPending ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+                                        uploadResume.isPending ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
                                     }`}
                                 >
-                                    {uploadResume.isPending ? "Uploading…" : "Upload Resume (PDF)"}
+                                    {uploadResume.isPending ? 'Uploading…' : 'Upload Resume (PDF)'}
                                 </label>
                                 <input
                                     id="resume"
@@ -895,7 +1074,7 @@ export default function PortalApplicationPage() {
                         {/* why ktp */}
                         <div className="md:col-span-2">
                             <label htmlFor="reason" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Why are you interested in joining Kappa Theta Pi? What talents/experiences could you bring to the organization?{" "}
+                                Why are you interested in joining Kappa Theta Pi? What talents/experiences could you bring to the organization?{' '}
                                 <span className="text-red-500">*</span>
                             </label>
                             <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Answer in less than 150 words.</p>
@@ -907,7 +1086,7 @@ export default function PortalApplicationPage() {
                                 disabled={!canEdit}
                                 rows={6}
                                 className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-                                placeholder="Note: this application will not save your progress unless you click “Save Draft.”"
+                                placeholder='Note: this application will not save your progress unless you click “Save Draft.”'
                             />
                         </div>
 
@@ -945,10 +1124,9 @@ export default function PortalApplicationPage() {
                         {/* affirmation */}
                         <div className="md:col-span-2">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                I affirm this application is complete and correct to the best of my knowledge.{" "}
-                                <span className="text-red-500">*</span>
+                                I affirm this application is complete and correct to the best of my knowledge. <span className="text-red-500">*</span>
                             </label>
-                            <div className={`flex items-center gap-3 ${!canEdit ? "opacity-60" : ""}`}>
+                            <div className={`flex items-center gap-3 ${!canEdit ? 'opacity-60' : ''}`}>
                                 <input
                                     id="affirmation"
                                     type="checkbox"
@@ -967,7 +1145,6 @@ export default function PortalApplicationPage() {
                         </div>
                     </div>
 
-                    {/* helper text */}
                     <div className="mt-5 text-xs text-gray-500 dark:text-gray-400">
                         Tip: Click <span className="font-medium">Save Draft</span> frequently. Submitting locks your application.
                     </div>
@@ -983,7 +1160,7 @@ export default function PortalApplicationPage() {
                             className="cursor-pointer flex-1"
                             disabled={!canEdit || saving || createMyApp.isPending || updateMyApp.isPending || updateMyAccount.isPending}
                         >
-                            {saving || createMyApp.isPending || updateMyApp.isPending || updateMyAccount.isPending ? "Saving…" : "Save Draft"}
+                            {saving || createMyApp.isPending || updateMyApp.isPending || updateMyAccount.isPending ? 'Saving…' : 'Save Draft'}
                         </Button>
 
                         <Button
@@ -992,7 +1169,7 @@ export default function PortalApplicationPage() {
                             className="cursor-pointer flex-1"
                             disabled={isSubmitted || saving || submitMyApp.isPending}
                         >
-                            {saving || submitMyApp.isPending ? "Submitting…" : "Submit"}
+                            {saving || submitMyApp.isPending ? 'Submitting…' : 'Submit'}
                         </Button>
                     </div>
 
