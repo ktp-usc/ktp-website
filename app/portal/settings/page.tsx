@@ -26,11 +26,6 @@ function splitList(value: string) {
 export default function SettingsPage() {
     const router = useRouter();
 
-    const handleHomeClick = () => {
-        document.documentElement.classList.remove("dark");
-        router.push("/");
-    };
-
     const [saving, setSaving] = useState(false);
     const [isDark, setIsDark] = useState(false);
 
@@ -167,7 +162,7 @@ export default function SettingsPage() {
     if (loading) {
         return (
             <div
-                className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center transition-colors duration-300">
+                className="min-h-screen bg-linear-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center transition-colors duration-300">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"/>
                     <p className="mt-4 text-gray-600 dark:text-gray-400">Loading...</p>
@@ -180,7 +175,7 @@ export default function SettingsPage() {
     if (!userId) {
         return (
             <div
-                className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+                className="min-h-screen bg-linear-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
                 <ThemeToggle/>
                 <main className="max-w-4xl mx-auto px-6 py-20">
                     <div
@@ -213,7 +208,7 @@ export default function SettingsPage() {
 
     return (
         <div
-            className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+            className="min-h-screen bg-linear-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
             <ThemeToggle/>
 
             {/* theme toggle (unchanged) */ }
@@ -283,7 +278,7 @@ export default function SettingsPage() {
                                 />
                             ) : (
                                 <div
-                                    className="h-[100px] w-[100px] rounded-full border-4 border-blue-200 dark:border-blue-700 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                                    className="h-25 w-25 rounded-full border-4 border-blue-200 dark:border-blue-700 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                                     <User className="h-9 w-9 text-gray-600 dark:text-gray-200"/>
                                 </div>
                             ) }
@@ -372,21 +367,6 @@ export default function SettingsPage() {
                                     id="LinkedIn"
                                     name="LinkedIn"
                                     value={ user.LinkedIn }
-                                    onChange={ handleInputChange }
-                                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-                                />
-                            </div>
-
-                            <div>
-                                <label htmlFor="bio"
-                                       className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Bio
-                                </label>
-                                <input
-                                    type="text"
-                                    id="bio"
-                                    name="bio"
-                                    value={ user.bio }
                                     onChange={ handleInputChange }
                                     className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                                 />

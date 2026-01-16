@@ -82,8 +82,6 @@ export async function POST(req: Request) {
                 minor: normalizeString(body.minor),
                 resumeUrl: normalizeString(body.resumeUrl),
                 reason: normalizeString(body.reason),
-                linkedin: normalizeString(body.linkedin),
-                github: normalizeString(body.github),
                 gpa: normalizeGpa(body.gpa) ?? null,
                 eventsAttended: normalizeStringArray(body.eventsAttended) ?? []
             }
@@ -97,6 +95,8 @@ export async function POST(req: Request) {
     }
 }
 
+import type { applicationStatus } from '@prisma/client';
+
 export async function PATCH(req: Request) {
     const authed = await requireUser();
     if ('response' in authed) return authed.response;
@@ -105,8 +105,10 @@ export async function PATCH(req: Request) {
         const body = await req.json().catch(() => null);
         if (!body) return badRequest('invalid_json');
 
-        // only allow draft fields to be patched
-        const data = {
+        // -------------------------------
+        // 1) draft fields (same as before)
+        // -------------------------------
+        const draftData = {
             classification: body.classification === undefined ? undefined : normalizeString(body.classification),
             major: body.major === undefined ? undefined : normalizeString(body.major),
             minor: body.minor === undefined ? undefined : normalizeString(body.minor),
@@ -116,6 +118,44 @@ export async function PATCH(req: Request) {
             gpa: normalizeGpa(body.gpa)
             // lastModified is @updatedAt so prisma handles it
         } as const;
+
+        // --------------------------------------------
+        // 2) optional status transition (guarded)
+        //    only allow: BID_OFFERED -> BID_ACCEPTED/DECLINED
+        // --------------------------------------------
+        const requestedStatusRaw = body.status as applicationStatus | undefined;
+        const requestedStatus =
+            requestedStatusRaw === 'BID_ACCEPTED' || requestedStatusRaw === 'BID_DECLINED' ? requestedStatusRaw : undefined;
+
+        // we only need to fetch current status if they are attempting a status change
+        let statusPatch: { status?: applicationStatus } = {};
+        if (requestedStatus) {
+            const current = await prisma.applications.findUnique({
+                where: { userId: authed.user.id },
+                select: { status: true }
+            });
+
+            if (!current) {
+                // no application to update status on
+                return badRequest('application_not_found');
+            }
+
+            if (current.status !== 'BID_OFFERED') {
+                // block any other transitions
+                return badRequest('invalid_status_transition');
+            }
+
+            statusPatch = { status: requestedStatus };
+        } else if (body.status !== undefined) {
+            // they tried to set status, but not to an allowed value
+            return badRequest('invalid_status_value');
+        }
+
+        // combine patches
+        const data = {
+            ...draftData,
+            ...statusPatch
+        };
 
         // update-first (don’t create automatically on page load — only when user saves)
         try {
@@ -127,6 +167,11 @@ export async function PATCH(req: Request) {
         } catch (e: any) {
             // not found -> create on save
             if (e?.code !== 'P2025') throw e;
+        }
+
+        // if they tried to change status, but app doesn't exist, do not create
+        if (requestedStatus) {
+            return badRequest('application_not_found');
         }
 
         // create fallback requires fullName/email (use body if provided, else derive from accounts)
@@ -158,6 +203,7 @@ export async function PATCH(req: Request) {
                 reason: data.reason ?? null,
                 gpa: data.gpa ?? null,
                 eventsAttended: Array.isArray(data.eventsAttended) ? data.eventsAttended : []
+                // note: do not set status here; let prisma default apply
             }
         });
 
