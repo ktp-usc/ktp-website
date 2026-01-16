@@ -51,14 +51,14 @@ export async function POST(req: Request) {
         // optional: basic size guard (e.g., 10mb)
         // if (file.size > 10 * 1024 * 1024) return json(400, { error: 'resume_too_large' });
 
-        const buffer = Buffer.from(await file.arrayBuffer());
+        const buffer = await file.arrayBuffer();
 
         const safeName = file.name?.trim() || 'resume.pdf';
         const blob = await put(`ktp-resumes/${authed.user.id}-${Date.now()}-${safeName}`, buffer, {
             access: 'public',
             contentType: file.type || 'application/pdf',
             token
-        });
+        }as any);
 
         const updated = await prisma.accounts.update({
             where: { id: authed.user.id },

@@ -44,13 +44,13 @@ export async function POST(req: Request) {
         if (!file || file.size === 0) return json(400, { error: 'missing_headshot_file' });
         if (!isImage(file)) return json(400, { error: 'headshot_must_be_image' });
 
-        const buffer = Buffer.from(await file.arrayBuffer());
+        const buffer = await file.arrayBuffer();
 
         const blob = await put(`ktp-headshots/${authed.user.id}-${Date.now()}-${file.name}`, buffer, {
             access: 'public',
             contentType: file.type || 'application/octet-stream',
             token
-        });
+        }as any);
 
         const updated = await prisma.accounts.update({
             where: { id: authed.user.id },
