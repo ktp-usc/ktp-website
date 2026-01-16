@@ -37,6 +37,14 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
   const [deleting, setDeleting] = useState(false);
   const [execName, setExecName] = useState<string>('An exec');
   const [commentsRefresh, setCommentsRefresh] = useState(0);
+  const [checked, setChecked] = useState({
+    InfoNight1:false,
+    InfoNight2:false,
+    CasinoNight:false,
+    TechnicalWorkshop:false,
+    PitchNight:false
+  });
+
 
   useEffect(() => {
     if (!app?.id) return;
@@ -228,7 +236,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
       </div>
     );
   }
-
+  console.log(app);
   const email = (getField<string>('email') ?? (app?.email as string | undefined) ?? '') as string;
   const phone = (getField<string>('phone') ?? (app?.phone as string | undefined) ?? '') as string;
   const year = (getField<string>('year') ?? (app?.year as string | undefined) ?? '') as string;
@@ -239,15 +247,17 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
   const linkedin = (getField<string>('linkedin') ?? (app?.linkedin as string | undefined) ?? '') as string;
   const github = (getField<string>('github') ?? (app?.github as string | undefined) ?? '') as string;
   const extenuating = (getField<string>('extenuating') ?? (app?.extenuating as string | undefined) ?? '') as string;
-
+  
   const rushEventsRaw =
-    getField<unknown>('rushEvents') ??
+    getField<unknown>('eventsAttended') ??
     getField<unknown>('rush_events') ??
     getField<unknown>('rush') ??
     (app?.rushEvents as unknown | undefined) ??
     '';
   const rushEvents =
     Array.isArray(rushEventsRaw) ? (rushEventsRaw as string[]).join(', ') : (rushEventsRaw ?? '').toString();
+
+  console.log(rushEvents);
 
   const why = (getField<string>('reason') ?? getField<string>('why') ?? '') as string;
 
@@ -369,6 +379,58 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
               </div>
               <div className="app-responses-answer">
                 {why ? <div style={{ whiteSpace: 'pre-wrap' }}>{why}</div> : <div style={{ color: '#9aa6b8', fontStyle: 'italic' }}>No response provided.</div>}
+              </div>
+            </div>
+            <div>
+              <div className="app-responses-question">
+                Events Attended
+              </div>
+              <div className ="bg-white flex flex-col gap-4 p-4 rounded-2xl">
+                <label >
+                  <input
+                    type="checkbox"
+                    checked={checked.InfoNight1}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setChecked({ ...checked, InfoNight1: e.target.checked })}
+                  />
+                    Info Night 1
+                </label>
+                <label >
+                  <input
+                    type="checkbox"
+                    checked={checked.InfoNight1}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setChecked({ ...checked, InfoNight1: e.target.checked })}
+                  />
+                    Info Night 2
+                </label>
+                <label >
+                  <input
+                    type="checkbox"
+                    checked={checked.CasinoNight}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setChecked({ ...checked, CasinoNight: e.target.checked })}
+                  />
+                    Casino Night
+                </label>
+                <label >
+                  <input
+                    type="checkbox"
+                    checked={checked.TechnicalWorkshop}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setChecked({ ...checked, TechnicalWorkshop: e.target.checked })}
+                  />
+                    Technical Workshop
+                </label>
+                <label >
+                  <input
+                    type="checkbox"
+                    checked={checked.PitchNight}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setChecked({ ...checked, PitchNight: e.target.checked })}
+                  />
+                    Pitch Night
+                </label>
               </div>
             </div>
 
