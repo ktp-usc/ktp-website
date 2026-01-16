@@ -188,7 +188,7 @@ export default function SignUpPage() {
                                     className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:opacity-70"
                                 />
                                 <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                                    Use a strong password that meets the portal requirements.
+                                    Please ensure password is 8 characters long, contains at least one uppercase letter, one lowercase letter, one number, and one symbol.
                                 </p>
                             </div>
 
