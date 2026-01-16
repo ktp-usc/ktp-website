@@ -1,92 +1,35 @@
-'use client';
+"use client"
 
 import Image from 'next/image';
+import { useState, useEffect } from 'react';
+import logo from "../CircleLogo-Transparent.png";
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
-import { User } from 'lucide-react';
-
-import logo from '../public/CircleLogo-Transparent.png';
-
-// new setup: only use the client hooks layer we created
-import { useSessionQuery } from '@/client/hooks/auth';
-import { useMyAccountQuery } from '@/client/hooks/accounts';
-
-const SIGN_IN_HREF = '/auth/sign-in';
-const SIGN_UP_HREF = '/auth/sign-up';
-const PROFILE_HREF = '/portal';
 
 export function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
 
-    const { data: sessionData, isFetching: sessionFetching } = useSessionQuery();
-    const isSignedIn = Boolean(sessionData?.user?.id);
-
-    // new setup: headshot url comes from the account row (no separate headshot query)
-    const { data: account, isFetching: accountFetching } = useMyAccountQuery();
-
-    const headshotUrl = account?.headshotBlobURL ?? null;
-
     useEffect(() => {
-        const handleScroll = () => setIsScrolled(window.scrollY > 0);
-        setIsScrolled(window.scrollY > 0);
+        const handleScroll = () => {
+            const scrollTop = window.scrollY;
+            setIsScrolled(scrollTop > 0);
+        };
+
+        // Set initial state based on current scroll position
+        const scrollTop = window.scrollY;
+        setIsScrolled(scrollTop > 0);
+
         window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
     }, []);
 
-    const rightSide = useMemo(() => {
-        // don’t flash buttons while session is resolving
-        if (sessionFetching) return null;
-
-        if (isSignedIn) {
-            return (
-                <Link
-                    href={PROFILE_HREF}
-                    aria-label="Go to profile"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#315CA9] shadow-lg transition-all duration-300 hover:bg-[#23498F] hover:drop-shadow-lg cursor-pointer"
-                >
-                    {headshotUrl ? (
-                        <Image
-                            src={headshotUrl}
-                            alt="Profile"
-                            width={36}
-                            height={36}
-                            className="h-9 w-9 rounded-full object-cover"
-                        />
-                    ) : (
-                        <span className="h-9 w-9 rounded-full bg-white/15 flex items-center justify-center">
-                            <User className={`h-5 w-5 text-white ${accountFetching ? 'opacity-60' : ''}`} />
-                        </span>
-                    )}
-                </Link>
-            );
-        }
-
-        return (
-            <>
-                <Link
-                    className="bg-transparent text-[#315CA9] font-medium px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-xs sm:text-base hover:bg-[#315CA9]/10 transition-all duration-300 cursor-pointer"
-                    href={SIGN_IN_HREF}
-                >
-                    Sign In
-                </Link>
-                <Link
-                    className="bg-[#315CA9] text-white font-medium px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-xs sm:text-base hover:bg-[#23498F] transition-all duration-300 transform shadow-lg hover:drop-shadow-lg cursor-pointer"
-                    href={SIGN_UP_HREF}
-                >
-                    Sign Up
-                </Link>
-            </>
-        );
-    }, [sessionFetching, isSignedIn, headshotUrl, accountFetching]);
-
     return (
-        <header
-            className={`sticky top-0 w-full z-9999 transition-all duration-700 p-2 sm:p-4 ${
-                isScrolled ? 'bg-white shadow-md' : 'bg-transparent'
-            }`}
-        >
+        <header className={`sticky top-0 w-full z-9999 transition-all duration-700 p-2 sm:p-4 ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}>
             <div className="relative flex items-center justify-center w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-2 sm:py-3 z-10">
-                <Link href="/" className="absolute left-2 sm:left-6 md:left-12 lg:left-16 xl:left-20 cursor-pointer">
+
+                {/* Logo - Scales from w-8 (mobile) back to your original w-11 (desktop) */}
+                <Link href="/" className="absolute left-2 sm:left-6 md:left-12 lg:left-16 xl:left-20">
                     <Image
                         src={logo}
                         alt="Logo"
@@ -96,20 +39,22 @@ export function Header() {
                     />
                 </Link>
 
-                <nav className="flex flex-wrap justify-center text-xs sm:text-md md:text-lg space-x-4 sm:space-x-8 md:space-x-12 lg:space-x-16">
-                    <Link className="hover:text-[#315CA9] font-medium transition-colors cursor-pointer" href="/members">
-                        Members
-                    </Link>
-                    <Link className="hover:text-[#315CA9] font-medium transition-colors cursor-pointer" href="/rush">
-                        Rush
-                    </Link>
-                    <Link className="hover:text-[#315CA9] font-medium transition-colors cursor-pointer" href="/apply">
-                        Apply
-                    </Link>
+                {/*NavBar*/}
+                <nav className='flex flex-wrap justify-center text-xs sm:text-md md:text-lg space-x-4 sm:space-x-8 md:space-x-12 lg:space-x-16'>
+                    {/*<Link className="hover:text-[#315CA9] font-medium" href="/">Home</Link>*/}
+
+                    <Link className="hover:text-[#315CA9] font-medium" href="/members">Members</Link>
+                    <Link className="hover:text-[#315CA9] font-medium" href="/clients">Our Work</Link>
+                    <Link className="hover:text-[#315CA9] font-medium" href="/rush">Rush</Link>
+                    <Link className="hover:text-[#315CA9] font-medium" href="/apply">Apply</Link>
                 </nav>
 
-                <div className="absolute right-1 sm:right-6 md:right-12 lg:right-16 xl:right-20 flex items-center gap-2">
-                    {rightSide}
+                <div className="absolute right-1 sm:right-6 md:right-12 lg:right-16 xl:right-20">
+                    <Link
+                        className="bg-[#315CA9] text-white font-medium px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-xs sm:text-base hover:bg-[#23498F] transition-all duration-300 transform shadow-lg hover:drop-shadow-lg"
+                        href="/login">
+                        Login
+                    </Link>
                 </div>
             </div>
         </header>
