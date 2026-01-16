@@ -17,6 +17,7 @@ export async function POST(req: Request, ctx: Ctx) {
     if ('response' in authed) return authed.response;
 
     const { id } = await ctx.params;
+    
 
     try {
         const body = await req.json();

@@ -168,6 +168,7 @@ export default function ExecApplicationsPage() {
         alert('Emails copied to clipboard');
     };
 
+    
     return (
         <main className="max-w-7xl mx-auto px-6 py-8 bg-transparent transition-colors duration-300">
             <div className="mb-8">
@@ -234,7 +235,7 @@ export default function ExecApplicationsPage() {
                 {filteredApplications.map((app) => (
                     <Card
                         key={app.id}
-                        onClick={() => router.push(`/portal/exec/applications/${app.id}`)}
+                        onClick={() => router.push(`/exec/applications/${app.id}`)}
                         className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md hover:shadow-lg
                        transition-all cursor-pointer overflow-hidden"
                     >

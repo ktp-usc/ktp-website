@@ -35,6 +35,8 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
   const [adjacent, setAdjacent] = useState<{ prevId?: string | null; nextId?: string | null }>({});
   const [statusUpdating, setStatusUpdating] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [execName, setExecName] = useState<string>('An exec');
+  const [commentsRefresh, setCommentsRefresh] = useState(0);
 
   useEffect(() => {
     if (!app?.id) return;
@@ -46,10 +48,11 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
           setAdjacent({ prevId: null, nextId: null });
           return;
         }
-        const payload: AdjacentResponse = await res.json();
+        const payload = (await res.json()) as AdjacentResponse | { data?: AdjacentResponse };
+        const data = (payload && 'data' in payload ? payload.data : payload) as AdjacentResponse | undefined;
         setAdjacent({
-          prevId: payload?.prevId ?? null,
-          nextId: payload?.nextId ?? null,
+          prevId: data?.prevId ?? null,
+          nextId: data?.nextId ?? null,
         });
       } catch {
         setAdjacent({ prevId: null, nextId: null });
@@ -57,6 +60,24 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
     }
     loadAdjacent();
   }, [app?.id]);
+
+  useEffect(() => {
+    async function loadExec() {
+      try {
+        const res = await fetch('/api/accounts/me');
+        if (!res.ok) return;
+        const payload = await res.json();
+        const data = payload?.data ?? payload;
+        const first = (data?.firstName ?? '').toString().trim();
+        const last = (data?.lastName ?? '').toString().trim();
+        const full = `${first} ${last}`.trim();
+        if (full) setExecName(full);
+      } catch {
+        // keep fallback name
+      }
+    }
+    loadExec();
+  }, []);
 
   function goBack() {
     try {
@@ -71,17 +92,45 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
     router.push(`/exec/applications/${id}`);
   }
 
+  function statusLabel(value?: number) {
+    if (typeof value !== 'number') return 'Unknown';
+    return STATUS_MAP[value] ?? 'Unknown';
+  }
+
+  async function postStatusNotification(oldStatus?: number, newStatus?: number) {
+    if (!app?.id) return;
+    const applicantName = formattedHeaderName(app);
+    const message = `${execName} changed ${applicantName} status from ${statusLabel(oldStatus)} to ${statusLabel(newStatus)}.`;
+
+    try {
+      await fetch(`/api/applications/${encodeURIComponent(String(app.id))}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body: message, commenter: execName }),
+      });
+    } catch {
+      alert('Failed to post status change notification');
+    }
+  }
+
   async function updateStatus(newStatus: number) {
+    const status = STATUS_MAP[newStatus].replaceAll(' ', '_').toUpperCase();
     if (!app?.id || app.status === newStatus) return;
+    const oldStatus = app?.status;
     setStatusUpdating(true);
     try {
-      const res = await fetch(`/api/applications/${encodeURIComponent(String(app.id))}`, {
-        method: 'PUT',
+      const res = await fetch(`/api/applications/${encodeURIComponent(String(app.id))}/status`, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus }),
+        body: JSON.stringify({ status: status }),
       });
-      if (res.ok) setApp((p) => (p ? { ...p, status: newStatus } : p));
+      if (res.ok) {
+        setApp((p) => (p ? { ...p, status: newStatus } : p));
+        await postStatusNotification(oldStatus, newStatus);
+        setCommentsRefresh((value) => value + 1);
+      }
       else alert('Failed to update status');
+      
     } catch {
       alert('Network error updating status');
     } finally {
@@ -97,7 +146,8 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
       const res = await fetch(`/api/applications/${encodeURIComponent(String(app.id))}`, { method: 'DELETE' });
       if (res.ok) router.push('/exec/applications');
       else alert('Delete failed');
-    } catch {
+    } 
+    catch {
       alert('Delete failed (network)');
     } finally {
       setDeleting(false);
@@ -144,13 +194,17 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
   }
 
   function formattedHeaderName(a?: Application | null) {
-    const full = (a?.full_name ?? '').toString().trim();
+    const full = (a?.fullName ?? '').toString().trim();
     if (!full) return 'Unnamed Applicant';
     const parts = full.split(/\s+/);
     const preferred = (a?.preferred_first_name ?? '').toString().trim();
     if (parts.length === 1) return preferred ? `${preferred} (${parts[0]})` : parts[0];
-    const first = parts[0];
-    const last = parts.slice(1).join(' ');
+    let first = parts[0];
+    first = first.charAt(0).toUpperCase() + first.slice(1);
+
+    let last = parts.slice(1).join(' ');
+    last = last.charAt(0).toUpperCase() + last.slice(1);
+
     return preferred ? `${first} (${preferred}) ${last}` : `${first} ${last}`;
   }
 
@@ -217,7 +271,9 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
       }))
     : [];
 
-  const headshotSrc = app?.headshot_url ? String(app.headshot_url) : '/placeholder-headshot.png';
+ 
+  const resumeSrc = app?.resumeUrl ? String(app.resumeUrl) : null;
+  const headshotSrc = app?.headshotUrl ? String(app.headshotUrl) : '/placeholder-headshot.png';
 
   return (
     <div className="page-content">
@@ -268,9 +324,9 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
 
       <div className="exec-application-layout">
         <div className="left-column">
-          {app?.resume_url ? (
+          {app?.resumeUrl ? (
             <div className="resume-iframe-wrapper">
-              <ResumeViewer url={String(app.resume_url)} height="100%" />
+              <ResumeViewer url={String(app.resumeUrl)} height="100%" />
             </div>
           ) : (
             <div style={{ padding: 24, color: '#666' }}>No resume attached</div>
@@ -323,7 +379,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
 
         <div className="right-column">
           <div className="sidebar-elevated">
-            <CommentsSidebar applicationId={app?.id} />
+            <CommentsSidebar applicationId={app?.id} refreshKey={commentsRefresh} />
           </div>
         </div>
       </div>
