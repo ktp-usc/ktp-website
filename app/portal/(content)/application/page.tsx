@@ -279,6 +279,8 @@ export default function PortalApplicationPage() {
 
             preferredFirstName: form.preferredFirstName.trim() || null,
             extenuating: form.extenuating.trim() || null,
+            linkedin: form.linkedin.trim() || null,
+            github: form.github.trim() || null,
 
             // keep application.resumeUrl in sync with uploaded resume
             resumeUrl: (account?.resumeBlobURL ?? null) as string | null

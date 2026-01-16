@@ -29,6 +29,15 @@ type AdjacentResponse = {
   nextId: string | null;
 };
 
+type ApplicantAccount = {
+  firstName?: string | null;
+  lastName?: string | null;
+  resumeBlobURL?: string | null;
+  headshotBlobURL?: string | null;
+  linkedin?: string | null;
+  github?: string | null;
+};
+
 export default function ExecApplicationViewer({ initialApplication }: { initialApplication?: Application | null }) {
   const router = useRouter();
   const [app, setApp] = useState<Application | null>(initialApplication ?? null);
@@ -36,7 +45,11 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
   const [statusUpdating, setStatusUpdating] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [execName, setExecName] = useState<string>('An exec');
+  const [applicantAccount, setApplicantAccount] = useState<ApplicantAccount | null>(null);
   const [commentsRefresh, setCommentsRefresh] = useState(0);
+  const applicantId = typeof (app as unknown as { userId?: string })?.userId === 'string'
+    ? (app as unknown as { userId: string }).userId
+    : undefined;
 
   useEffect(() => {
     if (!app?.id) return;
@@ -78,6 +91,40 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
     }
     loadExec();
   }, []);
+
+  useEffect(() => {
+    const id = applicantId;
+    if (!id) {
+      setApplicantAccount(null);
+      return;
+    }
+
+    let cancelled = false;
+    async function loadApplicantAccount() {
+      try {
+        const res = await fetch(`/api/accounts/${encodeURIComponent(id??'')}`);
+        if (!res.ok) return;
+        const payload = await res.json();
+        const data = payload?.data ?? payload;
+        if (!cancelled) {
+          setApplicantAccount({
+            firstName: data?.firstName ?? null,
+            lastName: data?.lastName ?? null,
+            resumeBlobURL: data?.resumeBlobURL ?? null,
+            headshotBlobURL: data?.headshotBlobURL ?? null,
+            linkedin: data?.linkedin ?? null,
+            github: data?.github ?? null
+          });
+        }
+      } catch {
+        if (!cancelled) setApplicantAccount(null);
+      }
+    }
+    loadApplicantAccount();
+    return () => {
+      cancelled = true;
+    };
+  }, [applicantId]);
 
   function goBack() {
     try {
@@ -194,18 +241,28 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
   }
 
   function formattedHeaderName(a?: Application | null) {
-    const full = (a?.fullName ?? '').toString().trim();
+    const accountFirst = (applicantAccount?.firstName ?? '').toString().trim();
+    const accountLast = (applicantAccount?.lastName ?? '').toString().trim();
+    if (accountFirst || accountLast) {
+      const formattedFirst = accountFirst ? accountFirst.charAt(0).toUpperCase() + accountFirst.slice(1) : '';
+      const formattedLast = accountLast ? accountLast.charAt(0).toUpperCase() + accountLast.slice(1) : '';
+      return `${formattedFirst} ${formattedLast}`.trim() || 'Unnamed Applicant';
+    }
+
+    const full = ((a as unknown as { fullName?: string; full_name?: string })?.fullName ?? (a as unknown as { full_name?: string })?.full_name ?? '')
+      .toString()
+      .trim();
     if (!full) return 'Unnamed Applicant';
     const parts = full.split(/\s+/);
     const preferred = (a?.preferred_first_name ?? '').toString().trim();
     if (parts.length === 1) return preferred ? `${preferred} (${parts[0]})` : parts[0];
-    let first = parts[0];
-    first = first.charAt(0).toUpperCase() + first.slice(1);
+    let firstPart = parts[0];
+    firstPart = firstPart.charAt(0).toUpperCase() + firstPart.slice(1);
 
-    let last = parts.slice(1).join(' ');
-    last = last.charAt(0).toUpperCase() + last.slice(1);
+    let lastPart = parts.slice(1).join(' ');
+    lastPart = lastPart.charAt(0).toUpperCase() + lastPart.slice(1);
 
-    return preferred ? `${first} (${preferred}) ${last}` : `${first} ${last}`;
+    return preferred ? `${firstPart} (${preferred}) ${lastPart}` : `${firstPart} ${lastPart}`;
   }
 
   function LabeledBox({ label, value }: { label: string; value?: React.ReactNode }) {
@@ -236,8 +293,10 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
   const major = (getField<string>('major') ?? (app?.major as string | undefined) ?? '') as string;
   const minor = (getField<string>('minor') ?? (app?.minor as string | undefined) ?? '') as string;
   const hometown = (getField<string>('hometown') ?? (app?.hometown as string | undefined) ?? '') as string;
-  const linkedin = (getField<string>('linkedin') ?? (app?.linkedin as string | undefined) ?? '') as string;
-  const github = (getField<string>('github') ?? (app?.github as string | undefined) ?? '') as string;
+  const linkedinFromAccount = (applicantAccount?.linkedin ?? '').toString().trim();
+  const githubFromAccount = (applicantAccount?.github ?? '').toString().trim();
+  const linkedin = (linkedinFromAccount || getField<string>('linkedin') || (app?.linkedin as string | undefined) || '') as string;
+  const github = (githubFromAccount || getField<string>('github') || (app?.github as string | undefined) || '') as string;
   const extenuating = (getField<string>('extenuating') ?? (app?.extenuating as string | undefined) ?? '') as string;
 
   const rushEventsRaw =
@@ -272,8 +331,12 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
     : [];
 
  
-  const resumeSrc = app?.resumeUrl ? String(app.resumeUrl) : null;
-  const headshotSrc = app?.headshotUrl ? String(app.headshotUrl) : '/placeholder-headshot.png';
+  const resumeFromAccount = (applicantAccount?.resumeBlobURL ?? '').toString().trim();
+  const headshotFromAccount = (applicantAccount?.headshotBlobURL ?? '').toString().trim();
+  const resumeFromApp = (app as unknown as { resumeUrl?: string; resume_url?: string })?.resumeUrl ?? (app as unknown as { resume_url?: string })?.resume_url;
+  const headshotFromApp = (app as unknown as { headshotUrl?: string; headshot_url?: string })?.headshotUrl ?? (app as unknown as { headshot_url?: string })?.headshot_url;
+  const resumeSrc = resumeFromAccount || (resumeFromApp ? String(resumeFromApp) : null);
+  const headshotSrc = headshotFromAccount || (headshotFromApp ? String(headshotFromApp) : '') || '/placeholder-headshot.png';
 
   return (
     <div className="page-content">
@@ -324,9 +387,9 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
 
       <div className="exec-application-layout">
         <div className="left-column">
-          {app?.resumeUrl ? (
+          {resumeSrc ? (
             <div className="resume-iframe-wrapper">
-              <ResumeViewer url={String(app.resumeUrl)} height="100%" />
+              <ResumeViewer url={String(resumeSrc)} height="100%" />
             </div>
           ) : (
             <div style={{ padding: 24, color: '#666' }}>No resume attached</div>
