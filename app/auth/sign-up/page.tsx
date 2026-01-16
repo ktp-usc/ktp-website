@@ -67,7 +67,7 @@ export default function SignUpPage() {
 
         if (!passwordMeetsRequirements(password)) {
             event.preventDefault();
-            setErrorMessage('Password does not meet requirements.');
+            setErrorMessage('Password does not meet requirements. Please ensure password is 8 characters long, contains at least one uppercase letter, one lowercase letter, one number, and one symbol.');
         }
     };
 
