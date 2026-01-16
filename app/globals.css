@@ -547,6 +547,8 @@ button:disabled{cursor:default;opacity:.9;transform:none !important}
     line-height:1.35;
 }
 
+
+
 .exec-application-layout{
     display:flex;
     gap:12px;

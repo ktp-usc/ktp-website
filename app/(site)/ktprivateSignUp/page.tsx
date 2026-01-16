@@ -210,9 +210,6 @@ export default function Application() {
                                     <Field>
                                         <FieldLabel className="text-md" htmlFor="email">USC Email<span
                                             className="text-red-500">*</span></FieldLabel>
-                                        <FieldDescription>
-                                            <em>Please ensure this is correct. All communications concerning the interview process will be sent via email.</em>
-                                        </FieldDescription>
                                         <Input
                                             id="email"
                                             name="email"

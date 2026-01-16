@@ -18,8 +18,6 @@ type Comment = {
   replies?: Reply[];
 };
 
-const CURRENT_USER_NAME = 'You';
-
 /** === Helpers: runtime validators / normalizers === **/
 
 function isObject(x: unknown): x is Record<string, unknown> {
@@ -41,7 +39,7 @@ function normalizeReply(raw: unknown): Reply | null {
 
   const idRaw = raw.id ?? raw['Id'] ?? raw['ID'];
   const text = asString(raw['text'] ?? raw['body'] ?? raw['comment']);
-  const authorName = asString(raw['authorName'] ?? raw['name']) ?? 'Unknown';
+  const authorName = asString(raw['authorName'] ?? raw['name'] ?? raw['commenter']) ?? 'Unknown';
   const authorAvatar = asString(raw['authorAvatar'] ?? raw['avatar']) ?? null;
   const createdAt = asString(raw['createdAt'] ?? raw['created_at'] ?? raw['timestamp']) ?? undefined;
 
@@ -62,7 +60,7 @@ function normalizeComment(raw: unknown): Comment | null {
 
   const idRaw = raw['id'] ?? raw['Id'] ?? raw['ID'];
   const text = asString(raw['text'] ?? raw['body'] ?? raw['comment']);
-  const authorName = asString(raw['authorName'] ?? raw['name']) ?? 'Unknown';
+  const authorName = asString(raw['authorName'] ?? raw['name'] ?? raw['commenter']) ?? 'Unknown';
   const authorAvatar = asString(raw['authorAvatar'] ?? raw['avatar']) ?? null;
   const createdAt = asString(raw['createdAt'] ?? raw['created_at'] ?? raw['timestamp']) ?? undefined;
 
@@ -86,9 +84,17 @@ function normalizeComment(raw: unknown): Comment | null {
 
 /** === Component === **/
 
-export default function CommentsSidebar({ applicationId }: { applicationId?: number | string }) {
+export default function CommentsSidebar({
+  applicationId,
+  refreshKey,
+}: {
+  applicationId?: number | string;
+  refreshKey?: number;
+}) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [text, setText] = useState('');
+  const [currentUserName, setCurrentUserName] = useState('You');
+  const [currentUserAvatar, setCurrentUserAvatar] = useState<string | null>(null);
 
   const [replyTo, setReplyTo] = useState<number | string | null>(null);
   const [replyText, setReplyText] = useState('');
@@ -96,6 +102,45 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
 
   const menusRef = useRef<Record<string, HTMLDivElement | null>>({});
+
+  useEffect(() => {
+    async function loadAccount() {
+      try {
+        const res = await fetch('/api/accounts/me');
+        if (!res.ok) return;
+        const payload = await res.json();
+        const data = payload?.data ?? payload;
+        const first = (data?.firstName ?? '').toString().trim();
+        const last = (data?.lastName ?? '').toString().trim();
+        const full = `${first} ${last}`.trim();
+        if (full) setCurrentUserName(full);
+        const avatar =
+          (data?.headshotBlobURL ?? data?.headshotBlobUrl ?? '').toString().trim() || null;
+        if (avatar) setCurrentUserAvatar(avatar);
+      } catch {
+        // keep defaults
+      }
+    }
+    loadAccount();
+  }, []);
+
+  function applyCurrentUserAvatar(list: Comment[]) {
+    if (!currentUserAvatar) return list;
+    return list.map((comment) => {
+      const authorAvatar =
+        comment.authorName === currentUserName
+          ? comment.authorAvatar ?? currentUserAvatar
+          : comment.authorAvatar;
+      const replies = (comment.replies ?? []).map((reply) => ({
+        ...reply,
+        authorAvatar:
+          reply.authorName === currentUserName
+            ? reply.authorAvatar ?? currentUserAvatar
+            : reply.authorAvatar,
+      }));
+      return { ...comment, authorAvatar, replies };
+    });
+  }
 
   // load comments
   useEffect(() => {
@@ -134,7 +179,10 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
           .map((c) => normalizeComment(c))
           .filter((c): c is Comment => c !== null);
 
-        if (!cancelled) setComments(normalized.slice().reverse());
+        if (!cancelled) {
+          const withAvatar = applyCurrentUserAvatar(normalized);
+          setComments(withAvatar.slice().reverse());
+        }
       } catch {
         if (!cancelled) setComments([]);
       }
@@ -144,7 +192,12 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
     return () => {
       cancelled = true;
     };
-  }, [applicationId]);
+  }, [applicationId, refreshKey]);
+
+  useEffect(() => {
+    if (!currentUserAvatar) return;
+    setComments((prev) => applyCurrentUserAvatar(prev));
+  }, [currentUserAvatar, currentUserName]);
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
@@ -162,8 +215,8 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
     if (!text.trim() || !applicationId) return;
     const newComment: Comment = {
       id: `local-${Date.now()}`,
-      authorName: CURRENT_USER_NAME,
-      authorAvatar: '/placeholder-headshot.png',
+      authorName: currentUserName,
+      authorAvatar: currentUserAvatar ?? '/placeholder-headshot.png',
       text: text.trim(),
       createdAt: new Date().toISOString(),
       replies: [],
@@ -174,7 +227,7 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
       await fetch(`/api/applications/${encodeURIComponent(String(applicationId))}/comments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: newComment.text }),
+        body: JSON.stringify({ text: newComment.text, commenter: currentUserName }),
       });
     } catch {
       // silently ignore network errors (already optimistic)
@@ -194,8 +247,8 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
     if (!replyText.trim() || !applicationId) return;
     const newReply: Reply = {
       id: `local-reply-${Date.now()}`,
-      authorName: CURRENT_USER_NAME,
-      authorAvatar: '/placeholder-headshot.png',
+      authorName: currentUserName,
+      authorAvatar: currentUserAvatar ?? '/placeholder-headshot.png',
       text: replyText.trim(),
       createdAt: new Date().toISOString(),
     };
@@ -208,7 +261,7 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
       await fetch(`/api/applications/${encodeURIComponent(String(applicationId))}/comments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: newReply.text, parentId }),
+        body: JSON.stringify({ text: newReply.text, parentId, commenter: currentUserName }),
       });
     } catch {
       // ignore
@@ -317,7 +370,7 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
                     </div>
                   </div>
 
-                  {c.authorName == CURRENT_USER_NAME && (
+                  {c.authorName == currentUserName && (
                     <div style={{ position: 'relative' }}>
                       <button
                         onClick={(e) => {
@@ -462,7 +515,7 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
                           </div>
                         </div>
 
-                        {r.authorName == CURRENT_USER_NAME && (
+                        {r.authorName == currentUserName && (
                           <div style={{ position: 'relative' }}>
                             <button
                               onClick={(e) => {

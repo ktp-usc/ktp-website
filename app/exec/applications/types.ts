@@ -12,7 +12,7 @@ export type ApplicationResponses =
 export type Application = {
     id: string | number;
 
-    full_name: string;
+    fullName: string;
     preferred_first_name?: string | null;
 
     email: string;
@@ -25,8 +25,8 @@ export type Application = {
     minor?: string | null;
     hometown?: string | null;
 
-    headshot_url: string;
-    resume_url: string;
+    resumeUrl: string;
+    headshotUrl: string;
 
     linkedin?: string | null;
     github?: string | null;
