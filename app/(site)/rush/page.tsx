@@ -94,7 +94,7 @@ export default function Page2() {
                                 href="/apply"
                                 className="px-6 py-3 bg-[#315CA9] text-white rounded-lg font-semibold hover:bg-[#23498F] transition-all duration-300 hover:scale-110 hover:drop-shadow-md"
                             >
-                                Application Link
+                                Start Your Application
                             </Link>
                         </div>
                         <p className="text-gray-600 text-lg sm:text-xl mb-2">
@@ -157,7 +157,7 @@ export default function Page2() {
                                     </p>
                                     <p className="text-base text-gray-600 flex items-center gap-2 mb-4">
                                         <PinIcon />
-                                        <span>Swearingen Room 1C01</span>
+                                        <span>Swearingen Engineering Center Room 1C01</span>
                                     </p>
                                     <p className="text-base text-gray-600 leading-relaxed">
                                         Same as above; you only need to attend one of our info nights! Choose whichever one works best for you.
@@ -169,18 +169,18 @@ export default function Page2() {
                                     <div className="absolute -left-3 text-2xl top-0 text-[#315CA9] font-bold" aria-hidden="true">
                                         ♦
                                     </div>
-                                    <h3 className="text-xl sm:text-xl font-semibold mb-2">Field Day</h3>
+                                    <h3 className="text-xl sm:text-xl font-semibold mb-2">Casino Night</h3>
                                     <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
                                         <CalendarIcon />
-                                        <span>Tuesday, January 27, 6:00-7:30 PM</span>
+                                        <span>Tuesday, January 27, 7:00-8:30 PM</span>
                                     </p>
                                     <p className="text-base text-gray-600 flex items-center gap-2 mb-4">
                                         <PinIcon />
-                                        <span>Strom Thurmond Fitness and Wellness Center</span>
+                                        <span>Location TBD</span>
                                     </p>
                                     <p className="text-base text-gray-600 leading-relaxed">
-                                        Join us for this casual social event where you&apos;ll get to enjoy a night full of fun activities and
-                                        games including volleyball, spikeball, swimming, frisbee, and more.
+                                        Join us for a night of classic Vegas-style casino games! You&apos;ll get the opportunity
+                                        to meet our brothers while playing hands of poker, blackjack, board games, and more.
                                     </p>
                                 </div>
 
@@ -196,7 +196,7 @@ export default function Page2() {
                                     </p>
                                     <p className="text-base text-gray-600 flex items-center gap-2 mb-4">
                                         <PinIcon />
-                                        <span>Innovation Room 1400</span>
+                                        <span>Storey Innovation Center Room 1400</span>
                                     </p>
                                     <p className="text-base text-gray-600 leading-relaxed">
                                         Want to get a glance of what it&apos;s like joining KTP? At this event, we&apos;ll teach you the basics of
@@ -240,7 +240,7 @@ export default function Page2() {
                                         href="/apply"
                                         className="inline-block px-6 py-3 bg-[#315CA9] text-white rounded-full font-semibold hover:bg-[#23498F] transition-colors"
                                     >
-                                        Apply Here
+                                        Start Your Application
                                     </Link>
                                 </div>
                             </div>
