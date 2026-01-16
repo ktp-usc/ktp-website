@@ -25,8 +25,8 @@ model accounts {
   gradYear        Int?
   pledgeClass     String?       @default("n/a")
   hometown        String?
-  linkedin        String?
-  github          String?
+  linkedin        String?       @unique
+  github          String?       @unique
   applications    applications?
 
   @@schema("public")
@@ -50,9 +50,6 @@ model applications {
   gpa            Float?
   status         applicationStatus @default(UNDER_REVIEW)
   circumstance   String?
-  headshotUrl    String?
-  github         String?
-  linkedin       String?
   accounts       accounts          @relation(fields: [userId], references: [id], onDelete: Cascade, map: "userCheck")
   comments       comment[]
 
