@@ -1,9 +1,12 @@
 import { prisma } from '@/lib/prisma';
+import {Prisma} from '@prisma/client';
 import { requireAdmin } from '@/lib/auth/guards';
 import { ok, serverError } from '@/lib/http/responses';
+import { id } from 'date-fns/locale';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+type Ctx = { params: Promise<{ id: string }> };
 
 export async function GET(req: Request) {
     const authed = await requireAdmin();

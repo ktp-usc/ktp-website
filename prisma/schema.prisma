@@ -43,29 +43,30 @@ model applications {
   createdAt      DateTime?         @default(now()) @db.Timestamptz(6)
   eventsAttended String[]          @default([])
   reason         String?
-  linkedin       String?
-  github         String?
   isFlagged      Boolean?
   lastModified   DateTime          @updatedAt @db.Timestamptz(6)
   submittedAt    DateTime?         @db.Timestamptz(6)
   userId         String            @unique @db.Uuid
   gpa            Float?
+  status         applicationStatus @default(UNDER_REVIEW)
+  circumstance   String?
+  headshotUrl    String?
+  github         String?
+  linkedin       String?
   accounts       accounts          @relation(fields: [userId], references: [id], onDelete: Cascade, map: "userCheck")
   comments       comment[]
-  status         applicationStatus @default(UNDER_REVIEW)
 
   @@schema("public")
 }
 
 model comment {
-  id            String       @id @default(uuid()) @db.Uuid
-  applicationId String       @db.Uuid
-  application   applications @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-
+  id             String             @id @default(uuid()) @db.Uuid
+  applicationId  String             @db.Uuid
   createdAt      DateTime           @default(now()) @db.Timestamptz(6)
   statusOverride applicationStatus?
   commenter      String?
   body           String?
+  application    applications       @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
   @@index([applicationId])
   @@schema("public")

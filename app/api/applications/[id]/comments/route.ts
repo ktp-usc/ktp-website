@@ -12,6 +12,25 @@ function isValidStatus(v: unknown): v is applicationStatus {
     return typeof v === 'string' && (Object.values(applicationStatus) as string[]).includes(v);
 }
 
+export async function GET(_: Request, ctx: Ctx) {
+    const authed = await requireAdmin();
+    if ('response' in authed) return authed.response;
+
+    const { id } = await ctx.params;
+
+    try {
+        const comments = await prisma.comment.findMany({
+            where: { applicationId: id },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        return ok(comments);
+    } catch (e) {
+        console.error(e);
+        return serverError();
+    }
+}
+
 export async function POST(req: Request, ctx: Ctx) {
     const authed = await requireAdmin();
     if ('response' in authed) return authed.response;

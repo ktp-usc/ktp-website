@@ -10,7 +10,7 @@ type Ctx = { params: Promise<{ id: string }> };
 export async function GET(_: Request, ctx: Ctx) {
     const authed = await requireAdmin();
     if ('response' in authed) return authed.response;
-
+    
     const { id } = await ctx.params;
 
     try {
