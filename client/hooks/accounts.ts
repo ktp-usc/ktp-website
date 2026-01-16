@@ -55,15 +55,34 @@ export function useUploadHeadshotMutation() {
     });
 }
 
+type UploadResumeResponse = { ok: true; url: string; data: Account };
+
 export function useUploadResumeMutation() {
     const qc = useQueryClient();
+
     return useMutation({
-        mutationFn: (url: string) =>
-            fetchJson<Account>("/api/accounts/me/resume", {
+        mutationFn: async (file: File) => {
+            const formData = new FormData();
+            formData.append("resume", file);
+
+            const res = await fetch("/api/accounts/me/resume", {
                 method: "POST",
-                body: JSON.stringify({ url })
-            }),
-        onSuccess: () => qc.invalidateQueries({ queryKey: qk.myAccount })
+                body: formData,
+                credentials: "include",
+                cache: "no-store"
+                // do not set content-type headers
+            });
+
+            if (!res.ok) {
+                const body = await res.json().catch(() => null);
+                throw new Error(body?.error ?? "Failed to upload resume");
+            }
+
+            return (await res.json()) as UploadResumeResponse;
+        },
+        onSuccess: async () => {
+            await qc.invalidateQueries({ queryKey: qk.myAccount });
+        }
     });
 }
 
