@@ -41,7 +41,7 @@ function normalizeReply(raw: unknown): Reply | null {
 
   const idRaw = raw.id ?? raw['Id'] ?? raw['ID'];
   const text = asString(raw['text'] ?? raw['body'] ?? raw['comment']);
-  const authorName = asString(raw['authorName'] ?? raw['name']) ?? 'Unknown';
+  const authorName = asString(raw['authorName'] ?? raw['name'] ?? raw['commenter']) ?? 'Unknown';
   const authorAvatar = asString(raw['authorAvatar'] ?? raw['avatar']) ?? null;
   const createdAt = asString(raw['createdAt'] ?? raw['created_at'] ?? raw['timestamp']) ?? undefined;
 
@@ -62,7 +62,7 @@ function normalizeComment(raw: unknown): Comment | null {
 
   const idRaw = raw['id'] ?? raw['Id'] ?? raw['ID'];
   const text = asString(raw['text'] ?? raw['body'] ?? raw['comment']);
-  const authorName = asString(raw['authorName'] ?? raw['name']) ?? 'Unknown';
+  const authorName = asString(raw['authorName'] ?? raw['name'] ?? raw['commenter']) ?? 'Unknown';
   const authorAvatar = asString(raw['authorAvatar'] ?? raw['avatar']) ?? null;
   const createdAt = asString(raw['createdAt'] ?? raw['created_at'] ?? raw['timestamp']) ?? undefined;
 
@@ -86,7 +86,13 @@ function normalizeComment(raw: unknown): Comment | null {
 
 /** === Component === **/
 
-export default function CommentsSidebar({ applicationId }: { applicationId?: number | string }) {
+export default function CommentsSidebar({
+  applicationId,
+  refreshKey,
+}: {
+  applicationId?: number | string;
+  refreshKey?: number;
+}) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [text, setText] = useState('');
 
@@ -144,7 +150,7 @@ export default function CommentsSidebar({ applicationId }: { applicationId?: num
     return () => {
       cancelled = true;
     };
-  }, [applicationId]);
+  }, [applicationId, refreshKey]);
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {

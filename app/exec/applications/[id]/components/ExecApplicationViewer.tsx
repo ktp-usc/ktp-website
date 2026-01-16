@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import ResumeViewer from './ResumeViewer';
 import CommentsSidebar from './CommentsSidebar';
 import type { Application } from '../../types';
-import {list} from '@vercel/blob'
 
 const STATUS_MAP: Record<number, string> = {
   0: 'Closed',
@@ -36,6 +35,8 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
   const [adjacent, setAdjacent] = useState<{ prevId?: string | null; nextId?: string | null }>({});
   const [statusUpdating, setStatusUpdating] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [execName, setExecName] = useState<string>('An exec');
+  const [commentsRefresh, setCommentsRefresh] = useState(0);
 
   useEffect(() => {
     if (!app?.id) return;
@@ -60,6 +61,24 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
     loadAdjacent();
   }, [app?.id]);
 
+  useEffect(() => {
+    async function loadExec() {
+      try {
+        const res = await fetch('/api/accounts/me');
+        if (!res.ok) return;
+        const payload = await res.json();
+        const data = payload?.data ?? payload;
+        const first = (data?.firstName ?? '').toString().trim();
+        const last = (data?.lastName ?? '').toString().trim();
+        const full = `${first} ${last}`.trim();
+        if (full) setExecName(full);
+      } catch {
+        // keep fallback name
+      }
+    }
+    loadExec();
+  }, []);
+
   function goBack() {
     try {
       router.back();
@@ -73,9 +92,31 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
     router.push(`/exec/applications/${id}`);
   }
 
+  function statusLabel(value?: number) {
+    if (typeof value !== 'number') return 'Unknown';
+    return STATUS_MAP[value] ?? 'Unknown';
+  }
+
+  async function postStatusNotification(oldStatus?: number, newStatus?: number) {
+    if (!app?.id) return;
+    const applicantName = formattedHeaderName(app);
+    const message = `${execName} changed ${applicantName} status from ${statusLabel(oldStatus)} to ${statusLabel(newStatus)}.`;
+
+    try {
+      await fetch(`/api/applications/${encodeURIComponent(String(app.id))}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body: message, commenter: execName }),
+      });
+    } catch {
+      alert('Failed to post status change notification');
+    }
+  }
+
   async function updateStatus(newStatus: number) {
     const status = STATUS_MAP[newStatus].replaceAll(' ', '_').toUpperCase();
     if (!app?.id || app.status === newStatus) return;
+    const oldStatus = app?.status;
     setStatusUpdating(true);
     try {
       const res = await fetch(`/api/applications/${encodeURIComponent(String(app.id))}/status`, {
@@ -83,8 +124,13 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: status }),
       });
-      if (res.ok) setApp((p) => (p ? { ...p, status: newStatus } : p));
+      if (res.ok) {
+        setApp((p) => (p ? { ...p, status: newStatus } : p));
+        await postStatusNotification(oldStatus, newStatus);
+        setCommentsRefresh((value) => value + 1);
+      }
       else alert('Failed to update status');
+      
     } catch {
       alert('Network error updating status');
     } finally {
@@ -333,7 +379,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
 
         <div className="right-column">
           <div className="sidebar-elevated">
-            <CommentsSidebar applicationId={app?.id} />
+            <CommentsSidebar applicationId={app?.id} refreshKey={commentsRefresh} />
           </div>
         </div>
       </div>
