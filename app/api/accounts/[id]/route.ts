@@ -23,6 +23,8 @@ export async function GET(_: Request, ctx: Ctx) {
     }
 }
 
+
+
 export async function PATCH(req: Request, ctx: Ctx) {
     const authed = await requireAdmin();
     if ('response' in authed) return authed.response;
