@@ -50,7 +50,7 @@ export async function POST(req: Request) {
             access: 'public',
             contentType: file.type || 'application/octet-stream',
             token
-        }as any);
+        });
 
         const updated = await prisma.accounts.update({
             where: { id: authed.user.id },
