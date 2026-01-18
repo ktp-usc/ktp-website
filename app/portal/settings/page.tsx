@@ -7,10 +7,15 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { User } from "lucide-react";
 
-import ThemeToggle from "@/components/ThemeToggle";
-
 import { useSessionQuery } from "@/client/hooks/auth";
-import { useMyAccountQuery, useUpdateMyAccountMutation, useUploadHeadshotMutation } from "@/client/hooks/accounts";
+import {
+    useMyAccountQuery,
+    useUpdateMyAccountMutation,
+    useUploadHeadshotMutation,
+    useUploadResumeMutation
+} from "@/client/hooks/accounts";
+import HeadshotCropModal from "@/app/portal/settings/HeadshotCropModal";
+import BackButton from "@/components/BackButton";
 
 function joinList(list: string[] | null | undefined) {
     return (list ?? []).join(", ");
@@ -29,6 +34,10 @@ export default function SettingsPage() {
     const [saving, setSaving] = useState(false);
     const [isDark, setIsDark] = useState(false);
 
+    const [showCropModal, setShowCropModal] = useState(false);
+    const [imageSrc, setImageSrc] = useState<string | null>(null);
+    const [originalFile, setOriginalFile] = useState<File | null>(null);
+
     // new setup: session + /api/accounts/me are the sources of truth
     const session = useSessionQuery();
     const userId = session.data?.user?.id ?? null;
@@ -38,6 +47,7 @@ export default function SettingsPage() {
 
     const updateAccount = useUpdateMyAccountMutation();
     const uploadHeadshot = useUploadHeadshotMutation();
+    const uploadResume = useUploadResumeMutation();
 
     const loading = session.isFetching || accountQuery.isFetching;
 
@@ -52,7 +62,7 @@ export default function SettingsPage() {
         bio: "",
         type: "",
         exec: false,
-        pc: false,
+        pc: "",
 
         // keep these in state so save can still write them to prisma (just not shown in UI)
         major: "",
@@ -83,7 +93,7 @@ export default function SettingsPage() {
             bio: prev.bio ?? "",
             type: account.type ?? "",
             exec: account.type === "LEADERSHIP",
-            pc: false,
+            pc: "2026",
 
             // still hydrate but not displayed
             major: joinList(account.majors),
@@ -92,30 +102,23 @@ export default function SettingsPage() {
         }));
     }, [account]);
 
-    const toggleTheme = () => {
-        setIsDark((v) => !v);
-        document.documentElement.classList.toggle("dark");
-    };
-
     function formatPhone(value: string) {
-        const digits = value.replace(/\D/g, '').slice(0, 10);
+        const digits = value.replace(/\D/g, "").slice(0, 10);
 
         const parts = [];
-        if (digits.length > 0) parts.push('(' + digits.slice(0, 3));
-        if (digits.length >= 4) parts.push(') ' + digits.slice(3, 6));
-        if (digits.length >= 7) parts.push('-' + digits.slice(6, 10));
+        if (digits.length > 0) parts.push("(" + digits.slice(0, 3));
+        if (digits.length >= 4) parts.push(") " + digits.slice(3, 6));
+        if (digits.length >= 7) parts.push("-" + digits.slice(6, 10));
 
-        return parts.join('');
+        return parts.join("");
     }
 
-    const handleInputChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-    ) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
 
         setUser((prev) => ({
             ...prev,
-            [name]: name === 'phone' ? formatPhone(value) : value
+            [name]: name === "phone" ? formatPhone(value) : value
         }));
     };
 
@@ -165,19 +168,58 @@ export default function SettingsPage() {
         if (!userId) {
             toast.error("You must be signed in.");
             router.push("/auth/sign-in?redirectTo=/portal/settings");
+            e.target.value = "";
+            return;
+        }
+
+        if (!file.type.startsWith("image/")) {
+            toast.error("Please upload an image file.");
+            e.target.value = "";
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            setImageSrc(reader.result as string);
+            setOriginalFile(file);
+            setShowCropModal(true);
+        };
+        reader.readAsDataURL(file);
+
+        // allow selecting the same file again later
+        e.target.value = "";
+    };
+
+    // --------------------------------------------
+    // resume upload (from application page logic)
+    // --------------------------------------------
+    async function handleResumeChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (!userId) {
+            toast.error("You must be signed in.");
+            router.push("/auth/sign-in?redirectTo=/portal/settings");
+            return;
+        }
+
+        if (!file.type.includes("pdf")) {
+            toast.error("Resume must be a PDF file.");
+            e.target.value = "";
             return;
         }
 
         try {
-            await uploadHeadshot.mutateAsync(file);
-            toast.success("Headshot updated successfully!");
-        } catch (error) {
-            console.error("Error uploading headshot:", error);
-            toast.error("Failed to upload headshot");
+            await uploadResume.mutateAsync(file);
+            await accountQuery.refetch();
+            toast.success("Resume uploaded!");
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to upload resume");
         } finally {
             e.target.value = "";
         }
-    };
+    }
 
     if (loading) {
         return (
@@ -196,7 +238,6 @@ export default function SettingsPage() {
         return (
             <div
                 className="min-h-screen bg-linear-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
-                <ThemeToggle/>
                 <main className="max-w-4xl mx-auto px-6 py-20">
                     <div
                         className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
@@ -225,52 +266,44 @@ export default function SettingsPage() {
     }
 
     const headshotUrl = account?.headshotBlobURL ?? null;
+    const resumeUrl = account?.resumeBlobURL ?? null;
 
     return (
         <div
             className="min-h-screen bg-linear-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
-            <ThemeToggle/>
+            <HeadshotCropModal
+                open={ showCropModal }
+                imageSrc={ imageSrc }
+                isDark={ isDark }
+                originalFile={ originalFile }
+                onCancelAction={ () => {
+                    setShowCropModal(false);
+                    setImageSrc(null);
+                    setOriginalFile(null);
+                } }
+                onSaveAction={ async (croppedFile) => {
+                    if (!userId) {
+                        toast.error("You must be signed in.");
+                        router.push("/auth/sign-in?redirectTo=/portal/settings");
+                        return;
+                    }
 
-            {/* theme toggle (unchanged) */ }
-            <button
-                onClick={ toggleTheme }
-                className="fixed top-6 right-6 z-50 p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-gray-200 dark:border-gray-700"
-                aria-label="Toggle theme"
-                type="button"
-            >
-                { isDark ? (
-                    <svg className="w-6 h-6 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={ 2 }
-                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                        />
-                    </svg>
-                ) : (
-                    <svg className="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={ 2 }
-                            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                        />
-                    </svg>
-                ) }
-            </button>
+                    try {
+                        await uploadHeadshot.mutateAsync(croppedFile);
+                        await accountQuery.refetch();
+                        toast.success("Headshot updated successfully!");
 
-            {/* back button (unchanged) */ }
-            <button
-                onClick={ () => router.back() }
-                className="fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white font-medium text-sm"
-                type="button"
-            >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 }
-                          d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                </svg>
-                Back
-            </button>
+                        setShowCropModal(false);
+                        setImageSrc(null);
+                        setOriginalFile(null);
+                    } catch (error) {
+                        console.error("Error uploading headshot:", error);
+                        toast.error("Failed to upload headshot");
+                    }
+                } }
+            />
+
+            <BackButton/>
 
             <main className="max-w-4xl mx-auto px-6 py-20">
                 <div className="mb-8">
@@ -323,6 +356,55 @@ export default function SettingsPage() {
                         </div>
                     </div>
 
+                    {/* resume upload section (new) */ }
+                    <div
+                        className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Resume</h2>
+
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                            PDF format only. If you don’t have a polished resume, a simple bullet list of jobs,
+                            involvement, and projects is okay.
+                        </p>
+
+                        <div className="flex flex-wrap items-center gap-3">
+                            <label
+                                htmlFor="resume"
+                                className={ `inline-block px-4 py-2 rounded-lg text-white transition-colors cursor-pointer ${
+                                    uploadResume.isPending ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+                                }` }
+                            >
+                                { uploadResume.isPending
+                                    ? "Uploading…"
+                                    : resumeUrl
+                                        ? "Upload New Resume (PDF)"
+                                        : "Upload Resume (PDF)" }
+                            </label>
+
+                            <input
+                                id="resume"
+                                type="file"
+                                accept="application/pdf,.pdf"
+                                onChange={ handleResumeChange }
+                                className="hidden"
+                                disabled={ uploadResume.isPending }
+                            />
+
+                            { resumeUrl ? (
+                                <a
+                                    href={ resumeUrl }
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-sm text-blue-600 dark:text-blue-400 underline hover:no-underline"
+                                >
+                                    View current resume
+                                </a>
+                            ) : (
+                                <span
+                                    className="text-sm text-gray-600 dark:text-gray-400">No resume uploaded yet.</span>
+                            ) }
+                        </div>
+                    </div>
+
                     {/* personal information */ }
                     <div
                         className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
@@ -358,6 +440,7 @@ export default function SettingsPage() {
                                     onChange={ handleInputChange }
                                     className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                                     required
+                                    placeholder="example@email.sc.edu"
                                 />
                             </div>
 
@@ -414,10 +497,8 @@ export default function SettingsPage() {
                             </div>
 
                             <div>
-                                <label
-                                    htmlFor="GitHub"
-                                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                                >
+                                <label htmlFor="GitHub"
+                                       className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     GitHub
                                 </label>
                                 <input
@@ -458,14 +539,8 @@ export default function SettingsPage() {
                             </div>
                             <div className="flex justify-between items-center py-2">
                                 <span className="text-gray-700 dark:text-gray-300 font-medium">PC Member:</span>
-                                <span
-                                    className={ `px-3 py-1 rounded-full text-sm font-medium ${
-                                        user.pc
-                                            ? "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300"
-                                            : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
-                                    }` }
-                                >
-                                    { user.pc ? "Yes" : "No" }
+                                <span className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300">
+                                    { user.pc }
                                 </span>
                             </div>
                         </div>

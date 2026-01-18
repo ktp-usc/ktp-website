@@ -8,7 +8,6 @@ import { toast } from "sonner";
 import { User } from "lucide-react";
 import Cropper from "react-easy-crop";
 
-import ThemeToggle from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -20,10 +19,10 @@ import {
     useUploadResumeMutation
 } from "@/client/hooks/accounts";
 import {
-    useMyApplicationQuery,
     useCreateMyApplicationMutation,
-    useUpdateMyApplicationMutation,
-    useSubmitMyApplicationMutation
+    useMyApplicationQuery,
+    useSubmitMyApplicationMutation,
+    useUpdateMyApplicationMutation
 } from "@/client/hooks/applications";
 
 interface PixelCrop {
@@ -188,16 +187,6 @@ async function getCroppedImg(imageSrc: string, pixelCrop: PixelCrop): Promise<Bl
 export default function PortalApplicationPage() {
     const router = useRouter();
 
-    const [isDark, setIsDark] = useState(false);
-    useEffect(() => {
-        setIsDark(document.documentElement.classList.contains("dark"));
-    }, []);
-
-    const toggleTheme = () => {
-        setIsDark((v) => !v);
-        document.documentElement.classList.toggle("dark");
-    };
-
     // sources of truth
     const session = useSessionQuery();
     const userId = session.data?.user?.id ?? null;
@@ -244,14 +233,14 @@ export default function PortalApplicationPage() {
     const resumeUrl = account?.resumeBlobURL ?? null;
 
     function formatPhone(value: string) {
-        const digits = value.replace(/\D/g, '').slice(0, 10);
+        const digits = value.replace(/\D/g, "").slice(0, 10);
 
         const parts = [];
-        if (digits.length > 0) parts.push('(' + digits.slice(0, 3));
-        if (digits.length >= 4) parts.push(') ' + digits.slice(3, 6));
-        if (digits.length >= 7) parts.push('-' + digits.slice(6, 10));
+        if (digits.length > 0) parts.push("(" + digits.slice(0, 3));
+        if (digits.length >= 4) parts.push(") " + digits.slice(3, 6));
+        if (digits.length >= 7) parts.push("-" + digits.slice(6, 10));
 
-        return parts.join('');
+        return parts.join("");
     }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -259,7 +248,7 @@ export default function PortalApplicationPage() {
         setDirty(true);
         setForm((prev) => ({
             ...prev,
-            [name]: name === 'phoneNum' ? formatPhone(value) : value
+            [name]: name === "phoneNum" ? formatPhone(value) : value
         }));
     };
 
@@ -596,7 +585,6 @@ export default function PortalApplicationPage() {
         return (
             <div
                 className="min-h-screen bg-linear-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
-                <ThemeToggle/>
                 <main className="max-w-4xl mx-auto px-6 py-20">
                     <div
                         className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
@@ -627,36 +615,6 @@ export default function PortalApplicationPage() {
     return (
         <div
             className="min-h-screen bg-linear-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
-            <ThemeToggle/>
-
-            {/* theme toggle */ }
-            <button
-                onClick={ toggleTheme }
-                className="fixed top-6 right-6 z-50 p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-gray-200 dark:border-gray-700"
-                aria-label="Toggle theme"
-                type="button"
-            >
-                { isDark ? (
-                    <svg className="w-6 h-6 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={ 2 }
-                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                        />
-                    </svg>
-                ) : (
-                    <svg className="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={ 2 }
-                            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                        />
-                    </svg>
-                ) }
-            </button>
-
             <main className="max-w-4xl mx-auto px-6 py-20">
                 {/* header */ }
                 <div className="mb-8">
@@ -742,7 +700,8 @@ export default function PortalApplicationPage() {
                                 Upload Picture <span className="text-red-500">*</span>
                             </div>
                             <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-                                Upload an image file with your face, clearly visible. The purpose of this is to allow us to put a face to your name.
+                                Upload an image file with your face, clearly visible. The purpose of this is to allow us
+                                to put a face to your name.
                             </p>
 
                             <div className="flex items-center gap-4">
@@ -1072,10 +1031,10 @@ export default function PortalApplicationPage() {
                             <input
                                 id="gpa"
                                 name="gpa"
-                                value={form.gpa}
-                                onChange={handleInputChange}
-                                onBlur={handleGpaBlur}
-                                disabled={!canEdit}
+                                value={ form.gpa }
+                                onChange={ handleInputChange }
+                                onBlur={ handleGpaBlur }
+                                disabled={ !canEdit }
                                 inputMode="decimal"
                                 className="w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                                 placeholder="e.g., 3.75"
