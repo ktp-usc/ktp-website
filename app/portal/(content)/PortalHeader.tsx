@@ -7,7 +7,7 @@ import { LogOut, User } from "lucide-react";
 
 import { useSessionQuery } from "@/client/hooks/auth";
 import { useMyAccountQuery } from "@/client/hooks/accounts";
-import ThemeToggle from "@/components/ThemeToggle";
+import ThemeToggleInline from "@/components/ThemeToggleInline";
 
 function buildDisplayName(account: any | null, sessionUser: any | null) {
     const first = (account?.firstName ?? "").trim();
@@ -91,7 +91,7 @@ export default function PortalHeader() {
                         { isLoading ? "Loading…" : fullName }
                     </span>
 
-                    <ThemeToggle/>
+                    <ThemeToggleInline/>
 
                     <Link
                         href="/portal/settings"
