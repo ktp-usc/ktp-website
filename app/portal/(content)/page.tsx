@@ -26,6 +26,7 @@ function formatDate(dateLike: string | Date | null | undefined): string {
     if (Number.isNaN(d.getTime())) return "—";
     return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
 }
+
 function statusLabel(status: ApplicationViewStatus): string {
     if (status === "NOT_STARTED") return "Not started";
     if (status === "IN_PROGRESS") return "In progress";
@@ -198,7 +199,7 @@ export default function PortalHomePage() {
                         tabIndex={ 0 }
                     >
                         <div className="p-6">
-                            <div className="flex items-start justify-between mb-4">
+                            <div className="flex items-start justify-between gap-6 mb-4">
                                 <div className="flex-1">
                                     <div className="flex items-center gap-3 mb-2">
                                         <h4 className="text-lg font-semibold text-gray-900 dark:text-white transition-colors duration-300">
@@ -222,6 +223,22 @@ export default function PortalHomePage() {
                                     </p>
                                 </div>
 
+                                <div className="flex gap-6 text-left">
+                                    <div>
+                                        <p className="text-xs text-gray-500 dark:text-white transition-colors duration-300">Major</p>
+                                        <p className="text-sm mt-2 font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">
+                                            { app?.major ?? "—" }
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-500 dark:text-white transition-colors duration-300">Year</p>
+                                        <p className="text-sm mt-2 font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">
+                                            { app?.classification ?? "—" }
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Arrow */ }
                                 <svg
                                     className="w-5 h-5 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
                                     fill="none"
@@ -231,27 +248,6 @@ export default function PortalHomePage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 }
                                           d="M9 5l7 7-7 7"/>
                                 </svg>
-                            </div>
-
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                <div>
-                                    <p className="text-xs text-gray-500 mb-1 dark:text-white transition-colors duration-300">Major</p>
-                                    <p className="text-sm font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">
-                                        { app?.major ?? "—" }
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-xs text-gray-500 mb-1 dark:text-white transition-colors duration-300">Year</p>
-                                    <p className="text-sm font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">
-                                        { app?.classification ?? "—" }
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-xs text-gray-500 mb-1 dark:text-white transition-colors duration-300">GPA</p>
-                                    <p className="text-sm font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">
-                                        { app?.gpa != null ? String(app.gpa) : "—" }
-                                    </p>
-                                </div>
                             </div>
                         </div>
                     </div>
