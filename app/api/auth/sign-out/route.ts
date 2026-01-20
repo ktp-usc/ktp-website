@@ -5,13 +5,25 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export async function GET(req: Request) {
-    await authServer.signOut(); // clears cookie via Set-Cookie
-    return NextResponse.redirect(new URL('/', req.url));
+export async function POST() {
+    // let neon auth clear the cookie
+    await authServer.signOut();
+
+    // return a normal response so Set-Cookie is preserved
+    const res = NextResponse.json({ ok: true }, { status: 200 });
+
+    // prevent any caching
+    res.headers.set('cache-control', 'no-store, max-age=0');
+
+    return res;
 }
 
-// optional: keep POST too if you use fetch elsewhere
-export async function POST(req: Request) {
+// optional GET fallback
+export async function GET() {
     await authServer.signOut();
-    return NextResponse.redirect(new URL('/', req.url));
+
+    const res = NextResponse.json({ ok: true }, { status: 200 });
+    res.headers.set('cache-control', 'no-store, max-age=0');
+
+    return res;
 }
