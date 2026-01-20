@@ -39,32 +39,23 @@ export default function PortalHeader() {
     const fullName = buildDisplayName(accountData, sessionUser);
 
     async function handleLogout() {
-        console.log('[logout] clicked', new Date().toISOString());
+        const res = await fetch("/api/auth/sign-out", {
+            method: "POST",
+            credentials: "include",
+            cache: "no-store",
+            headers: {
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({})
+        });
 
-        try {
-            const res = await fetch('/api/auth/sign-out', {
-                method: 'POST',
-                credentials: 'include',
-                cache: 'no-store',
-                redirect: 'manual'
-            });
-
-            const bodyText = await res.text().catch(() => '');
-
-            console.log('[logout] response', {
-                status: res.status,
-                redirected: res.redirected,
-                url: res.url,
-                bodyPreview: bodyText.slice(0, 200)
-            });
-        } catch (err) {
-            console.error('[logout] request failed', err);
+        if (!res.ok) {
+            const text = await res.text().catch(() => "");
+            console.error("[logout] failed", res.status, text);
+            return;
         }
 
-        // give the browser a moment to commit Set-Cookie before navigating
-        await new Promise((r) => setTimeout(r, 150));
-
-        window.location.assign('/');
+        window.location.assign("/");
     }
 
     return (
