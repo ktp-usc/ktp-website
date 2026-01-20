@@ -39,13 +39,32 @@ export default function PortalHeader() {
     const fullName = buildDisplayName(accountData, sessionUser);
 
     async function handleLogout() {
-        await fetch("/api/auth/sign-out", {
-            method: "POST",
-            credentials: "include"
-        });
+        console.log('[logout] clicked', new Date().toISOString());
 
-        // force full navigation so all session state resets
-        window.location.href = "/";
+        try {
+            const res = await fetch('/api/auth/sign-out', {
+                method: 'POST',
+                credentials: 'include',
+                cache: 'no-store',
+                redirect: 'manual'
+            });
+
+            const bodyText = await res.text().catch(() => '');
+
+            console.log('[logout] response', {
+                status: res.status,
+                redirected: res.redirected,
+                url: res.url,
+                bodyPreview: bodyText.slice(0, 200)
+            });
+        } catch (err) {
+            console.error('[logout] request failed', err);
+        }
+
+        // give the browser a moment to commit Set-Cookie before navigating
+        await new Promise((r) => setTimeout(r, 150));
+
+        window.location.assign('/');
     }
 
     return (
