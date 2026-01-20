@@ -11,7 +11,7 @@ export default async function Page({ params }: Props) {
     const headersList = await headers();
     const cookie = headersList.get('cookie') ?? '';
 
-    const baseEnv = process.env.NEXT_PUBLIC_API_BASE;
+    const baseEnv = process.env.ORIGIN_URL;
   
     const base = baseEnv ?? 'http://localhost:3000';
     let application: Application | null = null;
