@@ -466,7 +466,7 @@ export default function Home() {
                                                     growth. Whether you’re a student looking for opportunities while in college or a nonprofit
                                                     interested in working with us, we would love to hear from you!</p>
 
-                                                <p>Sincerely,<br />Luke Jannazzo<br />President, Spring 2026</p>
+                                                <p><em>Sincerely,</em><br /><strong>Luke Jannazzo</strong><br /><strong>President, Spring 2026</strong></p>
                                             </div>
                                         </div>
                                     </div>
@@ -475,8 +475,8 @@ export default function Home() {
                         </div>
 
                         {/* Network */}
-                        <div className="px-6 sm:px-8 md:px-12 lg:px-20">
-                            <div className="flex justify-center text-3xl lg:text-4xl font-semibold mt-10 mb-12 font-inter" style={{ fontWeight: 680, letterSpacing: "-0.02em" }}>
+                        <div className="px-6 sm:px-8 md:px-12 lg:px-5">
+                            <div className="flex justify-center text-3xl lg:text-4xl font-semibold mt-2 mb-12 font-inter" style={{ fontWeight: 680, letterSpacing: "-0.02em" }}>
                                 Our Network
                             </div>
                             <div className="flex flex-wrap justify-center items-center pb-10 gap-4 lg:gap-8 mb-8 min-h-40 lg:min-h-45">
