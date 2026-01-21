@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { LogOut, User } from "lucide-react";
 
-import { useSessionQuery } from "@/client/hooks/auth";
+import { useSessionQuery, useSignOutMutation } from "@/client/hooks/auth";
 import { useMyAccountQuery } from "@/client/hooks/accounts";
 import ThemeToggleInline from "@/components/ThemeToggleInline";
 
@@ -27,6 +27,7 @@ function buildDisplayName(account: any | null, sessionUser: any | null) {
 export default function PortalHeader() {
     const session = useSessionQuery();
     const account = useMyAccountQuery();
+    const signOut = useSignOutMutation();
 
     const sessionUser = session.data?.user ?? null;
     const accountData = account.data ?? null;
@@ -39,23 +40,12 @@ export default function PortalHeader() {
     const fullName = buildDisplayName(accountData, sessionUser);
 
     async function handleLogout() {
-        const res = await fetch("/api/auth/sign-out", {
-            method: "POST",
-            credentials: "include",
-            cache: "no-store",
-            headers: {
-                "content-type": "application/json"
-            },
-            body: JSON.stringify({})
-        });
-
-        if (!res.ok) {
-            const text = await res.text().catch(() => "");
-            console.error("[logout] failed", res.status, text);
-            return;
+        try {
+            await signOut.mutateAsync();
+            window.location.assign("/");
+        } catch (err) {
+            console.error("[logout] failed", err);
         }
-
-        window.location.assign("/");
     }
 
     return (
