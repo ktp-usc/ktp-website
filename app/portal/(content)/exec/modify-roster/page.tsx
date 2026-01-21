@@ -135,10 +135,10 @@ export default function ModifyRoster() {
     };
 
     return (
-        <div className="w-full max-w-7xl mx-auto px-4 py-8">
+        <div className="w-full max-w-7xl mx-auto px-4 py-8 bg-transparent transition-colors duration-300">
             <div className="mb-8">
-                <h1 className="text-4xl font-bold mb-2">Modify Chapter Roster</h1>
-                <p className="text-gray-600">Manage member types and executive positions for all chapter members.</p>
+                <h1 className="text-4xl font-bold mb-2 text-gray-900 dark:text-white transition-colors duration-300">Modify Chapter Roster</h1>
+                <p className="text-gray-600 dark:text-gray-400 transition-colors duration-300">Manage member types and executive positions for all chapter members.</p>
             </div>
 
             {/* Filter Tabs */ }
@@ -148,7 +148,13 @@ export default function ModifyRoster() {
                         key={ filter }
                         variant={ activeFilter === filter ? "default" : "outline" }
                         onClick={ () => setActiveFilter(filter) }
-                        className="cursor-pointer"
+                        className={
+                            `cursor-pointer transition-colors ${
+                                activeFilter === filter
+                                    ? ""
+                                    : "text-gray-900 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 dark:hover:text-white"
+                            }`
+                        }
                     >
                         { filter }
                         <span className="ml-2 text-sm font-semibold">
@@ -167,11 +173,11 @@ export default function ModifyRoster() {
                 </CardHeader>
                 <CardContent>
                     { isLoading ? (
-                        <div className="text-center py-8 text-gray-500">Loading roster…</div>
+                        <div className="text-center py-8 text-gray-500 dark:text-gray-400 transition-colors duration-300">Loading roster…</div>
                     ) : isError ? (
-                        <div className="text-center py-8 text-red-500">Failed to load roster.</div>
+                        <div className="text-center py-8 text-red-500 dark:text-red-400 transition-colors duration-300">Failed to load roster.</div>
                     ) : filteredMembers.length === 0 ? (
-                        <div className="text-center py-8 text-gray-500">No members found in this category.</div>
+                        <div className="text-center py-8 text-gray-500 dark:text-gray-400 transition-colors duration-300">No members found in this category.</div>
                     ) : (
                         <div className="overflow-x-auto">
                             <Table>
@@ -188,10 +194,10 @@ export default function ModifyRoster() {
                                 <TableBody>
                                     { filteredMembers.map((member) => (
                                         <TableRow key={ member.id }>
-                                            <TableCell className="font-medium">{ member.name }</TableCell>
+                                            <TableCell className="font-medium text-gray-900 dark:text-gray-100 transition-colors duration-300">{ member.name }</TableCell>
                                             <TableCell
-                                                className="text-sm capitalize">{ member.classification }</TableCell>
-                                            <TableCell className="text-sm">{ member.major }</TableCell>
+                                                className="text-sm capitalize text-gray-700 dark:text-gray-300 transition-colors duration-300">{ member.classification }</TableCell>
+                                            <TableCell className="text-sm text-gray-700 dark:text-gray-300 transition-colors duration-300">{ member.major }</TableCell>
 
                                             {/* Type Selector */ }
                                             <TableCell>
@@ -230,7 +236,7 @@ export default function ModifyRoster() {
                                                         </SelectContent>
                                                     </Select>
                                                 ) : (
-                                                    <span className="text-sm text-gray-500">—</span>
+                                                    <span className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">—</span>
                                                 ) }
                                             </TableCell>
                                             <TableCell className="text-right">
@@ -249,7 +255,7 @@ export default function ModifyRoster() {
             <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card>
                     <CardHeader className="pb-3">
-                        <CardTitle className="text-sm font-medium text-gray-600">Active Members</CardTitle>
+                        <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 transition-colors duration-300">Active Members</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div
@@ -259,7 +265,7 @@ export default function ModifyRoster() {
 
                 <Card>
                     <CardHeader className="pb-3">
-                        <CardTitle className="text-sm font-medium text-gray-600">Exec Members</CardTitle>
+                        <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 transition-colors duration-300">Exec Members</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold">{ memberRows.filter((m) => m.type === "Exec").length }</div>
@@ -268,7 +274,7 @@ export default function ModifyRoster() {
 
                 <Card>
                     <CardHeader className="pb-3">
-                        <CardTitle className="text-sm font-medium text-gray-600">New Members</CardTitle>
+                        <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 transition-colors duration-300">New Members</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div
@@ -286,7 +292,7 @@ function DeleteAccountButton({ accountId, accountName }: { accountId: string; ac
   return (
     <Button
       variant="ghost"
-      className="text-red-600 hover:text-red-700"
+      className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors duration-200"
       size="sm"
       onClick={() => {
         const ok = window.confirm(`Delete ${accountName}? This cannot be undone.`);
