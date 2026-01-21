@@ -7,7 +7,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { User } from "lucide-react";
 
-import { useSessionQuery } from "@/client/hooks/auth";
+import { useSessionQuery, useSignOutMutation } from "@/client/hooks/auth";
 import {
     useMyAccountQuery,
     useUpdateMyAccountMutation,
@@ -40,6 +40,7 @@ export default function SettingsPage() {
 
     // new setup: session + /api/accounts/me are the sources of truth
     const session = useSessionQuery();
+    const signOut = useSignOutMutation();
     const userId = session.data?.user?.id ?? null;
 
     const accountQuery = useMyAccountQuery();
@@ -218,6 +219,16 @@ export default function SettingsPage() {
             toast.error("Failed to upload resume");
         } finally {
             e.target.value = "";
+        }
+    }
+
+    async function handleLogout() {
+        try {
+            await signOut.mutateAsync();
+            window.location.assign("/");
+        } catch (err) {
+            console.error("[logout] failed", err);
+            toast.error("Failed to log out");
         }
     }
 
@@ -569,12 +580,11 @@ export default function SettingsPage() {
 
                             <button
                                 type="button"
-                                onClick={ () => {
-                                    window.location.href = "/api/auth/sign-out";
-                                } }
+                                onClick={ handleLogout }
+                                disabled={ signOut.isPending }
                                 className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                             >
-                                Logout
+                                { signOut.isPending ? "Logging out…" : "Logout" }
                             </button>
                         </div>
                     </div>
