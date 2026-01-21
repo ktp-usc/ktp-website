@@ -49,7 +49,7 @@ type FormState = {
     major: string;
     minor: string;
     gpa: string;
-    extenuating: string;
+    circumstance: string;
     reason: string;
 
     // read-only (from db: applications.eventsAttended)
@@ -117,10 +117,7 @@ function formFromSources(app: any | null, account: any | null): FormState {
         major: normalizeString(app?.major),
         minor: normalizeString(app?.minor),
         gpa: app?.gpa != null ? String(app.gpa) : "",
-        extenuating:
-            normalizeString(app?.extenuating) ||
-            normalizeString(app?.extenuatingCircumstances) ||
-            normalizeString(app?.circumstance),
+        circumstance: normalizeString(app?.circumstance),
         reason: normalizeString(app?.reason),
 
         // read-only from db
@@ -281,7 +278,7 @@ export default function PortalApplicationPage() {
             reason: form.reason.trim() || null,
 
             preferredFirstName: form.preferredFirstName.trim() || null,
-            extenuating: form.extenuating.trim() || null,
+            circumstance: form.circumstance.trim() || null,
             linkedin: form.linkedin.trim() || null,
             github: form.github.trim() || null,
 
@@ -1081,7 +1078,7 @@ export default function PortalApplicationPage() {
 
                         {/* extenuating */ }
                         <div className="md:col-span-2">
-                            <label htmlFor="extenuating"
+                            <label htmlFor="circumstance"
                                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Extenuating Circumstances
                             </label>
@@ -1090,9 +1087,9 @@ export default function PortalApplicationPage() {
                                 like us to consider.
                             </p>
                             <textarea
-                                id="extenuating"
-                                name="extenuating"
-                                value={ form.extenuating }
+                                id="circumstance"
+                                name="circumstance"
+                                value={ form.circumstance }
                                 onChange={ handleInputChange }
                                 disabled={ !canEdit }
                                 rows={ 4 }
