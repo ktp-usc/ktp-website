@@ -8,6 +8,6 @@ export default neonAuthMiddleware({
 export const config = {
     matcher: [
         // Protected routes requiring authentication
-        "/account/:path*"
+        "/portal/:path*"
     ]
 };
