@@ -95,7 +95,7 @@ function PhotoStrip({ images }: { images: string[] }) {
                     {images.map((src, i) => (
                         <div
                             key={i}
-                            className="relative aspect-[3/2] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition"
+                            className="relative aspect-3/2 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition"
                         >
                             <Image
                                 src={src}
@@ -217,7 +217,7 @@ function TypeTwoLines({
 export default function Home() {
     return (
         <div className="font-sans min-h-screen flex flex-col overflow-x-clip">
-            <main className="flex flex-col items-center flex-grow pt-4 px-8 pb-0">
+            <main className="flex flex-col items-center grow pt-4 px-8 pb-0">
                 {/* Background blobs */}
                 <div className="flex flex-row justify-center xl:justify-between mb-0 px-6 sm:px-8 md:px-12 lg:px-20 pointer-events-none">
                     <div className="absolute inset-0 blob-c z-0 hidden md:block">
@@ -260,10 +260,10 @@ export default function Home() {
                                 {/* Collage */}
                                 <div className="lg:col-span-6 order-first lg:order-last">
                                     <div className="relative w-full overflow-visible flex justify-center">
-                                        <div className="collage-scale relative w-[560px] h-[420px] md:w-[720px] md:h-[480px]">
+                                        <div className="collage-scale relative z-0 w-140 h-105 md:w-180 md:h-120">
                                             {/* Top-left */}
                                             <div
-                                                className="absolute top-0 left-[6%] z-20 rounded-xl overflow-hidden border-8"
+                                                className="absolute top-0 left-[6%] z-10 rounded-xl overflow-hidden border-8"
                                                 style={{
                                                     width: "48%",
                                                     height: "44%",
@@ -281,7 +281,7 @@ export default function Home() {
 
                                             {/* Top-right */}
                                             <div
-                                                className="absolute top-0 right-[2%] z-10 rounded-xl overflow-hidden border-8"
+                                                className="absolute top-0 right-[2%] z-0 rounded-xl overflow-hidden border-8"
                                                 style={{
                                                     width: "35%",
                                                     height: "50%",
@@ -299,7 +299,7 @@ export default function Home() {
 
                                             {/* center */}
                                             <div
-                                                className="absolute z-50 rounded-xl overflow-hidden border-8 shadow-xl"
+                                                className="absolute z-20 rounded-xl overflow-hidden border-8 shadow-xl"
                                                 style={{
                                                     left: "55%",
                                                     top: "28%",
@@ -319,7 +319,7 @@ export default function Home() {
 
                                             {/* bottom-left */}
                                             <div
-                                                className="absolute z-30 rounded-xl overflow-hidden border-8"
+                                                className="absolute z-10 rounded-xl overflow-hidden border-8"
                                                 style={{
                                                     bottom: "3%",
                                                     left: "5%",
@@ -339,7 +339,7 @@ export default function Home() {
 
                                             {/* bottom-right */}
                                             <div
-                                                className="absolute z-40 rounded-xl overflow-hidden border-8"
+                                                className="absolute z-10 rounded-xl overflow-hidden border-8"
                                                 style={{
                                                     bottom: "5%",
                                                     right: "-5%",
@@ -577,7 +577,7 @@ export default function Home() {
                             <div className="flex justify-center text-3xl lg:text-4xl font-semibold mt-10 mb-12 font-inter" style={{ fontWeight: 680, letterSpacing: "-0.02em" }}>
                                 Our Network
                             </div>
-                            <div className="flex flex-wrap justify-center items-center pb-10 gap-4 lg:gap-8 mb-8 min-h-[160px] lg:min-h-[180px]">
+                            <div className="flex flex-wrap justify-center items-center pb-10 gap-4 lg:gap-8 mb-8 min-h-40 lg:min-h-45">
                                 {networkCompanies.map((company, index) => (
                                     <Image
                                         key={company.alt}
