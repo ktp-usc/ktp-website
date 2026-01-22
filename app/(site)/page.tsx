@@ -12,28 +12,6 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Element } from "react-scroll";
 
-// Project data
-const data = [
-    {
-        id: 1,
-        title: "SC Economics",
-        text: "The South Carolina Council on Economic Education promotes financial and economic literacy for students and teachers across the state. Our members are collaborating directly with the organization’s executive leadership to design and implement a digital solution that streamlines operations and strengthens the impact of economic education throughout South Carolina.",
-        image: "/partners/scecon.png",
-    },
-    {
-        id: 2,
-        title: "Ella's Stuff A Stocking",
-        text: "Ella’s Stuff a Stocking is a holiday donation drive established in memory of Gabriella Shumate, dedicated to spreading joy by providing gifts and essentials to those in need during the holiday season. Our team is rebuilding their site from the ground up, creating a reliable, user-friendly platform that enhances community engagement and ensures the continued success of their annual giving campaign.",
-        image: "/partners/ellas.png",
-    },
-    {
-        id: 3,
-        title: "Wheels Harbison Area Transit",
-        text: "Wheels Harbison Area Transit is a local nonprofit that provides essential mobility services to low-income seniors and disabled residents in the Harbison area. Our team is developing a professional website and digital presence for Wheels Harbison, enabling them to share their mission, accept online donations, and attract corporate sponsorships to sustain their operations.",
-        image: "/partners/wheels.png",
-    },
-];
-
 // Network company data
 const networkCompanies = [
     { src: "/network/google.png", alt: "Google" },
@@ -488,93 +466,17 @@ export default function Home() {
                                                     growth. Whether you’re a student looking for opportunities while in college or a nonprofit
                                                     interested in working with us, we would love to hear from you!</p>
 
-                                                <p>Sincerely,<br />Luke Jannazzo<br />President, Spring 2026</p>
+                                                <p><em>Sincerely,</em><br /><strong>Luke Jannazzo</strong><br /><strong>President, Spring 2026</strong></p>
                                             </div>
                                         </div>
                                     </div>
                                 </section>
                             </Element>
-
-                            {/* History */}
-                            <Element name="history-section" id="history-section">
-                                <section className="w-full py-16">
-                                    <div className="relative max-w-6xl mx-auto bg-gray-50 rounded-2xl overflow-hidden">
-                                        <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-8 lg:gap-12 px-6 sm:px-8 md:px-12 lg:px-16 py-12">
-                                            {/* image on left */}
-                                            <div className="lg:col-span-5 xl:col-span-6 flex justify-center lg:justify-start relative order-first lg:order-first">
-                                                {/* green blob behind image */}
-                                                <div className="absolute -top-20 -left-20 z-0 blob-c pointer-events-none">
-                                                    <div className="shape-blob eight absolute" />
-                                                    <div className="shape-blob nine absolute" />
-                                                </div>
-
-                                                {/* image container */}
-                                                <div className="relative z-10 w-full max-w-md lg:max-w-lg rounded-xl overflow-hidden border-8 transform transition-transform duration-300 hover:-translate-y-3" style={{ borderLeftColor: "#d1fae5", borderRightColor: "#d1fae5", borderTopColor: "#e5e7eb", borderBottomColor: "#e5e7eb" }}>
-                                                    <Image src="/Images/history-photo.JPG" alt="KTP Alpha Class" width={900} height={600} className="object-cover w-full h-full block" priority={false} />
-                                                </div>
-                                            </div>
-
-                                            {/* text on right */}
-                                            <div className="lg:col-span-7 xl:col-span-6">
-                                                <h2 className="text-4xl lg:text-5xl font-extrabold mb-6 leading-tight text-center">History</h2>
-
-                                                <p className="indent-8 mb-6 text-gray-700 text-base md:text-lg leading-relaxed max-w-2xl text-center">
-                                                    Kappa Theta Pi is a professional technology fraternity focused on
-                                                    building a strong community of tech-driven students across the
-                                                    country. Founded in 2012 at the University of Michigan by seven
-                                                    students with a shared passion for technology, we’ve grown into
-                                                    a national organization guided by our motto, “For the Love of
-                                                    Technology.”
-                                                </p>
-
-                                                <p className="indent-6 text-gray-700 text-base md:text-lg leading-relaxed max-w-2xl text-center">
-                                                    Today, we continue to support and inspire new generations
-                                                    of students through hands-on learning and collaboration. We’re
-                                                    excited to introduce the 2025 Alpha Class, who put their skills
-                                                    to work during the rush process by partnering with three non-profits
-                                                    and making a positive impact on our local community.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </section>
-                            </Element>
-                        </div>
-
-                        {/* Projects */}
-                        <div className="max-w-3xl w-full mx-auto mb-32">
-                            <h2 className="relative z-10 text-3xl font-bold text-center mt-10">Ongoing Projects</h2>
-                            <div className="relative z-10">
-                                <Carousel className="w-full border-2 border-gray-400 rounded-xl p-6 shadow-md mt-4">
-                                    <CarouselContent>
-                                        {data.map((p) => (
-                                            <CarouselItem key={p.id} className="w-full">
-                                                <div className="flex flex-col md:flex-row items-start">
-                                                    <div className="w-full md:w-1/2 p-2">
-                                                        <h2 className="text-xl font-semibold mb-2 text-gray-900">{p.title}</h2>
-                                                        <p className="leading-relaxed text-gray-700">{p.text}</p>
-                                                    </div>
-
-                                                    <div className="relative w-full md:w-1/2 h-64 md:h-auto p-4 flex items-center justify-center">
-                                                        <div className="relative w-full h-full overflow-hidden rounded-xl transform transition-transform duration-300 hover:-translate-y-3">
-                                                            <AspectRatio ratio={5 / 4}>
-                                                                <Image src={p.image} alt={`${p.title} logo`} fill className="object-cover w-full max-w-full" />
-                                                            </AspectRatio>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </CarouselItem>
-                                        ))}
-                                    </CarouselContent>
-                                    <CarouselPrevious aria-label="Previous" />
-                                    <CarouselNext aria-label="Next" />
-                                </Carousel>
-                            </div>
                         </div>
 
                         {/* Network */}
-                        <div className="px-6 sm:px-8 md:px-12 lg:px-20">
-                            <div className="flex justify-center text-3xl lg:text-4xl font-semibold mt-10 mb-12 font-inter" style={{ fontWeight: 680, letterSpacing: "-0.02em" }}>
+                        <div className="px-6 sm:px-8 md:px-12 lg:px-5">
+                            <div className="flex justify-center text-3xl lg:text-4xl font-semibold mt-2 mb-12 font-inter" style={{ fontWeight: 680, letterSpacing: "-0.02em" }}>
                                 Our Network
                             </div>
                             <div className="flex flex-wrap justify-center items-center pb-10 gap-4 lg:gap-8 mb-8 min-h-40 lg:min-h-45">

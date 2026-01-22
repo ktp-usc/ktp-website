@@ -351,13 +351,7 @@ export default function OurWork() {
                                     About Symposium Night
                                 </h3>
                                 <p className="text-sm md:text-base text-gray-600 text-center leading-relaxed font-medium">
-                                    Symposium night is an event where each team showcases the culmination of their work
-                                    with the nonprofits they have partnered with
-                                    throughout the semester. It is an opportunity for teams to present their projects to
-                                    clients, faculty advisors, and peers, highlighting
-                                    the impact of their contributions and celebrating the collaborative efforts that
-                                    have driven positive change.
-
+                                    The KTP Partner Symposium is the flagship showcase of our semester-long nonprofit project engagements. It marks the moment our newest members transition from potential to proven leaders by presenting their solutions developed for our nonprofit partners. Attended by our nonprofit partners, University administration, and staff, the Symposium highlights the intersection of technical excellence and social responsibility, celebrating the collaborative effort to build technology for good.
                                 </p>
                             </div>
                         </div>
