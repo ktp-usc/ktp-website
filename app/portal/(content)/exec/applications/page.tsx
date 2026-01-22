@@ -2,15 +2,12 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Flag } from 'lucide-react';
 import type { applicationStatus } from '@prisma/client';
 
-import { fetchJson } from '@/client/api/jsonutils';
-import { qk } from '@/client/queries/keys';
-import { useApplicationsQuery } from '@/client/hooks/applications';
+import { useApplicationsQuery, useSetApplicationFlagMutation, useDeleteApplicationMutation } from '@/client/hooks/applications';
 
 /* ---------------- Types ---------------- */
 
@@ -78,11 +75,83 @@ function StatusPill({ status }: { status: ApplicationStatusUI }) {
     return <span className={`px-3 py-1 rounded-full text-xs font-medium border ${color}`}>{STATUS_LABELS[status]}</span>;
 }
 
+function ApplicationCardRow({
+    app,
+    onNavigate,
+    onDelete
+}: {
+    app: ApplicationRow;
+    onNavigate: (id: string) => void;
+    onDelete: (id: string, appName: string, mutation: ReturnType<typeof useDeleteApplicationMutation>) => void;
+}) {
+    const setFlag = useSetApplicationFlagMutation(app.id);
+    const deleteMutation = useDeleteApplicationMutation(app.id);
+
+    const onToggleFlag = () => {
+        setFlag.mutate(!app.flagged);
+    };
+
+    return (
+        <Card
+            key={app.id}
+            onClick={() => onNavigate(app.id)}
+            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md hover:shadow-lg
+                       transition-all cursor-pointer overflow-hidden"
+        >
+            <CardContent className="p-4 sm:p-6">
+                <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                        <div className="flex items-center gap-3 flex-wrap">
+                            <h2 className="text-base font-semibold text-gray-900 dark:text-white transition-colors duration-300">{app.name}</h2>
+
+                            <StatusPill status={app.status} />
+
+                            {app.flagged ? <Flag className="w-4 h-4 text-red-500" /> : null}
+                        </div>
+
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 break-all transition-colors duration-300">{app.email}</p>
+                    </div>
+
+                    <div
+                        className="flex items-center gap-2 shrink-0"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                        }}
+                    >
+                        <Button
+                            size="sm"
+                            className="h-8 px-3"
+                            variant="outline"
+                            onClick={onToggleFlag}
+                            disabled={setFlag.isPending}
+                        >
+                            {app.flagged ? 'Unflag' : 'Flag'}
+                        </Button>
+
+                        <Button
+                            size="sm"
+                            className="h-8 px-3"
+                            variant="destructive"
+                            onClick={() => onDelete(app.id, app.name, deleteMutation)}
+                            disabled={deleteMutation.isPending}
+                        >
+                            Delete
+                        </Button>
+
+                        <svg className="w-5 h-5 text-gray-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
 /* ---------------- Page ---------------- */
 
 export default function ExecApplicationsPage() {
     const router = useRouter();
-    const qc = useQueryClient();
 
     // ✅ new hook returns { items, total }
     const { data, isFetching, isError } = useApplicationsQuery({});
@@ -121,42 +190,15 @@ export default function ExecApplicationsPage() {
         return list.map((a) => a.email).join('; ');
     }, [applications, emailStatus]);
 
-    // ✅ new spec: PATCH /api/applications/[id]/flag { isFlagged: boolean }
-    const setFlagMutation = useMutation({
-        mutationFn: ({ id, isFlagged }: { id: string; isFlagged: boolean }) =>
-            fetchJson(`/api/applications/${id}/flag`, {
-                method: 'PATCH',
-                body: JSON.stringify({ isFlagged })
-            }),
-        onSuccess: async (_data, vars) => {
-            await qc.invalidateQueries({ queryKey: qk.application(vars.id) });
-            await qc.invalidateQueries({ queryKey: qk.applications({}) });
-        }
-    });
-
-    const deleteMutation = useMutation({
-        mutationFn: ({ id }: { id: string }) => fetchJson(`/api/applications/${id}`, { method: 'DELETE' }),
-        onSuccess: async () => {
-            await qc.invalidateQueries({ queryKey: qk.applications({}) });
-        }
-    });
-
-    const toggleFlag = (id: string) => {
-        const app = applications.find((a) => a.id === id);
-        if (!app) return;
-
-        const next = !app.flagged;
-        const confirmed = window.confirm(next ? 'Flag this application?' : 'Remove flag from this application?');
+    const deleteApplication = (
+        id: string,
+        appName: string,
+        mutation: ReturnType<typeof useDeleteApplicationMutation>
+    ) => {
+        const confirmed = window.confirm(`Are you sure you want to delete the application for ${appName}? This cannot be undone.`);
         if (!confirmed) return;
 
-        setFlagMutation.mutate({ id, isFlagged: next });
-    };
-
-    const deleteApplication = (id: string) => {
-        const confirmed = window.confirm('Are you sure you want to delete this application? This cannot be undone.');
-        if (!confirmed) return;
-
-        deleteMutation.mutate({ id });
+        mutation.mutate();
     };
 
     const copyEmails = async () => {
@@ -168,7 +210,7 @@ export default function ExecApplicationsPage() {
         alert('Emails copied to clipboard');
     };
 
-    
+
     return (
         <main className="max-w-7xl mx-auto px-6 py-8 bg-transparent transition-colors duration-300">
             <div className="mb-8">
@@ -233,59 +275,12 @@ export default function ExecApplicationsPage() {
 
             <div className="mt-6 space-y-4">
                 {filteredApplications.map((app) => (
-                    <Card
+                    <ApplicationCardRow
                         key={app.id}
-                        onClick={() => router.push(`/exec/applications/${app.id}`)}
-                        className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md hover:shadow-lg
-                       transition-all cursor-pointer overflow-hidden"
-                    >
-                        <CardContent className="p-4 sm:p-6">
-                            <div className="flex items-start justify-between gap-4">
-                                <div className="min-w-0">
-                                    <div className="flex items-center gap-3 flex-wrap">
-                                        <h2 className="text-base font-semibold text-gray-900 dark:text-white transition-colors duration-300">{app.name}</h2>
-
-                                        <StatusPill status={app.status} />
-
-                                        {app.flagged ? <Flag className="w-4 h-4 text-red-500" /> : null}
-                                    </div>
-
-                                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 break-all transition-colors duration-300">{app.email}</p>
-                                </div>
-
-                                <div
-                                    className="flex items-center gap-2 shrink-0"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                    }}
-                                >
-                                    <Button
-                                        size="sm"
-                                        className="h-8 px-3"
-                                        variant="outline"
-                                        onClick={() => toggleFlag(app.id)}
-                                        disabled={setFlagMutation.isPending}
-                                    >
-                                        {app.flagged ? 'Unflag' : 'Flag'}
-                                    </Button>
-
-                                    <Button
-                                        size="sm"
-                                        className="h-8 px-3"
-                                        variant="destructive"
-                                        onClick={() => deleteApplication(app.id)}
-                                        disabled={deleteMutation.isPending}
-                                    >
-                                        Delete
-                                    </Button>
-
-                                    <svg className="w-5 h-5 text-gray-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                        app={app}
+                        onNavigate={(id) => router.push(`/exec/applications/${ id }`)}
+                        onDelete={deleteApplication}
+                    />
                 ))}
 
                 {!isFetching && filteredApplications.length === 0 ? (
