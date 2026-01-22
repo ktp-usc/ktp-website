@@ -11,7 +11,7 @@ import { useApplicationsQuery, useSetApplicationFlagMutation, useDeleteApplicati
 
 /* ---------------- Types ---------------- */
 
-type ApplicationStatusUI = 0 | 1 | 2 | 3 | 4 | 5;
+type ApplicationStatusUI = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 type ApplicationRow = {
     id: string;
@@ -24,32 +24,33 @@ type ApplicationRow = {
 /* ---------------- Status Helpers ---------------- */
 
 const STATUS_LABELS: Record<ApplicationStatusUI, string> = {
-    0: 'Closed',
-    1: 'Rejected',
-    2: 'Applied',
-    3: 'Interviewed',
-    4: 'Bid Offered',
-    5: 'Bid Accepted'
+    0: 'In Progress',
+    1: 'Closed',
+    2: 'Rejected',
+    3: 'Applied',
+    4: 'Interviewed',
+    5: 'Bid Offered',
+    6: 'Bid Accepted'
 };
 
 function mapOverrideToUi(override: applicationStatus): ApplicationStatusUI {
     switch (override) {
         case 'CLOSED':
-            return 0;
-        case 'BID_DECLINED':
             return 1;
+        case 'BID_DECLINED':
+            return 2;
         case 'UNDER_REVIEW':
-            return 2;
+            return 3;
         case 'WAITLIST':
-            return 3;
-        case 'INTERVIEW':
-            return 3;
-        case 'BID_OFFERED':
             return 4;
-        case 'BID_ACCEPTED':
+        case 'INTERVIEW':
+            return 4;
+        case 'BID_OFFERED':
             return 5;
+        case 'BID_ACCEPTED':
+            return 6;
         default:
-            return 2;
+            return 3;
     }
 }
 
@@ -59,16 +60,16 @@ function deriveUiStatus(app: any): ApplicationStatusUI {
     const latestOverride = app.comments?.[0]?.statusOverride ?? null;
     if (latestOverride) return mapOverrideToUi(latestOverride);
 
-    // fallback: if submittedAt exists, treat as applied
-    if (app.submittedAt) return 2;
-    return 2;
+    // fallback: if submittedAt exists, treat as applied; otherwise in progress
+    if (app.submittedAt) return 3;
+    return 0;
 }
 
 function StatusPill({ status }: { status: ApplicationStatusUI }) {
     const color =
-        status === 5
+        status === 6
             ? 'bg-green-100 text-green-700 border-green-200'
-            : status === 4
+            : status === 5
                 ? 'bg-blue-100 text-blue-700 border-blue-200'
                 : 'bg-gray-100 text-gray-700 border-gray-200';
 
