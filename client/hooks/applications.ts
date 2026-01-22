@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchJson } from "@/client/api/fetcher";
+import { fetchJson } from "@/client/api/jsonutils";
 import { qk } from "@/client/queries/keys";
 import { applications as Application } from "@prisma/client";
 

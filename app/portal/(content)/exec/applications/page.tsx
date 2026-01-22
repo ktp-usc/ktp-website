@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Flag } from 'lucide-react';
 import type { applicationStatus } from '@prisma/client';
 
-import { fetchJson } from '@/client/api/fetcher';
+import { fetchJson } from '@/client/api/jsonutils';
 import { qk } from '@/client/queries/keys';
 import { useApplicationsQuery } from '@/client/hooks/applications';
 

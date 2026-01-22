@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { qk } from "@/client/queries/keys";
+import { postJSON } from "@/client/api/jsonutils";
 
 type SessionResponse = {
     user: { id: string; name?: string | null; email?: string | null } | null;
@@ -57,4 +58,21 @@ export function useSignOutMutation() {
         }
     });
 }
+
+export function useRequestPasswordResetMutation() {
+    return useMutation({
+        mutationFn: async (email: string) => {
+            return postJSON<{ ok: boolean }>("/api/auth/request-password-reset", { email });
+        }
+    });
+}
+
+export function useResetPasswordMutation() {
+    return useMutation({
+        mutationFn: async (args: { token?: string; code?: string; password: string }) => {
+            return postJSON<{ ok: boolean }>("/api/auth/reset-password", args);
+        }
+    });
+}
+
 
