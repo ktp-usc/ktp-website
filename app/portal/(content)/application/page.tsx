@@ -660,6 +660,12 @@ export default function PortalApplicationPage() {
                             . <em>Please note that this application will not save your progress unless you click “Save
                             Draft.”</em>
                         </p>
+                        <p>
+                            <strong>
+                                Incomplete applications will not be accepted. To verify your application is complete,
+                                check for the status "Under Review" in your portal home page once you submit.
+                            </strong>
+                        </p>
                     </div>
 
                     <div
