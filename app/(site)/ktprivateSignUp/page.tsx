@@ -174,11 +174,11 @@ export default function Application() {
 
     return (
         <div className="overflow-x-hidden">
-            <h1 className="text-5xl p4 pt-12 pb-3 font-bold text-center">Alpha Class Signup Page</h1>
-            <h2 className="text-3xl p4 pb-6 text-[#315CA9] italic font-bold text-center">Spring 2026</h2>
+            <h1 className="text-3xl p4 pt-6 font-bold text-center">Active Member Portal Signup Page</h1>
             <div className="max-w-3xl w-full mx-auto">
                 {/* Introduction */}
                 <div className="pb-20">
+                    <h3 className="text-lg p4 pt-12 pb-6">Please fill out every field!</h3>
                     <form onSubmit={handleSubmit}>
                         <FieldGroup>
                             <FieldSet>
@@ -297,7 +297,7 @@ export default function Application() {
                                             id="major"
                                             name="major"
                                             required
-                                            placeholder="IIT, CE, CS, etc..."
+                                            placeholder="Computer Science, Computer Information Systems, etc..."
                                         />
                                         <FieldDescription>
                                             <em>{`If you have multiple majors, enter as a comma-delimited list. ex: "Computer Science, Data Science"`}</em>
@@ -327,11 +327,8 @@ export default function Application() {
                                     <Field>
                                         <FieldContent>
                                             <FieldLabel>
-                                                <span className="text-md">Upload Picture <span className="text-red-500">*</span></span>
+                                                <span className="text-md">Upload Headshot <span className="text-red-500">*</span></span>
                                             </FieldLabel>
-                                            <FieldDescription>
-                                                Please include a headshot or photo to help us during the review process.
-                                            </FieldDescription>
                                         </FieldContent>
 
                                         {/* Hidden file input so we can use a styled button */}
@@ -392,11 +389,6 @@ export default function Application() {
                                             className="text-red-500">*</span></FieldLabel>
                                         <FieldDescription>
                                             PDF format only.
-                                            <br/>
-                                            <br/>
-                                            <em>{`If you don't have a resume made, quickly write-up a bullet pointed list of
-                                                 your previous jobs, leadership positions, involvement, technical projects,
-                                                 etc. Don't worry if it's not polished, we're looking at the content, not formatting.`}</em>
                                         </FieldDescription>
 
                                         {/* Hidden file input so we can style the control */}
