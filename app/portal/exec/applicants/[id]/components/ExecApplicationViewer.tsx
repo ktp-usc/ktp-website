@@ -60,7 +60,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
 
   function goBack() {
     try {
-      router.back();
+      router.push('/exec');
     } catch {
       router.push('/exec/applications');
     }
@@ -95,7 +95,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
     setDeleting(true);
     try {
       const res = await fetch(`/api/applications/${encodeURIComponent(String(app.id))}`, { method: 'DELETE' });
-      if (res.ok) router.push('/exec/applications');
+      if (res.ok) router.push('/exec/applicants');
       else alert('Delete failed');
     } catch {
       alert('Delete failed (network)');
@@ -297,6 +297,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
           </div>
 
           <div className="responses-scroll">
+            <LabeledBox label="Year" value={year} />
             <LabeledBox label="Email" value={email} />
             <LabeledBox label="Phone" value={phone} />
             <LabeledBox label="GPA" value={gpa} />

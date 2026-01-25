@@ -14,7 +14,7 @@ import { useApplicationsQuery } from '@/client/hooks/applications';
 
 /* ---------------- Types ---------------- */
 
-type ApplicationStatusUI = 0 | 1 | 2 | 3 | 4 | 5;
+type ApplicationStatusUI = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 type ApplicationRow = {
     id: string;
@@ -28,11 +28,13 @@ type ApplicationRow = {
 
 const STATUS_LABELS: Record<ApplicationStatusUI, string> = {
     0: 'Closed',
-    1: 'Rejected',
+    1: 'Bid Rejected',
     2: 'Applied',
     3: 'Interviewed',
     4: 'Bid Offered',
-    5: 'Bid Accepted'
+    5: 'Bid Accepted',
+    6: 'Incomplete',
+    7: 'Waitlisted',
 };
 
 function mapOverrideToUi(override: applicationStatus): ApplicationStatusUI {
@@ -44,26 +46,28 @@ function mapOverrideToUi(override: applicationStatus): ApplicationStatusUI {
         case 'UNDER_REVIEW':
             return 2;
         case 'WAITLIST':
-            return 3;
+            return 7;
         case 'INTERVIEW':
             return 3;
         case 'BID_OFFERED':
             return 4;
         case 'BID_ACCEPTED':
             return 5;
+        case 'INCOMPLETE':
+            return 6;
         default:
-            return 2;
+            return 6;
     }
 }
 
 function deriveUiStatus(app: any): ApplicationStatusUI {
     // ✅ new schema field name is `statusOverride` (lowercase)
     // this assumes your API returns comments sorted newest-first
-    const latestOverride = app.comments?.[0]?.statusOverride ?? null;
-    if (latestOverride) return mapOverrideToUi(latestOverride);
-
-    // fallback: if submittedAt exists, treat as applied
-    if (app.submittedAt) return 2;
+    //const latestOverride = app.comments?.[0]?.statusOverride ?? null;
+    //if (latestOverride) return mapOverrideToUi(latestOverride);
+    return mapOverrideToUi(app.status);
+    // fallback: if submitted  At exists, treat as applied
+    if (app.submittedAt != null) return 2;
     return 2;
 }
 

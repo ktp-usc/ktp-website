@@ -11,13 +11,16 @@ export default async function Page({ params }: Props) {
     const headersList = await headers();
     const cookie = headersList.get('cookie') ?? '';
 
-    const baseEnv = process.env.ORIGIN_URL;
-  
-    const base = baseEnv ?? 'http://localhost:3000';
+    // const baseEnv = process.env.ORIGIN_URL;
+    // const base = baseEnv ?? 'http://localhost:3000';
+    const proto = headersList.get('x-forwarded-proto') ?? 'http';
+    const host = headersList.get('x-forwarded-host') ?? headersList.get('host');
+    const base = host ? `${proto}://${host}` : 'http://localhost:3000';
     let application: Application | null = null;
 
     try {
         const res = await fetch(`${base}/api/applications/${id}`, { cache: 'no-store', headers: { cookie } });
+        console.log('Fetch response:', res);
         if (res.ok) {
             const payload = await res.json();
             application = (payload.data ?? payload) as Application;
@@ -46,9 +49,10 @@ export default async function Page({ params }: Props) {
             resumeUrl: '/images/fallback-resume.pdf',
             linkedin: null,
             github: null,
+            submittedAt: new Date(),
             responses: [],
             rushEvents: [],
-            status: 1,
+            status: 'INCOMPLETE',
         };
     }
 
