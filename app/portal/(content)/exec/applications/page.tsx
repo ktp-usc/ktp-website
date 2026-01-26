@@ -63,9 +63,6 @@ function deriveUiStatus(app: any): ApplicationStatusUI {
     //const latestOverride = app.comments?.[0]?.statusOverride ?? null;
     //if (latestOverride) return mapOverrideToUi(latestOverride);
     return mapOverrideToUi(app.status);
-    // fallback: if submitted  At exists, treat as applied
-    if (app.submittedAt != null) return 2;
-    return 2;
 }
 
 function StatusPill({ status }: { status: ApplicationStatusUI }) {

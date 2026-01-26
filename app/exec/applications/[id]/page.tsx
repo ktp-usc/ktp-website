@@ -38,7 +38,7 @@ export default async function Page({ params }: Props) {
             preferred_first_name: null,
             email: 'fallback@dev.com',
             phone: 'xxx-xxx-xxxx',
-            year: 'Year',
+            classification: 'Year',
             gpa: '0.0',
             extenuating: null,
             major: 'Major',
