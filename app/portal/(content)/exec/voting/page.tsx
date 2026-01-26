@@ -15,6 +15,7 @@ import {
   useVoteHistoryQuery,
   useVoteResultsQuery
 } from '@/client/hooks/votes';
+import { leaderType as LeaderType } from "@prisma/client";
 
 function formatDate(dateLike?: string | null) {
   if (!dateLike) return '—';
@@ -29,7 +30,7 @@ export default function ExecVotingPage() {
   const userId = session.data?.user?.id ?? null;
   const leaderType = account.data?.leaderType ?? null;
   const isAdmin =
-    account.data?.type === 'LEADERSHIP' || (leaderType && leaderType !== 'N_A');
+    account.data?.type === 'LEADERSHIP' || (leaderType && leaderType !== LeaderType.N_A);
   const isGateLoading = session.isFetching || (userId ? account.isFetching : false);
 
   const { data: activeData, isFetching: isQuestionLoading } = useActiveVoteQuery();

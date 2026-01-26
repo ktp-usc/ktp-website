@@ -319,11 +319,7 @@ export default function PortalHomePage() {
                             </p>
                         </Link>
 
-                        <button
-                            onClick={ () => router.push("/portal/exec/voting") }
-                            className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
-                            type="button"
-                        >
+                        <Link href="/portal/exec/voting" className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer">
                             <div className="flex items-center justify-between mb-4">
                                 <div
                                     className="p-3 bg-green-100 rounded-lg group-hover:bg-green-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
@@ -349,7 +345,7 @@ export default function PortalHomePage() {
                             <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
                                 Create questions, set eligibility, and view live results.
                             </p>
-                        </button>
+                        </Link>
                     </div>
                 </div>
             ) : null }
@@ -361,11 +357,7 @@ export default function PortalHomePage() {
                         Dashboard</h3>
 
                     <div className="grid md:grid-cols-2 gap-6">
-                        <button
-                            onClick={ () => router.push("/voting") }
-                            className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
-                            type="button"
-                        >
+                        <Link href="/portal/voting" className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer">
                             <div className="flex items-center justify-between mb-4">
                                 <div
                                     className="p-3 bg-green-100 rounded-lg group-hover:bg-green-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
@@ -391,7 +383,7 @@ export default function PortalHomePage() {
                             <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
                                 Vote on active questions when in session.
                             </p>
-                        </button>
+                        </Link>
                     </div>
                 </div>
             ) : null }
