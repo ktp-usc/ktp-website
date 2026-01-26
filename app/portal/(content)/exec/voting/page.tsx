@@ -1,9 +1,12 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
+import { useSessionQuery } from '@/client/hooks/auth';
+import { useMyAccountQuery } from '@/client/hooks/accounts';
 import {
   useActiveVoteQuery,
   useCreateVoteQuestionMutation,
@@ -21,6 +24,14 @@ function formatDate(dateLike?: string | null) {
 }
 
 export default function ExecVotingPage() {
+  const session = useSessionQuery();
+  const account = useMyAccountQuery();
+  const userId = session.data?.user?.id ?? null;
+  const leaderType = account.data?.leaderType ?? null;
+  const isAdmin =
+    account.data?.type === 'LEADERSHIP' || (leaderType && leaderType !== 'N_A');
+  const isGateLoading = session.isFetching || (userId ? account.isFetching : false);
+
   const { data: activeData, isFetching: isQuestionLoading } = useActiveVoteQuery();
   const activeQuestion = activeData?.question ?? null;
 
@@ -117,6 +128,41 @@ export default function ExecVotingPage() {
       }
     );
   };
+
+  if (!userId && !session.isFetching) {
+    return (
+      <main className="max-w-4xl mx-auto px-6 py-10">
+        <Card className="bg-white border border-gray-200 rounded-xl shadow-md">
+          <CardContent className="p-6 space-y-3">
+            <div className="text-sm text-gray-600">Sign in to access exec voting.</div>
+            <Link className="text-sm text-blue-600 hover:text-blue-700" href="/auth/sign-in">
+              Go to sign in
+            </Link>
+          </CardContent>
+        </Card>
+      </main>
+    );
+  }
+
+  if (isGateLoading) {
+    return (
+      <main className="max-w-4xl mx-auto px-6 py-10">
+        <Card className="bg-white border border-gray-200 rounded-xl shadow-md">
+          <CardContent className="p-6 text-sm text-gray-600">Checking access...</CardContent>
+        </Card>
+      </main>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <main className="max-w-4xl mx-auto px-6 py-10">
+        <Card className="bg-white border border-gray-200 rounded-xl shadow-md">
+          <CardContent className="p-6 text-sm text-gray-600">Admin access required.</CardContent>
+        </Card>
+      </main>
+    );
+  }
 
   return (
     <main className="max-w-6xl mx-auto px-6 py-10">

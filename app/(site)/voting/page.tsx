@@ -3,9 +3,18 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useSessionQuery } from '@/client/hooks/auth';
+import { useMyAccountQuery } from '@/client/hooks/accounts';
 import { useActiveVoteQuery, useSubmitVoteMutation } from '@/client/hooks/votes';
 
 export default function VotingPage() {
+  const session = useSessionQuery();
+  const account = useMyAccountQuery();
+  const userId = session.data?.user?.id ?? null;
+  const accountType = account.data?.type ?? null;
+  const isActiveMember = accountType === 'BROTHER' || accountType === 'LEADERSHIP';
+  const isGateLoading = session.isFetching || (userId ? account.isFetching : false);
+
   const { data, isFetching, isError, error: queryError } = useActiveVoteQuery();
   const activeQuestion = data?.question ?? null;
   const eligible = data?.eligible ?? false;
@@ -35,13 +44,28 @@ export default function VotingPage() {
   return (
     <main className="max-w-3xl mx-auto px-6 py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Vote</h1>
-        <p className="text-gray-600 mt-1">Cast your vote on the active question.</p>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Vote</h1>
+          <p className="text-gray-600 mt-1">Cast your vote on the active question.</p>
+        </div>
       </div>
 
       <Card className="bg-white border border-gray-200 rounded-xl shadow-md">
         <CardContent className="p-6">
-          {isFetching ? (
+          {!userId && !session.isFetching ? (
+            <div className="space-y-3">
+              <div className="text-sm text-gray-600">Sign in to access voting.</div>
+              <div>
+                <Link className="text-sm text-blue-600 hover:text-blue-700" href="/auth/sign-in">
+                  Go to sign in
+                </Link>
+              </div>
+            </div>
+          ) : isGateLoading ? (
+            <div className="text-sm text-gray-600">Checking access...</div>
+          ) : userId && !isActiveMember ? (
+            <div className="text-sm text-gray-600">Only active brothers can access voting.</div>
+          ) : isFetching ? (
             <div className="text-sm text-gray-600">Loading active question...</div>
           ) : isError ? (
             <div className="text-sm text-red-600">{(queryError as Error)?.message ?? 'Failed to load vote.'}</div>
