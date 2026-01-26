@@ -48,6 +48,7 @@ export default function ExecVotingPage() {
   const [optionInputs, setOptionInputs] = useState<string[]>(['Yes', 'No']);
   const [closesAt, setClosesAt] = useState('');
   const [makeActive, setMakeActive] = useState(true);
+  const [rolloverEligible, setRolloverEligible] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -111,12 +112,15 @@ export default function ExecVotingPage() {
       return;
     }
 
+    const eligibleAccountIds = rolloverEligible ? Array.from(eligibleIds) : undefined;
+
     createQuestionMutation.mutate(
       {
         question: cleanedQuestion,
         options: cleanedOptions,
         isActive: makeActive,
-        closesAt: closesAt ? new Date(closesAt).toISOString() : null
+        closesAt: closesAt ? new Date(closesAt).toISOString() : null,
+        eligibleAccountIds
       },
       {
         onSuccess: () => {
@@ -124,6 +128,7 @@ export default function ExecVotingPage() {
           setOptionInputs(['Yes', 'No']);
           setClosesAt('');
           setMakeActive(true);
+          setRolloverEligible(false);
         }
       }
     );
@@ -246,6 +251,20 @@ export default function ExecVotingPage() {
                     Make active immediately
                   </label>
                 </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <input
+                  id="rollover-eligible"
+                  type="checkbox"
+                  checked={rolloverEligible}
+                  onChange={(e) => setRolloverEligible(e.target.checked)}
+                  disabled={!activeQuestion || eligibleIds.size === 0}
+                  className="accent-blue-600"
+                />
+                <label htmlFor="rollover-eligible" className="text-sm text-gray-700">
+                  Keep current eligible voters for the next question
+                </label>
               </div>
 
               {createError ? <div className="text-sm text-red-600">{createError}</div> : null}
