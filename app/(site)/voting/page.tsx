@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useSessionQuery } from '@/client/hooks/auth';
 import { useMyAccountQuery } from '@/client/hooks/accounts';
 import { useActiveVoteQuery, useSubmitVoteMutation } from '@/client/hooks/votes';
+import Link from "next/link";
 
 export default function VotingPage() {
   const session = useSessionQuery();
