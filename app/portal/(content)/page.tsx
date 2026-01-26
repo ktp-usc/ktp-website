@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { applicationStatus, type as AccountType } from "@prisma/client";
 
@@ -26,6 +27,7 @@ function formatDate(dateLike: string | Date | null | undefined): string {
     if (Number.isNaN(d.getTime())) return "—";
     return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
 }
+
 function statusLabel(status: ApplicationViewStatus): string {
     if (status === "NOT_STARTED") return "Not started";
     if (status === "IN_PROGRESS") return "In progress";
@@ -198,7 +200,7 @@ export default function PortalHomePage() {
                         tabIndex={ 0 }
                     >
                         <div className="p-6">
-                            <div className="flex items-start justify-between mb-4">
+                            <div className="flex items-start justify-between gap-6 mb-4">
                                 <div className="flex-1">
                                     <div className="flex items-center gap-3 mb-2">
                                         <h4 className="text-lg font-semibold text-gray-900 dark:text-white transition-colors duration-300">
@@ -222,6 +224,22 @@ export default function PortalHomePage() {
                                     </p>
                                 </div>
 
+                                <div className="flex gap-6 text-left">
+                                    <div>
+                                        <p className="text-xs text-gray-500 dark:text-white transition-colors duration-300">Major</p>
+                                        <p className="text-sm mt-2 font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">
+                                            { app?.major ?? "—" }
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-500 dark:text-white transition-colors duration-300">Year</p>
+                                        <p className="text-sm mt-2 font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">
+                                            { app?.classification ?? "—" }
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Arrow */ }
                                 <svg
                                     className="w-5 h-5 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
                                     fill="none"
@@ -231,27 +249,6 @@ export default function PortalHomePage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 }
                                           d="M9 5l7 7-7 7"/>
                                 </svg>
-                            </div>
-
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                <div>
-                                    <p className="text-xs text-gray-500 mb-1 dark:text-white transition-colors duration-300">Major</p>
-                                    <p className="text-sm font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">
-                                        { app?.major ?? "—" }
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-xs text-gray-500 mb-1 dark:text-white transition-colors duration-300">Year</p>
-                                    <p className="text-sm font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">
-                                        { app?.classification ?? "—" }
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-xs text-gray-500 mb-1 dark:text-white transition-colors duration-300">GPA</p>
-                                    <p className="text-sm font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">
-                                        { app?.gpa != null ? String(app.gpa) : "—" }
-                                    </p>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -266,16 +263,14 @@ export default function PortalHomePage() {
                     </h3>
 
                     <div className="grid md:grid-cols-2 gap-6">
-                        <button
-                            onClick={ () => router.push("/portal/exec/applications") }
+                        <Link
+                            href="/portal/exec/applications"
                             className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
-                            type="button"
+                            aria-label="View Spring 2026 Applicants"
                         >
                             <div className="flex items-center justify-between mb-4">
-                                <div
-                                    className="p-3 bg-blue-100 rounded-lg group-hover:bg-blue-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
-                                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor"
-                                         viewBox="0 0 24 24">
+                                <div className="p-3 bg-blue-100 rounded-lg group-hover:bg-blue-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
@@ -284,10 +279,8 @@ export default function PortalHomePage() {
                                         />
                                     </svg>
                                 </div>
-                                <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"
-                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 }
-                                          d="M9 5l7 7-7 7"/>
+                                <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 } d="M9 5l7 7-7 7" />
                                 </svg>
                             </div>
                             <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
@@ -296,7 +289,35 @@ export default function PortalHomePage() {
                             <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
                                 Review and manage all applications for the Spring 2026 recruitment cycle.
                             </p>
-                        </button>
+                        </Link>
+
+                        <Link
+                            href="/portal/exec/modify-roster"
+                            className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
+                            aria-label="Modify Chapter Roster"
+                        >
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="p-3 bg-purple-100 rounded-lg group-hover:bg-purple-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                                    <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={ 2 }
+                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                                        />
+                                    </svg>
+                                </div>
+                                <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 } d="M9 5l7 7-7 7" />
+                                </svg>
+                            </div>
+                            <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                                Modify Chapter Roster
+                            </h4>
+                            <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                                Update member information and manage the active chapter roster.
+                            </p>
+                        </Link>
 
                         <button
                             onClick={ () => router.push("/portal/exec/voting") }
@@ -327,38 +348,6 @@ export default function PortalHomePage() {
                             </h4>
                             <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
                                 Create questions, set eligibility, and view live results.
-                            </p>
-                        </button>
-
-                        <button
-                            onClick={ () => router.push("/portal/exec/roster") }
-                            className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
-                            type="button"
-                        >
-                            <div className="flex items-center justify-between mb-4">
-                                <div
-                                    className="p-3 bg-purple-100 rounded-lg group-hover:bg-purple-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
-                                    <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor"
-                                         viewBox="0 0 24 24">
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={ 2 }
-                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                                        />
-                                    </svg>
-                                </div>
-                                <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"
-                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 }
-                                          d="M9 5l7 7-7 7"/>
-                                </svg>
-                            </div>
-                            <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
-                                Modify Chapter Roster
-                            </h4>
-                            <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
-                                Update member information and manage the active chapter roster.
                             </p>
                         </button>
                     </div>
