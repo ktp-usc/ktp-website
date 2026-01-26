@@ -50,9 +50,22 @@ export default function ExecVotingPage() {
   const [makeActive, setMakeActive] = useState(true);
   const [createError, setCreateError] = useState<string | null>(null);
 
+  const setsEqual = (a: Set<string>, b: Set<string>) => {
+    if (a.size !== b.size) return false;
+    for (const v of a) {
+      if (!b.has(v)) return false;
+    }
+    return true;
+  };
+
   useEffect(() => {
-    if (!activeQuestion?.id) return;
-    setEligibleIds(new Set(voters.filter((v) => v.eligible).map((v) => v.id)));
+    if (!activeQuestion?.id) {
+      setEligibleIds((prev) => (prev.size ? new Set() : prev));
+      return;
+    }
+
+    const next = new Set(voters.filter((v) => v.eligible).map((v) => v.id));
+    setEligibleIds((prev) => (setsEqual(prev, next) ? prev : next));
   }, [activeQuestion?.id, voters]);
 
   const eligibleVoters = useMemo(() => voters.filter((v) => eligibleIds.has(v.id)), [voters, eligibleIds]);
