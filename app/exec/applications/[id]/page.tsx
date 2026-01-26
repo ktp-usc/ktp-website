@@ -20,7 +20,6 @@ export default async function Page({ params }: Props) {
 
     try {
         const res = await fetch(`${base}/api/applications/${id}`, { cache: 'no-store', headers: { cookie } });
-        console.log('Fetch response:', res);
         if (res.ok) {
             const payload = await res.json();
             application = (payload.data ?? payload) as Application;
