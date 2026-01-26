@@ -318,6 +318,34 @@ export default function PortalHomePage() {
                                 Update member information and manage the active chapter roster.
                             </p>
                         </Link>
+
+                        <Link href="/portal/exec/voting" className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer">
+                            <div className="flex items-center justify-between mb-4">
+                                <div
+                                    className="p-3 bg-green-100 rounded-lg group-hover:bg-green-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor"
+                                         viewBox="0 0 24 24">
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={ 2 }
+                                            d="M3 12h5l4 8 4-16 3 8h2"
+                                        />
+                                    </svg>
+                                </div>
+                                <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"
+                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 }
+                                          d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                            <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                                Run Chapter Voting
+                            </h4>
+                            <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                                Create questions, set eligibility, and view live results.
+                            </p>
+                        </Link>
                     </div>
                 </div>
             ) : null }
@@ -327,6 +355,36 @@ export default function PortalHomePage() {
                 <div className="space-y-6">
                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white transition-colors duration-300">Member
                         Dashboard</h3>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <Link href="/portal/voting" className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer">
+                            <div className="flex items-center justify-between mb-4">
+                                <div
+                                    className="p-3 bg-green-100 rounded-lg group-hover:bg-green-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor"
+                                         viewBox="0 0 24 24">
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={ 2 }
+                                            d="M3 12h5l4 8 4-16 3 8h2"
+                                        />
+                                    </svg>
+                                </div>
+                                <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"
+                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 }
+                                          d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                            <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                                Chapter Voting
+                            </h4>
+                            <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                                Vote on active questions when in session.
+                            </p>
+                        </Link>
+                    </div>
                 </div>
             ) : null }
         </main>
