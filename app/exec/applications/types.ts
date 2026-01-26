@@ -18,7 +18,7 @@ export type Application = {
 
     email: string;
     phone: string;
-    year: string;
+    classification: string;
     gpa: string;
 
     submittedAt: Date;

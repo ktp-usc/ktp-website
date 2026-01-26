@@ -305,7 +305,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
   // ---------- Fields pulled from app ----------
   const email = (getField<string>('email') ?? (app?.email as string | undefined) ?? '') as string;
   const phone = (getField<string>('phone') ?? (app?.phone as string | undefined) ?? '') as string;
-  const year = (getField<string>('year') ?? (app?.year as string | undefined) ?? '') as string;
+  const classification = (getField<string>('classification') ?? (app?.classification as string | undefined) ?? '') as string;
   const gpa = (getField<string>('gpa') ?? (app?.gpa as string | undefined) ?? '') as string;
   const major = (getField<string>('major') ?? (app?.major as string | undefined) ?? '') as string;
   const minor = (getField<string>('minor') ?? (app?.minor as string | undefined) ?? '') as string;
@@ -529,13 +529,12 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
               <div className="app-header-text">
                 <div className="name">{formattedHeaderName(app)}</div>
                 <div className="major">{major ?? 'N/A'}</div>
-                <div className="year">{year ?? 'N/A'}</div>
+                <div className="year">{classification ?? 'N/A'}</div>
               </div>
             </div>
           </div>
 
           <div className="responses-scroll">
-            <LabeledBox label="Year" value={year} />
             <LabeledBox label="Email" value={email} />
             <LabeledBox label="Phone" value={phone} />
             <LabeledBox label="GPA" value={gpa} />
