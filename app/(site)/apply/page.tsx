@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function ApplyPage() {
     return (
-        <main className="min-h-screen px-6 pt-16">
+        <main className="min-h-screen px-6 pt-16 mb-16">
             <div className="flex flex-col items-center">
                 {/* Next Steps */}
                 <div className="max-w-3xl w-full bg-white rounded-xl shadow-md p-8">
@@ -22,13 +22,13 @@ export default function ApplyPage() {
 
                         <ul className="list-disc pl-5 space-y-2 text-gray-700">
                             <li>
-                                Sign up for an applicant account in our portal.
+                                Go to "Sign Up" button on the top right of the site.
                             </li>
                             <li>
-                                Use your USC email so we can match you to your application.
+                                Fill out our sign-up, and use your USC email so we can match you to your application.
                             </li>
                             <li>
-                                Once your account is created, you’ll be able to access and submit your application.
+                                Once your account is created, you&apos;ll be able to access and submit your application!
                             </li>
                         </ul>
                     </div>
@@ -40,7 +40,8 @@ export default function ApplyPage() {
 
                         <ul className="list-disc pl-5 space-y-2 text-gray-700">
                             <li>
-                                Fill out all required sections carefully and review your answers.
+                                Fill out all required sections carefully and review your answers. You&apos;ll
+                                 have the opportunity to save your progress in the portal as a draft.
                             </li>
                             <li>
                                 Submit your application before the deadline listed on the site.

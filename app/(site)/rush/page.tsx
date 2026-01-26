@@ -192,11 +192,11 @@ export default function Page2() {
                                     <h3 className="text-xl sm:text-xl font-semibold mb-2">Technical Workshop</h3>
                                     <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
                                         <CalendarIcon />
-                                        <span>Wednesday, January 28, 7:00-8:30 PM</span>
+                                        <span>Thursday, January 29, 7:00-8:30 PM</span>
                                     </p>
                                     <p className="text-base text-gray-600 flex items-center gap-2 mb-4">
                                         <PinIcon />
-                                        <span>Storey Innovation Center Room 1400</span>
+                                        <span>Darla Moore School of Business Room 136</span>
                                     </p>
                                     <p className="text-base text-gray-600 leading-relaxed">
                                         Want to get a glance of what it&apos;s like joining KTP? At this event, we&apos;ll teach you the basics of
@@ -252,7 +252,7 @@ export default function Page2() {
 
                         <Accordion type="multiple" className="w-full divide-y divide-gray-200">
                             <AccordionItem value="q1">
-                                <AccordionTrigger className="py-6 text-left !text-xl sm:!text-xl font-bold text-black hover:bg-gray-50">
+                                <AccordionTrigger className="py-6 text-left text-xl! sm:text-xl! font-bold text-black hover:bg-gray-50">
                                     I&apos;m not majoring in the MCEC, can I still apply?
                                 </AccordionTrigger>
                                 <AccordionContent className="pb-6 text-gray-700 text-lg leading-relaxed">
@@ -262,7 +262,7 @@ export default function Page2() {
                             </AccordionItem>
 
                             <AccordionItem value="q2">
-                                <AccordionTrigger className="py-6 text-left !text-xl sm:!text-xl font-bold text-black hover:bg-gray-50">
+                                <AccordionTrigger className="py-6 text-left text-xl! sm:text-xl! font-bold text-black hover:bg-gray-50">
                                     How much of a time commitment is the New Member Education process?
                                 </AccordionTrigger>
                                 <AccordionContent className="pb-6 text-gray-700 text-lg leading-relaxed">
@@ -273,7 +273,7 @@ export default function Page2() {
                             </AccordionItem>
 
                             <AccordionItem value="q3">
-                                <AccordionTrigger className="py-6 text-left !text-xl sm:!text-xl font-bold text-black hover:bg-gray-50">
+                                <AccordionTrigger className="py-6 text-left text-xl! sm:text-xl! font-bold text-black hover:bg-gray-50">
                                     I&apos;m not able to attend one of the rush events. How will this affect my chances?
                                 </AccordionTrigger>
                                 <AccordionContent className="pb-6 text-gray-700 text-lg leading-relaxed">
@@ -284,7 +284,7 @@ export default function Page2() {
                             </AccordionItem>
 
                             <AccordionItem value="q4">
-                                <AccordionTrigger className="py-6 text-left !text-xl sm:!text-xl font-bold text-black hover:bg-gray-50">
+                                <AccordionTrigger className="py-6 text-left text-xl! sm:text-xl! font-bold text-black hover:bg-gray-50">
                                     Can I rush multiple professional fraternities alongside Kappa Theta Pi?
                                 </AccordionTrigger>
                                 <AccordionContent className="pb-6 text-gray-700 text-lg leading-relaxed">
@@ -294,7 +294,7 @@ export default function Page2() {
                             </AccordionItem>
 
                             <AccordionItem value="q5">
-                                <AccordionTrigger className="py-6 text-left !text-xl sm:!text-xl font-bold text-black hover:bg-gray-50">
+                                <AccordionTrigger className="py-6 text-left text-xl! sm:text-xl! font-bold text-black hover:bg-gray-50">
                                     How much are dues? Do I have to pay?
                                 </AccordionTrigger>
                                 <AccordionContent className="pb-6 text-gray-700 text-lg leading-relaxed">
@@ -306,7 +306,7 @@ export default function Page2() {
                             </AccordionItem>
 
                             <AccordionItem value="q6">
-                                <AccordionTrigger className="py-6 text-left !text-xl sm:!text-xl font-bold text-black hover:bg-gray-50">
+                                <AccordionTrigger className="py-6 text-left text-xl! sm:text-xl! font-bold text-black hover:bg-gray-50">
                                     If I&apos;m selected for an interview, what commitments should I plan for?
                                 </AccordionTrigger>
                                 <AccordionContent className="pb-6 text-gray-700 text-lg leading-relaxed">

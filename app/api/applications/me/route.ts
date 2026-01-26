@@ -82,6 +82,7 @@ export async function POST(req: Request) {
                 minor: normalizeString(body.minor),
                 resumeUrl: normalizeString(body.resumeUrl),
                 reason: normalizeString(body.reason),
+                circumstance: normalizeString(body.circumstance),
                 gpa: normalizeGpa(body.gpa) ?? null,
                 eventsAttended: normalizeStringArray(body.eventsAttended) ?? []
             }
@@ -114,6 +115,7 @@ export async function PATCH(req: Request) {
             minor: body.minor === undefined ? undefined : normalizeString(body.minor),
             resumeUrl: body.resumeUrl === undefined ? undefined : normalizeString(body.resumeUrl),
             reason: body.reason === undefined ? undefined : normalizeString(body.reason),
+            circumstance: body.circumstance === undefined ? undefined : normalizeString(body.circumstance),
             eventsAttended: normalizeStringArray(body.eventsAttended),
             gpa: normalizeGpa(body.gpa)
             // lastModified is @updatedAt so prisma handles it
@@ -165,8 +167,10 @@ export async function PATCH(req: Request) {
             });
             return ok(updated);
         } catch (e: any) {
-            // not found -> create on save
-            if (e?.code !== 'P2025') throw e;
+            if (e?.code !== 'P2025') {
+                console.error(e);
+                return serverError();
+            }
         }
 
         // if they tried to change status, but app doesn't exist, do not create
@@ -201,6 +205,7 @@ export async function PATCH(req: Request) {
                 minor: data.minor ?? null,
                 resumeUrl: data.resumeUrl ?? null,
                 reason: data.reason ?? null,
+                circumstance: data.circumstance ?? null,
                 gpa: data.gpa ?? null,
                 eventsAttended: Array.isArray(data.eventsAttended) ? data.eventsAttended : []
                 // note: do not set status here; let prisma default apply

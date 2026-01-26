@@ -7,7 +7,7 @@ export const revalidate = 0;
 
 type Ctx = { params: Promise<{ id: string }> };
 
-export async function POST(req: Request, ctx: Ctx) {
+export async function PATCH(req: Request, ctx: Ctx) {
     const authed = await requireAdmin();
     if ('response' in authed) return authed.response;
 
@@ -15,7 +15,7 @@ export async function POST(req: Request, ctx: Ctx) {
 
     try {
         const body = await req.json().catch(() => ({}));
-        const provided = body.value;
+        const provided = body.isFlagged;
 
         const current = await prisma.applications.findUnique({
             where: { id },
@@ -23,6 +23,10 @@ export async function POST(req: Request, ctx: Ctx) {
         });
 
         if (!current) return badRequest('application_not_found');
+
+        if (provided !== undefined && typeof provided !== 'boolean') {
+            return badRequest('invalid_isFlagged');
+        }
 
         const nextValue =
             typeof provided === 'boolean' ? provided : !(current.isFlagged ?? false);

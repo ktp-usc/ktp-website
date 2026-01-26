@@ -17,6 +17,7 @@ import {
   useVoteHistoryQuery,
   useVoteResultsQuery
 } from '@/client/hooks/votes';
+import { leaderType as LeaderType } from "@prisma/client";
 
 function formatDate(dateLike?: string | null) {
   if (!dateLike) return '—';
@@ -31,7 +32,7 @@ export default function ExecVotingPage() {
   const userId = session.data?.user?.id ?? null;
   const leaderType = account.data?.leaderType ?? null;
   const isAdmin =
-    account.data?.type === 'LEADERSHIP' || (leaderType && leaderType !== 'N_A');
+    account.data?.type === 'LEADERSHIP' || (leaderType && leaderType !== LeaderType.N_A);
   const isGateLoading = session.isFetching || (userId ? account.isFetching : false);
 
   const { data: activeData, isFetching: isQuestionLoading } = useActiveVoteQuery();
@@ -55,9 +56,22 @@ export default function ExecVotingPage() {
   const [rolloverEligible, setRolloverEligible] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
 
+  const setsEqual = (a: Set<string>, b: Set<string>) => {
+    if (a.size !== b.size) return false;
+    for (const v of a) {
+      if (!b.has(v)) return false;
+    }
+    return true;
+  };
+
   useEffect(() => {
-    if (!activeQuestion?.id) return;
-    setEligibleIds(new Set(voters.filter((v) => v.eligible).map((v) => v.id)));
+    if (!activeQuestion?.id) {
+      setEligibleIds((prev) => (prev.size ? new Set() : prev));
+      return;
+    }
+
+    const next = new Set(voters.filter((v) => v.eligible).map((v) => v.id));
+    setEligibleIds((prev) => (setsEqual(prev, next) ? prev : next));
   }, [activeQuestion?.id, voters]);
 
   const eligibleVoters = useMemo(() => voters.filter((v) => eligibleIds.has(v.id)), [voters, eligibleIds]);

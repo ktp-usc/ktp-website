@@ -1,8 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchJson } from "@/client/api/fetcher";
+import { fetchJson } from "@/client/api/jsonutils";
 import { qk } from "@/client/queries/keys";
+import type { accounts as PrismaAccount } from '@prisma/client';
 
-export type Account = any;
+export type Account = PrismaAccount;
+
+export type AccountsListResponse = { items: Account[]; total: number };
 
 export function useMyAccountQuery() {
     return useQuery({
@@ -87,11 +90,13 @@ export function useUploadResumeMutation() {
 }
 
 // admin list
-export function useAccountsQuery(filters: Record<string, unknown>) {
+export function useAccountsQuery(filters: Record<string, unknown> = {}) {
     const params = new URLSearchParams(filters as any).toString();
+    const url = params ? `/api/accounts?${ params }` : '/api/accounts';
+
     return useQuery({
         queryKey: qk.accounts(filters),
-        queryFn: () => fetchJson<{ items: Account[]; total: number }>(`/api/accounts?${ params }`)
+        queryFn: () => fetchJson<AccountsListResponse>(url)
     });
 }
 
@@ -114,6 +119,23 @@ export function useUpdateAccountMutation(id: string) {
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: qk.account(id) });
             qc.invalidateQueries({ queryKey: ["accounts"] });
+            qc.invalidateQueries({ queryKey: qk.accounts({}) });
+        }
+    });
+}
+
+export function useUpdateAccountByIdMutation() {
+    const qc = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ id, body }: { id: string; body: Partial<Record<string, unknown>> }) =>
+            fetchJson<Account>(`/api/accounts/${ id }`, {
+                method: 'PATCH',
+                body: JSON.stringify(body)
+            }),
+        onSuccess: async (_data, vars) => {
+            await qc.invalidateQueries({ queryKey: qk.account(vars.id) });
+            await qc.invalidateQueries({ queryKey: ['accounts'] });
         }
     });
 }
@@ -122,6 +144,9 @@ export function useDeleteAccountMutation(id: string) {
     const qc = useQueryClient();
     return useMutation({
         mutationFn: () => fetchJson<{ ok: true }>(`/api/accounts/${ id }`, { method: "DELETE" }),
-        onSuccess: () => qc.invalidateQueries({ queryKey: ["accounts"] })
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: ['accounts'] });
+            qc.invalidateQueries({ queryKey: qk.accounts({}) });
+        }
     });
 }

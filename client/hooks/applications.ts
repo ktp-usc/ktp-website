@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchJson } from "@/client/api/fetcher";
+import { fetchJson } from "@/client/api/jsonutils";
 import { qk } from "@/client/queries/keys";
 import { applications as Application } from "@prisma/client";
 
@@ -151,10 +151,8 @@ export function useCreateApplicationCommentMutation(id: string) {
 }
 
 /**
- * ✅ this is the "new spec" shape for flags:
- * PATCH /api/applications/[id]/flag with JSON { isFlagged: boolean }
- *
- * if your current backend is still POST { value }, update the backend to match this hook.
+ * ✅ flag / unflag with optimistic UI updates
+ * PATCH /api/applications/[id]/flag { isFlagged: boolean }
  */
 export function useSetApplicationFlagMutation(id: string) {
     const qc = useQueryClient();
@@ -162,10 +160,36 @@ export function useSetApplicationFlagMutation(id: string) {
     return useMutation({
         mutationFn: (isFlagged: boolean) =>
             fetchJson(`/api/applications/${ id }/flag`, {
-                method: "PATCH",
+                method: 'PATCH',
                 body: JSON.stringify({ isFlagged })
             }),
-        onSuccess: async () => {
+        onMutate: async (isFlagged) => {
+            await qc.cancelQueries({ queryKey: qk.application(id) });
+            await qc.cancelQueries({ queryKey: qk.applications({}) });
+
+            const prevApp = qc.getQueryData<Application>(qk.application(id));
+            const prevApps = qc.getQueryData<any>(qk.applications({}));
+
+            if (prevApp) {
+                qc.setQueryData<Application>(qk.application(id), { ...prevApp, isFlagged });
+            }
+
+            if (prevApps?.items) {
+                qc.setQueryData<any>(qk.applications({}), {
+                    ...prevApps,
+                    items: prevApps.items.map((a: Application) =>
+                        a.id === id ? { ...a, isFlagged } : a
+                    )
+                });
+            }
+
+            return { prevApp, prevApps };
+        },
+        onError: (_err, _vars, ctx) => {
+            if (ctx?.prevApp) qc.setQueryData(qk.application(id), ctx.prevApp);
+            if (ctx?.prevApps) qc.setQueryData(qk.applications({}), ctx.prevApps);
+        },
+        onSettled: async () => {
             await qc.invalidateQueries({ queryKey: qk.application(id) });
             await qc.invalidateQueries({ queryKey: qk.applications({}) });
         }
@@ -173,17 +197,14 @@ export function useSetApplicationFlagMutation(id: string) {
 }
 
 /**
- * Convenience wrapper for UI code that wants "toggle" semantics.
+ * Convenience toggle hook for UI usage
  */
-export function useToggleApplicationFlagMutation(id: string) {
+export function useToggleApplicationFlagMutation(id: string, current: boolean) {
     const setFlag = useSetApplicationFlagMutation(id);
 
     return useMutation({
-        mutationFn: async ({ current }: { current: boolean }) => {
+        mutationFn: async () => {
             await setFlag.mutateAsync(!current);
-        },
-        onSuccess: async () => {
-            // setFlag already invalidates, but keeping this is harmless if you want belt + suspenders
         }
     });
 }
