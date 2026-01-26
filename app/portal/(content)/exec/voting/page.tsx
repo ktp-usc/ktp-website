@@ -10,6 +10,8 @@ import { useMyAccountQuery } from '@/client/hooks/accounts';
 import {
   useActiveVoteQuery,
   useCreateVoteQuestionMutation,
+  useDeleteVoteQuestionMutation,
+  useDeleteAllVoteQuestionsMutation,
   useSetVoteEligibilityMutation,
   useVoteEligibilityQuery,
   useVoteHistoryQuery,
@@ -43,6 +45,8 @@ export default function ExecVotingPage() {
   const [eligibleIds, setEligibleIds] = useState<Set<string>>(new Set());
   const setEligibilityMutation = useSetVoteEligibilityMutation(activeQuestion?.id ?? '');
   const createQuestionMutation = useCreateVoteQuestionMutation();
+  const deleteQuestionMutation = useDeleteVoteQuestionMutation();
+  const deleteAllQuestionsMutation = useDeleteAllVoteQuestionsMutation();
 
   const [questionText, setQuestionText] = useState('');
   const [optionInputs, setOptionInputs] = useState<string[]>(['Yes', 'No']);
@@ -132,6 +136,18 @@ export default function ExecVotingPage() {
         }
       }
     );
+  };
+
+  const deleteQuestion = (id: string) => {
+    const confirmed = window.confirm('Delete this question? This will remove all related votes.');
+    if (!confirmed) return;
+    deleteQuestionMutation.mutate(id);
+  };
+
+  const deleteAllQuestions = () => {
+    const confirmed = window.confirm('Delete ALL questions? This will remove all related votes.');
+    if (!confirmed) return;
+    deleteAllQuestionsMutation.mutate();
   };
 
   if (!userId && !session.isFetching) {
@@ -403,9 +419,18 @@ export default function ExecVotingPage() {
         <TabsContent value="history">
           <Card className="bg-white border border-gray-200 rounded-xl shadow-md">
             <CardContent className="p-6 space-y-4">
-              <div>
-                <p className="text-xs uppercase tracking-wide text-gray-500">Question history</p>
-                <h2 className="text-lg font-semibold text-gray-900 mt-1">Past votes</h2>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                  <p className="text-xs uppercase tracking-wide text-gray-500">Question history</p>
+                  <h2 className="text-lg font-semibold text-gray-900 mt-1">Past votes</h2>
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={deleteAllQuestions}
+                  disabled={!historyData?.items?.length || deleteAllQuestionsMutation.isPending}
+                >
+                  {deleteAllQuestionsMutation.isPending ? 'Deleting...' : 'Delete all'}
+                </Button>
               </div>
 
               {isHistoryLoading ? (
@@ -440,6 +465,14 @@ export default function ExecVotingPage() {
                             Closed
                           </span>
                         )}
+                        <button
+                          type="button"
+                          onClick={() => deleteQuestion(item.id)}
+                          disabled={deleteQuestionMutation.isPending}
+                          className="text-xs px-2 py-1 rounded-full border border-red-200 text-red-600 hover:bg-red-50"
+                        >
+                          Delete
+                        </button>
                       </div>
                     </div>
                   ))}
