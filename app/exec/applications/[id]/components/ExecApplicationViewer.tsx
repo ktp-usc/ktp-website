@@ -3,16 +3,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ResumeViewer from './ResumeViewer';
 import CommentsSidebar from './CommentsSidebar';
+import type { applicationStatus } from '@prisma/client';
 import type { Application } from '../../types';
 
-const STATUS_MAP: Record<number, string> = {
-  0: 'Closed',
-  1: 'Under Review',
-  2: 'Interviews',
-  3: 'Waitlist',
-  4: 'Bid Offered',
-  5: 'Bid Declined',
-  6: 'Bid Accepted',
+const STATUS_LABELS: Record<applicationStatus, string> = {
+  CLOSED: 'Closed',
+  UNDER_REVIEW: 'Under Review',
+  INTERVIEW: 'Interviews',
+  WAITLIST: 'Waitlist',
+  BID_OFFERED: 'Bid Offered',
+  BID_DECLINED: 'Bid Declined',
+  BID_ACCEPTED: 'Bid Accepted',
+  INCOMPLETE: 'Incomplete',
 };
 
 // Response item shape used by your API (adjust if your backend differs)
@@ -65,6 +67,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
     const id = app.id;
     async function loadAdjacent() {
       try {
+        console.log(app);
         const res = await fetch(`/api/applications/adjacent?id=${encodeURIComponent(String(id))}`);
         if (!res.ok) {
           setAdjacent({ prevId: null, nextId: null });
@@ -137,7 +140,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
 
   function goBack() {
     try {
-      router.back();
+      router.push('/portal/exec/applications');
     } catch {
       router.push('/exec/applications');
     }
@@ -148,12 +151,18 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
     router.push(`/exec/applications/${id}`);
   }
 
-  function statusLabel(value?: number) {
-    if (typeof value !== 'number') return 'Unknown';
-    return STATUS_MAP[value] ?? 'Unknown';
+  function statusLabel(value?: applicationStatus | null) {
+    if (!value) return 'Unknown';
+    return STATUS_LABELS[value] ?? 'Unknown';
   }
 
-  async function postStatusNotification(oldStatus?: number, newStatus?: number) {
+  function isSubmitted()
+  {
+    if(app?.submittedAt == null) return false;
+    return true;
+  }
+
+  async function postStatusNotification(oldStatus?: applicationStatus | null, newStatus?: applicationStatus | null) {
     if (!app?.id) return;
     const applicantName = formattedHeaderName(app);
     const message = `${execName} changed ${applicantName} status from ${statusLabel(oldStatus)} to ${statusLabel(newStatus)}.`;
@@ -169,8 +178,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
     }
   }
 
-  async function updateStatus(newStatus: number) {
-    const status = STATUS_MAP[newStatus].replaceAll(' ', '_').toUpperCase();
+  async function updateStatus(newStatus: applicationStatus) {
     if (!app?.id || app.status === newStatus) return;
     const oldStatus = app?.status;
     setStatusUpdating(true);
@@ -178,10 +186,12 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
       const res = await fetch(`/api/applications/${encodeURIComponent(String(app.id))}/status`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: status }),
+        body: JSON.stringify({ status: newStatus }),
       });
       if (res.ok) {
-        setApp((p) => (p ? { ...p, status: newStatus } : p));
+        const payload = await res.json().catch(() => null);
+        const apiStatus = (payload?.data?.status ?? payload?.status ?? newStatus) as applicationStatus;
+        setApp((p) => (p ? { ...p, status: apiStatus } : p));
         await postStatusNotification(oldStatus, newStatus);
         setCommentsRefresh((value) => value + 1);
       } else alert('Failed to update status');
@@ -198,7 +208,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
     setDeleting(true);
     try {
       const res = await fetch(`/api/applications/${encodeURIComponent(String(app.id))}`, { method: 'DELETE' });
-      if (res.ok) router.push('/exec/applications');
+      if (res.ok) router.push('/portal/exec/applications');
       else alert('Delete failed');
     } catch {
       alert('Delete failed (network)');
@@ -295,7 +305,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
   // ---------- Fields pulled from app ----------
   const email = (getField<string>('email') ?? (app?.email as string | undefined) ?? '') as string;
   const phone = (getField<string>('phone') ?? (app?.phone as string | undefined) ?? '') as string;
-  const year = (getField<string>('year') ?? (app?.year as string | undefined) ?? '') as string;
+  const classification = (getField<string>('classification') ?? (app?.classification as string | undefined) ?? '') as string;
   const gpa = (getField<string>('gpa') ?? (app?.gpa as string | undefined) ?? '') as string;
   const major = (getField<string>('major') ?? (app?.major as string | undefined) ?? '') as string;
   const minor = (getField<string>('minor') ?? (app?.minor as string | undefined) ?? '') as string;
@@ -305,6 +315,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
   const linkedin = (linkedinFromAccount || getField<string>('linkedin') || (app?.linkedin as string | undefined) || '') as string;
   const github = (githubFromAccount || getField<string>('github') || (app?.github as string | undefined) || '') as string;
   const extenuating = (getField<string>('extenuating') ?? (app?.extenuating as string | undefined) ?? '') as string;
+  const submittedAt = (getField<string>('submittedAt') ?? (app?.submittedAt as string | undefined) ?? '') as string;
 
   const rushEventsRaw =
     getField<unknown>('eventsAttended') ??
@@ -460,12 +471,12 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
               <span className="status-text">Status</span>
               <select
                 className="status-select"
-                value={typeof app?.status === 'number' ? String(app!.status) : '1'}
-                onChange={(e) => updateStatus(Number(e.target.value))}
-                disabled={statusUpdating}
+                value={app?.status ?? ''}
+                onChange={(e) => updateStatus(e.target.value as applicationStatus)}
+                disabled={statusUpdating || !isSubmitted()}
               >
-                {Object.entries(STATUS_MAP).map(([num, label]) => (
-                  <option key={num} value={num}>
+                {Object.entries(STATUS_LABELS).map(([status, label]) => (
+                  <option key={status} value={status}>
                     {label}
                   </option>
                 ))}
@@ -518,7 +529,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
               <div className="app-header-text">
                 <div className="name">{formattedHeaderName(app)}</div>
                 <div className="major">{major ?? 'N/A'}</div>
-                <div className="year">{year ?? 'N/A'}</div>
+                <div className="year">{classification ?? 'N/A'}</div>
               </div>
             </div>
           </div>

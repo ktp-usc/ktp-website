@@ -11,7 +11,7 @@ import { useApplicationsQuery, useSetApplicationFlagMutation, useDeleteApplicati
 
 /* ---------------- Types ---------------- */
 
-type ApplicationStatusUI = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+type ApplicationStatusUI = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 type ApplicationRow = {
     id: string;
@@ -24,52 +24,52 @@ type ApplicationRow = {
 /* ---------------- Status Helpers ---------------- */
 
 const STATUS_LABELS: Record<ApplicationStatusUI, string> = {
-    0: 'In Progress',
-    1: 'Closed',
-    2: 'Rejected',
-    3: 'Applied',
-    4: 'Interviewed',
-    5: 'Bid Offered',
-    6: 'Bid Accepted'
+    0: 'Closed',
+    1: 'Bid Rejected',
+    2: 'Applied',
+    3: 'Interviewed',
+    4: 'Bid Offered',
+    5: 'Bid Accepted',
+    6: 'Incomplete',
+    7: 'Waitlisted',
 };
 
 function mapOverrideToUi(override: applicationStatus): ApplicationStatusUI {
     switch (override) {
         case 'CLOSED':
-            return 1;
+            return 0;
         case 'BID_DECLINED':
-            return 2;
+            return 1;
         case 'UNDER_REVIEW':
-            return 3;
+            return 2;
         case 'WAITLIST':
-            return 4;
+            return 7;
         case 'INTERVIEW':
-            return 4;
+            return 3;
         case 'BID_OFFERED':
-            return 5;
+            return 4;
         case 'BID_ACCEPTED':
+            return 5;
+        case 'INCOMPLETE':
             return 6;
         default:
-            return 3;
+            return 6;
     }
 }
 
 function deriveUiStatus(app: any): ApplicationStatusUI {
     // ✅ new schema field name is `statusOverride` (lowercase)
     // this assumes your API returns comments sorted newest-first
-    const latestOverride = app.comments?.[0]?.statusOverride ?? null;
-    if (latestOverride) return mapOverrideToUi(latestOverride);
-
-    // fallback: if submittedAt exists, treat as applied; otherwise in progress
-    if (app.submittedAt) return 3;
-    return 0;
+    //const latestOverride = app.comments?.[0]?.statusOverride ?? null;
+    //if (latestOverride) return mapOverrideToUi(latestOverride);
+    return mapOverrideToUi(app.status);
 }
 
 function StatusPill({ status }: { status: ApplicationStatusUI }) {
     const color =
-        status === 6
+        status === 5
             ? 'bg-green-100 text-green-700 border-green-200'
-            : status === 5
+            : status === 4
                 ? 'bg-blue-100 text-blue-700 border-blue-200'
                 : 'bg-gray-100 text-gray-700 border-gray-200';
 
@@ -210,7 +210,6 @@ export default function ExecApplicationsPage() {
         await navigator.clipboard.writeText(emailList);
         alert('Emails copied to clipboard');
     };
-
 
     return (
         <main className="max-w-7xl mx-auto px-6 py-8 bg-transparent transition-colors duration-300">

@@ -48,7 +48,7 @@ model applications {
   submittedAt    DateTime?         @db.Timestamptz(6)
   userId         String            @unique @db.Uuid
   gpa            Float?
-  status         applicationStatus @default(UNDER_REVIEW)
+  status         applicationStatus @default(INCOMPLETE)
   circumstance   String?
   accounts       accounts          @relation(fields: [userId], references: [id], onDelete: Cascade, map: "userCheck")
   comments       comment[]
@@ -77,6 +77,7 @@ enum applicationStatus {
   BID_OFFERED
   BID_DECLINED
   BID_ACCEPTED
+  INCOMPLETE
 
   @@schema("public")
 }
