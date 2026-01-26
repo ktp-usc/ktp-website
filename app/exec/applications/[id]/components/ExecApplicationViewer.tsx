@@ -473,7 +473,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
                 className="status-select"
                 value={app?.status ?? ''}
                 onChange={(e) => updateStatus(e.target.value as applicationStatus)}
-                disabled={statusUpdating}
+                disabled={statusUpdating || !isSubmitted()}
               >
                 {Object.entries(STATUS_LABELS).map(([status, label]) => (
                   <option key={status} value={status}>
