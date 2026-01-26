@@ -45,12 +45,12 @@ model applications {
   createdAt      DateTime?         @default(now()) @db.Timestamptz(6)
   eventsAttended String[]          @default([])
   reason         String?
-  isFlagged      Boolean?
+  isFlagged      Boolean           @default(false)
   lastModified   DateTime          @updatedAt @db.Timestamptz(6)
   submittedAt    DateTime?         @db.Timestamptz(6)
   userId         String            @unique @db.Uuid
   gpa            Float?
-  status         applicationStatus @default(UNDER_REVIEW)
+  status         applicationStatus @default(INCOMPLETE)
   circumstance   String?
   accounts       accounts          @relation(fields: [userId], references: [id], onDelete: Cascade, map: "userCheck")
   comments       comment[]
