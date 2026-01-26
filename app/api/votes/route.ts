@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth/guards';
-import { badRequest, created, serverError } from '@/lib/http/responses';
+import { badRequest, created, ok, serverError } from '@/lib/http/responses';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -80,6 +80,19 @@ export async function POST(req: Request) {
     return created(fullQuestion);
   } catch (e) {
     console.error('POST /api/votes error:', e);
+    return serverError();
+  }
+}
+
+export async function DELETE() {
+  const authed = await requireAdmin();
+  if ('response' in authed) return authed.response;
+
+  try {
+    await prisma.vote_questions.deleteMany();
+    return ok({ ok: true });
+  } catch (e) {
+    console.error('DELETE /api/votes error:', e);
     return serverError();
   }
 }

@@ -154,3 +154,33 @@ export function useCreateVoteQuestionMutation() {
     }
   });
 }
+
+export function useDeleteVoteQuestionMutation() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) =>
+      fetchJson(`/api/votes/${id}`, {
+        method: 'DELETE'
+      }),
+    onSuccess: async () => {
+      await qc.invalidateQueries({ queryKey: qk.voteHistory });
+      await qc.invalidateQueries({ queryKey: qk.activeVote });
+    }
+  });
+}
+
+export function useDeleteAllVoteQuestionsMutation() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: () =>
+      fetchJson('/api/votes', {
+        method: 'DELETE'
+      }),
+    onSuccess: async () => {
+      await qc.invalidateQueries({ queryKey: qk.voteHistory });
+      await qc.invalidateQueries({ queryKey: qk.activeVote });
+    }
+  });
+}
