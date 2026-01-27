@@ -12,6 +12,8 @@ import { signUpWithEmail } from "./actions";
 import { passwordMeetsRequirements } from "@/lib/passwordMeetsRequirements";
 import { useSessionQuery } from "@/client/hooks/auth";
 
+// note: this must be a NEXT_PUBLIC env var because this is a client component.
+// otherwise, the server can see ENABLE_PUBLIC_SIGN_UP but the browser cannot, causing hydration mismatches.
 const PUBLIC_SIGN_UP_ENABLED = process.env.NEXT_PUBLIC_ENABLE_PUBLIC_SIGN_UP === "1";
 
 type SignUpState = { error?: string } | null;

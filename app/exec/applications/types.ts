@@ -1,4 +1,5 @@
 // shared application type for the exec application viewer
+import type { applicationStatus } from '@prisma/client';
 
 export type ApplicationResponseItem = {
     question?: string;
@@ -17,9 +18,11 @@ export type Application = {
 
     email: string;
     phone: string;
-    year: string;
+    classification: string;
     gpa: string;
 
+    submittedAt: Date;
+    
     extenuating?: string | null;
     major: string;
     minor?: string | null;
@@ -34,5 +37,5 @@ export type Application = {
     responses?: ApplicationResponses;
 
     rushEvents?: string[];
-    status?: number;
+    status?: applicationStatus;
 };

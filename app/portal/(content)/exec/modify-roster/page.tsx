@@ -25,7 +25,7 @@ import {
 import { useAccountsQuery, useDeleteAccountMutation, useUpdateAccountByIdMutation } from "@/client/hooks/accounts";
 import { Trash2 } from 'lucide-react';
 
-type RosterUiType = "Active" | "Exec" | "New Member";
+type RosterUiType = "Active" | "Exec" | "Applicant";
 
 type AccountRow = Pick<
     accounts,
@@ -72,7 +72,7 @@ function classificationLabel(a: AccountRow): string {
 
 function rosterTypeFromAccount(a: AccountRow): RosterUiType {
     if (a.type === 'LEADERSHIP' || (a.leaderType && a.leaderType !== LeaderTypeEnum.N_A)) return 'Exec';
-    if (a.isNew) return "New Member";
+    if (a.isNew) return "Applicant";
     return "Active";
 }
 
@@ -112,10 +112,10 @@ export default function ModifyRoster() {
             return;
         }
 
-        if (newType === "New Member") {
+        if (newType === "Applicant") {
             updateAccount.mutate({
                 id,
-                body: { type: "BROTHER" as accountType, isNew: true, leaderType: LeaderTypeEnum.N_A }
+                body: { type: "APPLICANT" as accountType, isNew: true, leaderType: LeaderTypeEnum.N_A }
             });
             return;
         }
@@ -143,7 +143,7 @@ export default function ModifyRoster() {
 
             {/* Filter Tabs */ }
             <div className="mb-6 flex gap-2 flex-wrap">
-                { (["All", "Active", "Exec", "New Member"] as const).map((filter) => (
+                { (["All", "Active", "Exec", "Applicant"] as const).map((filter) => (
                     <Button
                         key={ filter }
                         variant={ activeFilter === filter ? "default" : "outline" }
@@ -211,7 +211,7 @@ export default function ModifyRoster() {
                                                     <SelectContent>
                                                         <SelectItem value="Active">Active</SelectItem>
                                                         <SelectItem value="Exec">Exec</SelectItem>
-                                                        <SelectItem value="New Member">New Member</SelectItem>
+                                                        <SelectItem value="Applicant">Applicant</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                             </TableCell>
@@ -274,11 +274,11 @@ export default function ModifyRoster() {
 
                 <Card>
                     <CardHeader className="pb-3">
-                        <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 transition-colors duration-300">New Members</CardTitle>
+                        <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 transition-colors duration-300">Applicants</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div
-                            className="text-3xl font-bold">{ memberRows.filter((m) => m.type === "New Member").length }</div>
+                            className="text-3xl font-bold">{ memberRows.filter((m) => m.type === "Applicant").length }</div>
                     </CardContent>
                 </Card>
             </div>

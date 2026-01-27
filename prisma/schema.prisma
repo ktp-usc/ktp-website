@@ -28,6 +28,8 @@ model accounts {
   linkedin        String?       @unique
   github          String?       @unique
   applications    applications?
+  voteEligibility vote_eligibility[]
+  voteQuestions   vote_questions[]
 
   @@schema("public")
 }
@@ -43,12 +45,12 @@ model applications {
   createdAt      DateTime?         @default(now()) @db.Timestamptz(6)
   eventsAttended String[]          @default([])
   reason         String?
-  isFlagged      Boolean?
+  isFlagged      Boolean           @default(false)
   lastModified   DateTime          @updatedAt @db.Timestamptz(6)
   submittedAt    DateTime?         @db.Timestamptz(6)
   userId         String            @unique @db.Uuid
   gpa            Float?
-  status         applicationStatus @default(UNDER_REVIEW)
+  status         applicationStatus @default(INCOMPLETE)
   circumstance   String?
   accounts       accounts          @relation(fields: [userId], references: [id], onDelete: Cascade, map: "userCheck")
   comments       comment[]
@@ -69,6 +71,65 @@ model comment {
   @@schema("public")
 }
 
+model vote_questions {
+  id          String         @id @default(uuid()) @db.Uuid
+  question    String
+  isActive    Boolean        @default(true)
+  createdAt   DateTime       @default(now()) @db.Timestamptz(6)
+  closesAt    DateTime?      @db.Timestamptz(6)
+  createdById String         @db.Uuid
+  createdBy   accounts       @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  options     vote_options[]
+  votes       vote_votes[]
+  eligible    vote_eligibility[]
+
+  @@index([isActive])
+  @@schema("public")
+}
+
+model vote_options {
+  id         String         @id @default(uuid()) @db.Uuid
+  questionId String         @db.Uuid
+  label      String
+  question   vote_questions @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  votes      vote_votes[]
+
+  @@unique([questionId, label])
+  @@index([questionId])
+  @@schema("public")
+}
+
+model vote_votes {
+  id         String         @id @default(uuid()) @db.Uuid
+  questionId String         @db.Uuid
+  optionId   String         @db.Uuid
+  voterHash  String
+  createdAt  DateTime       @default(now()) @db.Timestamptz(6)
+  question   vote_questions @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  option     vote_options   @relation(fields: [optionId], references: [id], onDelete: Cascade)
+
+  @@unique([questionId, voterHash])
+  @@index([questionId])
+  @@index([optionId])
+  @@schema("public")
+}
+
+model vote_eligibility {
+  id         String         @id @default(uuid()) @db.Uuid
+  questionId String         @db.Uuid
+  accountId  String         @db.Uuid
+  hasVoted   Boolean        @default(false)
+  votedAt    DateTime?      @db.Timestamptz(6)
+  createdAt  DateTime       @default(now()) @db.Timestamptz(6)
+  question   vote_questions @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  account    accounts       @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@unique([questionId, accountId])
+  @@index([questionId])
+  @@index([accountId])
+  @@schema("public")
+}
+
 enum applicationStatus {
   CLOSED
   UNDER_REVIEW
@@ -77,6 +138,7 @@ enum applicationStatus {
   BID_OFFERED
   BID_DECLINED
   BID_ACCEPTED
+  INCOMPLETE
 
   @@schema("public")
 }
