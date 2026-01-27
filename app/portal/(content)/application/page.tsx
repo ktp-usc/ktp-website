@@ -374,14 +374,16 @@ export default function PortalApplicationPage() {
             return;
         }
 
-        const words = form.reason.trim().split(/\s+/).filter(Boolean);
-        if (words.length > 150) {
-            toast.error(`Your “Why KTP” response is ${ words.length } words. Please keep it under 150 words.`);
+        const numericGPA = Number(form.gpa)
+
+        if (!form.circumstance.trim() && numericGPA < 3.0) {
+            toast.error("Please complete the Extenuating Circumstances section before submitting.");
             return;
         }
 
-        if (form.rushEvents.length === 0) {
-            toast.error("No rush events have been recorded yet. Attend at least one rush event, then try again.");
+        const words = form.reason.trim().split(/\s+/).filter(Boolean);
+        if (words.length > 150) {
+            toast.error(`Your "Why KTP" response is ${ words.length } words. Please keep it under 150 words.`);
             return;
         }
 
