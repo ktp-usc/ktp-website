@@ -176,7 +176,7 @@ export default function Page2() {
                                     </p>
                                     <p className="text-base text-gray-600 flex items-center gap-2 mb-4">
                                         <PinIcon />
-                                        <span>Location TBD</span>
+                                        <span>Darla Moore School of Business Room 109</span>
                                     </p>
                                     <p className="text-base text-gray-600 leading-relaxed">
                                         Join us for a night of classic Vegas-style casino games! You&apos;ll get the opportunity
@@ -298,7 +298,7 @@ export default function Page2() {
                                     How much are dues? Do I have to pay?
                                 </AccordionTrigger>
                                 <AccordionContent className="pb-6 text-gray-700 text-lg leading-relaxed">
-                                    If you accept a bid from us, you are expected to pay $100 in New Member dues this semester. This will
+                                    If you accept a bid from us, you are expected to pay $150 in New Member dues this semester. This will
                                     cover all expenses related to running a professional fraternity, such as professional, technical, and social
                                     events. If you are unable to pay the dues in full, you will have the opportunity to submit a financial
                                     hardship appeal to our Director of Finance. More information will be provided once bids are awarded.
