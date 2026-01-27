@@ -329,7 +329,7 @@ export default function PortalHomePage() {
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
                                             strokeWidth={ 2 }
-                                            d="M3 12h5l4 8 4-16 3 8h2"
+                                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
                                         />
                                     </svg>
                                 </div>
@@ -344,6 +344,34 @@ export default function PortalHomePage() {
                             </h4>
                             <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
                                 Create questions, set eligibility, and view live results.
+                            </p>
+                        </Link>
+
+                        <Link href="/portal/voting" className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer">
+                            <div className="flex items-center justify-between mb-4">
+                                <div
+                                    className="p-3 bg-green-100 rounded-lg group-hover:bg-green-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor"
+                                         viewBox="0 0 24 24">
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={ 2 }
+                                            d="M3 12h5l4 8 4-16 3 8h2"
+                                        />
+                                    </svg>
+                                </div>
+                                <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"
+                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 }
+                                          d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                            <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                                Vote
+                            </h4>
+                            <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                                Vote on active questions when in session.
                             </p>
                         </Link>
                     </div>
