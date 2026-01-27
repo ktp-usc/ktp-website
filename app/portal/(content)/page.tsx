@@ -75,6 +75,12 @@ function statusPillClasses(status: ApplicationViewStatus): string {
     }
 }
 
+const roleMessages = {
+    exec: "Manage applications and chapter roster from your dashboard.",
+    member: "Vote on fraternity matters and update your profile.",
+    applicant: "Track your application status and stay updated.",
+};
+
 export default function PortalHomePage() {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -180,9 +186,7 @@ export default function PortalHomePage() {
                         Welcome, { isLoading ? "…" : firstName }!
                     </h2>
                     <p className="text-gray-600 dark:text-gray-400">
-                        { role === "exec"
-                            ? "Manage applications and chapter roster from your dashboard."
-                            : "Track your application status and stay updated." }
+                        {roleMessages[role] || roleMessages.applicant}
                     </p>
                 </div>
             ) : null }
