@@ -1,16 +1,16 @@
 // app/portal/bid-letter/BidLetterClient.tsx
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import DocViewer, { DocViewerRenderers } from '@cyntler/react-doc-viewer';
+import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useMyApplicationQuery, useUpdateMyApplicationMutation } from '@/client/hooks/applications';
 
-import 'react-pdf/dist/Page/TextLayer.css';
-import 'react-pdf/dist/Page/AnnotationLayer.css';
 import BackButton from "@/components/BackButton";
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 
 type AppStatus = 'BID_OFFERED' | 'BID_ACCEPTED' | 'BID_DECLINED';
 
@@ -38,9 +38,9 @@ export default function BidLetterClientPage() {
     const documents = useMemo(
         () => [
             {
-                uri: 'https://pdfobject.com/pdf/sample.pdf',
+                uri: `/bid-letter.pdf`,
                 fileType: 'pdf',
-                fileName: 'bidLetter.pdf'
+                fileName: 'bid-letter.pdf'
             }
         ],
         []

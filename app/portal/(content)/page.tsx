@@ -1,13 +1,13 @@
 // app/portal/page.tsx
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import type { type as AccountType, applicationStatus } from "@prisma/client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import type { applicationStatus, type as AccountType } from "@prisma/client";
+import { useEffect, useMemo, useRef } from "react";
 
-import { useSessionQuery } from "@/client/hooks/auth";
 import { useMyAccountQuery } from "@/client/hooks/accounts";
+import { useSessionQuery } from "@/client/hooks/auth";
 import confetti from "canvas-confetti";
 
 type PortalRole = "exec" | "applicant" | "member";
@@ -29,22 +29,22 @@ function formatDate(dateLike: string | Date | null | undefined): string {
 }
 
 function statusLabel(status: ApplicationViewStatus): string {
-    if (status === "NOT_STARTED") return "Not started";
-    if (status === "IN_PROGRESS") return "In progress";
+    if (status === "NOT_STARTED") return "Not Started";
+    if (status === "IN_PROGRESS") return "In Progress";
 
     switch (status) {
         case "UNDER_REVIEW":
-            return "Under review";
+            return "Under Review";
         case "INTERVIEW":
             return "Interview";
         case "WAITLIST":
             return "Waitlist";
         case "BID_OFFERED":
-            return "Bid offered";
+            return "Bid Offered";
         case "BID_DECLINED":
-            return "Bid declined";
+            return "Bid Declined";
         case "BID_ACCEPTED":
-            return "Bid accepted";
+            return "Bid Accepted";
         case "CLOSED":
             return "Closed";
         default:
