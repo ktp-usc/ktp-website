@@ -42,3 +42,21 @@ export async function requireAdmin(): Promise<
 
     return authed;
 }
+
+export async function requireBrother(): Promise<
+    { user: AuthedUser; account: { id: string; firstName: string; lastName: string; type: string | null } } | { response: NextResponse }
+> {
+    const authed = await requireUser();
+    if ('response' in authed) return authed;
+
+    const account = await prisma.accounts.findUnique({
+        where: { id: authed.user.id },
+        select: { id: true, firstName: true, lastName: true, type: true }
+    });
+
+    if (!account || account.type !== 'BROTHER') {
+        return { response: NextResponse.json({ error: 'forbidden' }, { status: 403 }) };
+    }
+
+    return { user: authed.user, account };
+}
