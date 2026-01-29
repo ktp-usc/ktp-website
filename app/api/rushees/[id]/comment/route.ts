@@ -13,9 +13,8 @@ export async function POST(req: Request, ctx: Ctx) {
     if ('response' in authed) return authed.response;
 
     const { id } = await ctx.params;
-    const commenter =
-        [authed.account.firstName, authed.account.lastName].filter(Boolean).join(' ').trim() ||
-        authed.account.id;
+    const commenterName = [authed.account.firstName, authed.account.lastName].filter(Boolean).join(' ').trim();
+    const commenter = commenterName || authed.account.id || authed.user.id;
 
     try {
         const body = await req.json().catch(() => null);
@@ -41,7 +40,7 @@ export async function POST(req: Request, ctx: Ctx) {
         const comment = existing
             ? await prisma.comment.update({
                   where: { id: existing.id },
-                  data: { body: text }
+                  data: { body: text, commenter }
               })
             : await prisma.comment.create({
                   data: { applicationId: id, commenter, body: text }

@@ -138,7 +138,7 @@ export default function RusheesPage() {
                                         setDrafts((prev) => ({ ...prev, [item.accountId]: e.target.value }))
                                     }
                                     placeholder="Write your rush impression…"
-                                    className="min-h-28"
+                                    className="min-h-20 text-lg"
                                     disabled={!canComment}
                                 />
                                 <div className="flex items-center justify-between">
@@ -147,7 +147,7 @@ export default function RusheesPage() {
                                             ? "No application on file yet."
                                             : item.myComment
                                                 ? "Your comment is saved."
-                                                : "Leave one comment per rushee."}
+                                                : ""}
                                     </p>
                                     <Button
                                         onClick={() =>
