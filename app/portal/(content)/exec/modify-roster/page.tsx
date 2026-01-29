@@ -22,7 +22,7 @@ import {
     TableRow
 } from "@/components/ui/table";
 
-import { useAccountsQuery, useDeleteAccountMutation, useUpdateAccountByIdMutation } from "@/client/hooks/accounts";
+import { useAllAccountsQuery, useDeleteAccountMutation, useUpdateAccountByIdMutation } from "@/client/hooks/accounts";
 import { Trash2 } from 'lucide-react';
 
 type RosterUiType = "Active" | "Exec" | "Applicant";
@@ -72,8 +72,8 @@ function classificationLabel(a: AccountRow): string {
 
 function rosterTypeFromAccount(a: AccountRow): RosterUiType {
     if (a.type === 'LEADERSHIP' || (a.leaderType && a.leaderType !== LeaderTypeEnum.N_A)) return 'Exec';
-    if (a.isNew) return "Applicant";
-    return "Active";
+    if (a.type === 'BROTHER') return "Active";
+    return "Applicant";
 }
 
 function execPositionFromAccount(a: AccountRow): leaderType {
@@ -81,7 +81,7 @@ function execPositionFromAccount(a: AccountRow): leaderType {
 }
 
 export default function ModifyRoster() {
-    const { data, isLoading, isError } = useAccountsQuery();
+    const { data, isLoading, isError } = useAllAccountsQuery();
     const accountItems = (data?.items ?? []) as unknown as AccountRow[];
 
     const updateAccount = useUpdateAccountByIdMutation();

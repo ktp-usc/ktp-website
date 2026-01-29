@@ -100,6 +100,33 @@ export function useAccountsQuery(filters: Record<string, unknown> = {}) {
     });
 }
 
+// Fetch all accounts by paging until we've collected total.
+export function useAllAccountsQuery(filters: Record<string, unknown> = {}) {
+    return useQuery({
+        queryKey: qk.accounts({ ...filters, all: true }),
+        queryFn: async () => {
+            const take = 100;
+            let skip = 0;
+            let total = Infinity;
+            const items: Account[] = [];
+
+            while (items.length < total) {
+                const params = new URLSearchParams({ ...(filters as any), take: String(take), skip: String(skip) });
+                const url = `/api/accounts?${ params.toString() }`;
+                const res = await fetchJson<AccountsListResponse>(url);
+
+                items.push(...res.items);
+                total = res.total;
+                skip += take;
+
+                if (res.items.length === 0) break;
+            }
+
+            return { items, total: Number.isFinite(total) ? total : items.length };
+        }
+    });
+}
+
 export function useAccountQuery(id: string) {
     return useQuery({
         queryKey: qk.account(id),
