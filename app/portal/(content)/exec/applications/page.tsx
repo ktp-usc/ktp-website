@@ -159,8 +159,9 @@ export default function ExecApplicationsPage() {
     const apps = data?.items ?? [];
 
     const [search, setSearch] = useState('');
-    const [sortByStatus, setSortByStatus] = useState(true);
+    const [sortMode, setSortMode] = useState<'lastName' | 'status'>('lastName');
     const [emailStatus, setEmailStatus] = useState<ApplicationStatusUI | 'all'>('all');
+    const [showFlaggedOnly, setShowFlaggedOnly] = useState(false);
 
     const applications = useMemo<ApplicationRow[]>(() => {
         return (apps ?? []).map((a: any) => ({
@@ -179,12 +180,30 @@ export default function ExecApplicationsPage() {
             list = list.filter((app) => app.status === emailStatus);
         }
 
-        if (sortByStatus) {
+        if (showFlaggedOnly) {
+            list = list.filter((app) => app.flagged);
+        }
+
+        if (sortMode === 'lastName') {
+            list = [...list].sort((a, b) => {
+                const getLastName = (name: string) => {
+                    const parts = name.trim().split(/\s+/);
+                    return parts[parts.length - 1].toLowerCase();
+                };
+
+                const lastA = getLastName(a.name);
+                const lastB = getLastName(b.name);
+
+                return lastA.localeCompare(lastB);
+            });
+        }
+
+        if (sortMode === 'status') {
             list = [...list].sort((a, b) => b.status - a.status);
         }
 
         return list;
-    }, [applications, search, sortByStatus, emailStatus]);
+    }, [applications, search, sortMode, emailStatus, showFlaggedOnly]);
 
     const emailList = useMemo(() => {
         const list = emailStatus === 'all' ? applications : applications.filter((a) => a.status === emailStatus);
@@ -253,8 +272,25 @@ export default function ExecApplicationsPage() {
                         </div>
 
                         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                            <Button variant={sortByStatus ? 'default' : 'outline'} onClick={() => setSortByStatus((v) => !v)}>
+                            <Button
+                                variant={sortMode === 'lastName' ? 'default' : 'outline'}
+                                onClick={() => setSortMode('lastName')}
+                            >
+                                Sort by Last Name (A → Z)
+                            </Button>
+
+                            <Button
+                                variant={sortMode === 'status' ? 'default' : 'outline'}
+                                onClick={() => setSortMode('status')}
+                            >
                                 Sort by Status (High → Low)
+                            </Button>
+
+                            <Button
+                                variant={showFlaggedOnly ? 'default' : 'outline'}
+                                onClick={() => setShowFlaggedOnly((v) => !v)}
+                            >
+                                {showFlaggedOnly ? 'Showing Flagged Only' : 'Filter: Flagged Only'}
                             </Button>
 
                             <Button onClick={copyEmails} variant="outline">
