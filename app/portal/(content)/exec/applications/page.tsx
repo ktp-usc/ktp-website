@@ -27,7 +27,7 @@ const STATUS_LABELS: Record<ApplicationStatusUI, string> = {
     0: 'Closed',
     1: 'Bid Rejected',
     2: 'Applied',
-    3: 'Interviewed',
+    3: 'Interviews',
     4: 'Bid Offered',
     5: 'Bid Accepted',
     6: 'Incomplete',
