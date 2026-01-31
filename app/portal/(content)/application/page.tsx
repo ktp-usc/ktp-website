@@ -65,6 +65,8 @@ const RUSH_EVENT_LABELS: Record<string, string> = {
     "pitch-night": "Pitch Night"
 };
 
+const APPLICATION_DEADLINE_ET = new Date("2026-01-30T21:00:00-05:00");
+
 function normalizeString(v: unknown): string {
     if (typeof v !== "string") return "";
     return v.trim();
@@ -204,6 +206,7 @@ export default function PortalApplicationPage() {
     const submitMyApp = useSubmitMyApplicationMutation();
 
     const loading = session.isFetching || accountQuery.isFetching || myAppQuery.isFetching;
+    const isPastDeadline = Date.now() > APPLICATION_DEADLINE_ET.getTime();
 
     // local form state
     const [form, setForm] = useState<FormState>(() => formFromSources(null, null));
@@ -337,6 +340,10 @@ export default function PortalApplicationPage() {
             return;
         }
         if (isSubmitted) return;
+        if (isPastDeadline) {
+            toast.error("The application deadline has passed. Submissions are closed.");
+            return;
+        }
 
         if (!isValidScEduEmail(form.email)) {
             toast.error("Please use a valid USC email address.");
@@ -1212,9 +1219,9 @@ export default function PortalApplicationPage() {
                             type="button"
                             onClick={ submitApplication }
                             className="cursor-pointer flex-1"
-                            disabled={ isSubmitted || saving || submitMyApp.isPending }
+                            disabled={ isSubmitted || saving || submitMyApp.isPending || isPastDeadline }
                         >
-                            { saving || submitMyApp.isPending ? "Submitting…" : "Submit" }
+                            { isPastDeadline ? "Deadline passed" : (saving || submitMyApp.isPending ? "Submitting…" : "Submit") }
                         </Button>
                     </div>
 
