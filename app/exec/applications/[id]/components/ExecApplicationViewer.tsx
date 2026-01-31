@@ -505,9 +505,9 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
       </button>
 
       <div className="exec-application-layout">
-        <div className="left-column">
+        <div className="left-column" style={{ flex: '0 0 33.333%', maxWidth: '33.333%', minWidth: 0 }}>
           {resumeSrc ? (
-            <div className="resume-iframe-wrapper">
+            <div className="resume-iframe-wrapper" style={{ width: '100%', height: '100%', minWidth: 0 }}>
               <ResumeViewer url={String(resumeSrc)} height="100%" />
             </div>
           ) : (
