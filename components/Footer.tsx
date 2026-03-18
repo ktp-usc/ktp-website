@@ -105,6 +105,7 @@ export default function Footer() {
                         <Link href="/members" className="text-white hover:text-gray-300">Members</Link>
                         <Link href="/rush" className="text-white hover:text-gray-300">Rush</Link>
                         <Link href="/clients" className="text-white hover:text-gray-300">Our Work</Link>
+                        <Link href="/donate" className="text-white hover:text-gray-300">Donate</Link>
                         <Link href="/apply" className="text-white hover:text-gray-300">Apply</Link>
                     </div>
 
