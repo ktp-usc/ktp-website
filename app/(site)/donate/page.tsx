@@ -57,7 +57,7 @@ function MarqueeRow({
     }, []);
 
     const repeats = useMemo(() => {
-        const cardWidth = windowWidth >= 640 ? 256 : 176;
+        const cardWidth = windowWidth >= 1024 ? 256 : windowWidth >= 640 ? 288 : 256;
         const gap = windowWidth >= 640 ? 20 : 12;
         const rowLength = images.length * cardWidth + (images.length - 1) * gap;
         const needed = Math.ceil(windowWidth / Math.max(rowLength, 1)) + 1;
@@ -90,14 +90,14 @@ function MarqueeRow({
                 {loopedImages.map((src, index) => (
                     <div
                         key={`${src}-${index}`}
-                        className="relative h-32 w-44 shrink-0 overflow-hidden rounded-2xl shadow-lg sm:h-44 sm:w-64"
+                        className="relative h-44 w-64 shrink-0 overflow-hidden rounded-2xl shadow-lg sm:h-48 sm:w-72 lg:h-44 lg:w-64"
                     >
                         <Image
                             src={src}
                             alt={`KTP moment ${index + 1}`}
                             fill
                             className="object-cover"
-                            sizes="(max-width: 640px) 176px, 256px"
+                            sizes="(max-width: 640px) 256px, (max-width: 1024px) 288px, 256px"
                             priority={index < 4}
                         />
                     </div>
@@ -121,8 +121,8 @@ export default function DonatePage() {
                     <div className="absolute inset-0 bg-linear-to-b from-blue-50/45 via-white/75 to-white/90" />
                 </div>
 
-                <div className="pointer-events-none absolute -left-24 top-10 -z-10 h-72 w-72 rounded-full bg-[#a8d4ff]/70 blur-3xl" />
-                <div className="pointer-events-none absolute -right-24 bottom-8 -z-10 h-72 w-72 rounded-full bg-[#9ceb9c]/55 blur-3xl" />
+                <div className="pointer-events-none absolute -left-24 top-10 -z-10 hidden h-72 w-72 rounded-full bg-[#a8d4ff]/70 blur-3xl sm:block" />
+                <div className="pointer-events-none absolute -right-24 bottom-8 -z-10 hidden h-72 w-72 rounded-full bg-[#9ceb9c]/55 blur-3xl sm:block" />
 
                 <div className="w-full max-w-3xl rounded-3xl border border-blue-100/80 bg-white/82 p-8 text-center shadow-[0_18px_70px_rgba(49,92,169,0.22)] backdrop-blur-md sm:p-10">
                     <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#315CA9]">
