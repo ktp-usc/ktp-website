@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -19,6 +20,8 @@ import {
 } from '@/client/hooks/votes';
 import { leaderType as LeaderType } from "@prisma/client";
 
+const AUTO_REFRESH_MS = 5000;
+
 function formatDate(dateLike?: string | null) {
   if (!dateLike) return '—';
   const d = new Date(dateLike);
@@ -27,6 +30,7 @@ function formatDate(dateLike?: string | null) {
 }
 
 export default function ExecVotingPage() {
+  const prefersReducedMotion = useReducedMotion();
   const session = useSessionQuery();
   const account = useMyAccountQuery();
   const userId = session.data?.user?.id ?? null;
@@ -35,13 +39,17 @@ export default function ExecVotingPage() {
     account.data?.type === 'LEADERSHIP' || (leaderType && leaderType !== LeaderType.N_A);
   const isGateLoading = session.isFetching || (userId ? account.isFetching : false);
 
-  const { data: activeData, isFetching: isQuestionLoading } = useActiveVoteQuery();
+  const { data: activeData, isLoading: isQuestionLoading } = useActiveVoteQuery({
+    refetchInterval: AUTO_REFRESH_MS
+  });
   const activeQuestion = activeData?.question ?? null;
 
-  const { data: eligibilityData, isFetching: isEligibilityLoading } = useVoteEligibilityQuery(activeQuestion?.id ?? '');
+  const { data: eligibilityData, isLoading: isEligibilityLoading } = useVoteEligibilityQuery(activeQuestion?.id ?? '');
   const voters = eligibilityData?.items ?? [];
 
-  const { data: resultsData, isFetching: isResultsLoading } = useVoteResultsQuery(activeQuestion?.id ?? '');
+  const { data: resultsData, isLoading: isResultsLoading } = useVoteResultsQuery(activeQuestion?.id ?? '', {
+    refetchInterval: AUTO_REFRESH_MS
+  });
   const { data: historyData, isFetching: isHistoryLoading } = useVoteHistoryQuery();
   const [eligibleIds, setEligibleIds] = useState<Set<string>>(new Set());
   const setEligibilityMutation = useSetVoteEligibilityMutation(activeQuestion?.id ?? '');
@@ -55,6 +63,11 @@ export default function ExecVotingPage() {
   const [makeActive, setMakeActive] = useState(true);
   const [rolloverEligible, setRolloverEligible] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
+  const [animatedOptionIds, setAnimatedOptionIds] = useState<string[]>([]);
+  const [resultsAnimationTick, setResultsAnimationTick] = useState(0);
+  const previousOptionSnapshotRef = useRef<Record<string, string>>({});
+  const previousQuestionIdRef = useRef<string | null>(null);
+  const clearAnimationTimeoutRef = useRef<number | null>(null);
 
   const setsEqual = (a: Set<string>, b: Set<string>) => {
     if (a.size !== b.size) return false;
@@ -81,6 +94,60 @@ export default function ExecVotingPage() {
   );
 
   const totalVotes = resultsData?.totalVotes ?? 0;
+  const resultOptions = useMemo(
+    () => resultsData?.options ?? activeQuestion?.options.map((opt) => ({ ...opt, count: 0, percent: 0 })) ?? [],
+    [activeQuestion?.options, resultsData?.options]
+  );
+
+  useEffect(() => {
+    return () => {
+      if (clearAnimationTimeoutRef.current) {
+        window.clearTimeout(clearAnimationTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const questionId = resultsData?.question.id ?? activeQuestion?.id ?? null;
+
+    if (!questionId) {
+      previousQuestionIdRef.current = null;
+      previousOptionSnapshotRef.current = {};
+      setAnimatedOptionIds([]);
+      return;
+    }
+
+    const nextOptionSnapshot = Object.fromEntries(
+      resultOptions.map((opt) => [opt.id, `${opt.count}:${opt.percent}`])
+    );
+
+    if (previousQuestionIdRef.current !== questionId) {
+      previousQuestionIdRef.current = questionId;
+      previousOptionSnapshotRef.current = nextOptionSnapshot;
+      setAnimatedOptionIds([]);
+      return;
+    }
+
+    const changedOptionIds = resultOptions
+      .filter((opt) => previousOptionSnapshotRef.current[opt.id] !== nextOptionSnapshot[opt.id])
+      .map((opt) => opt.id);
+
+    previousOptionSnapshotRef.current = nextOptionSnapshot;
+
+    if (!changedOptionIds.length || prefersReducedMotion) {
+      setAnimatedOptionIds([]);
+      return;
+    }
+
+    setAnimatedOptionIds(changedOptionIds);
+    setResultsAnimationTick((current) => current + 1);
+    if (clearAnimationTimeoutRef.current) {
+      window.clearTimeout(clearAnimationTimeoutRef.current);
+    }
+    clearAnimationTimeoutRef.current = window.setTimeout(() => {
+      setAnimatedOptionIds([]);
+    }, 1200);
+  }, [activeQuestion?.id, prefersReducedMotion, resultOptions, resultsData?.question.id]);
 
   const toggleEligible = (id: string) => {
     setEligibleIds((prev) => {
@@ -403,27 +470,49 @@ export default function ExecVotingPage() {
                 </div>
 
                 <div className="space-y-4">
-                  {(resultsData?.options ?? activeQuestion?.options ?? []).map((opt) => {
-                    const count = 'count' in opt ? opt.count : 0 as any;
-                    const percent = 'percent' in opt ? opt.percent : 0;
+                  {resultOptions.map((opt) => {
+                    const shouldAnimate = animatedOptionIds.includes(opt.id);
                     return (
-                      <div key={opt.id} className="space-y-2">
+                      <motion.div
+                        key={`${opt.id}-${shouldAnimate ? resultsAnimationTick : 'steady'}`}
+                        className="space-y-2 rounded-xl border border-blue-200 bg-blue-50/60 px-3 py-3"
+                        animate={shouldAnimate ? {
+                          scale: [1, 1.02, 1],
+                          boxShadow: ['0 0 0 rgba(59,130,246,0)', '0 0 0 8px rgba(59,130,246,0.16)', '0 0 0 rgba(59,130,246,0)']
+                        } : { scale: 1, boxShadow: '0 0 0 rgba(0,0,0,0)' }}
+                        transition={{ duration: 0.8, ease: 'easeOut' }}
+                      >
                         <div className="flex items-center justify-between text-sm text-gray-700">
                           <span>{opt.label}</span>
                           <span>
-                            {count} ({percent}%)
+                            {opt.count} ({opt.percent}%)
                           </span>
                         </div>
                         <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
-                          <div className="h-full bg-blue-500" style={{ width: `${percent}%` }} />
+                          <motion.div
+                            className="h-full bg-blue-500"
+                            initial={false}
+                            animate={shouldAnimate ? {
+                              width: `${opt.percent}%`,
+                              scaleY: [1, 1.6, 1]
+                            } : {
+                              width: `${opt.percent}%`,
+                              scaleY: 1
+                            }}
+                            transition={{
+                              width: { duration: 0.45, ease: 'easeOut' },
+                              scaleY: { duration: 0.6, ease: 'easeOut' }
+                            }}
+                            style={{ transformOrigin: 'center' }}
+                          />
                         </div>
-                      </div>
+                      </motion.div>
                     );
                   })}
                 </div>
 
                 <div className="text-xs text-gray-500">
-                  Percentages update automatically based on eligible votes only.
+                  Results refresh automatically every 5 seconds.
                 </div>
               </CardContent>
             </Card>

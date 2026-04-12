@@ -72,7 +72,12 @@ export type CreateVotePayload = {
   closesAt?: string | null;
 };
 
-export function useActiveVoteQuery() {
+type VoteQueryRefreshOptions = {
+  refetchInterval?: number | false;
+  refetchIntervalInBackground?: boolean;
+};
+
+export function useActiveVoteQuery(options: VoteQueryRefreshOptions = {}) {
   return useQuery({
     queryKey: qk.activeVote,
     queryFn: () => fetchJson<ActiveVoteResponse>('/api/votes/active'),
@@ -80,7 +85,9 @@ export function useActiveVoteQuery() {
     gcTime: 0,
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
-    refetchOnReconnect: true
+    refetchOnReconnect: true,
+    refetchInterval: options.refetchInterval,
+    refetchIntervalInBackground: options.refetchIntervalInBackground
   });
 }
 
@@ -101,11 +108,13 @@ export function useSubmitVoteMutation(questionId: string) {
   });
 }
 
-export function useVoteEligibilityQuery(questionId: string) {
+export function useVoteEligibilityQuery(questionId: string, options: VoteQueryRefreshOptions = {}) {
   return useQuery({
     queryKey: qk.voteEligibility(questionId),
     queryFn: () => fetchJson<{ items: VoteEligibilityItem[] }>(`/api/votes/${questionId}/eligibility`),
-    enabled: Boolean(questionId)
+    enabled: Boolean(questionId),
+    refetchInterval: options.refetchInterval,
+    refetchIntervalInBackground: options.refetchIntervalInBackground
   });
 }
 
@@ -125,11 +134,13 @@ export function useSetVoteEligibilityMutation(questionId: string) {
   });
 }
 
-export function useVoteResultsQuery(questionId: string) {
+export function useVoteResultsQuery(questionId: string, options: VoteQueryRefreshOptions = {}) {
   return useQuery({
     queryKey: qk.voteResults(questionId),
     queryFn: () => fetchJson<VoteResultsResponse>(`/api/votes/${questionId}/results`),
-    enabled: Boolean(questionId)
+    enabled: Boolean(questionId),
+    refetchInterval: options.refetchInterval,
+    refetchIntervalInBackground: options.refetchIntervalInBackground
   });
 }
 
