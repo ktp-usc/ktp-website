@@ -65,6 +65,7 @@ export default function SettingsPage() {
     type: "",
     exec: false,
     pc: "",
+    gradSemester: "",
 
     // keep these in state so save can still write them to prisma (just not shown in UI)
     majors: [] as string[],
@@ -90,6 +91,8 @@ export default function SettingsPage() {
       email: account.schoolEmail ?? account.personalEmail ?? "",
       phone: account.phoneNum ?? "",
       graduation: account.gradYear != null ? String(account.gradYear) : "",
+      gradSemester:
+        account.gradSemester != null ? String(account.gradSemester) : "",
       headshot: headshotUrl,
       LinkedIn: account.linkedin ?? "",
       GitHub: account.github ?? "",
@@ -97,8 +100,6 @@ export default function SettingsPage() {
       type: account.type ?? "",
       exec: account.type === "LEADERSHIP",
       pc: "2026",
-
-      // still hydrate but not displayed
       majors: account.majors ?? [],
       minors: account.minors ?? [],
       gpa: "",
@@ -151,10 +152,9 @@ export default function SettingsPage() {
         gradYear: user.graduation ? Number(user.graduation) : null,
         linkedin: user.LinkedIn.trim() || null,
         github: user.GitHub.trim() || null,
-
-        // still persisted even though not shown anymore
         majors: user.majors,
         minors: user.minors,
+        gradSemester: user.gradSemester ? String(user.gradSemester) : null,
       });
 
       toast.success("Settings updated successfully!");
@@ -171,8 +171,7 @@ export default function SettingsPage() {
     setNewMajor("");
 
     setUser((prev) => {
-      if (prev.majors.includes(major)) {
-        alert("Cannot add duplicate majors");
+      if (prev.majors.includes(major) || major === "") {
         return prev;
       }
       return {
@@ -186,7 +185,7 @@ export default function SettingsPage() {
     let minor = newMinor;
     setNewMinor("");
     setUser((prev) => {
-      if (prev.minors.includes(minor)) {
+      if (prev.minors.includes(minor) || minor === "") {
         return prev;
       }
       return {
@@ -481,7 +480,7 @@ export default function SettingsPage() {
               Personal Information
             </h2>
             <div className="grid md:grid-cols-2 gap-4">
-              <div>
+              <div className="col-span-2">
                 <label
                   htmlFor="name"
                   className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
@@ -560,6 +559,26 @@ export default function SettingsPage() {
 
               <div>
                 <label
+                  htmlFor="gradSemester"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
+                  Graduation Semester
+                </label>
+                <select
+                  id="gradSemester"
+                  name="gradSemester"
+                  value={user.gradSemester}
+                  onChange={handleInputChange}
+                  className="w-full cursor-pointer rounded-lg border appearance-none border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                >
+                  <option value="">Select Graduation Semester</option>
+                  <option value="FALL">Fall</option>
+                  <option value="SPRING">Spring</option>
+                </select>
+              </div>
+
+              <div>
+                <label
                   htmlFor="LinkedIn"
                   className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                 >
@@ -610,14 +629,14 @@ export default function SettingsPage() {
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        handleAddMinor();
-                        handleSubmit(e);
+                        handleAddMajor();
                       }
                     }}
                     className="border-none outline-none focus:ring-0"
                     placeholder="New Major"
                   />
                   <button
+                    type="button"
                     className="cursor-pointer"
                     onClick={() => handleAddMajor()}
                   >
@@ -643,13 +662,13 @@ export default function SettingsPage() {
                       if (e.key === "Enter") {
                         e.preventDefault();
                         handleAddMinor();
-                        handleSubmit(e);
                       }
                     }}
                     className="outline-none border-none focus:ring-0"
                     placeholder="New Minor"
                   />
                   <button
+                    type="button"
                     className="cursor-pointer"
                     onClick={() => handleAddMinor()}
                   >
@@ -665,6 +684,7 @@ export default function SettingsPage() {
                   >
                     <p>{major}</p>
                     <button
+                      type="button"
                       className="cursor-pointer"
                       onClick={() => handleDeleteMajor(major)}
                     >
@@ -681,6 +701,7 @@ export default function SettingsPage() {
                   >
                     <p>{minor}</p>
                     <button
+                      type="button"
                       className="cursor-pointer"
                       onClick={() => handleDeleteMinor(minor)}
                     >
