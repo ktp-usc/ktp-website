@@ -17,16 +17,16 @@ import {
 import HeadshotCropModal from "@/app/portal/settings/HeadshotCropModal";
 import BackButton from "@/components/BackButton";
 
-function joinList(list: string[] | null | undefined) {
-  return (list ?? []).join(", ");
-}
+// function joinList(list: string[] | null | undefined) {
+//   return (list ?? []).join(", ");
+// }
 
-function splitList(value: string) {
-  return value
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-}
+// function splitList(value: string) {
+//   return value
+//     .split(",")
+//     .map((s) => s.trim())
+//     .filter(Boolean);
+// }
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -66,8 +66,6 @@ export default function SettingsPage() {
     exec: false,
     pc: "",
     gradSemester: "",
-
-    // keep these in state so save can still write them to prisma (just not shown in UI)
     majors: [] as string[],
     minors: [] as string[],
     gpa: "",
@@ -167,7 +165,7 @@ export default function SettingsPage() {
   };
 
   const handleAddMajor = () => {
-    let major = newMajor;
+    let major = newMajor.trim();
     setNewMajor("");
 
     setUser((prev) => {
@@ -182,7 +180,7 @@ export default function SettingsPage() {
   };
 
   const handleAddMinor = () => {
-    let minor = newMinor;
+    let minor = newMinor.trim();
     setNewMinor("");
     setUser((prev) => {
       if (prev.minors.includes(minor) || minor === "") {
