@@ -2,9 +2,11 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { authServer } from '@/lib/auth/server';
 import { leaderType as LeaderType } from "@prisma/client";
+import { findApprovedEmployerByEmail } from '@/lib/auth/employers';
 
 export type AuthedUser = {
     id: string; // neon auth user id (uuid)
+    email?: string | null;
 };
 
 export async function requireUser(): Promise<
@@ -17,7 +19,7 @@ export async function requireUser(): Promise<
         return { response: NextResponse.json({ error: 'unauthorized' }, { status: 401 }) };
     }
 
-    return { user: { id: user.id } };
+    return { user: { id: user.id, email: user.email ?? null } };
 }
 
 export async function requireAdmin(): Promise<
@@ -59,4 +61,17 @@ export async function requireBrother(): Promise<
     }
 
     return { user: authed.user, account };
+}
+
+export async function requireEmployer() {
+    const authed = await requireUser();
+    if ('response' in authed) return authed;
+
+    const employer = await findApprovedEmployerByEmail(authed.user.email);
+
+    if (!employer) {
+        return { response: NextResponse.json({ error: 'forbidden' }, { status: 403 }) };
+    }
+
+    return { user: authed.user, employer };
 }
