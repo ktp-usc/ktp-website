@@ -8,28 +8,29 @@ datasource db {
 }
 
 model accounts {
-  id              String        @id @db.Uuid
-  firstName       String        @default("john")
-  lastName        String        @default("smith")
+  id              String             @id @db.Uuid
+  firstName       String             @default("john")
+  lastName        String             @default("smith")
   majors          String[]
   minors          String[]
   type            type?
   schoolEmail     String?
   personalEmail   String?
   gradSemester    gradSemester?
-  headshotBlobURL String?       @unique
-  resumeBlobURL   String?       @unique
-  leaderType      leaderType?   @default(N_A)
+  headshotBlobURL String?            @unique
+  resumeBlobURL   String?            @unique
+  leaderType      leaderType?        @default(N_A)
   phoneNum        String?
   isNew           Boolean?
   gradYear        Int?
-  pledgeClass     String?       @default("n/a")
+  pledgeClass     String?            @default("n/a")
   hometown        String?
-  linkedin        String?       @unique
-  github          String?       @unique
+  linkedin        String?            @unique
+  github          String?            @unique
   applications    applications?
   voteEligibility vote_eligibility[]
   voteQuestions   vote_questions[]
+  career_reviews  career_reviews[]
 
   @@schema("public")
 }
@@ -72,13 +73,13 @@ model comment {
 }
 
 model vote_questions {
-  id          String         @id @default(uuid()) @db.Uuid
+  id          String             @id @default(uuid()) @db.Uuid
   question    String
-  isActive    Boolean        @default(true)
-  createdAt   DateTime       @default(now()) @db.Timestamptz(6)
-  closesAt    DateTime?      @db.Timestamptz(6)
-  createdById String         @db.Uuid
-  createdBy   accounts       @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  isActive    Boolean            @default(true)
+  createdAt   DateTime           @default(now()) @db.Timestamptz(6)
+  closesAt    DateTime?          @db.Timestamptz(6)
+  createdById String             @db.Uuid
+  createdBy   accounts           @relation(fields: [createdById], references: [id], onDelete: Restrict)
   options     vote_options[]
   votes       vote_votes[]
   eligible    vote_eligibility[]
@@ -174,5 +175,31 @@ enum gradSemester {
   SPRING
   FALL
 
+  @@schema("public")
+}
+
+model career_reviews {
+  id       String   @id @default(uuid()) @db.Uuid
+  authorId String   @db.Uuid
+  author   accounts @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  company          String
+  industry         String
+  role             String
+  location         String
+  appTimeline      String
+  interviewQs      String[] @default([])
+  technicalDetails String
+  canRefer         Boolean  @default(false)
+  compensation     String
+  pros             String
+  cons             String
+  advice           String
+  authorName       String
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([company])
+  @@index([createdAt])
   @@schema("public")
 }
