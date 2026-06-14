@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { ExternalLink, FileText, Search } from 'lucide-react';
+import { ExternalLink, FileText, Search, User } from 'lucide-react';
 
+import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,6 +24,7 @@ type Resume = {
   majors: string[];
   gradYear: number | null;
   linkedin: string | null;
+  headshotBlobURL: string | null;
   resumeBlobURL: string | null;
 };
 
@@ -95,9 +97,6 @@ export default function EmployerResumesPage() {
   }, [activeFilter, resumes, search]);
 
   const filters: ResumeFilter[] = ['All', 'With LinkedIn'];
-
-  const withLinkedInCount = resumes.filter((student) => Boolean(student.linkedin)).length;
-  const gradYearCount = new Set(resumes.map((student) => student.gradYear).filter(Boolean)).size;
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-8 bg-transparent transition-colors duration-300">
@@ -180,49 +179,69 @@ export default function EmployerResumesPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredResumes.map((student) => (
-                    <TableRow key={student.id}>
-                      <TableCell className="font-medium text-gray-900 dark:text-gray-100 transition-colors duration-300">
-                        {fullName(student)}
-                      </TableCell>
-                      <TableCell className="text-sm text-gray-700 dark:text-gray-300 transition-colors duration-300">
-                        {graduationLabel(student)}
-                      </TableCell>
-                      <TableCell className="text-sm text-gray-700 dark:text-gray-300 transition-colors duration-300">
-                        {majorLabel(student)}
-                      </TableCell>
-                      <TableCell>
-                        {student.linkedin ? (
-                          <Badge variant="secondary">Added</Badge>
-                        ) : (
-                          <span className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">
-                            Not listed
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex justify-end gap-2">
-                          {student.resumeBlobURL ? (
-                            <Button asChild size="sm" variant="outline">
-                              <a href={student.resumeBlobURL} target="_blank" rel="noreferrer">
-                                <FileText className="h-4 w-4" />
-                                Resume
-                              </a>
-                            </Button>
-                          ) : null}
+                  {filteredResumes.map((student) => {
+                    const studentName = fullName(student);
+                    const headshotUrl = student.headshotBlobURL;
 
+                    return (
+                      <TableRow key={student.id}>
+                        <TableCell className="font-medium text-gray-900 dark:text-gray-100 transition-colors duration-300">
+                          <div className="flex min-w-[180px] items-center gap-3">
+                            <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-blue-200 bg-white/30 transition-colors duration-300 dark:border-gray-600 dark:bg-gray-800">
+                              {headshotUrl ? (
+                                <Image
+                                  src={headshotUrl}
+                                  alt={`${studentName} headshot`}
+                                  width={40}
+                                  height={40}
+                                  className="h-10 w-10 object-cover"
+                                />
+                              ) : (
+                                <User className="h-5 w-5 text-gray-700 dark:text-gray-200" />
+                              )}
+                            </span>
+                            <span>{studentName}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-sm text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                          {graduationLabel(student)}
+                        </TableCell>
+                        <TableCell className="text-sm text-gray-700 dark:text-gray-300 transition-colors duration-300">
+                          {majorLabel(student)}
+                        </TableCell>
+                        <TableCell>
                           {student.linkedin ? (
-                            <Button asChild size="sm" variant="ghost">
-                              <a href={student.linkedin} target="_blank" rel="noreferrer">
-                                <ExternalLink className="h-4 w-4" />
-                                LinkedIn
-                              </a>
-                            </Button>
-                          ) : null}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                            <Badge variant="secondary">Added</Badge>
+                          ) : (
+                            <span className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">
+                              Not listed
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex justify-end gap-2">
+                            {student.resumeBlobURL ? (
+                              <Button asChild size="sm" variant="outline">
+                                <a href={student.resumeBlobURL} target="_blank" rel="noreferrer">
+                                  <FileText className="h-4 w-4" />
+                                  Resume
+                                </a>
+                              </Button>
+                            ) : null}
+
+                            {student.linkedin ? (
+                              <Button asChild size="sm" variant="ghost">
+                                <a href={student.linkedin} target="_blank" rel="noreferrer">
+                                  <ExternalLink className="h-4 w-4" />
+                                  LinkedIn
+                                </a>
+                              </Button>
+                            ) : null}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </div>
