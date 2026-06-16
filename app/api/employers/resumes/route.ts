@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { requireEmployer } from '@/lib/auth/guards';
 import { NextResponse } from 'next/server';
 import { type as AccountType } from '@prisma/client';
+import { findLocalResumeForStudent } from './localResumes';
 
 export const runtime = 'nodejs';
 
@@ -9,9 +10,8 @@ export async function GET() {
   const authed = await requireEmployer();
   if ('response' in authed) return authed.response;
 
-  const resumes = await prisma.accounts.findMany({
+  const accounts = await prisma.accounts.findMany({
     where: {
-      resumeBlobURL: { not: null },
       type: { in: [AccountType.BROTHER, AccountType.LEADERSHIP] },
     },
     select: {
@@ -29,6 +29,19 @@ export async function GET() {
       { firstName: 'asc' },
     ],
   });
+
+  const resumes = accounts
+    .map((student) => {
+      const localResume = findLocalResumeForStudent(student);
+
+      if (!localResume && !student.resumeBlobURL) return null;
+
+      return {
+        ...student,
+        resumeBlobURL: `/api/employers/resumes/${student.id}`,
+      };
+    })
+    .filter((student): student is NonNullable<typeof student> => Boolean(student));
 
   return NextResponse.json({ resumes });
 }

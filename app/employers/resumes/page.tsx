@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { ExternalLink, FileText, Search, User } from 'lucide-react';
+import { Download, ExternalLink, FileText, Search, User } from 'lucide-react';
 
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
@@ -43,10 +43,17 @@ function graduationLabel(student: Resume) {
   return student.gradYear ? `Class of ${student.gradYear}` : 'No grad year';
 }
 
+function filenameFromContentDisposition(header: string | null) {
+  const match = header?.match(/filename="([^"]+)"/);
+  return match?.[1] ?? 'ktp-resumes.zip';
+}
+
 export default function EmployerResumesPage() {
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+  const [downloadingZip, setDownloadingZip] = useState(false);
   const [activeFilter, setActiveFilter] = useState<ResumeFilter>('All');
   const [search, setSearch] = useState('');
 
@@ -97,6 +104,39 @@ export default function EmployerResumesPage() {
   }, [activeFilter, resumes, search]);
 
   const filters: ResumeFilter[] = ['All', 'With LinkedIn'];
+  const canDownloadZip = !loading && !error && filteredResumes.length > 0 && !downloadingZip;
+
+  async function downloadFilteredResumes() {
+    setDownloadError(null);
+    setDownloadingZip(true);
+
+    try {
+      const res = await fetch('/api/employers/resumes/download', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: filteredResumes.map((student) => student.id) }),
+      });
+
+      if (!res.ok) {
+        throw new Error('download_failed');
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+
+      anchor.href = url;
+      anchor.download = filenameFromContentDisposition(res.headers.get('Content-Disposition'));
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      setDownloadError('Unable to download resumes. Please try again.');
+    } finally {
+      setDownloadingZip(false);
+    }
+  }
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-8 bg-transparent transition-colors duration-300">
@@ -148,12 +188,29 @@ export default function EmployerResumesPage() {
       </div>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="gap-4 sm:flex-row sm:items-center sm:justify-between">
           <CardTitle>
             {activeFilter === 'All' ? 'All Resumes' : activeFilter} ({filteredResumes.length})
           </CardTitle>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={downloadFilteredResumes}
+            disabled={!canDownloadZip}
+            className="w-full sm:w-auto"
+          >
+            <Download className="h-4 w-4" />
+            {downloadingZip ? 'Preparing...' : 'Download ZIP'}
+          </Button>
         </CardHeader>
         <CardContent>
+          {downloadError ? (
+            <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-300">
+              {downloadError}
+            </div>
+          ) : null}
+
           {loading ? (
             <div className="text-center py-8 text-gray-500 dark:text-gray-400 transition-colors duration-300">
               Loading resumes...
