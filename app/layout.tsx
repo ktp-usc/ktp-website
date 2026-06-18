@@ -17,7 +17,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Kappa Theta Pi - University of South Carolina",
-  description: "The University of South Carolina's premier technology fraternity",
+  description:
+    "The University of South Carolina's premier technology fraternity",
 };
 
 export default function RootLayout({
@@ -27,7 +28,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <Providers>
           {children}
           <Toaster position="bottom-right" richColors />
