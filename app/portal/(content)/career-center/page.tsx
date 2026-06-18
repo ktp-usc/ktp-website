@@ -266,12 +266,12 @@ export default function CareerCenterPage() {
                         key={r.id}
                         className="border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
                     >
-                        <CardContent className="pt-6">
+                        <CardContent className="pt-6 pb-6">
                             {/* Top row */}
-                            <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-start justify-between mb-4">
                                 <div>
-                                    <div className="flex items-center gap-2 flex-wrap">
-                                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                                             {r.company}
                                         </h3>
                                         <Badge variant="secondary">{r.industry}</Badge>
@@ -281,69 +281,94 @@ export default function CareerCenterPage() {
                                             </Badge>
                                         )}
                                     </div>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                        {r.role} · {r.location}
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                        {r.role} &mdash; {r.location}
                                     </p>
                                 </div>
-                                <span className="text-xs text-gray-400 whitespace-nowrap ml-4">
-                                    {r.createdAt}
-                                </span>
+                                <span className="text-xs text-gray-400 whitespace-nowrap ml-4 mt-1">
+                    {r.createdAt}
+                </span>
                             </div>
 
-                            {/* Quick info */}
-                            <div className="flex gap-4 text-sm text-gray-600 dark:text-gray-400 mb-3 flex-wrap">
-                                <span>💰 {r.compensation}</span>
-                                <span>📅 {r.appTimeline}</span>
-                                <span>👤 {r.author}</span>
+                            {/* Divider */}
+                            <div className="border-t border-gray-100 dark:border-gray-700 mb-4" />
+
+                            {/* Info grid */}
+                            <div className="grid grid-cols-3 gap-4 mb-4">
+                                <div>
+                                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1">
+                                        Compensation
+                                    </p>
+                                    <p className="text-sm text-gray-700 dark:text-gray-300">{r.compensation}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1">
+                                        Application Timeline
+                                    </p>
+                                    <p className="text-sm text-gray-700 dark:text-gray-300">{r.appTimeline}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-1">
+                                        Posted By
+                                    </p>
+                                    <p className="text-sm text-gray-700 dark:text-gray-300">{r.author}</p>
+                                </div>
                             </div>
+
+                            {/* Divider */}
+                            <div className="border-t border-gray-100 dark:border-gray-700 mb-4" />
 
                             {/* Expand toggle */}
                             <button
                                 onClick={() => setExpanded(expanded === r.id ? null : r.id)}
-                                className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                                className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
                             >
-                                {expanded === r.id ? "Show less ▲" : "Show full details ▼"}
+                                {expanded === r.id ? "Show less" : "Show full details"}
                             </button>
 
                             {/* Expanded details */}
                             {expanded === r.id && (
-                                <div className="mt-4 space-y-4 border-t border-gray-100 dark:border-gray-700 pt-4">
+                                <div className="mt-6 space-y-8">
                                     <div>
-                                        <p className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 mb-1">
+                                        <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-3">
                                             Interview Questions
                                         </p>
-                                        <ul className="list-disc list-inside space-y-1">
+                                        <ul className="space-y-3">
                                             {r.interviewQuestions.map((q, i) => (
-                                                <li key={i} className="text-sm text-gray-700 dark:text-gray-300">
+                                                <li
+                                                    key={i}
+                                                    className="text-sm text-gray-700 dark:text-gray-300 pl-4 border-l-2 border-blue-200 dark:border-blue-800 py-1"
+                                                >
                                                     {q}
                                                 </li>
                                             ))}
                                         </ul>
                                     </div>
-                                    <div>
-                                        <p className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 mb-1">
+
+                                    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                                        <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">
                                             Technical Assessment
                                         </p>
-                                        <p className="text-sm text-gray-700 dark:text-gray-300">
-                                            {r.technicalDetails}
-                                        </p>
+                                        <p className="text-sm text-gray-700 dark:text-gray-300">{r.technicalDetails}</p>
                                     </div>
+
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <p className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 mb-1">
+                                        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+                                            <p className="text-xs font-semibold uppercase tracking-wide text-green-600 dark:text-green-400 mb-2">
                                                 Pros
                                             </p>
                                             <p className="text-sm text-gray-700 dark:text-gray-300">{r.pros}</p>
                                         </div>
-                                        <div>
-                                            <p className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 mb-1">
+                                        <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-4">
+                                            <p className="text-xs font-semibold uppercase tracking-wide text-red-500 dark:text-red-400 mb-2">
                                                 Cons
                                             </p>
                                             <p className="text-sm text-gray-700 dark:text-gray-300">{r.cons}</p>
                                         </div>
                                     </div>
-                                    <div>
-                                        <p className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 mb-1">
+
+                                    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                                        <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400 mb-2">
                                             Advice for Applicants
                                         </p>
                                         <p className="text-sm text-gray-700 dark:text-gray-300">{r.advice}</p>
