@@ -9,20 +9,22 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const SEMESTER_LABEL = "Spring 2026";
-const TOTAL_POINTS = 12;
-const PENDING_POINTS = 2;
+const TOTAL_POINTS = 13;
+const PENDING_POINTS = 5;
 
 const CATEGORIES = [
-    { name: "Chapter Meetings",         completed: 6, required: 8, ptsEarned: 6 },
-    { name: "Social Events",            completed: 2, required: 2, ptsEarned: 4 },
-    { name: "Professional Development", completed: 1, required: 3, ptsEarned: 2 },
+    { name: "Coffee Chats",             completed: 3, required: 5, ptsEarned: 3 },
+    { name: "Workshops",                completed: 3, required: 3, ptsEarned: 6 },
+    { name: "Social Events",            completed: 1, required: 2, ptsEarned: 2 },
+    { name: "Hackathons / Conferences", completed: 0, required: 1, ptsEarned: 0 },
+    { name: "Big/Little Hangout",       completed: 1, required: 1, ptsEarned: 2 },
 ];
 
 const REQUIREMENTS_COMPLETED = CATEGORIES.filter(
     (c) => c.completed >= c.required
 ).length;
 
-export default function ActiveMemberPointsPage() {
+export default function PnmPledgePointsPage() {
     const router = useRouter();
     const session = useSessionQuery();
     const account = useMyAccountQuery();
@@ -30,8 +32,7 @@ export default function ActiveMemberPointsPage() {
     const isLoading = session.isFetching || account.isFetching;
 
     const isAuthorized = useMemo(() => {
-        const t = account.data?.type;
-        return t === "BROTHER" || t === "ALUMNI";
+        return account.data?.type === "PNM";
     }, [account.data?.type]);
 
     const fullName = useMemo(() => {
@@ -74,7 +75,7 @@ export default function ActiveMemberPointsPage() {
     }
 
     return (
-        <main className="max-w-6xl mx-auto px-8 py-14">
+        <main className="max-w-6xl mx-auto px-8 py-8">
             <div className="lg:grid lg:grid-cols-2 lg:gap-12 lg:items-start">
 
                 {/* LEFT COLUMN – stats */}
@@ -83,15 +84,15 @@ export default function ActiveMemberPointsPage() {
                     {/* Page header */}
                     <div>
                         <div className="flex items-center gap-2 mb-5">
-                            <Badge className="rounded-full px-3.5 py-1.5 text-sm bg-[#1e2d5a] text-white border-transparent hover:bg-[#1e2d5a]">
-                                Active Member
+                            <Badge className="rounded-full px-3.5 py-1.5 text-sm bg-[#1e5a4a] text-white border-transparent hover:bg-[#1e5a4a]">
+                                Pledge
                             </Badge>
                             <Badge variant="secondary" className="rounded-full px-3.5 py-1.5 text-sm">
                                 {SEMESTER_LABEL}
                             </Badge>
                         </div>
                         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                            Active Member Points
+                            Pledge Points
                         </h1>
                         {fullName && (
                             <p className="text-base text-gray-400 dark:text-gray-500 mt-2">
@@ -108,7 +109,7 @@ export default function ActiveMemberPointsPage() {
                                 Total Points
                             </p>
                             <p
-                                className="font-bold leading-none tabular-nums text-[#1e2d5a] dark:text-indigo-400"
+                                className="font-bold leading-none tabular-nums text-[#1e5a4a] dark:text-teal-400"
                                 style={{ fontSize: "7rem" }}
                             >
                                 {TOTAL_POINTS}
@@ -158,20 +159,23 @@ export default function ActiveMemberPointsPage() {
                         Requirement Progress
                     </h2>
 
-                    <div className="space-y-5">
+                    <div className="space-y-5 lg:overflow-y-auto lg:pr-2 lg:pb-4 lg:max-h-[calc(100vh-14rem)]">
                         {CATEGORIES.map((cat) => {
-                            const pct        = Math.min(Math.round((cat.completed / cat.required) * 100), 100);
+                            const pct        = cat.required > 0 ? Math.min(Math.round((cat.completed / cat.required) * 100), 100) : 0;
                             const isComplete = cat.completed >= cat.required;
+                            const isMissing  = cat.completed === 0;
+
+                            let cardClass: string;
+                            if (isComplete) {
+                                cardClass = "bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-900";
+                            } else if (isMissing) {
+                                cardClass = "border-l-4 border-l-rose-500 dark:border-l-rose-400";
+                            } else {
+                                cardClass = "border-l-4 border-l-[#1e5a4a] dark:border-l-teal-400";
+                            }
 
                             return (
-                                <Card
-                                    key={cat.name}
-                                    className={
-                                        isComplete
-                                            ? "bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-900"
-                                            : "border-l-4 border-l-[#1e2d5a] dark:border-l-indigo-400"
-                                    }
-                                >
+                                <Card key={cat.name} className={cardClass}>
                                     <CardContent className="px-7 py-6 pt-6">
                                         {/* Card header */}
                                         <div className="flex items-start justify-between gap-4 mb-6">
@@ -190,8 +194,15 @@ export default function ActiveMemberPointsPage() {
                                                     </svg>
                                                     Complete
                                                 </Badge>
+                                            ) : isMissing ? (
+                                                <Badge className="shrink-0 rounded-full gap-1.5 px-3 py-1.5 text-sm bg-rose-100 text-rose-700 dark:bg-rose-950/50 dark:text-rose-400 border-transparent hover:bg-rose-100">
+                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                                                    </svg>
+                                                    Missing
+                                                </Badge>
                                             ) : (
-                                                <Badge className="shrink-0 rounded-full gap-1.5 px-3 py-1.5 text-sm bg-[rgba(30,45,90,0.08)] text-[#1e2d5a] dark:bg-indigo-950/50 dark:text-indigo-400 border-transparent hover:bg-[rgba(30,45,90,0.08)]">
+                                                <Badge className="shrink-0 rounded-full gap-1.5 px-3 py-1.5 text-sm bg-[rgba(30,90,74,0.08)] text-[#1e5a4a] dark:bg-teal-950/50 dark:text-teal-400 border-transparent hover:bg-[rgba(30,90,74,0.08)]">
                                                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                     </svg>
@@ -205,7 +216,9 @@ export default function ActiveMemberPointsPage() {
                                             <p className={`text-sm font-semibold tabular-nums text-right mb-2 ${
                                                 isComplete
                                                     ? "text-green-700 dark:text-green-400"
-                                                    : "text-[#1e2d5a] dark:text-indigo-400"
+                                                    : isMissing
+                                                        ? "text-rose-600 dark:text-rose-400"
+                                                        : "text-[#1e5a4a] dark:text-teal-400"
                                             }`}>
                                                 {cat.completed} / {cat.required}
                                             </p>
@@ -213,13 +226,17 @@ export default function ActiveMemberPointsPage() {
                                             <div className={`w-full rounded-full h-4 overflow-hidden ${
                                                 isComplete
                                                     ? "bg-green-100 dark:bg-green-950"
-                                                    : "bg-gray-100 dark:bg-gray-800"
+                                                    : isMissing
+                                                        ? "bg-rose-100 dark:bg-rose-950"
+                                                        : "bg-gray-100 dark:bg-gray-800"
                                             }`}>
                                                 <div
                                                     className={`h-4 rounded-full transition-all duration-700 bg-gradient-to-r ${
                                                         isComplete
                                                             ? "from-green-700 to-green-500"
-                                                            : "from-[#1e2d5a] to-[#3b5998] dark:from-indigo-600 dark:to-indigo-400"
+                                                            : isMissing
+                                                                ? "from-rose-400 to-rose-300"
+                                                                : "from-[#1e5a4a] to-[#2d8c6e] dark:from-teal-600 dark:to-teal-400"
                                                     }`}
                                                     style={{ width: `${pct}%` }}
                                                 />
