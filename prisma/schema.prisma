@@ -155,6 +155,30 @@ model career_reviews {
   @@schema("public")
 }
 
+
+model PointRequirement {
+  id                  String     @id @default(uuid()) @db.Uuid
+  memberType          memberType
+  semester            String
+  name                String
+  description         String
+  requiredAmount      Int
+  pointsPerCompletion Int
+  maxPoints           Int
+
+  @@map("point_requirements")
+  @@schema("public")
+}
+
+enum memberType {
+  PNM
+  PLEDGE
+  ACTIVE
+  ALL_MEMBERS
+
+  @@schema("public")
+}
+
 enum applicationStatus {
   CLOSED
   UNDER_REVIEW
