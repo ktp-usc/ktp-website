@@ -31,9 +31,9 @@ export async function POST(req: NextRequest) {
 
         const body = await req.json();
         const {
-            company, industry, role, location, appTimeline,
+            company, role, location, appTimeline,
             interviewQuestions, technicalDetails, canRefer,
-            compensation, pros, cons, advice,
+            pros, cons, advice,
         } = body;
 
         const review = await prisma.career_reviews.create({
@@ -41,7 +41,6 @@ export async function POST(req: NextRequest) {
                 authorId: account.id,
                 authorName: `${account.firstName} ${account.lastName}`,
                 company,
-                industry,
                 role,
                 location,
                 appTimeline,
@@ -51,7 +50,6 @@ export async function POST(req: NextRequest) {
                     .filter(Boolean),
                 technicalDetails,
                 canRefer: canRefer ?? false,
-                compensation,
                 pros,
                 cons,
                 advice,
