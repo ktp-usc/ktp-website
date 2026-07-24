@@ -184,14 +184,12 @@ model career_reviews {
   author   accounts @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   company          String
-  industry         String
   role             String
   location         String
   appTimeline      String
   interviewQs      String[] @default([])
   technicalDetails String
   canRefer         Boolean  @default(false)
-  compensation     String
   pros             String
   cons             String
   advice           String
