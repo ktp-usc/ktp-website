@@ -34,7 +34,7 @@ export default function CareerCenterPage() {
                         </svg>
                     </div>
                     <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
-                        Glassdoor
+                        Company Experiences
                     </h4>
                     <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
                         Browse company reviews, interview experiences, and referrals from brothers.

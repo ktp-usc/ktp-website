@@ -81,7 +81,6 @@ export async function PATCH(
             where: { id },
             data: {
                 company: body.company,
-                industry: body.industry,
                 role: body.role,
                 location: body.location,
                 appTimeline: body.appTimeline,
@@ -91,7 +90,6 @@ export async function PATCH(
                     .filter(Boolean),
                 technicalDetails: body.technicalDetails,
                 canRefer: body.canRefer ?? false,
-                compensation: body.compensation,
                 pros: body.pros,
                 cons: body.cons,
                 advice: body.advice,
