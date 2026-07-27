@@ -104,8 +104,8 @@ model vote_votes {
   id         String         @id @default(uuid()) @db.Uuid
   questionId String         @db.Uuid
   optionId   String         @db.Uuid
-  voterHash  String
   createdAt  DateTime       @default(now()) @db.Timestamptz(6)
+  voterHash  String
   option     vote_options   @relation(fields: [optionId], references: [id], onDelete: Cascade)
   question   vote_questions @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
@@ -132,7 +132,7 @@ model vote_eligibility {
 }
 
 model career_reviews {
-  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id               String   @id @default(uuid()) @db.Uuid
   authorId         String   @db.Uuid
   company          String
   role             String
