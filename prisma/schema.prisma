@@ -31,7 +31,6 @@ model accounts {
   career_reviews  career_reviews[]
   voteEligibility vote_eligibility[]
   voteQuestions   vote_questions[]
-  career_reviews  career_reviews[]
 
   @@schema("public")
 }
@@ -74,22 +73,16 @@ model comment {
 }
 
 model vote_questions {
-  id          String             @id @default(uuid()) @db.Uuid
-  question    String
-  isActive    Boolean            @default(true)
-  createdAt   DateTime           @default(now()) @db.Timestamptz(6)
-  closesAt    DateTime?          @db.Timestamptz(6)
-  createdById String             @db.Uuid
-<<<<<<< HEAD
-=======
-  createdBy   accounts           @relation(fields: [createdById], references: [id], onDelete: Restrict)
-  options     vote_options[]
-  votes       vote_votes[]
->>>>>>> main
-  eligible    vote_eligibility[]
-  options     vote_options[]
-  createdBy   accounts           @relation(fields: [createdById], references: [id])
-  votes       vote_votes[]
+  id                String             @id @default(uuid()) @db.Uuid
+  question          String
+  isActive          Boolean            @default(true)
+  createdAt         DateTime           @default(now()) @db.Timestamptz(6)
+  closesAt          DateTime?          @db.Timestamptz(6)
+  createdById       String             @db.Uuid
+  createdBy         accounts           @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  options           vote_options[]
+  votes             vote_votes[]
+  voteEligibilities vote_eligibility[]
 
   @@index([isActive])
   @@schema("public")
@@ -206,29 +199,5 @@ enum gradSemester {
   SPRING
   FALL
 
-  @@schema("public")
-}
-
-model career_reviews {
-  id       String   @id @default(uuid()) @db.Uuid
-  authorId String   @db.Uuid
-  author   accounts @relation(fields: [authorId], references: [id], onDelete: Cascade)
-
-  company          String
-  role             String
-  location         String
-  appTimeline      String
-  interviewQs      String[] @default([])
-  technicalDetails String
-  canRefer         Boolean  @default(false)
-  pros             String
-  cons             String
-  advice           String
-  authorName       String
-
-  createdAt DateTime @default(now()) @db.Timestamptz(6)
-
-  @@index([company])
-  @@index([createdAt])
   @@schema("public")
 }
