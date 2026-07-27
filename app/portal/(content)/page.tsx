@@ -1,7 +1,7 @@
 // app/portal/page.tsx
 "use client";
 import { BadgeCheck, ChevronRight, ListPlus, CalendarPlus } from "lucide-react";
-import type { type as AccountType, applicationStatus } from "@prisma/client";
+import { type as AccountType, applicationStatus, Prisma } from "@prisma/client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef } from "react";
