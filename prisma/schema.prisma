@@ -82,7 +82,7 @@ model career_reviews {
 }
 
 model comment {
-  id             String             @id @db.Uuid
+  id             String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   applicationId  String             @db.Uuid
   createdAt      DateTime           @default(now()) @db.Timestamptz(6)
   statusOverride applicationStatus?
