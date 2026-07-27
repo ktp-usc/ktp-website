@@ -80,6 +80,7 @@ model vote_questions {
   createdAt   DateTime           @default(now()) @db.Timestamptz(6)
   closesAt    DateTime?          @db.Timestamptz(6)
   createdById String             @db.Uuid
+  eligible    vote_eligibility[]
   createdBy   accounts           @relation(fields: [createdById], references: [id], onDelete: Restrict)
   options     vote_options[]
   createdBy   accounts           @relation(fields: [createdById], references: [id])
@@ -153,6 +154,30 @@ model career_reviews {
 
   @@index([company])
   @@index([createdAt])
+  @@schema("public")
+}
+
+
+model PointRequirement {
+  id                  String     @id @default(uuid()) @db.Uuid
+  memberType          memberType
+  semester            String
+  name                String
+  description         String
+  requiredAmount      Int
+  pointsPerCompletion Int
+  maxPoints           Int
+
+  @@map("point_requirements")
+  @@schema("public")
+}
+
+enum memberType {
+  PNM
+  PLEDGE
+  ACTIVE
+  ALL_MEMBERS
+
   @@schema("public")
 }
 
