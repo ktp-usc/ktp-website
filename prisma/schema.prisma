@@ -31,6 +31,7 @@ model accounts {
   career_reviews  career_reviews[]
   voteEligibility vote_eligibility[]
   voteQuestions   vote_questions[]
+  career_reviews  career_reviews[]
 
   @@schema("public")
 }
@@ -73,16 +74,17 @@ model comment {
 }
 
 model vote_questions {
-  id                String             @id @default(uuid()) @db.Uuid
-  question          String
-  isActive          Boolean            @default(true)
-  createdAt         DateTime           @default(now()) @db.Timestamptz(6)
-  closesAt          DateTime?          @db.Timestamptz(6)
-  createdById       String             @db.Uuid
-  createdBy         accounts           @relation(fields: [createdById], references: [id], onDelete: Restrict)
-  options           vote_options[]
-  votes             vote_votes[]
-  voteEligibilities vote_eligibility[]
+  id          String             @id @default(uuid()) @db.Uuid
+  question    String
+  isActive    Boolean            @default(true)
+  createdAt   DateTime           @default(now()) @db.Timestamptz(6)
+  closesAt    DateTime?          @db.Timestamptz(6)
+  createdById String             @db.Uuid
+  eligible    vote_eligibility[]
+  createdBy   accounts           @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  options     vote_options[]
+  createdBy   accounts           @relation(fields: [createdById], references: [id])
+  votes       vote_votes[]
 
   @@index([isActive])
   @@schema("public")
@@ -155,6 +157,30 @@ model career_reviews {
   @@schema("public")
 }
 
+
+model PointRequirement {
+  id                  String     @id @default(uuid()) @db.Uuid
+  memberType          memberType
+  semester            String
+  name                String
+  description         String
+  requiredAmount      Int
+  pointsPerCompletion Int
+  maxPoints           Int
+
+  @@map("point_requirements")
+  @@schema("public")
+}
+
+enum memberType {
+  PNM
+  PLEDGE
+  ACTIVE
+  ALL_MEMBERS
+
+  @@schema("public")
+}
+
 enum applicationStatus {
   CLOSED
   UNDER_REVIEW
@@ -199,5 +225,29 @@ enum gradSemester {
   SPRING
   FALL
 
+  @@schema("public")
+}
+
+model career_reviews {
+  id       String   @id @default(uuid()) @db.Uuid
+  authorId String   @db.Uuid
+  author   accounts @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  company          String
+  role             String
+  location         String
+  appTimeline      String
+  interviewQs      String[] @default([])
+  technicalDetails String
+  canRefer         Boolean  @default(false)
+  pros             String
+  cons             String
+  advice           String
+  authorName       String
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([company])
+  @@index([createdAt])
   @@schema("public")
 }
