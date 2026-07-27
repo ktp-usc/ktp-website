@@ -1,11 +1,16 @@
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth/guards";
 import { ok, serverError } from "@/lib/http/responses";
+import { getDevAuthBypassAccount, isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function GET() {
+    if (isDevAuthBypassEnabled()) {
+        return ok(getDevAuthBypassAccount());
+    }
+
     const authed = await requireUser();
     if ("response" in authed) return authed.response;
 

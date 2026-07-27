@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { neonAuthMiddleware } from '@neondatabase/auth/next/server';
+import { isDevAuthBypassEnabled } from '@/lib/auth/dev-bypass';
 
 const requireAuth = neonAuthMiddleware({
     loginUrl: '/auth/sign-in'
@@ -13,6 +14,10 @@ function isExecOnlyPath(pathname: string) {
 }
 
 export default async function middleware(req: NextRequest) {
+    if (isDevAuthBypassEnabled()) {
+        return NextResponse.next();
+    }
+
     // 1) enforce authentication (existing behavior)
     const authResult = await requireAuth(req);
     if (authResult && authResult.status !== 200) {

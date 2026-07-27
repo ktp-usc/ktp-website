@@ -351,6 +351,34 @@ export default function PortalHomePage() {
                             </p>
                         </Link>
 
+                        <Link href="/portal/exec/Points" className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer">
+                            <div className="flex items-center justify-between mb-4">
+                                <div
+                                    className="p-3 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                                    <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor"
+                                         viewBox="0 0 24 24">
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={ 2 }
+                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V6m0 10v2"
+                                        />
+                                    </svg>
+                                </div>
+                                <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"
+                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 }
+                                          d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                            <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                                Points
+                            </h4>
+                            <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                                Manage member points and chapter participation.
+                            </p>
+                        </Link>
+
                         <Link href="/portal/voting" className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer">
                             <div className="flex items-center justify-between mb-4">
                                 <div
