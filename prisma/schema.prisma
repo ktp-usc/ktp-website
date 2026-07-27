@@ -25,9 +25,13 @@ model PointRequirement {
 
 model event {
   id                  String     @id @default(uuid()) @db.Uuid
+  name                String
   attendance          String[]
-  DateTime            DateTime
+  startDate           DateTime
+  description         String
   PointRequirement    String
+  location            String
+  activesOnly         Boolean
   
   @@schema("public")
 }

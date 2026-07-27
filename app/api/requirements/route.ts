@@ -10,7 +10,6 @@ import { NextResponse } from "next/server";
 //   maxPoints           Int
 export async function POST(req: Request) {
   const body = await req.json();
-  console.log("memberType: ", body.memberType);
   const pointRequirement = await prisma.pointRequirement.create({
     data: body,
   });
