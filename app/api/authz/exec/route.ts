@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server';
 import { neonAuth } from '@neondatabase/auth/next/server';
 import { prisma } from "@/lib/prisma";
+import { isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass";
 
 export async function GET() {
+    if (isDevAuthBypassEnabled()) {
+        return NextResponse.json({ allowed: true, devBypass: true }, { status: 200 });
+    }
+
     // 1) must be signed in
     const { session, user } = await neonAuth();
     if (!session || !user) {
