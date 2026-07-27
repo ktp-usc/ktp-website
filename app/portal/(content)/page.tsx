@@ -11,17 +11,16 @@ import { useSessionQuery } from "@/client/hooks/auth";
 
 import confetti from "canvas-confetti";
 
-import { ListPlus, SquareCheckBig, ChevronRight } from "lucide-react";
-
-type PortalRole = "exec" | "applicant" | "member";
+type PortalRole = "exec" | "applicant" | "member" | "pnm";
 
 // ✅ new: can be "not started", "in progress", or the submitted status enum
 type ApplicationViewStatus = "NOT_STARTED" | "IN_PROGRESS" | applicationStatus;
 
 function toPortalRole(typeValue: AccountType | null | undefined): PortalRole {
-  if (typeValue === "LEADERSHIP") return "exec";
-  if (typeValue === "BROTHER" || typeValue === "ALUMNI") return "member";
-  return "applicant";
+    if (typeValue === "LEADERSHIP") return "exec";
+    if (typeValue === "BROTHER" || typeValue === "ALUMNI") return "member";
+    if (typeValue === "PNM") return "pnm";
+    return "applicant";
 }
 
 function formatDate(dateLike: string | Date | null | undefined): string {
@@ -85,9 +84,10 @@ function statusPillClasses(status: ApplicationViewStatus): string {
 }
 
 const roleMessages = {
-  exec: "Manage applications and chapter roster from your dashboard.",
-  member: "Vote on fraternity matters and update your profile.",
-  applicant: "Track your application status and stay updated.",
+    exec: "Manage applications and chapter roster from your dashboard.",
+    member: "Vote on fraternity matters and update your profile.",
+    applicant: "Track your application status and stay updated.",
+    pnm: "Track your pledge requirements and stay on top of your progress.",
 };
 
 export default function PortalHomePage() {
