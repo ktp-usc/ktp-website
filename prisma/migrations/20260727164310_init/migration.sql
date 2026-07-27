@@ -5,11 +5,8 @@
 
 */
 -- CreateEnum
-CREATE TYPE "memberType" AS ENUM ('RUSHEE', 'APPLICANT', 'BROTHER', 'MEMBER');
+CREATE TYPE "memberType" AS ENUM ('ACTIVE', 'PLEDGE', 'APPLICANT', 'ALL_MEMBERS');
 
 -- AlterTable
 ALTER TABLE "point_requirements" DROP COLUMN "memberType",
 ADD COLUMN     "memberType" "memberType" NOT NULL;
-
--- DropEnum
-DROP TYPE "RequirmentType";

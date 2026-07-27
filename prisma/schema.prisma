@@ -7,8 +7,33 @@ datasource db {
   schemas  = ["public"]
 }
 
+
+
+model PointRequirement {
+  id                  String     @id @default(uuid()) @db.Uuid
+  memberType          memberType
+  semester            String
+  name                String
+  description         String
+  requiredAmount      Int
+  pointsPerCompletion Int
+  maxPoints           Int
+
+  @@map("point_requirements")
+  @@schema("public")
+}
+
+model event {
+  id                  String     @id @default(uuid()) @db.Uuid
+  attendance          String[]
+  DateTime            DateTime
+  PointRequirement    String
+  
+  @@schema("public")
+}
+
 model accounts {
-  id              String             @id @db.Uuid
+  id              String             @id @default(uuid()) @db.Uuid
   firstName       String             @default("john")
   lastName        String             @default("smith")
   majors          String[]
@@ -31,7 +56,6 @@ model accounts {
   career_reviews  career_reviews[]
   voteEligibility vote_eligibility[]
   voteQuestions   vote_questions[]
-  career_reviews  career_reviews[]
 
   @@schema("public")
 }
@@ -81,7 +105,6 @@ model vote_questions {
   closesAt    DateTime?          @db.Timestamptz(6)
   createdById String             @db.Uuid
   eligible    vote_eligibility[]
-  createdBy   accounts           @relation(fields: [createdById], references: [id], onDelete: Restrict)
   options     vote_options[]
   createdBy   accounts           @relation(fields: [createdById], references: [id])
   votes       vote_votes[]
@@ -106,8 +129,8 @@ model vote_votes {
   id         String         @id @default(uuid()) @db.Uuid
   questionId String         @db.Uuid
   optionId   String         @db.Uuid
-  createdAt  DateTime       @default(now()) @db.Timestamptz(6)
   voterHash  String
+  createdAt  DateTime       @default(now()) @db.Timestamptz(6)
   option     vote_options   @relation(fields: [optionId], references: [id], onDelete: Cascade)
   question   vote_questions @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
@@ -134,17 +157,15 @@ model vote_eligibility {
 }
 
 model career_reviews {
-  id               String   @id @db.Uuid
+  id               String   @id @default(uuid()) @db.Uuid
   authorId         String   @db.Uuid
   company          String
-  industry         String
   role             String
   location         String
   appTimeline      String
   interviewQs      String[] @default([])
   technicalDetails String
   canRefer         Boolean  @default(false)
-  compensation     String
   pros             String
   cons             String
   advice           String
@@ -154,30 +175,6 @@ model career_reviews {
 
   @@index([company])
   @@index([createdAt])
-  @@schema("public")
-}
-
-
-model PointRequirement {
-  id                  String     @id @default(uuid()) @db.Uuid
-  memberType          memberType
-  semester            String
-  name                String
-  description         String
-  requiredAmount      Int
-  pointsPerCompletion Int
-  maxPoints           Int
-
-  @@map("point_requirements")
-  @@schema("public")
-}
-
-enum memberType {
-  PNM
-  PLEDGE
-  ACTIVE
-  ALL_MEMBERS
-
   @@schema("public")
 }
 
@@ -211,6 +208,16 @@ enum leaderType {
   @@schema("public")
 }
 
+enum memberType{
+  ACTIVE 
+  PLEDGE
+  APPLICANT
+  ALL_MEMBERS
+
+  @@schema("public")
+}
+
+
 enum type {
   APPLICANT
   PNM
@@ -225,29 +232,5 @@ enum gradSemester {
   SPRING
   FALL
 
-  @@schema("public")
-}
-
-model career_reviews {
-  id       String   @id @default(uuid()) @db.Uuid
-  authorId String   @db.Uuid
-  author   accounts @relation(fields: [authorId], references: [id], onDelete: Cascade)
-
-  company          String
-  role             String
-  location         String
-  appTimeline      String
-  interviewQs      String[] @default([])
-  technicalDetails String
-  canRefer         Boolean  @default(false)
-  pros             String
-  cons             String
-  advice           String
-  authorName       String
-
-  createdAt DateTime @default(now()) @db.Timestamptz(6)
-
-  @@index([company])
-  @@index([createdAt])
   @@schema("public")
 }
