@@ -1,14 +1,13 @@
 // app/portal/page.tsx
 "use client";
-import { BadgeCheck, ChevronRight } from "lucide-react";
-import type { type as AccountType } from "@prisma/client";
+import { BadgeCheck, ChevronRight, ListPlus, CalendarPlus } from "lucide-react";
+import type { type as AccountType, applicationStatus } from "@prisma/client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef } from "react";
 
 import { useMyAccountQuery } from "@/client/hooks/accounts";
 import { useSessionQuery } from "@/client/hooks/auth";
-
 import confetti from "canvas-confetti";
 
 type PortalRole = "exec" | "applicant" | "member" | "pnm";
@@ -17,17 +16,10 @@ type PortalRole = "exec" | "applicant" | "member" | "pnm";
 type ApplicationViewStatus = "NOT_STARTED" | "IN_PROGRESS" | applicationStatus;
 
 function toPortalRole(typeValue: AccountType | null | undefined): PortalRole {
-<<<<<<< HEAD
   if (typeValue === "LEADERSHIP") return "exec";
   if (typeValue === "BROTHER" || typeValue === "ALUMNI") return "member";
   if (typeValue === "PNM") return "pnm";
   return "applicant";
-=======
-    if (typeValue === "LEADERSHIP") return "exec";
-    if (typeValue === "BROTHER" || typeValue === "ALUMNI") return "member";
-    if (typeValue === "PNM") return "pnm";
-    return "applicant";
->>>>>>> d7420f3b63460e3818b155bac624afbdfc269945
 }
 
 function formatDate(dateLike: string | Date | null | undefined): string {
@@ -91,17 +83,10 @@ function statusPillClasses(status: ApplicationViewStatus): string {
 }
 
 const roleMessages = {
-<<<<<<< HEAD
   exec: "Manage applications and chapter roster from your dashboard.",
   member: "Vote on fraternity matters and update your profile.",
   applicant: "Track your application status and stay updated.",
   pnm: "Track your pledge requirements and stay on top of your progress.",
-=======
-    exec: "Manage applications and chapter roster from your dashboard.",
-    member: "Vote on fraternity matters and update your profile.",
-    applicant: "Track your application status and stay updated.",
-    pnm: "Track your pledge requirements and stay on top of your progress.",
->>>>>>> d7420f3b63460e3818b155bac624afbdfc269945
 };
 
 export default function PortalHomePage() {
@@ -498,7 +483,6 @@ export default function PortalHomePage() {
             </Link>
 
             <Link
-<<<<<<< HEAD
               href="/portal/career-center"
               className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
             >
@@ -553,6 +537,38 @@ export default function PortalHomePage() {
                 Track your active requirements and event attendance.
               </p>
             </Link>
+
+            <Link
+              href="/portal/exec/requirements"
+              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <ListPlus className="p-3 w-12 h-auto text-green-700 bg-green-100 rounded-lg group-hover:bg-green-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors" />
+                <ChevronRight className="text-slate-400 group-hover:text-blue-500" />
+              </div>
+              <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                Requirements
+              </h4>
+              <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                Create new requirements for actives, pledges and rushees.
+              </p>
+            </Link>
+
+            <Link
+              href="/portal/exec/events"
+              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <CalendarPlus className="p-3 w-12 h-auto text-green-700 bg-green-100 rounded-lg group-hover:bg-green-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors" />
+                <ChevronRight className="text-slate-400 group-hover:text-blue-500" />
+              </div>
+              <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                Events
+              </h4>
+              <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                Create new events for actives, pledges and rushees.
+              </p>
+            </Link>
           </div>
         </div>
       ) : null}
@@ -604,20 +620,6 @@ export default function PortalHomePage() {
               </h4>
               <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
                 Track your pledge requirements and event attendance.
-=======
-              href="/portal/exec/requirements"
-              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <ListPlus className="p-3 w-12 h-auto text-green-700 bg-green-100 rounded-lg group-hover:bg-green-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors" />
-                <ChevronRight className="text-slate-400 group-hover:text-blue-500" />
-              </div>
-              <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
-                Requirements
-              </h4>
-              <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
-                Create new requirements for actives, pledges and rushees.
->>>>>>> d7420f3b63460e3818b155bac624afbdfc269945
               </p>
             </Link>
           </div>
@@ -714,7 +716,6 @@ export default function PortalHomePage() {
                 Vote on active questions when in session.
               </p>
             </Link>
-<<<<<<< HEAD
             <Link
               href="/portal/career-center"
               className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
@@ -760,8 +761,6 @@ export default function PortalHomePage() {
                 Career Center
               </h4>
             </Link>
-=======
->>>>>>> d7420f3b63460e3818b155bac624afbdfc269945
           </div>
         </div>
       ) : null}
