@@ -216,4 +216,3 @@ ALTER TABLE "vote_eligibility" ADD CONSTRAINT "vote_eligibility_questionId_fkey"
 
 -- AddForeignKey
 ALTER TABLE "career_reviews" ADD CONSTRAINT "career_reviews_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "accounts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-

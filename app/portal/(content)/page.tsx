@@ -1,14 +1,13 @@
 // app/portal/page.tsx
 "use client";
-
-import type { type as AccountType, applicationStatus } from "@prisma/client";
+import { BadgeCheck, ChevronRight, ListPlus, CalendarPlus } from "lucide-react";
+import { type as AccountType, applicationStatus, Prisma } from "@prisma/client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef } from "react";
 
 import { useMyAccountQuery } from "@/client/hooks/accounts";
 import { useSessionQuery } from "@/client/hooks/auth";
-
 import confetti from "canvas-confetti";
 
 type PortalRole = "exec" | "applicant" | "member" | "pnm";
@@ -17,10 +16,10 @@ type PortalRole = "exec" | "applicant" | "member" | "pnm";
 type ApplicationViewStatus = "NOT_STARTED" | "IN_PROGRESS" | applicationStatus;
 
 function toPortalRole(typeValue: AccountType | null | undefined): PortalRole {
-    if (typeValue === "LEADERSHIP") return "exec";
-    if (typeValue === "BROTHER" || typeValue === "ALUMNI") return "member";
-    if (typeValue === "PNM") return "pnm";
-    return "applicant";
+  if (typeValue === "LEADERSHIP") return "exec";
+  if (typeValue === "BROTHER" || typeValue === "ALUMNI") return "member";
+  if (typeValue === "PNM") return "pnm";
+  return "applicant";
 }
 
 function formatDate(dateLike: string | Date | null | undefined): string {
@@ -84,10 +83,10 @@ function statusPillClasses(status: ApplicationViewStatus): string {
 }
 
 const roleMessages = {
-    exec: "Manage applications and chapter roster from your dashboard.",
-    member: "Vote on fraternity matters and update your profile.",
-    applicant: "Track your application status and stay updated.",
-    pnm: "Track your pledge requirements and stay on top of your progress.",
+  exec: "Manage applications and chapter roster from your dashboard.",
+  member: "Vote on fraternity matters and update your profile.",
+  applicant: "Track your application status and stay updated.",
+  pnm: "Track your pledge requirements and stay on top of your progress.",
 };
 
 export default function PortalHomePage() {
@@ -484,6 +483,62 @@ export default function PortalHomePage() {
             </Link>
 
             <Link
+              href="/portal/career-center"
+              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                  <svg
+                    className="w-6 h-6 text-yellow-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+                <svg
+                  className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </div>
+              <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                Career Center
+              </h4>
+            </Link>
+            <Link
+              href="/portal/active-points"
+              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-teal-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-teal-100 rounded-lg group-hover:bg-teal-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                  <BadgeCheck />
+                </div>
+                <ChevronRight className="text-gray-400 text-light group-hover:text-teal-300" />
+              </div>
+              <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                Active Points
+              </h4>
+              <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                Track your active requirements and event attendance.
+              </p>
+            </Link>
+
+            <Link
               href="/portal/exec/requirements"
               className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
             >
@@ -496,6 +551,75 @@ export default function PortalHomePage() {
               </h4>
               <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
                 Create new requirements for actives, pledges and rushees.
+              </p>
+            </Link>
+
+            <Link
+              href="/portal/exec/events"
+              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <CalendarPlus className="p-3 w-12 h-auto text-green-700 bg-green-100 rounded-lg group-hover:bg-green-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors" />
+                <ChevronRight className="text-slate-400 group-hover:text-blue-500" />
+              </div>
+              <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                Events
+              </h4>
+              <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                Create new events for actives, pledges and rushees.
+              </p>
+            </Link>
+          </div>
+        </div>
+      ) : null}
+
+      {/* pnm view */}
+      {userId && role === "pnm" ? (
+        <div className="space-y-6">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white transition-colors duration-300">
+            Pledge Dashboard
+          </h3>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <Link
+              href="/portal/pledge-points"
+              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-teal-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-teal-100 rounded-lg group-hover:bg-teal-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                  <svg
+                    className="w-6 h-6 text-teal-700"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                    />
+                  </svg>
+                </div>
+                <svg
+                  className="w-5 h-5 text-gray-400 group-hover:text-teal-600 transition-colors"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </div>
+              <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                Pledge Points
+              </h4>
+              <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                Track your pledge requirements and event attendance.
               </p>
             </Link>
           </div>
@@ -591,6 +715,51 @@ export default function PortalHomePage() {
               <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
                 Vote on active questions when in session.
               </p>
+            </Link>
+            <Link
+              href="/portal/career-center"
+              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                  <svg
+                    className="w-6 h-6 text-yellow-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+                <svg
+                  className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </div>
+              <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                Active Member Points
+              </h4>
+              <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                Track your semester requirements and event attendance.
+              </p>
+
+              <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                Career Center
+              </h4>
             </Link>
           </div>
         </div>
