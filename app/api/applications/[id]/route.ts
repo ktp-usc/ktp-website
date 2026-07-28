@@ -16,7 +16,7 @@ export async function GET(_: Request, ctx: Ctx) {
     try {
         const app = await prisma.applications.findUnique({
             where: { id },
-            include: { comments: { orderBy: { createdAt: 'desc' } } }
+            include: { comment: { orderBy: { createdAt: 'desc' } } }
         });
 
         if (!app) return badRequest('application_not_found');
