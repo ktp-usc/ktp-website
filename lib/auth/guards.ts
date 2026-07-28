@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { authServer } from '@/lib/auth/server';
 import { leaderType as LeaderType } from "@prisma/client";
+import { DEV_AUTH_BYPASS_USER_ID, isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass";
 
 export type AuthedUser = {
     id: string; // neon auth user id (uuid)
@@ -10,6 +11,10 @@ export type AuthedUser = {
 export async function requireUser(): Promise<
     { user: AuthedUser } | { response: NextResponse }
 > {
+    if (isDevAuthBypassEnabled()) {
+        return { user: { id: DEV_AUTH_BYPASS_USER_ID } };
+    }
+
     const { data } = await authServer.getSession(); // adapt to your helper
     const user = data?.user;
 
@@ -25,6 +30,10 @@ export async function requireAdmin(): Promise<
 > {
     const authed = await requireUser();
     if ('response' in authed) return authed;
+
+    if (isDevAuthBypassEnabled()) {
+        return authed;
+    }
 
     const account = await prisma.accounts.findUnique({
         where: { id: authed.user.id },
