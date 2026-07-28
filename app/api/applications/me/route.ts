@@ -47,7 +47,7 @@ export async function GET() {
     try {
         const app = await prisma.applications.findUnique({
             where: { userId: authed.user.id },
-            include: { comment: { orderBy: { createdAt: 'desc' } } }
+            include: { comments: { orderBy: { createdAt: 'desc' } } }
         });
 
         return ok(app);
