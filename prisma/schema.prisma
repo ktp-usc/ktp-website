@@ -8,26 +8,27 @@ datasource db {
 }
 
 model accounts {
-  id              String        @id @db.Uuid
-  firstName       String        @default("john")
-  lastName        String        @default("smith")
+  id              String             @id @db.Uuid
+  firstName       String             @default("john")
+  lastName        String             @default("smith")
   majors          String[]
   minors          String[]
   type            type?
   schoolEmail     String?
   personalEmail   String?
   gradSemester    gradSemester?
-  headshotBlobURL String?       @unique
-  resumeBlobURL   String?       @unique
-  leaderType      leaderType?   @default(N_A)
+  headshotBlobURL String?            @unique
+  resumeBlobURL   String?            @unique
+  leaderType      leaderType?        @default(N_A)
   phoneNum        String?
   isNew           Boolean?
   gradYear        Int?
-  pledgeClass     String?       @default("n/a")
+  pledgeClass     String?            @default("n/a")
   hometown        String?
-  linkedin        String?       @unique
-  github          String?       @unique
+  linkedin        String?            @unique
+  github          String?            @unique
   applications    applications?
+  career_reviews  career_reviews[]
   voteEligibility vote_eligibility[]
   voteQuestions   vote_questions[]
 
@@ -82,16 +83,16 @@ model comment {
 }
 
 model vote_questions {
-  id          String         @id @default(uuid()) @db.Uuid
+  id          String             @id @default(uuid()) @db.Uuid
   question    String
-  isActive    Boolean        @default(true)
-  createdAt   DateTime       @default(now()) @db.Timestamptz(6)
-  closesAt    DateTime?      @db.Timestamptz(6)
-  createdById String         @db.Uuid
-  createdBy   accounts       @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  isActive    Boolean            @default(true)
+  createdAt   DateTime           @default(now()) @db.Timestamptz(6)
+  closesAt    DateTime?          @db.Timestamptz(6)
+  createdById String             @db.Uuid
+  createdBy   accounts           @relation(fields: [createdById], references: [id])
+  eligible    vote_eligibility[]
   options     vote_options[]
   votes       vote_votes[]
-  eligible    vote_eligibility[]
 
   @@index([isActive])
   @@schema("public")
@@ -115,8 +116,8 @@ model vote_votes {
   optionId   String         @db.Uuid
   voterHash  String
   createdAt  DateTime       @default(now()) @db.Timestamptz(6)
-  question   vote_questions @relation(fields: [questionId], references: [id], onDelete: Cascade)
   option     vote_options   @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  question   vote_questions @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@unique([questionId, voterHash])
   @@index([questionId])
@@ -131,12 +132,60 @@ model vote_eligibility {
   hasVoted   Boolean        @default(false)
   votedAt    DateTime?      @db.Timestamptz(6)
   createdAt  DateTime       @default(now()) @db.Timestamptz(6)
-  question   vote_questions @relation(fields: [questionId], references: [id], onDelete: Cascade)
   account    accounts       @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  question   vote_questions @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@unique([questionId, accountId])
   @@index([questionId])
   @@index([accountId])
+  @@schema("public")
+}
+
+model career_reviews {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  authorId         String?   @db.Uuid
+  company          String?
+  role             String?
+  location         String?
+  appTimeline      String?
+  interviewQs      String[]  @default([])
+  technicalDetails String?
+  canRefer         Boolean?  @default(false)
+  pros             String?
+  cons             String?
+  advice           String?
+  authorName       String?
+  createdAt        DateTime? @default(now()) @db.Timestamptz(6)
+  author           accounts? @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([company])
+  @@index([createdAt])
+  @@schema("public")
+}
+
+model event {
+  id               String   @id @default(uuid()) @db.Uuid
+  attendance       String[]
+  PointRequirement String
+  description      String
+  startDate        DateTime
+  name             String
+  location         String
+  activesOnly      Boolean
+
+  @@schema("public")
+}
+
+model point_requirements {
+  id                  String     @id @default(uuid()) @db.Uuid
+  semester            String
+  name                String
+  description         String
+  requiredAmount      Int
+  pointsPerCompletion Int
+  maxPoints           Int
+  memberType          memberType
+
   @@schema("public")
 }
 
@@ -183,6 +232,15 @@ enum type {
 enum gradSemester {
   SPRING
   FALL
+
+  @@schema("public")
+}
+
+enum memberType {
+  ACTIVE
+  PLEDGE
+  APPLICANT
+  ALL_MEMBERS
 
   @@schema("public")
 }
