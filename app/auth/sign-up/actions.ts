@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { authServer } from '@/lib/auth/server';
 import { passwordMeetsRequirements } from '@/lib/passwordMeetsRequirements';
 import { prisma } from '@/lib/prisma';
+import { isApprovedEmployerEmail } from '@/lib/auth/employers';
 import { type as AccountType } from '@prisma/client';
 
 type SignUpState = { error?: string };
@@ -29,7 +30,10 @@ export async function signUpWithEmail(_prevState: SignUpState | null, formData: 
     const callbackURL = String(formData.get('callbackURL') || '/portal');
 
     if (!name) return { error: 'Please enter your name.' };
-    if (!isValidScEduEmail(email)) return { error: 'Please use a valid USC email address.' };
+    const isEmployerInvite = await isApprovedEmployerEmail(email);
+    if (!isValidScEduEmail(email) && !isEmployerInvite) {
+        return { error: 'Please use a valid USC email address or an invited sponsor email.' };
+    }
     if (!passwordMeetsRequirements(password)) return { error: 'Password does not meet requirements.' };
 
     const { firstName, lastName } = splitName(name);
@@ -46,6 +50,10 @@ export async function signUpWithEmail(_prevState: SignUpState | null, formData: 
 
     const userId = result.data?.user?.id;
     if (!userId) return { error: 'Account created but user id was missing. Please contact support.' };
+
+    // employers have no member portal, so ignore callbackURL (defaults to /portal) and
+    // send them straight to their own view
+    if (isEmployerInvite) redirect('/employers/resumes');
 
     // 2) create matching row in public.accounts
     try {

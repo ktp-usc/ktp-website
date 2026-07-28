@@ -89,6 +89,51 @@ export function useUploadResumeMutation() {
     });
 }
 
+// exec: replace the resume on file for any account
+export function useUploadResumeForAccountMutation() {
+    const qc = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ id, file }: { id: string; file: File }) => {
+            const formData = new FormData();
+            formData.append("resume", file);
+
+            const res = await fetch(`/api/accounts/${ id }/resume`, {
+                method: "POST",
+                body: formData,
+                credentials: "include",
+                cache: "no-store"
+                // do not set content-type headers
+            });
+
+            if (!res.ok) {
+                const body = await res.json().catch(() => null);
+                throw new Error(body?.error ?? "Failed to upload resume");
+            }
+
+            return (await res.json()) as UploadResumeResponse;
+        },
+        onSuccess: async (_data, vars) => {
+            await qc.invalidateQueries({ queryKey: qk.account(vars.id) });
+            await qc.invalidateQueries({ queryKey: ["accounts"] });
+        }
+    });
+}
+
+// exec: clear the resume on file for any account
+export function useDeleteResumeForAccountMutation() {
+    const qc = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ id }: { id: string }) =>
+            fetchJson<{ ok: true; data: Account }>(`/api/accounts/${ id }/resume`, { method: "DELETE" }),
+        onSuccess: async (_data, vars) => {
+            await qc.invalidateQueries({ queryKey: qk.account(vars.id) });
+            await qc.invalidateQueries({ queryKey: ["accounts"] });
+        }
+    });
+}
+
 // admin list
 export function useAccountsQuery(filters: Record<string, unknown> = {}) {
     const params = new URLSearchParams(filters as any).toString();

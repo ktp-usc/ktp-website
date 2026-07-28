@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation';
 import { authServer } from '@/lib/auth/server';
 import { prisma } from '@/lib/prisma';
+import { isApprovedEmployerEmail } from '@/lib/auth/employers';
 import { type as AccountType } from '@prisma/client';
 
 type SignInState = { error?: string };
@@ -29,7 +30,10 @@ export async function signInWithEmail(_prevState: SignInState | null, formData: 
     if (!email) return { error: 'Please enter your email.' };
     if (!password) return { error: 'Please enter your password.' };
 
-    if (!isValidScEduEmail(email)) return { error: 'Please use a valid USC email address.' };
+    const isEmployerInvite = await isApprovedEmployerEmail(email);
+    if (!isValidScEduEmail(email) && !isEmployerInvite) {
+        return { error: 'Please use a valid USC email address or an invited sponsor email.' };
+    }
 
     const result = await authServer.signIn.email({
         email,
@@ -44,7 +48,7 @@ export async function signInWithEmail(_prevState: SignInState | null, formData: 
         const session = await authServer.getSession();
         const user = session?.data?.user;
 
-        if (user?.id) {
+        if (user?.id && !isEmployerInvite) {
             const { firstName, lastName } = splitName(user.name ?? '');
 
             await prisma.accounts.upsert({

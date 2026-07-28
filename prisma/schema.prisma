@@ -59,6 +59,16 @@ model applications {
   @@schema("public")
 }
 
+model employers {
+  id          String   @id @default(uuid()) @db.Uuid
+  email       String   @unique
+  companyName String?
+  approved    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@schema("public")
+}
+
 model comment {
   id             String             @id @default(uuid()) @db.Uuid
   applicationId  String             @db.Uuid

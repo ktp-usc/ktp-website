@@ -399,6 +399,32 @@ export default function PortalHomePage() {
                                 Career Center
                             </h4>
                         </Link>
+
+                        <Link href="/portal/exec/resume-bank" className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="p-3 bg-indigo-100 rounded-lg group-hover:bg-indigo-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                                    <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={ 2 }
+                                            d="M4 7v10a2 2 0 002 2h12a2 2 0 002-2V7M4 7l1.5-3h13L20 7M4 7h16M9 12h6"
+                                        />
+                                    </svg>
+                                </div>
+                                <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"
+                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 }
+                                          d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                            <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                                Resume Bank
+                            </h4>
+                            <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                                View and edit the member resumes shared with approved employers.
+                            </p>
+                        </Link>
                     </div>
                 </div>
             ) : null }

@@ -9,6 +9,20 @@ const nextConfig: NextConfig = {
                 pathname: "/**"
             }
         ]
+    },
+    outputFileTracingIncludes: {
+        "/api/employers/resumes": [
+            "./app/api/employers/resumes/**/*.pdf",
+            "./app/api/employers/resumes/**/*.docx"
+        ],
+        "/api/employers/resumes/[id]": [
+            "./app/api/employers/resumes/**/*.pdf",
+            "./app/api/employers/resumes/**/*.docx"
+        ],
+        "/api/employers/resumes/download": [
+            "./app/api/employers/resumes/**/*.pdf",
+            "./app/api/employers/resumes/**/*.docx"
+        ]
     }
 };
 
