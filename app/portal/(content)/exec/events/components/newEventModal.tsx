@@ -4,12 +4,12 @@ import { ChevronDown, ChevronUp, X } from "lucide-react";
 import { event } from "@prisma/client";
 import { usePointRequirements } from "@/hooks/usePointRequirements";
 type eventInput = {
-  PointRequirement: String;
-  name: String;
-  attendance: String[];
-  description: String;
-  startDate: String;
-  location: String;
+  PointRequirement: string;
+  name: string;
+  attendance: string[];
+  description: string;
+  startDate: string;
+  location: string;
   activesOnly: Boolean;
 };
 type NewEventModalProps = {
@@ -22,10 +22,10 @@ export function NewEventModal({ onClose, createEvent }: NewEventModalProps) {
   };
 
   const handlechange = (key: string, value: any) => {
-    setEventData((prev: event) => ({ ...prev, [key]: value }));
+    setEventData((prev: eventInput) => ({ ...prev, [key]: value }));
   };
 
-  const [eventData, setEventData] = useState({
+  const [eventData, setEventData] = useState<eventInput>({
     PointRequirement: "",
     name: "",
     attendance: [],

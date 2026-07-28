@@ -7,32 +7,31 @@ datasource db {
   schemas  = ["public"]
 }
 
-
-
 model PointRequirement {
   id                  String     @id @default(uuid()) @db.Uuid
-  memberType          memberType
   semester            String
   name                String
   description         String
   requiredAmount      Int
   pointsPerCompletion Int
   maxPoints           Int
+  memberType          memberType
 
   @@map("point_requirements")
   @@schema("public")
 }
 
 model event {
-  id                  String     @id @default(uuid()) @db.Uuid
-  name                String
-  attendance          String[]
-  startDate           DateTime
-  description         String
-  PointRequirement    String
-  location            String
-  activesOnly         Boolean
-  
+  id               String   @id @default(uuid()) @db.Uuid
+  attendance       String[]
+  PointRequirement String
+  description      String
+  startDate        DateTime
+  name             String
+  location         String
+  activesOnly      Boolean
+  attendanceCode   String  @unique
+
   @@schema("public")
 }
 
@@ -89,7 +88,7 @@ model applications {
 }
 
 model comment {
-  id             String             @id @default(uuid()) @db.Uuid
+  id             String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   applicationId  String             @db.Uuid
   createdAt      DateTime           @default(now()) @db.Timestamptz(6)
   statusOverride applicationStatus?
@@ -161,21 +160,21 @@ model vote_eligibility {
 }
 
 model career_reviews {
-  id               String   @id @default(uuid()) @db.Uuid
-  authorId         String   @db.Uuid
-  company          String
-  role             String
-  location         String
-  appTimeline      String
-  interviewQs      String[] @default([])
-  technicalDetails String
-  canRefer         Boolean  @default(false)
-  pros             String
-  cons             String
-  advice           String
-  authorName       String
-  createdAt        DateTime @default(now()) @db.Timestamptz(6)
-  accounts         accounts @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  authorId         String?   @db.Uuid
+  company          String?
+  role             String?
+  location         String?
+  appTimeline      String?
+  interviewQs      String[]  @default([])
+  technicalDetails String?
+  canRefer         Boolean?  @default(false)
+  pros             String?
+  cons             String?
+  advice           String?
+  authorName       String?
+  createdAt        DateTime? @default(now()) @db.Timestamptz(6)
+  accounts         accounts? @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   @@index([company])
   @@index([createdAt])
@@ -212,15 +211,14 @@ enum leaderType {
   @@schema("public")
 }
 
-enum memberType{
-  ACTIVE 
+enum memberType {
+  ACTIVE
   PLEDGE
   APPLICANT
   ALL_MEMBERS
 
   @@schema("public")
 }
-
 
 enum type {
   APPLICANT

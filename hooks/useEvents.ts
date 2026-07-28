@@ -1,6 +1,7 @@
 "use-client";
 
 import { useEffect, useState } from "react";
+import { event } from "@prisma/client";
 type eventInput = {
   PointRequirement: String;
   name: String;
@@ -11,10 +12,10 @@ type eventInput = {
   activesOnly: Boolean;
 };
 export function UseEvents() {
-  const [events, setEvents] = useState<eventInput[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [events, setEvents] = useState<event[]>([]);
 
   async function createEvent(event: eventInput) {
-    console.log("event", event);
     try {
       const res = await fetch("/api/events", {
         method: "POST",
@@ -31,5 +32,25 @@ export function UseEvents() {
     }
   }
 
-  return { createEvent, events };
+  async function getEvents() {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/events`);
+      if (!res.ok) {
+        return console.error(res);
+      }
+      const events = await res.json();
+      setEvents(events);
+    } catch (error) {
+      return console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    getEvents();
+  }, []);
+
+  return { createEvent, events, loading };
 }
