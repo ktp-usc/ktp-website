@@ -2,7 +2,6 @@ import { prisma } from '@/lib/prisma';
 import { requireEmployer } from '@/lib/auth/guards';
 import { NextResponse } from 'next/server';
 import { type as AccountType } from '@prisma/client';
-import { findLocalResumeForStudent } from './localResumes';
 
 export const runtime = 'nodejs';
 
@@ -30,18 +29,14 @@ export async function GET() {
     ],
   });
 
+  // A member is in the bank only if they have an uploaded resume. Exec removing one drops
+  // them from this list, which is the intended way to hide someone from employers.
   const resumes = accounts
-    .map((student) => {
-      const localResume = findLocalResumeForStudent(student);
-
-      if (!localResume && !student.resumeBlobURL) return null;
-
-      return {
-        ...student,
-        resumeBlobURL: `/api/employers/resumes/${student.id}`,
-      };
-    })
-    .filter((student): student is NonNullable<typeof student> => Boolean(student));
+    .filter((student) => Boolean(student.resumeBlobURL))
+    .map((student) => ({
+      ...student,
+      resumeBlobURL: `/api/employers/resumes/${student.id}`,
+    }));
 
   return NextResponse.json({ resumes });
 }

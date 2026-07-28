@@ -1,10 +1,8 @@
-import { readFile } from 'node:fs/promises';
 
 import { prisma } from '@/lib/prisma';
 import { requireEmployer } from '@/lib/auth/guards';
 import { type as AccountType } from '@prisma/client';
 import { NextResponse } from 'next/server';
-import { findLocalResumeForStudent } from '../localResumes';
 
 export const runtime = 'nodejs';
 
@@ -53,19 +51,8 @@ export async function GET(_: Request, ctx: Ctx) {
     return NextResponse.json({ error: 'resume_not_found' }, { status: 404 });
   }
 
-  const localResume = findLocalResumeForStudent(student);
-
-  if (localResume) {
-    try {
-      const data = await readFile(localResume.absolutePath);
-      return resumeResponse(data, localResume.filename);
-    } catch {
-      if (!student.resumeBlobURL) {
-        return NextResponse.json({ error: 'resume_download_failed' }, { status: 502 });
-      }
-    }
-  }
-
+  // The uploaded resume is the only source. Exec removing it clears resumeBlobURL, which
+  // both drops the member from the list and makes this 404.
   if (!student.resumeBlobURL) {
     return NextResponse.json({ error: 'resume_not_found' }, { status: 404 });
   }
@@ -76,5 +63,8 @@ export async function GET(_: Request, ctx: Ctx) {
     return NextResponse.json({ error: 'resume_download_failed' }, { status: 502 });
   }
 
-  return resumeResponse(Buffer.from(await response.arrayBuffer()), `${student.lastName}_${student.firstName}_Resume.pdf`);
+  return resumeResponse(
+    Buffer.from(await response.arrayBuffer()),
+    `${student.lastName}_${student.firstName}_Resume.pdf`
+  );
 }

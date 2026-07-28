@@ -51,7 +51,9 @@ export async function signUpWithEmail(_prevState: SignUpState | null, formData: 
     const userId = result.data?.user?.id;
     if (!userId) return { error: 'Account created but user id was missing. Please contact support.' };
 
-    if (isEmployerInvite) redirect(callbackURL);
+    // employers have no member portal, so ignore callbackURL (defaults to /portal) and
+    // send them straight to their own view
+    if (isEmployerInvite) redirect('/employers/resumes');
 
     // 2) create matching row in public.accounts
     try {

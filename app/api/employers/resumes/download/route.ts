@@ -1,10 +1,8 @@
-import { readFile } from 'node:fs/promises';
 
 import { prisma } from '@/lib/prisma';
 import { requireEmployer } from '@/lib/auth/guards';
 import { type as AccountType } from '@prisma/client';
 import { NextResponse } from 'next/server';
-import { findLocalResumeForStudent } from '../localResumes';
 
 export const runtime = 'nodejs';
 
@@ -198,26 +196,11 @@ export async function POST(req: Request) {
   const entries: ZipEntry[] = [];
   const failedNames: string[] = [];
 
+  // keep this in step with [id]/route.ts: the uploaded resume is the only source
   for (const student of students) {
-    const localResume = findLocalResumeForStudent(student);
-    const filename = makeResumeFilename(student, usedNames, localResume?.extension ?? '.pdf');
-
-    if (localResume) {
-      try {
-        entries.push({
-          filename,
-          data: await readFile(localResume.absolutePath),
-        });
-        continue;
-      } catch {
-        if (!student.resumeBlobURL) {
-          failedNames.push(filename);
-          continue;
-        }
-      }
-    }
-
     if (!student.resumeBlobURL) continue;
+
+    const filename = makeResumeFilename(student, usedNames, '.pdf');
 
     try {
       const response = await fetch(student.resumeBlobURL, { cache: 'no-store' });

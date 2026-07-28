@@ -19,24 +19,37 @@ export default async function middleware(req: NextRequest) {
         return authResult;
     }
 
-    // 2) allow non-exec pages through
-    if (!isExecOnlyPath(req.nextUrl.pathname)) {
-        return NextResponse.next();
-    }
-
-    // 3) exec-only check via internal API (node runtime w/ prisma)
-    const checkUrl = new URL('/api/authz/exec', req.nextUrl.origin);
+    // 2) role lookup via internal API (node runtime w/ prisma)
+    const checkUrl = new URL('/api/authz/portal', req.nextUrl.origin);
     const res = await fetch(checkUrl, {
         headers: {
             cookie: req.headers.get('cookie') ?? ''
         }
     });
 
-    if (res.ok) {
+    const access = res.ok
+        ? ((await res.json().catch(() => null)) as
+            | { hasAccount: boolean; isExec: boolean; isEmployer: boolean }
+            | null)
+        : null;
+
+    // 3) employer-only accounts have no member portal. `hasAccount` keeps anyone who is
+    //    both a member and an approved employer from locking themselves out.
+    if (access?.isEmployer && !access.hasAccount) {
+        return NextResponse.redirect(new URL('/employers/resumes', req.nextUrl.origin));
+    }
+
+    // 4) allow non-exec pages through
+    if (!isExecOnlyPath(req.nextUrl.pathname)) {
         return NextResponse.next();
     }
 
-    // 4) block non-execs
+    // 5) exec-only check
+    if (access?.isExec) {
+        return NextResponse.next();
+    }
+
+    // 6) block non-execs
     const redirect = new URL('/portal', req.nextUrl.origin);
     redirect.searchParams.set('error', 'exec_only');
     return NextResponse.redirect(redirect);
