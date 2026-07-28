@@ -19,8 +19,11 @@ export function useAccounts() {
       setLoading(false);
     }
   }
+  useEffect(() => {
+    getAccounts();
+  }, []);
 
-  return { loading, getAccounts };
+  return { loading, accounts };
 }
 
 export function useNumAccounts() {
