@@ -65,3 +65,30 @@ export function useAttendance(eventId: string) {
   }, []);
   return { attendance, loading, addAttendance, removeAttendance };
 }
+
+export function useAccountAttendance(accountId?: string) {
+  const [loading, setLoading] = useState(false);
+  const [attendance, setAttendance] = useState<attendance[]>([]);
+
+  async function getAttendance() {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/accounts/${accountId}/attendance`);
+      if (!res.ok) {
+        return console.error(res);
+      }
+      const data = await res.json();
+      setAttendance(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+  useEffect(() => {
+    if (accountId !== "") {
+      getAttendance();
+    }
+  }, [accountId]);
+  return { loading, attendance };
+}

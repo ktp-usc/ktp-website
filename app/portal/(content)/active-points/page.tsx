@@ -7,7 +7,8 @@ import { useSessionQuery } from "@/client/hooks/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { usePointRequirements } from "@/hooks/usePointRequirements";
+import { useActivePointRequirements } from "@/hooks/usePointRequirements";
+import { useAccountAttendance } from "@/hooks/useAttendance";
 
 const SEMESTER_LABEL = "Spring 2026";
 const TOTAL_POINTS = 0;
@@ -19,8 +20,14 @@ export default function ActiveMemberPointsPage() {
   const router = useRouter();
   const session = useSessionQuery();
   const account = useMyAccountQuery();
+  const { loading: attendanceLoading, attendance } = useAccountAttendance(
+    account.data?.id ? account.data.id : "",
+  );
 
-  const { requirements: CATEGORIES } = usePointRequirements();
+  const {
+    activePointRequirements: CATEGORIES,
+    loading: activePointRequirementsLoading,
+  } = useActivePointRequirements();
 
   const isLoading = session.isFetching || account.isFetching;
 
@@ -41,7 +48,7 @@ export default function ActiveMemberPointsPage() {
     }
   }, [isLoading, session.data?.user?.id, isAuthorized, router]);
 
-  if (isLoading) {
+  if (isLoading || activePointRequirementsLoading || attendanceLoading) {
     return (
       <main className="max-w-6xl mx-auto px-8 py-14">
         <div className="lg:grid lg:grid-cols-2 lg:gap-12">
@@ -63,7 +70,6 @@ export default function ActiveMemberPointsPage() {
       </main>
     );
   }
-
   return (
     <main className="max-w-6xl mx-auto px-8 py-8">
       <div className="lg:grid lg:grid-cols-2 lg:gap-12 lg:items-start">
