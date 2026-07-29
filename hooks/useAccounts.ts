@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
+import { accounts } from "@prisma/client";
 
 export function useAccounts() {
-  const [accounts, setAccounts] = useState([]);
+  const [accounts, setAccounts] = useState<accounts[]>([]);
   const [loading, setLoading] = useState(false);
 
   async function getAccounts() {

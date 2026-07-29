@@ -111,7 +111,7 @@ export function Event({ event, totalAccounts }: EventProps) {
       </div>
       <div className="grid grid-cols-[1fr_auto_auto] gap-2 pt-6">
         <Link href={`/portal/exec/events/${event.id}`} className="w-full">
-          <button className="flex items-center justify-center w-full gap-2 rounded-lg bg-blue-800 text-white px-4 py-2 text-sm font-medium transition hover:bg-slate-100">
+          <button className="flex items-center cursor-pointer justify-center w-full gap-2 rounded-lg bg-blue-800 text-white px-4 py-2 text-sm font-medium transition hover:bg-slate-100">
             <Eye size={16} />
             Details
           </button>

@@ -21,5 +21,22 @@ export function useEvent(id: string) {
   useEffect(() => {
     getEvent();
   }, []);
-  return { loading, event };
+  async function updateEventAttendance(attendance: string[]) {
+    try {
+      const res = await fetch(`/api/events/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ attendance: attendance }),
+      });
+      if (!res.ok) {
+        return console.error(res);
+      }
+      const data = await res.json();
+      setEvent(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+    }
+  }
+  return { loading, event, updateEventAttendance };
 }

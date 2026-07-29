@@ -22,8 +22,7 @@ export async function GET(req: Request) {
     const type = (searchParams.get("type") ?? "").trim();
     const leaderType = (searchParams.get("leaderType") ?? "").trim();
 
-    const takeRaw = parseIntParam(searchParams.get("take"), 25);
-    const take = Math.min(Math.max(takeRaw, 1), 100);
+    const take = searchParams.get("take");
 
     const skipRaw = parseIntParam(searchParams.get("skip"), 0);
     const skip = Math.max(skipRaw, 0);
@@ -47,7 +46,7 @@ export async function GET(req: Request) {
       prisma.accounts.findMany({
         where,
         orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
-        take,
+        ...(take ? { take: parseInt(take) } : {}),
         skip,
       }),
       prisma.accounts.count({ where }),

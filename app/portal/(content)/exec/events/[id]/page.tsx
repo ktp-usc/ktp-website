@@ -5,12 +5,10 @@ import { useParams } from "next/navigation";
 import { useAccounts } from "@/hooks/useAccounts";
 import { Calendar, MapPin, Clock } from "lucide-react";
 import { AccountCard } from "./components/AccountCard";
-type eventDetailsProp = {
-  event: event;
-};
+
 export default function page() {
   const { id } = useParams<{ id: string }>();
-  const { event, loading } = useEvent(id);
+  const { event, loading, updateEventAttendance } = useEvent(id);
   const { accounts, loading: accountsLoading } = useAccounts();
   if (loading || event === undefined || accountsLoading) {
     return <div>Loading...</div>;
@@ -103,15 +101,21 @@ export default function page() {
             Mark members present or absent, or let them check in with the code.
           </p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-2 shadow-sm ">
-          <div className="grid grid-cols-[1fr_2fr_1fr_1fr_2fr]">
-            <p className="font-semibold text-slate-800">Name</p>
-            <p className="font-semibold text-slate-800">Email</p>
-            <p className="font-semibold text-slate-800">Status</p>
-            <p className="font-semibold text-slate-800">Actions</p>
+        <div className="rounded-2xl border border-slate-200 bg-white p-2 shadow-sm flex flex-col">
+          <div className="grid grid-cols-[1fr_2fr_1fr_2fr] p-2">
+            <p className="font-semibold text-slate-800 text-xl">Name</p>
+            <p className="font-semibold text-slate-800 text-xl">Email</p>
+            <p className="font-semibold text-slate-800 text-xl">Status</p>
+            <p className="font-semibold text-slate-800 text-xl">Actions</p>
           </div>
           {accounts.map((account) => (
-            <AccountCard account={account} />
+            <AccountCard
+              key={account.id}
+              account={account}
+              attended={event.attendance.includes(account.id)}
+              updateEvent={updateEventAttendance}
+              currentEvent={event}
+            />
           ))}
         </div>
       </div>
