@@ -1,4 +1,5 @@
-generator client {
+
+  generator client {
   provider = "prisma-client-js"
 }
 
@@ -23,7 +24,7 @@ model PointRequirement {
 
 model event {
   id               String   @id @default(uuid()) @db.Uuid
-  attendance       String[]
+  attendance       attendance[]
   PointRequirement String
   description      String
   startDate        DateTime
@@ -59,7 +60,22 @@ model accounts {
   career_reviews  career_reviews[]
   voteEligibility vote_eligibility[]
   voteQuestions   vote_questions[]
+  attendance      attendance[]
 
+  @@schema("public")
+}
+
+model attendance {
+  eventId   String  @db.Uuid
+  accountId String  @db.Uuid
+
+  pointsAwarded Int?
+  checkedInAt   DateTime?
+
+  event   event    @relation(fields: [eventId], references: [id])
+  account accounts @relation(fields: [accountId], references: [id])
+
+  @@id([eventId, accountId])
   @@schema("public")
 }
 
@@ -180,6 +196,18 @@ model career_reviews {
   @@index([createdAt])
   @@schema("public")
 }
+
+
+model employers {
+  id          String   @id @db.Uuid
+  email       String   @unique
+  companyName String?
+  approved    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@schema("public")
+}
+
 
 enum applicationStatus {
   CLOSED

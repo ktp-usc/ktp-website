@@ -1,5 +1,6 @@
 import { event } from "@prisma/client";
 import Link from "next/link";
+import { useAttendance } from "@/hooks/useAttendance";
 import {
   Calendar,
   Clock,
@@ -16,8 +17,10 @@ type EventProps = {
 };
 
 export function Event({ event, totalAccounts }: EventProps) {
+  const { attendance } = useAttendance(event.id);
+
   const attendancePercentage =
-    totalAccounts > 0 ? (event.attendance.length / totalAccounts) * 100 : 0;
+    totalAccounts > 0 ? (attendance.length / totalAccounts) * 100 : 0;
 
   return (
     <div className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-200  hover:shadow-lg">
@@ -98,7 +101,7 @@ export function Event({ event, totalAccounts }: EventProps) {
           </div>
 
           <span className="text-sm font-semibold text-slate-700">
-            {event.attendance.length}/{totalAccounts}
+            {attendance.length}/{totalAccounts}
           </span>
         </div>
 

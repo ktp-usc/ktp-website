@@ -10,6 +10,7 @@ export default function execEvents() {
   const { events, createEvent, loading } = UseEvents();
   const { numAccounts: totalAccounts, loading: accountsLoading } =
     useNumAccounts();
+
   const event = events[0];
   if (loading || accountsLoading) {
     return <div>Loading...</div>;

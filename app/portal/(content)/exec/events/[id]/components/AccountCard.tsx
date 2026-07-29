@@ -3,6 +3,8 @@ type accountCardProps = {
   account: accounts;
   attended: boolean;
   updateEvent: (arg0: string[]) => void;
+  addAttendance: () => void;
+  removeAttendance: () => void;
   currentEvent: event;
 };
 
@@ -11,6 +13,8 @@ export function AccountCard({
   attended,
   updateEvent,
   currentEvent,
+  addAttendance,
+  removeAttendance,
 }: accountCardProps) {
   return (
     <div className="grid grid-cols-[1fr_2fr_1fr_2fr] items-center border-t p-2 border-slate-200">
@@ -27,10 +31,7 @@ export function AccountCard({
           className="pl-4 pr-4 pt-2 pb-2 no-raise cursor-pointer disabled:cursor-not-allowed disabled:opacity-50
         disabled:bg-black/20 border bg-green-200 border-emerald-900 text-emerald-900 rounded-full"
           onClick={() => {
-            currentEvent.attendance.push(account.id);
-            console.log("currentEvent", currentEvent);
-            updateEvent(currentEvent.attendance);
-            attended = false;
+            addAttendance();
           }}
         >
           Present
@@ -40,12 +41,7 @@ export function AccountCard({
           className="pl-4 pr-4 no-raise pt-2 pb-2 border cursor-pointer disabled:cursor-not-allowed disabled:opacity-50
         disabled:bg-black/20 bg-orange-200 border-amber-900 text-amber-900 rounded-full"
           onClick={() => {
-            currentEvent.attendance = currentEvent.attendance.filter(
-              (id) => id !== account.id,
-            );
-            console.log("currentEvent", currentEvent);
-            updateEvent(currentEvent.attendance);
-            attended = false;
+            removeAttendance();
           }}
         >
           Absent

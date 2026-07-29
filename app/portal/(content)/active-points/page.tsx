@@ -1,37 +1,32 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useMyAccountQuery } from "@/client/hooks/accounts";
 import { useSessionQuery } from "@/client/hooks/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePointRequirements } from "@/hooks/usePointRequirements";
 
 const SEMESTER_LABEL = "Spring 2026";
-const TOTAL_POINTS = 12;
-const PENDING_POINTS = 2;
+const TOTAL_POINTS = 0;
+const PENDING_POINTS = 0;
 
-const CATEGORIES = [
-  { name: "Chapter Meetings", completed: 6, required: 8, ptsEarned: 6 },
-  { name: "Social Events", completed: 2, required: 2, ptsEarned: 4 },
-  { name: "Professional Development", completed: 1, required: 3, ptsEarned: 2 },
-];
-
-const REQUIREMENTS_COMPLETED = CATEGORIES.filter(
-  (c) => c.completed >= c.required,
-).length;
+const REQUIREMENTS_COMPLETED = 0;
 
 export default function ActiveMemberPointsPage() {
   const router = useRouter();
   const session = useSessionQuery();
   const account = useMyAccountQuery();
 
+  const { requirements: CATEGORIES } = usePointRequirements();
+
   const isLoading = session.isFetching || account.isFetching;
 
   const isAuthorized = useMemo(() => {
     const t = account.data?.type;
-    return t === "BROTHER" || t === "ALUMNI";
+    return t === "BROTHER" || t === "ALUMNI" || t === "LEADERSHIP";
   }, [account.data?.type]);
 
   const fullName = useMemo(() => {
@@ -39,6 +34,12 @@ export default function ActiveMemberPointsPage() {
     const last = account.data?.lastName?.trim() ?? "";
     return first || last ? `${first} ${last}`.trim() : null;
   }, [account.data]);
+
+  useEffect(() => {
+    if (!isLoading && (!session.data?.user?.id || !isAuthorized)) {
+      router.replace("/portal");
+    }
+  }, [isLoading, session.data?.user?.id, isAuthorized, router]);
 
   if (isLoading) {
     return (
@@ -61,16 +62,6 @@ export default function ActiveMemberPointsPage() {
         </div>
       </main>
     );
-  }
-
-  if (!session.data?.user?.id) {
-    router.replace("/portal");
-    return null;
-  }
-
-  if (!isAuthorized) {
-    router.replace("/portal");
-    return null;
   }
 
   return (

@@ -5,11 +5,14 @@ import { useParams } from "next/navigation";
 import { useAccounts } from "@/hooks/useAccounts";
 import { Calendar, MapPin, Clock } from "lucide-react";
 import { AccountCard } from "./components/AccountCard";
+import { useAttendance } from "@/hooks/useAttendance";
 
 export default function page() {
   const { id } = useParams<{ id: string }>();
-  const { event, loading, updateEventAttendance } = useEvent(id);
+  const { event, loading } = useEvent(id);
   const { accounts, loading: accountsLoading } = useAccounts();
+  const { attendance, addAttendance, removeAttendance } = useAttendance(id);
+  console.log(attendance);
   if (loading || event === undefined || accountsLoading) {
     return <div>Loading...</div>;
   }
@@ -112,8 +115,16 @@ export default function page() {
             <AccountCard
               key={account.id}
               account={account}
-              attended={event.attendance.includes(account.id)}
-              updateEvent={updateEventAttendance}
+              attended={attendance.some(
+                (record) => record.accountId === account.id,
+              )}
+              updateEvent={() => {}}
+              addAttendance={() => {
+                addAttendance(account.id);
+              }}
+              removeAttendance={() => {
+                removeAttendance(account.id);
+              }}
               currentEvent={event}
             />
           ))}
