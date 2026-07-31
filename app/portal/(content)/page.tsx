@@ -654,87 +654,234 @@ export default function PortalHomePage() {
                     />
                   </svg>
                 </div>
-                <svg
-                  className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </div>
-              <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
-                Rushees
-              </h4>
-              <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
-                Leave impressions and notes on applicants.
-              </p>
-            </Link>
-            <Link
-              href="/portal/voting"
-              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-green-100 rounded-lg group-hover:bg-green-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
-                  <svg
-                    className="w-6 h-6 text-green-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 12h5l4 8 4-16 3 8h2"
-                    />
-                  </svg>
+            ) : null }
+
+            {/* exec view */ }
+            { userId && role === "exec" ? (
+                <div className="space-y-6">
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white transition-colors duration-300">
+                        Executive Dashboard
+                    </h3>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <Link
+                            href="/portal/exec/applications"
+                            className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
+                            aria-label="View Spring 2026 Applicants"
+                        >
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="p-3 bg-blue-100 rounded-lg group-hover:bg-blue-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={ 2 }
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                        />
+                                    </svg>
+                                </div>
+                                <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 } d="M9 5l7 7-7 7" />
+                                </svg>
+                            </div>
+                            <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                                View Spring 2026 Applicants
+                            </h4>
+                            <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                                Review and manage all applications for the Spring 2026 recruitment cycle.
+                            </p>
+                        </Link>
+
+                        <Link
+                            href="/portal/exec/modify-roster"
+                            className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
+                            aria-label="Modify Chapter Roster"
+                        >
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="p-3 bg-purple-100 rounded-lg group-hover:bg-purple-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                                    <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={ 2 }
+                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                                        />
+                                    </svg>
+                                </div>
+                                <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 } d="M9 5l7 7-7 7" />
+                                </svg>
+                            </div>
+                            <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                                Modify Chapter Roster
+                            </h4>
+                            <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                                Update member information and manage the active chapter roster.
+                            </p>
+                        </Link>
+
+                        <Link href="/portal/exec/voting" className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer">
+                            <div className="flex items-center justify-between mb-4">
+                                <div
+                                    className="p-3 bg-green-100 rounded-lg group-hover:bg-green-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor"
+                                         viewBox="0 0 24 24">
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={ 2 }
+                                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                                        />
+                                    </svg>
+                                </div>
+                                <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"
+                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 }
+                                          d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                            <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                                Run Chapter Voting
+                            </h4>
+                            <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                                Create questions, set eligibility, and view live results.
+                            </p>
+                        </Link>
+
+                        <Link href="/portal/voting" className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer">
+                            <div className="flex items-center justify-between mb-4">
+                                <div
+                                    className="p-3 bg-green-100 rounded-lg group-hover:bg-green-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor"
+                                         viewBox="0 0 24 24">
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={ 2 }
+                                            d="M3 12h5l4 8 4-16 3 8h2"
+                                        />
+                                    </svg>
+                                </div>
+                                <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"
+                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 }
+                                          d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                            <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                                Vote
+                            </h4>
+                            <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                                Vote on active questions when in session.
+                            </p>
+                        </Link>
+
+                        <Link href="/portal/career-center" className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="p-3 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                                    <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                                        />
+                                    </svg>
+                                </div>
+                                <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                            <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                                Career Center
+                            </h4>
+                        </Link>
+                    </div>
                 </div>
-                <svg
-                  className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </div>
-              <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
-                Chapter Voting
-              </h4>
-              <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
-                Vote on active questions when in session.
-              </p>
-            </Link>
-            <Link
-              href="/portal/career-center"
-              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
-                  <svg
-                    className="w-6 h-6 text-yellow-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
-                  </svg>
+            ) : null }
+
+            {/* member view */ }
+            { userId && role === "member" ? (
+                <div className="space-y-6">
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white transition-colors duration-300">Member
+                        Dashboard</h3>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <Link href="/portal/rushees" className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer">
+                            <div className="flex items-center justify-between mb-4">
+                                <div
+                                    className="p-3 bg-blue-100 rounded-lg group-hover:bg-blue-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor"
+                                         viewBox="0 0 24 24">
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={ 2 }
+                                            d="M8 16h8M8 12h8m-6-8h4a2 2 0 012 2v12a2 2 0 01-2 2H8a2 2 0 01-2-2V6a2 2 0 012-2h4z"
+                                        />
+                                    </svg>
+                                </div>
+                                <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"
+                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 }
+                                          d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                            <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                                Rushees
+                            </h4>
+                            <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                                Leave impressions and notes on applicants.
+                            </p>
+                        </Link>
+                        <Link href="/portal/voting" className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer">
+                            <div className="flex items-center justify-between mb-4">
+                                <div
+                                    className="p-3 bg-green-100 rounded-lg group-hover:bg-green-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor"
+                                         viewBox="0 0 24 24">
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={ 2 }
+                                            d="M3 12h5l4 8 4-16 3 8h2"
+                                        />
+                                    </svg>
+                                </div>
+                                <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"
+                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 }
+                                          d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                            <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                                Chapter Voting
+                            </h4>
+                            <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                                Vote on active questions when in session.
+                            </p>
+                        </Link>
+                        <Link href="/portal/career-center" className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="p-3 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+                                    <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                                        />
+                                    </svg>
+                                </div>
+                                <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                            <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                                Career Center
+                            </h4>
+                        </Link>
+                    </div>
                 </div>
                 <svg
                   className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"

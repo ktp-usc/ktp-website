@@ -123,9 +123,9 @@ model vote_questions {
   createdAt   DateTime           @default(now()) @db.Timestamptz(6)
   closesAt    DateTime?          @db.Timestamptz(6)
   createdById String             @db.Uuid
+  createdBy   accounts           @relation(fields: [createdById], references: [id])
   eligible    vote_eligibility[]
   options     vote_options[]
-  createdBy   accounts           @relation(fields: [createdById], references: [id])
   votes       vote_votes[]
 
   @@index([isActive])
@@ -190,7 +190,7 @@ model career_reviews {
   advice           String?
   authorName       String?
   createdAt        DateTime? @default(now()) @db.Timestamptz(6)
-  accounts         accounts? @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author           accounts? @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   @@index([company])
   @@index([createdAt])
@@ -261,6 +261,15 @@ enum type {
 enum gradSemester {
   SPRING
   FALL
+
+  @@schema("public")
+}
+
+enum memberType {
+  ACTIVE
+  PLEDGE
+  APPLICANT
+  ALL_MEMBERS
 
   @@schema("public")
 }
