@@ -6,7 +6,7 @@ import { ReactTyped } from "react-typed";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAccounts } from "@/hooks/useAccounts";
 import { membersData } from "@/data/members";
-import { accounts } from "@/lib/prisma";
+import { accounts } from "@prisma/client";
 import { toPlainText } from "./leadershipConversion";
 
 type Member = accounts;
@@ -15,8 +15,8 @@ const categories = ["Actives", "Executive Board", "Chairs", "Founding Class"];
 
 const sortByLastName = (members: Member[]): Member[] =>
   [...members].sort((a, b) => {
-    const lastA = (a.name || "").split(" ").slice(-1)[0];
-    const lastB = (b.name || "").split(" ").slice(-1)[0];
+    const lastA = (a.lastName || "").split(" ").slice(-1)[0];
+    const lastB = (b.lastName || "").split(" ").slice(-1)[0];
     return lastA.localeCompare(lastB);
   });
 
@@ -66,7 +66,7 @@ function MemberModal({
         </button>
         <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start text-center sm:text-left mt-4 sm:mt-0">
           <div className="w-36 h-36 rounded-2xl overflow-hidden bg-gray-100 flex-shrink-0 relative">
-            {imageUrl && (
+            {member.headshotBlobURL && (
               <Image
                 src={member.headshotBlobURL}
                 alt={member.firstName}
@@ -367,7 +367,9 @@ export default function Members() {
                             {member.gradSemester + " " + member.gradYear}
                           </p>
                           <p className="text-sm font-medium text-gray-700">
-                            {toPlainText(member.leaderType)}
+                            {member.leaderType
+                              ? toPlainText(member.leaderType)
+                              : "LEADER"}
                           </p>
                         </div>
                       </div>
