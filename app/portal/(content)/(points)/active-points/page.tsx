@@ -7,7 +7,7 @@ import { useSessionQuery } from "@/client/hooks/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useActivePoints } from "../usePoints";
+import { usePoints } from "../usePoints";
 
 const SEMESTER_LABEL = "Spring 2026";
 const PENDING_POINTS = 0;
@@ -16,6 +16,7 @@ export default function ActiveMemberPointsPage() {
   const router = useRouter();
   const session = useSessionQuery();
   const account = useMyAccountQuery();
+  const [attendanceCode, setAttendanceCode] = useState("");
 
   const isLoading = session.isFetching || account.isFetching;
 
@@ -34,7 +35,8 @@ export default function ActiveMemberPointsPage() {
     requirementProgressData,
     loading: requirementProgressLoading,
     setAccountId,
-  } = useActivePoints();
+    updateAttendance,
+  } = usePoints(true);
 
   useEffect(() => {
     if (!isLoading && (!session.data?.user?.id || !isAuthorized)) {
@@ -160,126 +162,155 @@ export default function ActiveMemberPointsPage() {
         </div>
 
         {/* RIGHT COLUMN – requirement progress */}
-        <div>
-          <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-6">
-            Requirement Progress
-          </h2>
+        <div className="flex flex-col gap-8">
+          <div>
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-6">
+              Enter Attendance Code
+            </h2>
 
-          <div className="space-y-5 lg:overflow-y-auto lg:pr-2 lg:pb-4 lg:max-h-[calc(100vh-14rem)]">
-            {requirementProgressData.pointRequirementProgress.map(
-              (requirement) => {
-                const pct = Math.min(
-                  Math.round(
-                    (requirement.completed /
-                      (requirement.requirement.requiredAmount > 0
-                        ? requirement.requirement.requiredAmount
-                        : 1)) *
-                      100,
-                  ),
-                  100,
-                );
-                const isComplete =
-                  requirement.completed >=
-                  requirement.requirement.requiredAmount;
+            <div className="bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-gray-800 shadow-lg p-8 space-y-6">
+              <input
+                type="text"
+                placeholder="Enter attendance code"
+                value={attendanceCode}
+                onChange={(e) => {
+                  setAttendanceCode(e.target.value);
+                }}
+                className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-[#1e2d5a] dark:focus:ring-indigo-500"
+              />
 
-                return (
-                  <Card
-                    key={requirement.requirement.id}
-                    className={
-                      isComplete
-                        ? "bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-900"
-                        : "border-l-4 border-l-[#1e2d5a] dark:border-l-indigo-400"
-                    }
-                  >
-                    <CardContent className="px-7 py-6 pt-6">
-                      {/* Card header */}
-                      <div className="flex items-start justify-between gap-4 mb-6">
-                        <p
-                          className={`text-base leading-snug ${
-                            isComplete
-                              ? "font-semibold text-green-900 dark:text-green-300"
-                              : "font-bold text-gray-900 dark:text-white"
-                          }`}
-                        >
-                          {requirement.requirement.name}
-                        </p>
+              <button
+                onClick={() => {
+                  updateAttendance(attendanceCode);
+                  setAttendanceCode("");
+                }}
+                className="w-full rounded-lg bg-[#1e2d5a] py-3 text-white font-semibold transition-colors hover:bg-[#2c417d] disabled:opacity-50"
+              >
+                Enter Code
+              </button>
+            </div>
+          </div>
+          <div>
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-6">
+              Requirement Progress
+            </h2>
 
-                        {isComplete ? (
-                          <Badge className="shrink-0 rounded-full gap-1.5 px-3 py-1.5 text-sm bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 border-transparent hover:bg-green-100">
-                            <svg
-                              className="w-3.5 h-3.5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2.5}
-                                d="M5 13l4 4L19 7"
-                              />
-                            </svg>
-                            Complete
-                          </Badge>
-                        ) : (
-                          <Badge className="shrink-0 rounded-full gap-1.5 px-3 py-1.5 text-sm bg-[rgba(30,45,90,0.08)] text-[#1e2d5a] dark:bg-indigo-950/50 dark:text-indigo-400 border-transparent hover:bg-[rgba(30,45,90,0.08)]">
-                            <svg
-                              className="w-3.5 h-3.5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                              />
-                            </svg>
-                            In Progress
-                          </Badge>
-                        )}
-                      </div>
+            <div className="space-y-5 lg:overflow-y-auto lg:pr-2 lg:pb-4 lg:max-h-[calc(100vh-14rem)]">
+              {requirementProgressData.pointRequirementProgress.map(
+                (requirement) => {
+                  const pct = Math.min(
+                    Math.round(
+                      (requirement.completed /
+                        (requirement.requirement.requiredAmount > 0
+                          ? requirement.requirement.requiredAmount
+                          : 1)) *
+                        100,
+                    ),
+                    100,
+                  );
+                  const isComplete =
+                    requirement.completed >=
+                    requirement.requirement.requiredAmount;
 
-                      {/* Progress lane */}
-                      <div>
-                        <p
-                          className={`text-sm font-semibold tabular-nums text-right mb-2 ${
-                            isComplete
-                              ? "text-green-700 dark:text-green-400"
-                              : "text-[#1e2d5a] dark:text-indigo-400"
-                          }`}
-                        >
-                          {requirement.completed} /{" "}
-                          {requirement.requirement.requiredAmount}
-                        </p>
-
-                        <div
-                          className={`w-full rounded-full h-4 overflow-hidden ${
-                            isComplete
-                              ? "bg-green-100 dark:bg-green-950"
-                              : "bg-gray-100 dark:bg-gray-800"
-                          }`}
-                        >
-                          <div
-                            className={`h-4 rounded-full transition-all duration-700 bg-gradient-to-r ${
+                  return (
+                    <Card
+                      key={requirement.requirement.id}
+                      className={
+                        isComplete
+                          ? "bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-900"
+                          : "border-l-4 border-l-[#1e2d5a] dark:border-l-indigo-400"
+                      }
+                    >
+                      <CardContent className="px-7 py-6 pt-6">
+                        {/* Card header */}
+                        <div className="flex items-start justify-between gap-4 mb-6">
+                          <p
+                            className={`text-base leading-snug ${
                               isComplete
-                                ? "from-green-700 to-green-500"
-                                : "from-[#1e2d5a] to-[#3b5998] dark:from-indigo-600 dark:to-indigo-400"
+                                ? "font-semibold text-green-900 dark:text-green-300"
+                                : "font-bold text-gray-900 dark:text-white"
                             }`}
-                            style={{ width: `${pct}%` }}
-                          />
+                          >
+                            {requirement.requirement.name}
+                          </p>
+
+                          {isComplete ? (
+                            <Badge className="shrink-0 rounded-full gap-1.5 px-3 py-1.5 text-sm bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 border-transparent hover:bg-green-100">
+                              <svg
+                                className="w-3.5 h-3.5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2.5}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                              Complete
+                            </Badge>
+                          ) : (
+                            <Badge className="shrink-0 rounded-full gap-1.5 px-3 py-1.5 text-sm bg-[rgba(30,45,90,0.08)] text-[#1e2d5a] dark:bg-indigo-950/50 dark:text-indigo-400 border-transparent hover:bg-[rgba(30,45,90,0.08)]">
+                              <svg
+                                className="w-3.5 h-3.5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                              </svg>
+                              In Progress
+                            </Badge>
+                          )}
                         </div>
 
-                        <p className="text-sm text-gray-400 dark:text-gray-500 mt-2 text-right">
-                          {pct}% complete
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              },
-            )}
+                        {/* Progress lane */}
+                        <div>
+                          <p
+                            className={`text-sm font-semibold tabular-nums text-right mb-2 ${
+                              isComplete
+                                ? "text-green-700 dark:text-green-400"
+                                : "text-[#1e2d5a] dark:text-indigo-400"
+                            }`}
+                          >
+                            {requirement.completed} /{" "}
+                            {requirement.requirement.requiredAmount}
+                          </p>
+
+                          <div
+                            className={`w-full rounded-full h-4 overflow-hidden ${
+                              isComplete
+                                ? "bg-green-100 dark:bg-green-950"
+                                : "bg-gray-100 dark:bg-gray-800"
+                            }`}
+                          >
+                            <div
+                              className={`h-4 rounded-full transition-all duration-700 bg-gradient-to-r ${
+                                isComplete
+                                  ? "from-green-700 to-green-500"
+                                  : "from-[#1e2d5a] to-[#3b5998] dark:from-indigo-600 dark:to-indigo-400"
+                              }`}
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+
+                          <p className="text-sm text-gray-400 dark:text-gray-500 mt-2 text-right">
+                            {pct}% complete
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                },
+              )}
+            </div>
           </div>
         </div>
       </div>

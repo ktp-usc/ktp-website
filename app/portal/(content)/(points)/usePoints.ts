@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { getActivePointRequirements } from "./points";
 import { RequirementProgressData } from "@/types";
 
-export function useActivePoints() {
+export function usePoints(isActive: boolean) {
   const [requirementProgressData, setRequirementProgressData] =
     useState<RequirementProgressData>({
       categoriesCompleted: 0,
@@ -55,7 +55,9 @@ export function useActivePoints() {
   async function getPointRequirements() {
     try {
       setRequirementsLoading(true);
-      const res = await fetch("/api/requirements?memberType=ACTIVE");
+      const res = await fetch(
+        `/api/requirements?memberType=${isActive ? "ACTIVE" : "PLEDGE"}`,
+      );
       if (!res.ok) {
         return console.error(res);
       }
@@ -65,6 +67,24 @@ export function useActivePoints() {
       console.error(error);
     } finally {
       setRequirementsLoading(false);
+    }
+  }
+
+  async function updateAttendance(attendanceCode: string) {
+    try {
+      const res = await fetch(`/api/accounts/${accountId}/attendance`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ attendanceCode }),
+      });
+      if (!res.ok) {
+        return console.error(res);
+      }
+      const attendance = await res.json();
+      setAttendance((prev) => [...prev, attendance]);
+    } catch (error) {
+      return console.error(error);
+    } finally {
     }
   }
 
@@ -86,11 +106,11 @@ export function useActivePoints() {
       );
       setRequirementProgressData(progress);
     }
-  }, [attendanceLoading, eventsLoading, requirementsLoading]);
+  }, [attendanceLoading, attendance, eventsLoading, requirementsLoading]);
   useEffect(() => {
     setLoading(false);
   }, [requirementProgressData]);
-  return { requirementProgressData, loading, setAccountId };
+  return { requirementProgressData, loading, setAccountId, updateAttendance };
 }
 
 // const {

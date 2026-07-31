@@ -22,6 +22,9 @@ export async function GET(req: Request) {
     const type = (searchParams.get("type") ?? "").trim();
     const leaderType = (searchParams.get("leaderType") ?? "").trim();
 
+    const [firstName, ...rest] = q.split(/\s+/);
+    const lastName = rest.join(" ");
+
     const take = searchParams.get("take");
 
     const skipRaw = parseIntParam(searchParams.get("skip"), 0);
@@ -37,6 +40,12 @@ export async function GET(req: Request) {
               { lastName: { contains: q, mode: "insensitive" } },
               { schoolEmail: { contains: q, mode: "insensitive" } },
               { personalEmail: { contains: q, mode: "insensitive" } },
+              {
+                AND: [
+                  { firstName: { contains: firstName, mode: "insensitive" } },
+                  { lastName: { contains: lastName, mode: "insensitive" } },
+                ],
+              },
             ],
           }
         : {}),

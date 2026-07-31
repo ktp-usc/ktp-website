@@ -6,14 +6,20 @@ import { useAccounts } from "@/hooks/useAccounts";
 import { Calendar, MapPin, Clock } from "lucide-react";
 import { AccountCard } from "./components/AccountCard";
 import { useAttendance } from "@/hooks/useAttendance";
+import { useState } from "react";
 
 export default function page() {
   const { id } = useParams<{ id: string }>();
   const { event, loading } = useEvent(id);
-  const { accounts, loading: accountsLoading } = useAccounts();
+  const {
+    accounts,
+    loading: accountsLoading,
+    search,
+    setSearch,
+  } = useAccounts();
   const { attendance, addAttendance, removeAttendance } = useAttendance(id);
   console.log(attendance);
-  if (loading || event === undefined || accountsLoading) {
+  if (event === undefined || loading) {
     return <div>Loading...</div>;
   }
   return (
@@ -104,6 +110,15 @@ export default function page() {
             Mark members present or absent, or let them check in with the code.
           </p>
         </div>
+        <input
+          type="search"
+          placeholder="Search accounts..."
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+          className="w-full rounded-lg border mt-8 mb-8 border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
         <div className="rounded-2xl border border-slate-200 bg-white p-2 shadow-sm flex flex-col">
           <div className="grid grid-cols-[1fr_2fr_1fr_2fr] p-2">
             <p className="font-semibold text-slate-800 text-xl">Name</p>
@@ -111,23 +126,24 @@ export default function page() {
             <p className="font-semibold text-slate-800 text-xl">Status</p>
             <p className="font-semibold text-slate-800 text-xl">Actions</p>
           </div>
-          {accounts.map((account) => (
-            <AccountCard
-              key={account.id}
-              account={account}
-              attended={attendance.some(
-                (record) => record.accountId === account.id,
-              )}
-              updateEvent={() => {}}
-              addAttendance={() => {
-                addAttendance(account.id);
-              }}
-              removeAttendance={() => {
-                removeAttendance(account.id);
-              }}
-              currentEvent={event}
-            />
-          ))}
+          {!accountsLoading &&
+            accounts.map((account) => (
+              <AccountCard
+                key={account.id}
+                account={account}
+                attended={attendance.some(
+                  (record) => record.accountId === account.id,
+                )}
+                updateEvent={() => {}}
+                addAttendance={() => {
+                  addAttendance(account.id);
+                }}
+                removeAttendance={() => {
+                  removeAttendance(account.id);
+                }}
+                currentEvent={event}
+              />
+            ))}
         </div>
       </div>
     </div>

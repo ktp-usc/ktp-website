@@ -4,11 +4,12 @@ import { accounts } from "@prisma/client";
 export function useAccounts() {
   const [accounts, setAccounts] = useState<accounts[]>([]);
   const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
 
   async function getAccounts() {
     try {
       setLoading(true);
-      const res = await fetch("/api/accounts");
+      const res = await fetch(`/api/accounts?q=${search}`);
       if (!res.ok) {
         return console.error(res);
       }
@@ -22,9 +23,9 @@ export function useAccounts() {
   }
   useEffect(() => {
     getAccounts();
-  }, []);
+  }, [search]);
 
-  return { loading, accounts };
+  return { loading, accounts, search, setSearch };
 }
 
 export function useNumAccounts() {
