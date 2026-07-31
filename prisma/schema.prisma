@@ -1,4 +1,5 @@
-generator client {
+
+  generator client {
   provider = "prisma-client-js"
 }
 
@@ -7,28 +8,31 @@ datasource db {
   schemas  = ["public"]
 }
 
-
-
 model PointRequirement {
   id                  String     @id @default(uuid()) @db.Uuid
-  memberType          memberType
   semester            String
   name                String
   description         String
   requiredAmount      Int
   pointsPerCompletion Int
   maxPoints           Int
+  memberType          memberType
 
   @@map("point_requirements")
   @@schema("public")
 }
 
 model event {
-  id                  String     @id @default(uuid()) @db.Uuid
-  attendance          String[]
-  DateTime            DateTime
-  PointRequirement    String
-  
+  id               String   @id @default(uuid()) @db.Uuid
+  attendance       attendance[]
+  PointRequirement String
+  description      String
+  startDate        DateTime
+  name             String
+  location         String
+  activesOnly      Boolean
+  attendanceCode   String  @unique
+
   @@schema("public")
 }
 
@@ -56,7 +60,22 @@ model accounts {
   career_reviews  career_reviews[]
   voteEligibility vote_eligibility[]
   voteQuestions   vote_questions[]
+  attendance      attendance[]
 
+  @@schema("public")
+}
+
+model attendance {
+  eventId   String  @db.Uuid
+  accountId String  @db.Uuid
+
+  pointsAwarded Int?
+  checkedInAt   DateTime?
+
+  event   event    @relation(fields: [eventId], references: [id])
+  account accounts @relation(fields: [accountId], references: [id])
+
+  @@id([eventId, accountId])
   @@schema("public")
 }
 
@@ -85,7 +104,7 @@ model applications {
 }
 
 model comment {
-  id             String             @id @default(uuid()) @db.Uuid
+  id             String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   applicationId  String             @db.Uuid
   createdAt      DateTime           @default(now()) @db.Timestamptz(6)
   statusOverride applicationStatus?
@@ -157,26 +176,38 @@ model vote_eligibility {
 }
 
 model career_reviews {
-  id               String   @id @default(uuid()) @db.Uuid
-  authorId         String   @db.Uuid
-  company          String
-  role             String
-  location         String
-  appTimeline      String
-  interviewQs      String[] @default([])
-  technicalDetails String
-  canRefer         Boolean  @default(false)
-  pros             String
-  cons             String
-  advice           String
-  authorName       String
-  createdAt        DateTime @default(now()) @db.Timestamptz(6)
-  accounts         accounts @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  authorId         String?   @db.Uuid
+  company          String?
+  role             String?
+  location         String?
+  appTimeline      String?
+  interviewQs      String[]  @default([])
+  technicalDetails String?
+  canRefer         Boolean?  @default(false)
+  pros             String?
+  cons             String?
+  advice           String?
+  authorName       String?
+  createdAt        DateTime? @default(now()) @db.Timestamptz(6)
+  accounts         accounts? @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   @@index([company])
   @@index([createdAt])
   @@schema("public")
 }
+
+
+model employers {
+  id          String   @id @db.Uuid
+  email       String   @unique
+  companyName String?
+  approved    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@schema("public")
+}
+
 
 enum applicationStatus {
   CLOSED
@@ -208,15 +239,14 @@ enum leaderType {
   @@schema("public")
 }
 
-enum memberType{
-  ACTIVE 
+enum memberType {
+  ACTIVE
   PLEDGE
   APPLICANT
   ALL_MEMBERS
 
   @@schema("public")
 }
-
 
 enum type {
   APPLICANT
