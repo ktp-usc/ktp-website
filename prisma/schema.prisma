@@ -265,11 +265,3 @@ enum gradSemester {
   @@schema("public")
 }
 
-enum memberType {
-  ACTIVE
-  PLEDGE
-  APPLICANT
-  ALL_MEMBERS
-
-  @@schema("public")
-}
