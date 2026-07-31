@@ -80,13 +80,15 @@ function MemberModal({
             <h3 className="text-2xl font-semibold">
               {member.firstName + " " + member.lastName}
             </h3>
-            <p className="text-sm text-gray-600 mt-1">
-              {member.majors +
-                " • " +
-                member.gradSemester +
-                " " +
-                member.gradYear}
-            </p>
+            {member.majors && member.gradSemester && member.gradYear && (
+              <p className="text-sm text-gray-600 mt-1">
+                {member.majors +
+                  " • " +
+                  member.gradSemester +
+                  " " +
+                  member.gradYear}
+              </p>
+            )}
             <div className="mt-4">
               {member.linkedin && member.linkedin !== "#" && (
                 <a
@@ -362,6 +364,14 @@ export default function Members() {
                           <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#315CA9] transition-colors">
                             {member.firstName + " " + member.lastName}
                           </h3>
+                          {member.majors &&
+                            member.gradSemester &&
+                            member.gradYear && (
+                              <p className="text-xs text-gray-600 mb-2">
+                                {member.majors} •{" "}
+                                {member.gradSemester + " " + member.gradYear}
+                              </p>
+                            )}
                           <p className="text-xs text-gray-600 mb-2">
                             {member.majors} •{" "}
                             {member.gradSemester + " " + member.gradYear}
