@@ -94,3 +94,31 @@ export function usePointRequirements() {
     loading,
   };
 }
+
+export function useActivePointRequirements() {
+  const [activePointRequirements, setActivePointRequirements] = useState<
+    PointRequirement[]
+  >([]);
+  const [loading, setLoading] = useState(false);
+  async function getActivePointRequirements() {
+    try {
+      setLoading(true);
+      const res = await fetch("/api/requirements?memberType=ACTIVE");
+      if (!res.ok) {
+        return console.error(res);
+      }
+      const data = await res.json();
+      setActivePointRequirements(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+  useEffect(() => {
+    getActivePointRequirements();
+  }, []);
+  return { activePointRequirements, loading };
+}
+
+export function usePledgePointRequirements() {}

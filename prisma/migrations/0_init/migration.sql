@@ -8,10 +8,42 @@ CREATE TYPE "applicationStatus" AS ENUM ('CLOSED', 'UNDER_REVIEW', 'INTERVIEW', 
 CREATE TYPE "leaderType" AS ENUM ('N/A', 'PRESIDENT', 'VICE_PRESIDENT', 'VP_FINANCE', 'VP_PROFDEV', 'VP_ENGAGEMENT', 'VP_OUTREACH', 'VP_MARKETING', 'VP_TECHDEV', 'SECRETARY', 'CHAIR_INFRASTRUCTURE', 'CHAIR_CONFERENCES');
 
 -- CreateEnum
+CREATE TYPE "memberType" AS ENUM ('ACTIVE', 'PLEDGE', 'APPLICANT', 'ALL_MEMBERS');
+
+-- CreateEnum
 CREATE TYPE "type" AS ENUM ('APPLICANT', 'PNM', 'BROTHER', 'LEADERSHIP', 'ALUMNI');
 
 -- CreateEnum
 CREATE TYPE "gradSemester" AS ENUM ('SPRING', 'FALL');
+
+-- CreateTable
+CREATE TABLE "point_requirements" (
+    "id" UUID NOT NULL,
+    "semester" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "requiredAmount" INTEGER NOT NULL,
+    "pointsPerCompletion" INTEGER NOT NULL,
+    "maxPoints" INTEGER NOT NULL,
+    "memberType" "memberType" NOT NULL,
+
+    CONSTRAINT "point_requirements_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "event" (
+    "id" UUID NOT NULL,
+    "attendance" TEXT[],
+    "PointRequirement" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "startDate" TIMESTAMP(3) NOT NULL,
+    "name" TEXT NOT NULL,
+    "location" TEXT NOT NULL,
+    "activesOnly" BOOLEAN NOT NULL,
+    "attendanceCode" TEXT NOT NULL,
+
+    CONSTRAINT "event_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "accounts" (
@@ -63,7 +95,7 @@ CREATE TABLE "applications" (
 
 -- CreateTable
 CREATE TABLE "comment" (
-    "id" UUID NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "applicationId" UUID NOT NULL,
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "statusOverride" "applicationStatus",
@@ -99,8 +131,8 @@ CREATE TABLE "vote_votes" (
     "id" UUID NOT NULL,
     "questionId" UUID NOT NULL,
     "optionId" UUID NOT NULL,
-    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "voterHash" TEXT NOT NULL,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "vote_votes_pkey" PRIMARY KEY ("id")
 );
@@ -119,25 +151,37 @@ CREATE TABLE "vote_eligibility" (
 
 -- CreateTable
 CREATE TABLE "career_reviews" (
-    "id" UUID NOT NULL,
-    "authorId" UUID NOT NULL,
-    "company" TEXT NOT NULL,
-    "industry" TEXT NOT NULL,
-    "role" TEXT NOT NULL,
-    "location" TEXT NOT NULL,
-    "appTimeline" TEXT NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "authorId" UUID,
+    "company" TEXT,
+    "role" TEXT,
+    "location" TEXT,
+    "appTimeline" TEXT,
     "interviewQs" TEXT[] DEFAULT ARRAY[]::TEXT[],
-    "technicalDetails" TEXT NOT NULL,
-    "canRefer" BOOLEAN NOT NULL DEFAULT false,
-    "compensation" TEXT NOT NULL,
-    "pros" TEXT NOT NULL,
-    "cons" TEXT NOT NULL,
-    "advice" TEXT NOT NULL,
-    "authorName" TEXT NOT NULL,
-    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "technicalDetails" TEXT,
+    "canRefer" BOOLEAN DEFAULT false,
+    "pros" TEXT,
+    "cons" TEXT,
+    "advice" TEXT,
+    "authorName" TEXT,
+    "createdAt" TIMESTAMPTZ(6) DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "career_reviews_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateTable
+CREATE TABLE "employers" (
+    "id" UUID NOT NULL,
+    "email" TEXT NOT NULL,
+    "companyName" TEXT,
+    "approved" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "employers_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "event_attendanceCode_key" ON "event"("attendanceCode");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "accounts_headshotBlobURL_key" ON "accounts"("headshotBlobURL");
@@ -190,6 +234,9 @@ CREATE INDEX "career_reviews_company_idx" ON "career_reviews"("company");
 -- CreateIndex
 CREATE INDEX "career_reviews_createdAt_idx" ON "career_reviews"("createdAt");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "employers_email_key" ON "employers"("email");
+
 -- AddForeignKey
 ALTER TABLE "applications" ADD CONSTRAINT "userCheck" FOREIGN KEY ("userId") REFERENCES "accounts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -216,3 +263,4 @@ ALTER TABLE "vote_eligibility" ADD CONSTRAINT "vote_eligibility_questionId_fkey"
 
 -- AddForeignKey
 ALTER TABLE "career_reviews" ADD CONSTRAINT "career_reviews_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "accounts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+

@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { PointRequirement } from "@prisma/client";
+import { NextResponse, NextRequest } from "next/server";
+import { memberType } from "@prisma/client";
 //   id                  String     @id @default(uuid()) @db.Uuid
 //   memberType          RequirmentType
 //   semester            String
@@ -10,7 +12,6 @@ import { NextResponse } from "next/server";
 //   maxPoints           Int
 export async function POST(req: Request) {
   const body = await req.json();
-  console.log("memberType: ", body.memberType);
   const pointRequirement = await prisma.pointRequirement.create({
     data: body,
   });
@@ -18,9 +19,21 @@ export async function POST(req: Request) {
   return NextResponse.json(pointRequirement);
 }
 
-export async function GET() {
-  const result = await prisma.pointRequirement.findMany();
+export async function GET(request: NextRequest) {
+  const memberType = request.nextUrl.searchParams.get(
+    "memberType",
+  ) as memberType;
 
+  let result: PointRequirement[];
+  if (!memberType) {
+    result = await prisma.pointRequirement.findMany();
+  } else {
+    result = await prisma.pointRequirement.findMany({
+      where: {
+        OR: [{ memberType: memberType }, { memberType: "ALL_MEMBERS" }],
+      },
+    });
+  }
   return NextResponse.json(result);
 }
 
