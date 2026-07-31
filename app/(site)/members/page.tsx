@@ -372,10 +372,6 @@ export default function Members() {
                                 {member.gradSemester + " " + member.gradYear}
                               </p>
                             )}
-                          <p className="text-xs text-gray-600 mb-2">
-                            {member.majors} •{" "}
-                            {member.gradSemester + " " + member.gradYear}
-                          </p>
                           <p className="text-sm font-medium text-gray-700">
                             {member.leaderType
                               ? toPlainText(member.leaderType)
