@@ -12,9 +12,6 @@ function parseIntParam(v: string | null, fallback: number) {
 }
 
 export async function GET(req: Request) {
-  const authed = await requireAdmin();
-  if ("response" in authed) return authed.response;
-
   try {
     const { searchParams } = new URL(req.url);
 
