@@ -19,7 +19,7 @@ export function toPlainText(leadership: string) {
     case "VP_FINANCE":
       return "Director of Finance";
     case "VP_PROFDEV":
-      return "Director of Proffesional Development";
+      return "Director of Professional Development";
     case "VP_ENGAGEMENT":
       return "Director of Engagement";
     case "VP_OUTREACH":

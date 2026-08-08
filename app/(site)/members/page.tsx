@@ -20,6 +20,11 @@ const sortByLastName = (members: Member[]): Member[] =>
     return lastA.localeCompare(lastB);
   });
 
+const toTitleCase = (text?: string | null) =>
+  text
+    ? text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
+    : "";
+
 /* -------------------------
     Modal component
    ------------------------- */
@@ -84,7 +89,7 @@ function MemberModal({
               <p className="text-sm text-gray-600 mt-1">
                 {member.majors +
                   " • " +
-                  member.gradSemester +
+                  toTitleCase(member.gradSemester) +
                   " " +
                   member.gradYear}
               </p>
@@ -123,20 +128,18 @@ function MemberCard({
 }) {
   const imageUrl = member.headshotBlobURL;
   return (
-    <div className="w-full aspect-square rounded-2xl overflow-hidden relative">
+    <div className="w-full aspect-square rounded-full overflow-hidden relative">
       {imageUrl && (
         <Image
           src={imageUrl}
           alt={member.firstName}
           fill
-          className="object-cover transition-all duration-300 group-hover:brightness-75"
+          className="object-cover scale-[1.06] transition-all duration-300 group-hover:brightness-75"
           onError={onImageError}
           sizes="(max-width: 640px) 50vw, 300px"
         />
       )}
 
-      {/* Blue ring removed here */}
-      <div className="absolute inset-0 rounded-2xl ring-4 ring-blue-100 transition-all duration-300 pointer-events-none" />
     </div>
   );
 }
@@ -152,13 +155,13 @@ function ProfileCard({
 }) {
   const imageUrl = member.headshotBlobURL;
   return (
-    <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden ring-4 ring-blue-100 group-hover:ring-[#315CA9] transition-all duration-300 relative mx-auto">
+    <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden transition-all duration-300 relative mx-auto">
       {imageUrl && (
         <Image
           src={imageUrl}
           alt={member.firstName}
           fill
-          className="object-cover transition-all duration-300 group-hover:brightness-75"
+          className="object-cover scale-[1.06] transition-all duration-300 group-hover:brightness-75"
           onError={onImageError}
           sizes="(max-width: 640px) 50vw, 300px"
         />
@@ -255,9 +258,9 @@ export default function Members() {
                         e.preventDefault();
                         setActiveMember(member);
                       }}
-                      className="group w-full cursor-pointer flex flex-col items-center"
+                      className="w-full cursor-pointer flex flex-col items-center"
                     >
-                      <div className="relative block rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 hover:scale-105 w-full">
+                      <div className="group relative block rounded-full shadow-md hover:shadow-2xl transition-all duration-300 hover:scale-105 w-full">
                         <MemberCard
                           member={member}
                           imageError={imageErrors[member.firstName] || false}
@@ -305,9 +308,9 @@ export default function Members() {
                             e.preventDefault();
                             setActiveMember(member);
                           }}
-                          className="group w-full cursor-pointer flex flex-col items-center"
+                          className="w-full cursor-pointer flex flex-col items-center"
                         >
-                          <div className="relative block rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 hover:scale-105 w-full">
+                          <div className="group relative block rounded-full transition-transform duration-300 hover:scale-105 w-full">
                             <MemberCard
                               member={member}
                               imageError={
@@ -369,7 +372,7 @@ export default function Members() {
                             member.gradYear && (
                               <p className="text-xs text-gray-600 mb-2">
                                 {member.majors} •{" "}
-                                {member.gradSemester + " " + member.gradYear}
+                                {toTitleCase(member.gradSemester)} {member.gradYear}
                               </p>
                             )}
                           <p className="text-sm font-medium text-gray-700">
