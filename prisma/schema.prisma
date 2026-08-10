@@ -56,7 +56,7 @@ model accounts {
   hometown        String?
   linkedin        String?            @unique
   github          String?            @unique
-  applications    applications?
+  applications    applications[]
   career_reviews  career_reviews[]
   voteEligibility vote_eligibility[]
   voteQuestions   vote_questions[]
@@ -93,12 +93,13 @@ model applications {
   isFlagged      Boolean           @default(false)
   lastModified   DateTime          @updatedAt @db.Timestamptz(6)
   submittedAt    DateTime?         @db.Timestamptz(6)
-  userId         String            @unique @db.Uuid
+  userId         String            @db.Uuid
   gpa            Float?
   status         applicationStatus @default(INCOMPLETE)
   circumstance   String?
   accounts       accounts          @relation(fields: [userId], references: [id], onDelete: Cascade, map: "userCheck")
   comments       comment[]
+  semester       String           @default("SPRING 2026")
 
   @@schema("public")
 }
@@ -205,6 +206,11 @@ model employers {
   approved    Boolean  @default(false)
   createdAt   DateTime @default(now())
 
+  @@schema("public")
+}
+
+model currentSemester {
+  semester String   @id
   @@schema("public")
 }
 

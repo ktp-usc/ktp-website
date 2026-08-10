@@ -86,6 +86,7 @@ export async function signUpWithEmail(
         "Your login was created, but we could not finish setting up your profile. Please contact support.",
     };
   }
+  const res = await prisma.currentSemester.findFirst();
 
   try {
     await prisma.applications.create({
@@ -105,6 +106,7 @@ export async function signUpWithEmail(
         submittedAt: null,
         gpa: 0,
         status: "INCOMPLETE",
+        semester: res ? res.semester : "ERROR",
       },
     });
   } catch (err) {

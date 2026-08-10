@@ -43,9 +43,10 @@ export async function GET() {
   if ("response" in authed) return authed.response;
 
   try {
-    const app = await prisma.applications.findUnique({
+    const app = await prisma.applications.findMany({
       where: { userId: authed.user.id },
       include: { comments: { orderBy: { createdAt: "desc" } } },
+      orderBy: { createdAt: "desc" },
     });
 
     return ok(app);
@@ -58,37 +59,57 @@ export async function GET() {
 export async function POST(req: Request) {
   const authed = await requireUser();
   if ("response" in authed) return authed.response;
+  let user;
+  try {
+    const res = await prisma.accounts.findFirst({
+      where: { id: authed.user.id },
+    });
+    user = res;
+  } catch (error) {
+    return console.error(error);
+  }
+  let semester;
+  try {
+    const res = await prisma.currentSemester.findFirst({});
+    semester = res?.semester;
+  } catch (error) {
+    return console.error(error);
+  }
+  if (semester) {
+    try {
+      const app = await prisma.applications.findFirst({
+        where: { userId: authed.user?.id, semester: semester },
+      });
+      if (app) {
+        console.error("application for this semester already exists");
+        return badRequest("application for this semester already exists");
+      }
+    } catch (error) {
+      console.error(error);
+      return serverError();
+    }
+  }
 
   try {
-    const body = await req.json().catch(() => null);
-    if (!body) return badRequest("invalid_json");
-
-    const fullName = normalizeString(body.fullName);
-    const email = normalizeString(body.email);
-
-    if (!fullName || !email) {
-      return badRequest("fullName and email are required");
-    }
-
     const app = await prisma.applications.create({
       data: {
         userId: authed.user.id,
-        fullName,
-        email,
-        classification: normalizeString(body.classification),
-        major: normalizeString(body.major),
-        minor: normalizeString(body.minor),
-        resumeUrl: normalizeString(body.resumeUrl),
-        reason: normalizeString(body.reason),
-        circumstance: normalizeString(body.circumstance),
-        gpa: normalizeGpa(body.gpa) ?? null,
-        eventsAttended: normalizeStringArray(body.eventsAttended) ?? [],
+        fullName: user?.firstName + " " + user?.lastName,
+        email: user?.schoolEmail ?? "",
+        classification: "",
+        major: "",
+        minor: "",
+        resumeUrl: "",
+        reason: "",
+        circumstance: "",
+        gpa: 0.0,
+        eventsAttended: [],
+        semester: typeof semester === "string" ? semester : "ERROR",
       },
     });
 
     return created(app);
   } catch (e: any) {
-    // unique violation: userId is unique
     console.error(e);
     return NextResponse.json(
       { error: "application_already_exists" },
@@ -129,6 +150,7 @@ export async function PATCH(req: Request) {
           : normalizeString(body.circumstance),
       eventsAttended: normalizeStringArray(body.eventsAttended),
       gpa: normalizeGpa(body.gpa),
+      id: body.id,
       // lastModified is @updatedAt so prisma handles it
     } as const;
 
@@ -146,8 +168,9 @@ export async function PATCH(req: Request) {
     // we only need to fetch current status if they are attempting a status change
     let statusPatch: { status?: applicationStatus } = {};
     if (requestedStatus) {
-      const current = await prisma.applications.findUnique({
+      const current = await prisma.applications.findFirst({
         where: { userId: authed.user.id },
+        orderBy: { createdAt: "desc" },
         select: { status: true },
       });
 
@@ -176,7 +199,7 @@ export async function PATCH(req: Request) {
     // update-first (don’t create automatically on page load — only when user saves)
     try {
       const updated = await prisma.applications.update({
-        where: { userId: authed.user.id },
+        where: { id: body.id },
         data,
       });
       return ok(updated);

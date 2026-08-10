@@ -22,7 +22,6 @@ const PUBLIC_SIGN_UP_ENABLED =
 type SignUpState = { error?: string } | null;
 
 export default function SignUpPage() {
-  const { createApplication } = useMyApplication();
   const router = useRouter();
   const searchParams = useSearchParams();
   const signUpsClosed = !PUBLIC_SIGN_UP_ENABLED;
