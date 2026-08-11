@@ -19,6 +19,7 @@ const NAV_LINKS = [
     { href: "/", label: "Home" },
     { href: "/members", label: "Members" },
     { href: "/clients", label: "Our Work" },
+    { href: "/calendar", label: "Calendar" },
     { href: "/donate", label: "Donate" },
     { href: "/rush", label: "Rush" },
     { href: "/apply", label: "Apply" }
