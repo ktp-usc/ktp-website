@@ -7,13 +7,14 @@ import { useSessionQuery } from '@/client/hooks/auth';
 import { useMyAccountQuery } from '@/client/hooks/accounts';
 import { useActiveVoteQuery, useSubmitVoteMutation } from '@/client/hooks/votes';
 import Link from "next/link";
+import { hasExecAccess } from "@/lib/auth/roles";
 
 export default function VotingPage() {
   const session = useSessionQuery();
   const account = useMyAccountQuery();
   const userId = session.data?.user?.id ?? null;
   const accountType = account.data?.type ?? null;
-  const isActiveMember = accountType === 'BROTHER' || accountType === 'LEADERSHIP';
+  const isActiveMember = accountType === 'BROTHER' || hasExecAccess(accountType);
   const isGateLoading = session.isFetching || (userId ? account.isFetching : false);
 
   const { data, isFetching, isError, error: queryError } = useActiveVoteQuery();

@@ -8,6 +8,7 @@ import { useEffect, useMemo, useRef } from "react";
 
 import { useMyAccountQuery } from "@/client/hooks/accounts";
 import { useSessionQuery } from "@/client/hooks/auth";
+import { hasExecAccess } from "@/lib/auth/roles";
 import confetti from "canvas-confetti";
 
 type PortalRole = "exec" | "applicant" | "member" | "pnm";
@@ -16,7 +17,7 @@ type PortalRole = "exec" | "applicant" | "member" | "pnm";
 type ApplicationViewStatus = "NOT_STARTED" | "IN_PROGRESS" | applicationStatus;
 
 function toPortalRole(typeValue: AccountType | null | undefined): PortalRole {
-  if (typeValue === "LEADERSHIP") return "exec";
+  if (hasExecAccess(typeValue)) return "exec";
   if (typeValue === "BROTHER" || typeValue === "ALUMNI") return "member";
   if (typeValue === "PNM") return "pnm";
   return "applicant";

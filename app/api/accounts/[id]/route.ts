@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth/guards";
 import { badRequest, ok, serverError } from "@/lib/http/responses";
@@ -65,28 +66,32 @@ export async function PATCH(req: Request, ctx: Ctx) {
     try {
         const body = await req.json();
 
+        const data: Prisma.accountsUpdateInput = {
+            firstName: body.firstName ?? undefined,
+            lastName: body.lastName ?? undefined,
+            majors: body.majors ?? undefined,
+            minors: body.minors ?? undefined,
+            schoolEmail: body.schoolEmail ?? undefined,
+            personalEmail: body.personalEmail ?? undefined,
+            headshotBlobURL: body.headshotBlobURL ?? undefined,
+            resumeBlobURL: body.resumeBlobURL ?? undefined,
+            leaderType: body.leaderType ?? undefined,
+            phoneNum: body.phoneNum ?? undefined,
+            pledgeClass: body.pledgeClass ?? undefined,
+            hometown: body.hometown ?? undefined,
+            linkedin: body.linkedin ?? undefined,
+            github: body.github ?? undefined
+        };
+
+        // Allow explicit null so roster type/grad fields can be cleared.
+        if ("type" in body) data.type = body.type;
+        if ("isNew" in body) data.isNew = body.isNew;
+        if ("gradYear" in body) data.gradYear = body.gradYear;
+        if ("gradSemester" in body) data.gradSemester = body.gradSemester;
+
         const updated = await prisma.accounts.update({
             where: { id },
-            data: {
-                firstName: body.firstName ?? undefined,
-                lastName: body.lastName ?? undefined,
-                majors: body.majors ?? undefined,
-                minors: body.minors ?? undefined,
-                type: body.type ?? undefined,
-                schoolEmail: body.schoolEmail ?? undefined,
-                personalEmail: body.personalEmail ?? undefined,
-                gradSemester: body.gradSemester ?? undefined,
-                headshotBlobURL: body.headshotBlobURL ?? undefined,
-                resumeBlobURL: body.resumeBlobURL ?? undefined,
-                leaderType: body.leaderType ?? undefined,
-                phoneNum: body.phoneNum ?? undefined,
-                isNew: body.isNew ?? undefined,
-                gradYear: body.gradYear ?? undefined,
-                pledgeClass: body.pledgeClass ?? undefined,
-                hometown: body.hometown ?? undefined,
-                linkedin: body.linkedin ?? undefined,
-                github: body.github ?? undefined
-            }
+            data
         });
 
         return ok(updated);
