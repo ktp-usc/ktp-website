@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePoints } from "../usePoints";
 
-const SEMESTER_LABEL = "Spring 2026";
+const SEMESTER_LABEL = "Fall 2026";
 const PENDING_POINTS = 0;
 
 export default function ActiveMemberPointsPage() {

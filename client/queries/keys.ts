@@ -13,5 +13,7 @@ export const qk = {
     activeVote: ['votes', 'active'] as const,
     voteEligibility: (id: string) => ['votes', id, 'eligibility'] as const,
     voteResults: (id: string) => ['votes', id, 'results'] as const,
-    voteHistory: ['votes', 'history'] as const
+    voteHistory: ['votes', 'history'] as const,
+
+    memberProgress: (semester: string) => ['exec', 'member-progress', semester] as const
 };
