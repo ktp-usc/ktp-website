@@ -466,7 +466,7 @@ export default function Home() {
                                                     growth. Whether you’re a student looking for opportunities while in college or a nonprofit
                                                     interested in working with us, we would love to hear from you!</p>
 
-                                                <p><em>Sincerely,</em><br /><strong>Luke Jannazzo</strong><br /><strong>President, Spring 2026</strong></p>
+                                                <p><em>Sincerely,</em><br /><strong>Luke Jannazzo</strong><br /><strong>President, Fall 2026</strong></p>
                                             </div>
                                         </div>
                                     </div>
