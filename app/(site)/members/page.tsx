@@ -70,7 +70,7 @@ function MemberModal({
           ✕
         </button>
         <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start text-center sm:text-left mt-4 sm:mt-0">
-          <div className="w-36 h-36 rounded-2xl overflow-hidden bg-gray-100 flex-shrink-0 relative">
+          <div className="w-36 h-36 rounded-full overflow-hidden bg-gray-100 flex-shrink-0 relative">
             {member.headshotBlobURL && (
               <Image
                 src={member.headshotBlobURL}
