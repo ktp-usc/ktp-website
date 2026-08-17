@@ -267,3 +267,8 @@ enum gradSemester {
 }
 
 
+model currentSemester {
+  semester String @id
+
+  @@schema("public")
+}
