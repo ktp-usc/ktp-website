@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth/guards";
+import { hasExecAccess } from "@/lib/auth/roles";
 
 // DELETE a review
 export async function DELETE(
@@ -29,7 +30,7 @@ export async function DELETE(
         }
 
         const isOwner = review.authorId === account.id;
-        const isExec = account.type === "LEADERSHIP";
+        const isExec = hasExecAccess(account.type);
 
         if (!isOwner && !isExec) {
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -70,7 +71,7 @@ export async function PATCH(
         }
 
         const isOwner = review.authorId === account.id;
-        const isExec = account.type === "LEADERSHIP";
+        const isExec = hasExecAccess(account.type);
 
         if (!isOwner && !isExec) {
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });

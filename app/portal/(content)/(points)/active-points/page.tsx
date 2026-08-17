@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePoints } from "../usePoints";
+import { hasExecAccess } from "@/lib/auth/roles";
 
 const SEMESTER_LABEL = "Spring 2026";
 const PENDING_POINTS = 0;
@@ -22,7 +23,7 @@ export default function ActiveMemberPointsPage() {
 
   const isAuthorized = useMemo(() => {
     const t = account.data?.type;
-    return t === "BROTHER" || t === "ALUMNI" || t === "LEADERSHIP";
+    return t === "BROTHER" || t === "ALUMNI" || hasExecAccess(t);
   }, [account.data?.type]);
 
   const fullName = useMemo(() => {
