@@ -52,15 +52,21 @@ export function useMyApplications() {
 type useMyApplicationProps = {
   applicationId: string;
 };
+
+type UpdateApplicationData = Partial<applications>;
+
 export function useMyApplication({ applicationId }: useMyApplicationProps) {
   const [application, setApplication] = useState<applications>();
   const [loading, setLoading] = useState(false);
 
   async function getApplication() {
     try {
+      setLoading(true);
+
       const res = await fetch(`/api/applications/${applicationId}`);
       const data = await res.json();
-      console.log(data.data);
+
+      setApplication(data.data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -68,10 +74,43 @@ export function useMyApplication({ applicationId }: useMyApplicationProps) {
     }
   }
 
-  async function updateApplication() {}
+  async function updateApplication(data: UpdateApplicationData) {
+    try {
+      setLoading(true);
+
+      const res = await fetch(`/api/applications/${applicationId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to update application");
+      }
+
+      const result = await res.json();
+
+      setApplication(result.data);
+
+      return result.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
     getApplication();
-  }, []);
-  return { application, loading, updateApplication, setApplication };
+  }, [applicationId]);
+
+  return {
+    application,
+    loading,
+    updateApplication,
+    setApplication,
+  };
 }

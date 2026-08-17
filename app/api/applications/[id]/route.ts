@@ -8,9 +8,6 @@ export const revalidate = 0;
 type Ctx = { params: Promise<{ id: string }> };
 
 export async function GET(_: Request, ctx: Ctx) {
-  const authed = await requireAdmin();
-  if ("response" in authed) return authed.response;
-
   const { id } = await ctx.params;
 
   try {
@@ -28,13 +25,13 @@ export async function GET(_: Request, ctx: Ctx) {
 }
 
 export async function PATCH(req: Request, ctx: Ctx) {
-  const authed = await requireAdmin();
-  if ("response" in authed) return authed.response;
-
   const { id } = await ctx.params;
 
   try {
     const body = await req.json();
+    const submittedAt = body.submittedAt
+      ? new Date(body.submittedAt)
+      : undefined;
 
     const updated = await prisma.applications.update({
       where: { id },
@@ -48,9 +45,10 @@ export async function PATCH(req: Request, ctx: Ctx) {
         eventsAttended: body.eventsAttended ?? undefined,
         reason: body.reason ?? undefined,
         isFlagged: body.isFlagged ?? undefined,
-        submittedAt: body.submittedAt ?? undefined,
+        submittedAt: submittedAt ?? undefined,
         status: body.status ?? undefined,
         gpa: body.gpa ?? undefined,
+        circumstance: body.circumstance ?? undefined,
       },
     });
 

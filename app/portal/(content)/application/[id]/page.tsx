@@ -73,7 +73,7 @@ const RUSH_EVENT_LABELS: Record<string, string> = {
   "pitch-night": "Pitch Night",
 };
 
-const APPLICATION_DEADLINE_ET = new Date("2026-01-30T21:00:00-05:00");
+const APPLICATION_DEADLINE_ET = new Date("2026-09-11T21:00:00-05:00");
 
 function normalizeString(v: unknown): string {
   if (typeof v !== "string") return "";
@@ -216,7 +216,11 @@ export default function PortalApplicationPage() {
   const applicationId = Array.isArray(params.id)
     ? params.id[0]
     : (params.id ?? "0");
-  const { application, loading: applicationLoading } = useMyApplication({
+  const {
+    application,
+    loading: applicationLoading,
+    updateApplication,
+  } = useMyApplication({
     applicationId,
   });
 
@@ -244,7 +248,7 @@ export default function PortalApplicationPage() {
   useEffect(() => {
     if (loading) return;
     if (!dirty) setForm(formFromSources(application, account));
-  }, [loading, application, account, dirty]);
+  }, [applicationLoading, application, account, dirty]);
 
   const isSubmitted = !!application?.submittedAt;
   const canEdit = !!userId && !isSubmitted && !loading;
@@ -319,7 +323,7 @@ export default function PortalApplicationPage() {
     };
   }
 
-  async function saveDraft() {
+  function saveDraft() {
     if (!userId) {
       toast.error("You must be signed in.");
       router.push("/auth/sign-in?redirectTo=/portal/application");
@@ -329,38 +333,9 @@ export default function PortalApplicationPage() {
     const appPayload = buildApplicationPayload();
     if (!appPayload) return;
 
-    setSaving(true);
-    try {
-      // 1) account fields -> accounts
-      await updateMyAccount.mutateAsync(buildAccountPatchPayload());
-      await accountQuery.refetch();
+    console.log(appPayload);
 
-      // 2) application fields -> applications (create on first save)
-      if (application) {
-        await updateMyApp.mutateAsync(appPayload);
-      } else {
-        const identity = getIdentityForCreate(account);
-        if (!identity) {
-          toast.error(
-            "Please complete your profile (name + email) before saving an application.",
-          );
-          router.push("/portal/settings");
-          return;
-        }
-
-        await createMyApp.mutateAsync({
-          ...identity,
-          ...appPayload,
-        });
-      }
-
-      toast.success("Draft saved.");
-      setDirty(false);
-    } catch (e: any) {
-      toast.error(e?.message ?? "Failed to save draft.");
-    } finally {
-      setSaving(false);
-    }
+    updateApplication(appPayload);
   }
 
   async function submitApplication() {
@@ -440,28 +415,16 @@ export default function PortalApplicationPage() {
     );
     if (!confirmed) return;
 
-    setSaving(true);
-    try {
-      // ensure latest edits persisted
-      if (!application || dirty) {
-        await saveDraft();
-      }
+    if (!application || dirty) {
+      const appPayload = buildApplicationPayload();
 
-      //   const fresh = await myAppQuery.refetch();
-      //   const nowApp = (fresh.data ?? null) as any | null;
-      //   if (!nowApp) {
-      //     toast.error("Please save your application before submitting.");
-      //     return;
-      //   }
+      if (!appPayload) return;
 
-      await submitMyApp.mutateAsync();
-
-      toast.success("Application submitted!");
-      setDirty(false);
-    } catch (e: any) {
-      toast.error(e?.message ?? "Submit failed.");
-    } finally {
-      setSaving(false);
+      await updateApplication({
+        ...appPayload,
+        submittedAt: new Date(),
+        status: "UNDER_REVIEW",
+      });
     }
   }
 
@@ -1354,10 +1317,10 @@ export default function PortalApplicationPage() {
                 isSubmitted || saving || submitMyApp.isPending || isPastDeadline
               }
             >
-              {isPastDeadline
-                ? "Deadline passed"
-                : saving || submitMyApp.isPending
-                  ? "Submitting…"
+              {isSubmitted
+                ? "Submitted"
+                : isPastDeadline
+                  ? "Deadline passed"
                   : "Submit"}
             </Button>
           </div>
