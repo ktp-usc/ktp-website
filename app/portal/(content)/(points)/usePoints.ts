@@ -1,6 +1,6 @@
 import { attendance, PointRequirement, event } from "@prisma/client";
 import { useState, useEffect } from "react";
-import { getActivePointRequirements } from "./points";
+import { getActivePointRequirements } from "@/lib/points/progress";
 import { RequirementProgressData } from "@/types";
 
 export function usePoints(isActive: boolean) {

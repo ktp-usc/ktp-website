@@ -1,11 +1,13 @@
 // app/portal/page.tsx
 "use client";
+
 import {
   BadgeCheck,
   ChevronRight,
   ListPlus,
   CalendarPlus,
   Plus,
+  ListChecks,
 } from "lucide-react";
 import { type as AccountType, applicationStatus, Prisma } from "@prisma/client";
 import Link from "next/link";
@@ -14,6 +16,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useMyAccountQuery } from "@/client/hooks/accounts";
 import { useSessionQuery } from "@/client/hooks/auth";
+import { hasExecAccess } from "@/lib/auth/roles";
 import confetti from "canvas-confetti";
 
 import { useMyApplications } from "@/hooks/useMyApplications";
@@ -26,7 +29,7 @@ type PortalRole = "exec" | "applicant" | "member" | "pnm";
 type ApplicationViewStatus = "NOT_STARTED" | "IN_PROGRESS" | applicationStatus;
 
 function toPortalRole(typeValue: AccountType | null | undefined): PortalRole {
-  if (typeValue === "LEADERSHIP") return "exec";
+  if (hasExecAccess(typeValue)) return "exec";
   if (typeValue === "BROTHER" || typeValue === "ALUMNI") return "member";
   if (typeValue === "PNM") return "pnm";
   return "applicant";
@@ -437,6 +440,22 @@ export default function PortalHomePage() {
               </h4>
               <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
                 Track your active requirements and event attendance.
+              </p>
+            </Link>
+
+            <Link
+              href="/portal/exec/member-progress"
+              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <ListChecks className="p-3 w-12 h-auto text-green-700 bg-green-100 rounded-lg group-hover:bg-green-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors" />
+                <ChevronRight className="text-slate-400 group-hover:text-blue-500" />
+              </div>
+              <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+                Member Progress
+              </h4>
+              <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+                Track Fall 2026 points and requirement completion across the chapter.
               </p>
             </Link>
 
