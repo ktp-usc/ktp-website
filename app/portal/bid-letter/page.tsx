@@ -8,20 +8,21 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function BidLetterPage() {
-    const authed = await requireUser();
-    if ("response" in authed) {
-        // if your requireUser returns a NextResponse for unauth, send them to portal
-        redirect("/portal");
-    }
+  const authed = await requireUser();
+  if ("response" in authed) {
+    // if your requireUser returns a NextResponse for unauth, send them to portal
+    redirect("/portal");
+  }
 
-    const app = await prisma.applications.findUnique({
-        where: { userId: authed.user.id },
-        select: { status: true }
-    });
+  const app = await prisma.applications.findFirst({
+    where: { userId: authed.user.id },
+    orderBy: { createdAt: "desc" },
+    select: { status: true },
+  });
 
-    if (!app || app.status !== "BID_OFFERED") {
-        redirect("/portal");
-    }
+  if (!app || app.status !== "BID_OFFERED") {
+    redirect("/portal");
+  }
 
-    return <BidLetterClientPage/>;
+  return <BidLetterClientPage />;
 }

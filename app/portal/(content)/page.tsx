@@ -1,15 +1,27 @@
 // app/portal/page.tsx
 "use client";
-import { BadgeCheck, ChevronRight, ListPlus, CalendarPlus, ListChecks } from "lucide-react";
+
+import {
+  BadgeCheck,
+  ChevronRight,
+  ListPlus,
+  CalendarPlus,
+  Plus,
+  ListChecks,
+} from "lucide-react";
 import { type as AccountType, applicationStatus, Prisma } from "@prisma/client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useMyAccountQuery } from "@/client/hooks/accounts";
 import { useSessionQuery } from "@/client/hooks/auth";
 import { hasExecAccess } from "@/lib/auth/roles";
 import confetti from "canvas-confetti";
+
+import { useMyApplications } from "@/hooks/useMyApplications";
+
+import { Application } from "./components/application";
 
 type PortalRole = "exec" | "applicant" | "member" | "pnm";
 
@@ -21,66 +33,6 @@ function toPortalRole(typeValue: AccountType | null | undefined): PortalRole {
   if (typeValue === "BROTHER" || typeValue === "ALUMNI") return "member";
   if (typeValue === "PNM") return "pnm";
   return "applicant";
-}
-
-function formatDate(dateLike: string | Date | null | undefined): string {
-  if (!dateLike) return "—";
-  const d = typeof dateLike === "string" ? new Date(dateLike) : dateLike;
-  if (Number.isNaN(d.getTime())) return "—";
-  return d.toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
-
-function statusLabel(status: ApplicationViewStatus): string {
-  if (status === "NOT_STARTED") return "Not Started";
-  if (status === "IN_PROGRESS") return "In Progress";
-
-  switch (status) {
-    case "UNDER_REVIEW":
-      return "Under Review";
-    case "INTERVIEW":
-      return "Interview";
-    case "WAITLIST":
-      return "Waitlist";
-    case "BID_OFFERED":
-      return "Bid Offered";
-    case "BID_DECLINED":
-      return "Bid Declined";
-    case "BID_ACCEPTED":
-      return "Bid Accepted";
-    case "CLOSED":
-      return "Closed";
-    default:
-      return String(status);
-  }
-}
-
-function statusPillClasses(status: ApplicationViewStatus): string {
-  if (status === "NOT_STARTED")
-    return "bg-gray-100 text-gray-800 border-gray-200";
-  if (status === "IN_PROGRESS")
-    return "bg-yellow-100 text-yellow-800 border-yellow-200";
-
-  switch (status) {
-    case "BID_ACCEPTED":
-      return "bg-green-100 text-green-800 border-green-200";
-    case "BID_OFFERED":
-      return "bg-blue-100 text-blue-800 border-blue-200";
-    case "INTERVIEW":
-      return "bg-purple-100 text-purple-800 border-purple-200";
-    case "WAITLIST":
-      return "bg-orange-100 text-orange-800 border-orange-200";
-    case "BID_DECLINED":
-      return "bg-red-100 text-red-800 border-red-200";
-    case "CLOSED":
-      return "bg-gray-200 text-gray-900 border-gray-300";
-    case "UNDER_REVIEW":
-    default:
-      return "bg-slate-100 text-slate-800 border-slate-200";
-  }
 }
 
 const roleMessages = {
@@ -116,6 +68,12 @@ export default function PortalHomePage() {
     [account.data?.firstName],
   );
 
+  const {
+    applications,
+    loading: applicationsLoading,
+    createApplication,
+  } = useMyApplications();
+
   const statusChipRef = useRef<HTMLSpanElement | null>(null);
 
   const app = (account.data as any)?.applications ?? null;
@@ -134,23 +92,6 @@ export default function PortalHomePage() {
 
     return "NOT_STARTED";
   }, [account.data]);
-
-  // choose where the application card should send the user
-  const applicationHref = useMemo(() => {
-    // safest: use the actual stored status if it exists,
-    // otherwise fall back to the derived view status
-    const rawStatus = (app as any)?.status as applicationStatus | undefined;
-
-    const effectiveStatus =
-      rawStatus ??
-      (appStatus !== "NOT_STARTED" && appStatus !== "IN_PROGRESS"
-        ? appStatus
-        : undefined);
-
-    return effectiveStatus === "BID_OFFERED"
-      ? "/portal/bid-letter"
-      : "/portal/application";
-  }, [app, appStatus]);
 
   useEffect(() => {
     if (appStatus !== "BID_ACCEPTED") return;
@@ -176,6 +117,8 @@ export default function PortalHomePage() {
       ticks: 200,
     });
   }, [appStatus]);
+
+  const [tooManyApplications, setTooManyApplications] = useState(false);
 
   return (
     <main className="max-w-7xl mx-auto px-6 py-8 bg-transparent transition-colors duration-300">
@@ -230,77 +173,38 @@ export default function PortalHomePage() {
       {/* applicant view */}
       {userId && role === "applicant" ? (
         <div className="space-y-6">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white transition-colors duration-300">
-            Your Application
-          </h3>
-
-          <div
-            onClick={() => router.push(applicationHref)}
-            className="bg-white rounded-xl shadow-md hover:shadow-lg dark:bg-gray-900 dark:border-gray-600 dark:hover:border-gray-400 transition-all cursor-pointer border border-gray-200 overflow-hidden group"
-            role="button"
-            tabIndex={0}
-          >
-            <div className="p-6">
-              <div className="flex items-start justify-between gap-6 mb-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white transition-colors duration-300">
-                      Spring 2026 Application
-                    </h4>
-
-                    <span
-                      ref={statusChipRef}
-                      className={`px-3 py-1 rounded-full text-xs font-medium border ${statusPillClasses(appStatus)}`}
-                    >
-                      {statusLabel(appStatus)}
-                    </span>
-                  </div>
-
-                  <p className="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-300">
-                    {appStatus === "NOT_STARTED"
-                      ? "Not started yet"
-                      : app?.submittedAt
-                        ? `Submitted on ${formatDate(app.submittedAt)}`
-                        : `Last saved on ${formatDate(app?.lastModified ?? app?.createdAt)}`}
-                  </p>
-                </div>
-
-                <div className="flex gap-6 text-left">
-                  <div>
-                    <p className="text-xs text-gray-500 dark:text-white transition-colors duration-300">
-                      Major
-                    </p>
-                    <p className="text-sm mt-2 font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">
-                      {app?.major ?? "—"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500 dark:text-white transition-colors duration-300">
-                      Year
-                    </p>
-                    <p className="text-sm mt-2 font-medium text-gray-900 dark:text-gray-300 transition-colors duration-300">
-                      {app?.classification ?? "—"}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Arrow */}
-                <svg
-                  className="w-5 h-5 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white transition-colors duration-300">
+              Your Application
+            </h3>
+            <button
+              onClick={() => {
+                if (applications.length > 1) {
+                  setTooManyApplications(true);
+                } else {
+                  createApplication();
+                }
+              }}
+              className="bg-blue-500 text-xl cursor-pointer rounded-full p-2 text-white flex gap-2 items-center"
+            >
+              Create New Application
+              <Plus />
+            </button>
+          </div>
+          {!applicationsLoading &&
+            applications.map((app) => (
+              <Application key={app.id} application={app} />
+            ))}
+          {tooManyApplications && (
+            <div
+              className="absolute inset-0 bg-black/20 items-center flex justify-items-center"
+              onClick={() => setTooManyApplications(false)}
+            >
+              <div className=" bg-white p-4 rounded-md m-auto h-1/4 items-center flex text-2xl">
+                <p> At this time applicants can only apply to KTP twice</p>
               </div>
             </div>
-          </div>
+          )}
         </div>
       ) : null}
 
@@ -348,7 +252,7 @@ export default function PortalHomePage() {
                 </svg>
               </div>
               <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
-                View Spring 2026 Applicants
+                View Current Applicants
               </h4>
               <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
                 Review and manage all applications for the Spring 2026
