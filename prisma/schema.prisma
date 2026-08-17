@@ -1,5 +1,4 @@
-
-  generator client {
+generator client {
   provider = "prisma-client-js"
 }
 
@@ -23,15 +22,15 @@ model PointRequirement {
 }
 
 model event {
-  id               String   @id @default(uuid()) @db.Uuid
-  attendance       attendance[]
+  id               String       @id @default(uuid()) @db.Uuid
   PointRequirement String
   description      String
   startDate        DateTime
   name             String
   location         String
   activesOnly      Boolean
-  attendanceCode   String  @unique
+  attendanceCode   String       @unique
+  attendance       attendance[]
 
   @@schema("public")
 }
@@ -57,23 +56,21 @@ model accounts {
   linkedin        String?            @unique
   github          String?            @unique
   applications    applications[]
+  attendance      attendance[]
   career_reviews  career_reviews[]
   voteEligibility vote_eligibility[]
   voteQuestions   vote_questions[]
-  attendance      attendance[]
 
   @@schema("public")
 }
 
 model attendance {
-  eventId   String  @db.Uuid
-  accountId String  @db.Uuid
-
+  eventId       String    @db.Uuid
+  accountId     String    @db.Uuid
   pointsAwarded Int?
   checkedInAt   DateTime?
-
-  event   event    @relation(fields: [eventId], references: [id])
-  account accounts @relation(fields: [accountId], references: [id])
+  account       accounts  @relation(fields: [accountId], references: [id])
+  event         event     @relation(fields: [eventId], references: [id])
 
   @@id([eventId, accountId])
   @@schema("public")
@@ -97,9 +94,9 @@ model applications {
   gpa            Float?
   status         applicationStatus @default(INCOMPLETE)
   circumstance   String?
+  semester       String            @default("SPRING 2026")
   accounts       accounts          @relation(fields: [userId], references: [id], onDelete: Cascade, map: "userCheck")
   comments       comment[]
-  semester       String           @default("SPRING 2026")
 
   @@schema("public")
 }
@@ -124,9 +121,9 @@ model vote_questions {
   createdAt   DateTime           @default(now()) @db.Timestamptz(6)
   closesAt    DateTime?          @db.Timestamptz(6)
   createdById String             @db.Uuid
-  createdBy   accounts           @relation(fields: [createdById], references: [id])
   eligible    vote_eligibility[]
   options     vote_options[]
+  createdBy   accounts           @relation(fields: [createdById], references: [id])
   votes       vote_votes[]
 
   @@index([isActive])
@@ -198,7 +195,6 @@ model career_reviews {
   @@schema("public")
 }
 
-
 model employers {
   id          String   @id @db.Uuid
   email       String   @unique
@@ -210,10 +206,10 @@ model employers {
 }
 
 model currentSemester {
-  semester String   @id
+  semester String @id
+
   @@schema("public")
 }
-
 
 enum applicationStatus {
   CLOSED
@@ -241,6 +237,11 @@ enum leaderType {
   SECRETARY
   CHAIR_INFRASTRUCTURE
   CHAIR_CONFERENCES
+  CHAIR_HACKATHON
+  CHAIR_PLACEMENT
+  CHAIR_COMMUNICATIONS
+  DELEGATE_PGC
+  DELEGATE_NATIONALS
 
   @@schema("public")
 }
@@ -259,8 +260,8 @@ enum type {
   PNM
   BROTHER
   LEADERSHIP
-  CHAIR
   ALUMNI
+  CHAIR
 
   @@schema("public")
 }
@@ -271,5 +272,3 @@ enum gradSemester {
 
   @@schema("public")
 }
-
-
