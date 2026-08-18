@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { authServer } from '@/lib/auth/server';
 import { leaderType as LeaderType } from "@prisma/client";
+import { hasExecAccess } from '@/lib/auth/roles';
 
 export type AuthedUser = {
     id: string; // neon auth user id (uuid)
@@ -31,9 +32,8 @@ export async function requireAdmin(): Promise<
         select: { type: true, leaderType: true }
     });
 
-    // pick the rule you want:
     const isAdmin =
-        account?.type === 'LEADERSHIP' ||
+        hasExecAccess(account?.type) ||
         (account?.leaderType != null && account.leaderType !== LeaderType.N_A);
 
     if (!isAdmin) {

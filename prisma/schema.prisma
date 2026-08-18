@@ -7,8 +7,36 @@ datasource db {
   schemas  = ["public"]
 }
 
+model PointRequirement {
+  id                  String     @id @default(uuid()) @db.Uuid
+  semester            String
+  name                String
+  description         String
+  requiredAmount      Int
+  pointsPerCompletion Int
+  maxPoints           Int
+  memberType          memberType
+
+  @@map("point_requirements")
+  @@schema("public")
+}
+
+model event {
+  id               String       @id @default(uuid()) @db.Uuid
+  PointRequirement String
+  description      String
+  startDate        DateTime
+  name             String
+  location         String
+  activesOnly      Boolean
+  attendanceCode   String       @unique
+  attendance       attendance[]
+
+  @@schema("public")
+}
+
 model accounts {
-  id              String             @id @db.Uuid
+  id              String             @id @default(uuid()) @db.Uuid
   firstName       String             @default("john")
   lastName        String             @default("smith")
   majors          String[]
@@ -33,6 +61,18 @@ model accounts {
   voteEligibility vote_eligibility[]
   voteQuestions   vote_questions[]
 
+  @@schema("public")
+}
+
+model attendance {
+  eventId       String    @db.Uuid
+  accountId     String    @db.Uuid
+  pointsAwarded Int?
+  checkedInAt   DateTime?
+  account       accounts  @relation(fields: [accountId], references: [id])
+  event         event     @relation(fields: [eventId], references: [id])
+
+  @@id([eventId, accountId])
   @@schema("public")
 }
 
@@ -75,16 +115,16 @@ model comment {
 }
 
 model vote_questions {
-  id              String             @id @default(uuid()) @db.Uuid
-  question        String
-  isActive        Boolean            @default(true)
-  createdAt       DateTime           @default(now()) @db.Timestamptz(6)
-  closesAt        DateTime?          @db.Timestamptz(6)
-  createdById     String             @db.Uuid
-  voteEligibility vote_eligibility[]
-  options         vote_options[]
-  createdBy       accounts           @relation(fields: [createdById], references: [id])
-  votes           vote_votes[]
+  id          String             @id @default(uuid()) @db.Uuid
+  question    String
+  isActive    Boolean            @default(true)
+  createdAt   DateTime           @default(now()) @db.Timestamptz(6)
+  closesAt    DateTime?          @db.Timestamptz(6)
+  createdById String             @db.Uuid
+  eligible    vote_eligibility[]
+  options     vote_options[]
+  createdBy   accounts           @relation(fields: [createdById], references: [id])
+  votes       vote_votes[]
 
   @@index([isActive])
   @@schema("public")
@@ -148,28 +188,10 @@ model career_reviews {
   advice           String?
   authorName       String?
   createdAt        DateTime? @default(now()) @db.Timestamptz(6)
-  accounts         accounts? @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author           accounts? @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   @@index([company])
   @@index([createdAt])
-  @@schema("public")
-}
-
-model attendance {
-  eventId       String    @db.Uuid
-  accountId     String    @db.Uuid
-  pointsAwarded Int?
-  checkedInAt   DateTime?
-  accounts      accounts  @relation(fields: [accountId], references: [id])
-  event         event     @relation(fields: [eventId], references: [id])
-
-  @@id([eventId, accountId])
-  @@schema("public")
-}
-
-model currentSemester {
-  semester String @id
-
   @@schema("public")
 }
 
@@ -183,29 +205,8 @@ model employers {
   @@schema("public")
 }
 
-model event {
-  id               String       @id @db.Uuid
-  PointRequirement String
-  description      String
-  startDate        DateTime
-  name             String
-  location         String
-  activesOnly      Boolean
-  attendanceCode   String       @unique
-  attendance       attendance[]
-
-  @@schema("public")
-}
-
-model point_requirements {
-  id                  String     @id @db.Uuid
-  semester            String
-  name                String
-  description         String
-  requiredAmount      Int
-  pointsPerCompletion Int
-  maxPoints           Int
-  memberType          memberType
+model currentSemester {
+  semester String @id
 
   @@schema("public")
 }
@@ -245,6 +246,15 @@ enum leaderType {
   @@schema("public")
 }
 
+enum memberType {
+  ACTIVE
+  PLEDGE
+  APPLICANT
+  ALL_MEMBERS
+
+  @@schema("public")
+}
+
 enum type {
   APPLICANT
   PNM
@@ -259,15 +269,6 @@ enum type {
 enum gradSemester {
   SPRING
   FALL
-
-  @@schema("public")
-}
-
-enum memberType {
-  ACTIVE
-  PLEDGE
-  APPLICANT
-  ALL_MEMBERS
 
   @@schema("public")
 }
