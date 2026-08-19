@@ -15,14 +15,21 @@ const SIGN_IN_HREF = "/auth/sign-in";
 const SIGN_UP_HREF = "/auth/sign-up";
 const PROFILE_HREF = "/portal";
 
-const NAV_LINKS = [
+type NavLink = { href: string; label: string };
+
+const BASE_NAV_LINKS: NavLink[] = [
     { href: "/", label: "Home" },
     { href: "/members", label: "Members" },
     { href: "/clients", label: "Our Work" },
     { href: "/donate", label: "Donate" },
     { href: "/rush", label: "Rush" },
     { href: "/apply", label: "Apply" }
-] as const;
+];
+
+// Calendar is only for people in the fraternity — current brothers/exec,
+// alumni, and rushees (PNMs). Applicants and signed-out visitors don't see it.
+const CALENDAR_LINK: NavLink = { href: "/calendar", label: "Calendar" };
+const CALENDAR_ALLOWED_TYPES = new Set(["BROTHER", "LEADERSHIP", "ALUMNI", "PNM"]);
 
 export function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -33,6 +40,17 @@ export function Header() {
 
     const { data: account, isFetching: accountFetching } = useMyAccountQuery();
     const headshotUrl = account?.headshotBlobURL ?? null;
+
+    const canViewCalendar =
+        isSignedIn && Boolean(account?.type) && CALENDAR_ALLOWED_TYPES.has(account!.type as string);
+
+    const navLinks = useMemo(() => {
+        if (!canViewCalendar) return BASE_NAV_LINKS;
+
+        const links = [...BASE_NAV_LINKS];
+        links.splice(3, 0, CALENDAR_LINK); // keep it between "Our Work" and "Donate"
+        return links;
+    }, [canViewCalendar]);
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 0);
@@ -147,7 +165,7 @@ export function Header() {
 
                 {/* desktop nav */}
                 <nav className="hidden sm:flex flex-wrap justify-center text-xs sm:text-md md:text-lg space-x-4 sm:space-x-8 md:space-x-12 lg:space-x-16">
-                    {NAV_LINKS.map((l) => (
+                    {navLinks.map((l) => (
                         <Link
                             key={l.href}
                             className="hover:text-[#315CA9] font-medium transition-colors cursor-pointer"
@@ -186,7 +204,7 @@ export function Header() {
                                     </SheetHeader>
 
                                     <div className="mt-4 flex flex-col gap-1">
-                                        {NAV_LINKS.map((l) => (
+                                        {navLinks.map((l) => (
                                             <Link
                                                 key={l.href}
                                                 href={l.href}

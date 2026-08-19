@@ -42,6 +42,51 @@ const roleMessages = {
   pnm: "Track your pledge requirements and stay on top of your progress.",
 };
 
+// Shared "Chapter Calendar" dashboard card — kept in sync with
+// app/api/authz/calendar/route.ts: members (brothers, exec/leadership,
+// alumni) and rushees (PNMs) can see the chapter calendar, so this card only
+// appears in the exec, member, and pnm dashboard sections below.
+function ChapterCalendarCard() {
+  return (
+    <Link
+      href="/portal/calendar"
+      className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer"
+    >
+      <div className="flex items-center justify-between mb-4">
+        <div className="p-3 bg-indigo-100 rounded-lg group-hover:bg-indigo-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
+          <svg
+            className="w-6 h-6 text-indigo-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
+        </div>
+        <svg
+          className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </div>
+      <h4 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+        Chapter Calendar
+      </h4>
+      <p className="text-gray-600 text-sm dark:text-gray-400 transition-colors duration-300">
+        Keep up with chapter events, meetings, and opportunities.
+      </p>
+    </Link>
+  );
+}
+
 export default function PortalHomePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -490,6 +535,8 @@ export default function PortalHomePage() {
                 Create new events for actives, pledges and rushees.
               </p>
             </Link>
+
+            <ChapterCalendarCard />
           </div>
         </div>
       ) : null}
@@ -543,6 +590,8 @@ export default function PortalHomePage() {
                 Track your pledge requirements and event attendance.
               </p>
             </Link>
+
+            <ChapterCalendarCard />
           </div>
         </div>
       ) : null}
@@ -682,6 +731,8 @@ export default function PortalHomePage() {
                 Career Center
               </h4>
             </Link>
+
+            <ChapterCalendarCard />
           </div>
         </div>
       ) : null}
