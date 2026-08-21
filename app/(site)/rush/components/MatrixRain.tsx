@@ -2,15 +2,18 @@
 
 import { useEffect, useRef } from "react";
 
-const GLYPHS =
-    "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン0123456789ΚΘΠ<>{}[]/*+-=$#@%&";
+const GLYPHS = "01";
 
-const FONT_SIZE = 16;
+const FONT_SIZE = 15;
+// Digits are half-width, so columns need their own (tighter) spacing to pack
+// into a solid bit-field rather than leaving gaps.
+const COLUMN_WIDTH = 11;
+const ROW_HEIGHT = 16;
 const FRAME_MS = 55;
 
 /**
- * Full-viewport "digital rain" backdrop. Fixed, so it stays put while the page
- * scrolls, and paints below the header (z-50) and footer (z-10).
+ * Full-viewport binary "digital rain" backdrop. Fixed, so it stays put while
+ * the page scrolls, and paints below the header (z-50) and footer (z-10).
  */
 export default function MatrixRain() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -33,11 +36,11 @@ export default function MatrixRain() {
         const randomGlyph = () => GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
 
         const paintColumn = (column: number, headY: number, alpha: number) => {
-            const x = column * FONT_SIZE;
+            const x = column * COLUMN_WIDTH;
 
             // faded trail character above the head
             ctx.fillStyle = `rgba(0, 190, 60, ${0.55 * alpha})`;
-            ctx.fillText(randomGlyph(), x, headY - FONT_SIZE);
+            ctx.fillText(randomGlyph(), x, headY - ROW_HEIGHT);
 
             // bright leading character
             ctx.fillStyle = `rgba(190, 255, 210, ${alpha})`;
@@ -61,8 +64,8 @@ export default function MatrixRain() {
             ctx.fillStyle = "#000";
             ctx.fillRect(0, 0, width, height);
 
-            const columns = Math.ceil(width / FONT_SIZE);
-            const rows = Math.ceil(height / FONT_SIZE);
+            const columns = Math.ceil(width / COLUMN_WIDTH);
+            const rows = Math.ceil(height / ROW_HEIGHT);
 
             // Seed across the full height (plus some headroom) so the rain is
             // already falling on the first frame rather than dropping in.
@@ -74,12 +77,12 @@ export default function MatrixRain() {
         // Scattered glyph field. Gives the animation something to start from,
         // and is the whole effect for users who asked not to see motion.
         const paintStaticFrame = () => {
-            const rows = Math.ceil(height / FONT_SIZE);
+            const rows = Math.ceil(height / ROW_HEIGHT);
             for (let column = 0; column < drops.length; column++) {
                 for (let row = 0; row < rows; row++) {
                     if (Math.random() > 0.07) continue;
                     ctx.fillStyle = `rgba(0, 190, 60, ${0.18 + Math.random() * 0.3})`;
-                    ctx.fillText(randomGlyph(), column * FONT_SIZE, row * FONT_SIZE);
+                    ctx.fillText(randomGlyph(), column * COLUMN_WIDTH, row * ROW_HEIGHT);
                 }
             }
         };
@@ -94,7 +97,7 @@ export default function MatrixRain() {
             ctx.fillRect(0, 0, width, height);
 
             for (let column = 0; column < drops.length; column++) {
-                const headY = drops[column] * FONT_SIZE;
+                const headY = drops[column] * ROW_HEIGHT;
                 if (headY > 0) paintColumn(column, headY, 0.9);
 
                 if (headY > height && Math.random() > 0.975) {

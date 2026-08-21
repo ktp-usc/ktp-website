@@ -1040,12 +1040,3 @@ body:has(.matrix-rush) header svg {
     transform: none;
   }
 }
-
-/* FAQ accordion: shadcn's item adds a bottom border and a muted chevron,
-   neither of which reads against the panel styling. */
-.matrix-rush .mx-faq-item {
-  border-bottom: 1px solid rgba(0, 255, 65, 0.3);
-}
-.matrix-rush .mx-faq-item svg {
-  color: var(--mx-green);
-}
