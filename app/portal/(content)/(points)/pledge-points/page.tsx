@@ -7,6 +7,7 @@ import { useSessionQuery } from "@/client/hooks/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { canAccessPledgePoints } from "@/lib/auth/roles";
 import { usePoints } from "../usePoints";
 
 const SEMESTER_LABEL = "Spring 2026";
@@ -22,7 +23,7 @@ export default function ActiveMemberPointsPage() {
 
   const isAuthorized = useMemo(() => {
     const t = account.data?.type;
-    return t === "PNM";
+    return canAccessPledgePoints(t);
   }, [account.data?.type]);
 
   const fullName = useMemo(() => {

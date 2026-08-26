@@ -1,9 +1,17 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { neonAuth } from "@neondatabase/auth/next/server";
 import { prisma } from "@/lib/prisma";
-import { canAccessCalendar } from "@/lib/auth/roles";
+import { canAccessFeature, isAuthzFeature } from "@/lib/auth/roles";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const feature = req.nextUrl.searchParams.get("feature");
+  if (!isAuthzFeature(feature)) {
+    return NextResponse.json(
+      { allowed: false, reason: "unknown_feature" },
+      { status: 400 },
+    );
+  }
+
   const { session, user } = await neonAuth();
   if (!session || !user) {
     return NextResponse.json(
@@ -17,7 +25,7 @@ export async function GET() {
     select: { type: true },
   });
 
-  if (!canAccessCalendar(account?.type)) {
+  if (!canAccessFeature(feature, account?.type)) {
     return NextResponse.json(
       { allowed: false, reason: "forbidden" },
       { status: 403 },

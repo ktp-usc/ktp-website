@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Flag } from "lucide-react";
 import type { applicationStatus } from "@prisma/client";
-import { useCurrentApplications } from "@/hooks/useCurrentApplications";
+import { useIncomingApplications } from "@/hooks/useIncomingApplications";
 
 import {
   useSetApplicationFlagMutation,
@@ -36,6 +36,17 @@ const STATUS_LABELS: Record<ApplicationStatusUI, string> = {
   5: "Bid Accepted",
   6: "Incomplete",
   7: "Waitlisted",
+};
+
+const UI_TO_PRISMA: Record<ApplicationStatusUI, applicationStatus> = {
+  0: "CLOSED",
+  1: "BID_DECLINED",
+  2: "UNDER_REVIEW",
+  3: "INTERVIEW",
+  4: "BID_OFFERED",
+  5: "BID_ACCEPTED",
+  6: "INCOMPLETE",
+  7: "WAITLIST",
 };
 
 function mapOverrideToUi(override: applicationStatus): ApplicationStatusUI {
@@ -88,22 +99,32 @@ function StatusPill({ status }: { status: ApplicationStatusUI }) {
 
 function ApplicationCardRow({
   app,
+  displayStatus,
+  dirty,
   onNavigate,
   onDelete,
+  onDraftStatusChange,
 }: {
   app: ApplicationRow;
+  displayStatus: ApplicationStatusUI;
+  dirty: boolean;
   onNavigate: (id: string) => void;
   onDelete: (
     id: string,
     appName: string,
     mutation: ReturnType<typeof useDeleteApplicationMutation>,
   ) => void;
+  onDraftStatusChange: (id: string, status: ApplicationStatusUI) => void;
 }) {
   const setFlag = useSetApplicationFlagMutation(app.id);
   const deleteMutation = useDeleteApplicationMutation(app.id);
 
   const onToggleFlag = () => {
     setFlag.mutate(!app.flagged);
+  };
+
+  const handleStatusChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    onDraftStatusChange(app.id, Number(event.target.value) as ApplicationStatusUI);
   };
 
   return (
@@ -147,6 +168,26 @@ function ApplicationCardRow({
               {app.flagged ? "Unflag" : "Flag"}
             </Button>
 
+            <select
+              value={displayStatus}
+              onChange={handleStatusChange}
+              aria-label={`Update status for ${app.name}`}
+              className={`h-8 px-2 rounded-md border bg-white text-sm
+                         dark:bg-gray-900 ${
+                           dirty
+                             ? "border-amber-500 text-amber-600 dark:border-amber-400 dark:text-amber-400"
+                             : "border-gray-200 text-gray-900 dark:border-gray-700 dark:text-white"
+                         }`}
+            >
+              {Object.entries(STATUS_LABELS)
+                .sort(([a], [b]) => Number(b) - Number(a))
+                .map(([key, label]) => (
+                  <option key={key} value={Number(key)}>
+                    {label}
+                  </option>
+                ))}
+            </select>
+
             <Button
               size="sm"
               className="h-8 px-3"
@@ -182,19 +223,33 @@ function ApplicationCardRow({
 export default function ExecApplicationsPage() {
   const router = useRouter();
 
-  const { applications: apps, loading: applicationsLoading } =
-    useCurrentApplications();
-
   const [search, setSearch] = useState("");
   const [sortMode, setSortMode] = useState<"lastName" | "status">("lastName");
   const [emailStatus, setEmailStatus] = useState<ApplicationStatusUI | "all">(
     "all",
   );
   const [showFlaggedOnly, setShowFlaggedOnly] = useState(false);
+  const [draftStatuses, setDraftStatuses] = useState<
+    Record<string, ApplicationStatusUI>
+  >({});
+
+  const {
+    applications: apps,
+    total,
+    loading: applicationsLoading,
+    updateStatuses,
+    updating,
+  } = useIncomingApplications({
+    currentSemester: true,
+    search,
+    flagged: showFlaggedOnly ? true : "all",
+    status: emailStatus === "all" ? "all" : UI_TO_PRISMA[emailStatus],
+    sortBy: sortMode === "status" ? "status" : "name",
+    sortOrder: sortMode === "status" ? "desc" : "asc",
+  });
 
   const applications = useMemo<ApplicationRow[]>(() => {
-    console.log(apps);
-    return (apps ?? []).map((a: any) => ({
+    return (apps ?? []).map((a) => ({
       id: a.id,
       name: a.fullName,
       email: a.email,
@@ -203,46 +258,39 @@ export default function ExecApplicationsPage() {
     }));
   }, [apps]);
 
-  const filteredApplications = useMemo(() => {
-    let list = applications.filter((app) =>
-      app.name.toLowerCase().includes(search.toLowerCase()),
-    );
-    if (emailStatus !== "all") {
-      list = list.filter((app) => app.status === emailStatus);
-    }
-
-    if (showFlaggedOnly) {
-      list = list.filter((app) => app.flagged);
-    }
-
-    if (sortMode === "lastName") {
-      list = [...list].sort((a, b) => {
-        const getLastName = (name: string) => {
-          const parts = name.trim().split(/\s+/);
-          return parts[parts.length - 1].toLowerCase();
-        };
-
-        const lastA = getLastName(a.name);
-        const lastB = getLastName(b.name);
-
-        return lastA.localeCompare(lastB);
-      });
-    }
-
-    if (sortMode === "status") {
-      list = [...list].sort((a, b) => b.status - a.status);
-    }
-
-    return list;
-  }, [applications, apps, search, sortMode, emailStatus, showFlaggedOnly]);
-
   const emailList = useMemo(() => {
-    const list =
-      emailStatus === "all"
-        ? applications
-        : applications.filter((a) => a.status === emailStatus);
-    return list.map((a) => a.email).join("; ");
-  }, [applications, emailStatus]);
+    return applications.map((a) => a.email).join("; ");
+  }, [applications]);
+
+  const pendingCount = Object.keys(draftStatuses).length;
+
+  const handleDraftStatusChange = (
+    id: string,
+    nextStatus: ApplicationStatusUI,
+  ) => {
+    const original = applications.find((app) => app.id === id)?.status;
+    setDraftStatuses((prev) => {
+      const next = { ...prev };
+      if (original === nextStatus) delete next[id];
+      else next[id] = nextStatus;
+      return next;
+    });
+  };
+
+  const saveApplicationStatuses = async () => {
+    const updates = Object.entries(draftStatuses).map(([id, status]) => ({
+      id,
+      status: UI_TO_PRISMA[status],
+    }));
+    if (updates.length === 0) return;
+
+    try {
+      await updateStatuses(updates);
+      setDraftStatuses({});
+    } catch {
+      alert("Failed to update status");
+    }
+  };
 
   const deleteApplication = (
     id: string,
@@ -348,14 +396,26 @@ export default function ExecApplicationsPage() {
                 Copy Emails
               </Button>
 
+              <Button
+                onClick={saveApplicationStatuses}
+                disabled={pendingCount === 0 || updating}
+                className="bg-green-800 text-white hover:bg-green-900 disabled:bg-green-800/50"
+              >
+                {updating
+                  ? "Saving…"
+                  : pendingCount > 0
+                    ? `Save application status (${pendingCount})`
+                    : "Save application status"}
+              </Button>
+
               <div className="text-sm text-gray-500 dark:text-gray-400 sm:ml-auto transition-colors duration-300">
                 Showing{" "}
                 <span className="font-medium text-gray-900 dark:text-white">
-                  {applicationsLoading ? "…" : filteredApplications.length}
+                  {applicationsLoading ? "…" : applications.length}
                 </span>{" "}
                 of{" "}
                 <span className="font-medium text-gray-900 dark:text-white">
-                  {applicationsLoading ? "…" : applications.length}
+                  {applicationsLoading ? "…" : total}
                 </span>
               </div>
             </div>
@@ -370,16 +430,22 @@ export default function ExecApplicationsPage() {
       </Card>
 
       <div className="mt-6 space-y-4">
-        {filteredApplications.map((app) => (
-          <ApplicationCardRow
-            key={app.id}
-            app={app}
-            onNavigate={(id) => router.push(`/exec/applications/${id}`)}
-            onDelete={deleteApplication}
-          />
-        ))}
+        {applications.map((app) => {
+          const displayStatus = draftStatuses[app.id] ?? app.status;
+          return (
+            <ApplicationCardRow
+              key={app.id}
+              app={app}
+              displayStatus={displayStatus}
+              dirty={draftStatuses[app.id] !== undefined}
+              onNavigate={(id) => router.push(`/exec/applications/${id}`)}
+              onDelete={deleteApplication}
+              onDraftStatusChange={handleDraftStatusChange}
+            />
+          );
+        })}
 
-        {!applicationsLoading && filteredApplications.length === 0 ? (
+        {!applicationsLoading && applications.length === 0 ? (
           <Card className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md">
             <CardContent className="p-8 text-center">
               <p className="text-gray-600 dark:text-gray-400 transition-colors duration-300">

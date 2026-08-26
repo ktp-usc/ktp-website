@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { requireBrother } from '@/lib/auth/guards';
 import { ok, badRequest, serverError } from '@/lib/http/responses';
 import { applicationStatus, type as AccountType } from '@prisma/client';
+import { rusheeCommenterIdentity } from '@/lib/rushees';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -13,8 +14,7 @@ export async function POST(req: Request, ctx: Ctx) {
     if ('response' in authed) return authed.response;
 
     const { id } = await ctx.params;
-    const commenterName = [authed.account.firstName, authed.account.lastName].filter(Boolean).join(' ').trim();
-    const commenter = commenterName || authed.account.id || authed.user.id;
+    const { commenter, aliases } = rusheeCommenterIdentity(authed.account, authed.user.id);
 
     try {
         const body = await req.json().catch(() => null);
@@ -33,7 +33,7 @@ export async function POST(req: Request, ctx: Ctx) {
         if (!application) return badRequest('invalid_application');
 
         const existing = await prisma.comment.findFirst({
-            where: { applicationId: id, commenter },
+            where: { applicationId: id, commenter: { in: aliases } },
             orderBy: { createdAt: 'desc' }
         });
 

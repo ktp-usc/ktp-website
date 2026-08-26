@@ -9,6 +9,7 @@ import logo from "../public/CircleLogo-Transparent.png";
 import { useSessionQuery } from "@/client/hooks/auth";
 import { useMyAccountQuery } from "@/client/hooks/accounts";
 
+import { canAccessCalendar } from "@/lib/auth/roles";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 const SIGN_IN_HREF = "/auth/sign-in";
@@ -19,17 +20,16 @@ type NavLink = { href: string; label: string };
 
 const BASE_NAV_LINKS: NavLink[] = [
     { href: "/", label: "Home" },
+    { href: "/rush", label: "Rush" },
     { href: "/members", label: "Members" },
     { href: "/clients", label: "Our Work" },
     { href: "/donate", label: "Donate" },
-    { href: "/rush", label: "Rush" },
     { href: "/apply", label: "Apply" }
 ];
 
-// Calendar is only for people in the fraternity — current brothers/exec,
+// Calendar is only for people in the fraternity — brothers, chairs, exec,
 // alumni, and rushees (PNMs). Applicants and signed-out visitors don't see it.
 const CALENDAR_LINK: NavLink = { href: "/calendar", label: "Calendar" };
-const CALENDAR_ALLOWED_TYPES = new Set(["BROTHER", "LEADERSHIP", "ALUMNI", "PNM"]);
 
 export function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -41,14 +41,13 @@ export function Header() {
     const { data: account, isFetching: accountFetching } = useMyAccountQuery();
     const headshotUrl = account?.headshotBlobURL ?? null;
 
-    const canViewCalendar =
-        isSignedIn && Boolean(account?.type) && CALENDAR_ALLOWED_TYPES.has(account!.type as string);
+    const canViewCalendar = isSignedIn && canAccessCalendar(account?.type);
 
     const navLinks = useMemo(() => {
         if (!canViewCalendar) return BASE_NAV_LINKS;
 
         const links = [...BASE_NAV_LINKS];
-        links.splice(3, 0, CALENDAR_LINK); // keep it between "Our Work" and "Donate"
+        links.splice(4, 0, CALENDAR_LINK); // keep it between "Our Work" and "Donate"
         return links;
     }, [canViewCalendar]);
 

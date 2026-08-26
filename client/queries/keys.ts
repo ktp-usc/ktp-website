@@ -6,6 +6,8 @@ export const qk = {
 
     applications: (filters: Record<string, unknown>) => ['applications', filters] as const,
     application: (id: string) => ['applications', id] as const,
+    incomingApplications: (filters: Record<string, unknown>) =>
+        ['applications', 'incoming', filters] as const,
 
     accounts: (filters: Record<string, unknown>) => ['accounts', filters] as const,
     account: (id: string) => ['accounts', id] as const,
