@@ -1,11 +1,36 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+import { useMyAccountQuery } from "@/client/hooks/accounts";
+import { useSessionQuery } from "@/client/hooks/auth";
+import { canAccessCareerCenter, portalHomePath } from "@/lib/auth/roles";
 
 export default function CareerCenterPage() {
+    const router = useRouter();
+    const session = useSessionQuery();
+    const account = useMyAccountQuery();
+    const isLoading = session.isFetching || account.isFetching;
+    const type = account.data?.type ?? null;
+    const allowed = canAccessCareerCenter(type);
+
+    useEffect(() => {
+        if (isLoading) return;
+        if (!allowed) router.replace(portalHomePath(type));
+    }, [isLoading, allowed, type, router]);
+
+    if (isLoading || !allowed) {
+        return (
+            <main className="max-w-7xl mx-auto px-6 py-8">
+                <p className="text-gray-600 dark:text-gray-400">Loading…</p>
+            </main>
+        );
+    }
+
     return (
         <main className="max-w-7xl mx-auto px-6 py-8 bg-transparent transition-colors duration-300">
-            {/* Header */}
             <div className="mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
                     Career Center
@@ -16,7 +41,6 @@ export default function CareerCenterPage() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
-                {/* Glassdoor */}
                 <Link href="/portal/career-center/glassdoor" className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer">
                     <div className="flex items-center justify-between mb-4">
                         <div className="p-3 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">
@@ -41,7 +65,6 @@ export default function CareerCenterPage() {
                     </p>
                 </Link>
 
-                {/* Resources */}
                 <Link href="/portal/career-center/resources" className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-8 text-left border border-gray-200 hover:border-blue-300 group dark:bg-gray-900 dark:border-gray-700 duration-300 cursor-pointer">
                     <div className="flex items-center justify-between mb-4">
                         <div className="p-3 bg-blue-100 rounded-lg group-hover:bg-blue-200 dark:bg-gray-700 dark:group-hover:bg-gray-600 transition-colors">

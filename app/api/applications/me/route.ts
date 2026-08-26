@@ -3,6 +3,11 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth/guards";
 import { ok, created, badRequest, serverError } from "@/lib/http/responses";
+import {
+  APPLICATION_FOR_SEMESTER_EXISTS,
+  APPLICATION_LIMIT_REACHED,
+  MAX_APPLICATIONS_PER_USER,
+} from "@/lib/applications";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -75,14 +80,28 @@ export async function POST(req: Request) {
   } catch (error) {
     return console.error(error);
   }
+  try {
+    const existingCount = await prisma.applications.count({
+      where: { userId: authed.user.id },
+    });
+    if (existingCount >= MAX_APPLICATIONS_PER_USER) {
+      return NextResponse.json(
+        { error: APPLICATION_LIMIT_REACHED },
+        { status: 409 },
+      );
+    }
+  } catch (error) {
+    console.error(error);
+    return serverError();
+  }
+
   if (semester) {
     try {
       const app = await prisma.applications.findFirst({
         where: { userId: authed.user?.id, semester: semester },
       });
       if (app) {
-        console.error("application for this semester already exists");
-        return badRequest("application for this semester already exists");
+        return badRequest(APPLICATION_FOR_SEMESTER_EXISTS);
       }
     } catch (error) {
       console.error(error);
@@ -150,7 +169,6 @@ export async function PATCH(req: Request) {
           : normalizeString(body.circumstance),
       eventsAttended: normalizeStringArray(body.eventsAttended),
       gpa: normalizeGpa(body.gpa),
-      id: body.id,
       // lastModified is @updatedAt so prisma handles it
     } as const;
 
@@ -165,22 +183,28 @@ export async function PATCH(req: Request) {
         ? requestedStatusRaw
         : undefined;
 
+    const applicationId =
+      typeof body.id === "string" && body.id.trim().length
+        ? body.id.trim()
+        : null;
+
     // we only need to fetch current status if they are attempting a status change
     let statusPatch: { status?: applicationStatus } = {};
     if (requestedStatus) {
+      if (!applicationId) {
+        return badRequest("application_id_required");
+      }
+
       const current = await prisma.applications.findFirst({
-        where: { userId: authed.user.id },
-        orderBy: { createdAt: "desc" },
+        where: { id: applicationId, userId: authed.user.id },
         select: { status: true },
       });
 
       if (!current) {
-        // no application to update status on
         return badRequest("application_not_found");
       }
 
       if (current.status !== "BID_OFFERED") {
-        // block any other transitions
         return badRequest("invalid_status_transition");
       }
 
@@ -196,10 +220,23 @@ export async function PATCH(req: Request) {
       ...statusPatch,
     };
 
+    if (!applicationId) {
+      return badRequest("application_id_required");
+    }
+
+    const ownedApplication = await prisma.applications.findFirst({
+      where: { id: applicationId, userId: authed.user.id },
+      select: { id: true },
+    });
+
+    if (!ownedApplication) {
+      return badRequest("application_not_found");
+    }
+
     // update-first (don’t create automatically on page load — only when user saves)
     try {
       const updated = await prisma.applications.update({
-        where: { id: body.id },
+        where: { id: applicationId },
         data,
       });
       return ok(updated);
@@ -213,6 +250,16 @@ export async function PATCH(req: Request) {
     // if they tried to change status, but app doesn't exist, do not create
     if (requestedStatus) {
       return badRequest("application_not_found");
+    }
+
+    const existingCount = await prisma.applications.count({
+      where: { userId: authed.user.id },
+    });
+    if (existingCount >= MAX_APPLICATIONS_PER_USER) {
+      return NextResponse.json(
+        { error: APPLICATION_LIMIT_REACHED },
+        { status: 409 },
+      );
     }
 
     // create fallback requires fullName/email (use body if provided, else derive from accounts)

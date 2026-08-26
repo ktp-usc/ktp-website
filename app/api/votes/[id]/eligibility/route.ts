@@ -26,7 +26,7 @@ export async function GET(_: Request, ctx: Ctx) {
   try {
     const [accounts, eligibility] = await Promise.all([
       prisma.accounts.findMany({
-        where: { type: { in: ['BROTHER', 'LEADERSHIP', 'CHAIR'] } },
+        where: { type: { in: ['BROTHER', 'LEADERSHIP', 'CHAIR', 'PNM', 'ALUMNI'] } },
         select: {
           id: true,
           firstName: true,

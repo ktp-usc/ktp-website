@@ -35,11 +35,11 @@ export function useMyApplications() {
   }
   async function createApplication() {
     const res = await fetch(`/api/applications/me`, { method: "POST" });
+    const data = await res.json().catch(() => null);
 
     if (!res.ok) {
-      throw new Error(await res.json());
+      throw new Error(data?.error ?? "failed_to_create_application");
     }
-    const data = await res.json();
     setApplications((prev) => [data.data, ...prev]);
   }
 
@@ -53,7 +53,10 @@ type useMyApplicationProps = {
   applicationId: string;
 };
 
-type UpdateApplicationData = Partial<applications>;
+type UpdateApplicationData = Partial<applications> & {
+  phoneNum?: string | null;
+  headshotBlobURL?: string | null;
+};
 
 export function useMyApplication({ applicationId }: useMyApplicationProps) {
   const [application, setApplication] = useState<applications>();
@@ -87,6 +90,10 @@ export function useMyApplication({ applicationId }: useMyApplicationProps) {
       });
 
       if (!res.ok) {
+        const result = await res.json().catch(() => null);
+        if (result?.error === "application_limit_reached") {
+          throw new Error("application_limit_reached");
+        }
         throw new Error("Failed to update application");
       }
 

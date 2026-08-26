@@ -23,7 +23,7 @@ export function Application({ application }: applicationCardProps) {
       onClick={() => {
         router.push(
           application.status === "BID_OFFERED"
-            ? "/portal/bid-letter"
+            ? `/portal/bid-letter?applicationId=${application.id}`
             : `/portal/application/${application.id}`,
         );
       }}

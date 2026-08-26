@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { User } from "lucide-react";
 import Cropper from "react-easy-crop";
 import { useMyApplication } from "@/hooks/useMyApplications";
+import { MAX_APPLICATIONS_PER_USER } from "@/lib/applications";
 import { useParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -415,16 +416,39 @@ export default function PortalApplicationPage() {
     );
     if (!confirmed) return;
 
-    if (!application || dirty) {
-      const appPayload = buildApplicationPayload();
+    if (!application) {
+      toast.error("Please save a draft before submitting.");
+      return;
+    }
 
-      if (!appPayload) return;
+    const appPayload = buildApplicationPayload();
+    if (!appPayload) return;
 
+    setSaving(true);
+    try {
       await updateApplication({
         ...appPayload,
         submittedAt: new Date(),
         status: "UNDER_REVIEW",
+        phoneNum: form.phoneNum.trim() || null,
+        headshotBlobURL: headshotUrl,
       });
+      setDirty(false);
+      await accountQuery.refetch();
+      toast.success("Application submitted.");
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === "application_limit_reached"
+      ) {
+        toast.error(
+          `At this time applicants can only apply to KTP ${MAX_APPLICATIONS_PER_USER} times.`,
+        );
+        return;
+      }
+      toast.error("Failed to submit application.");
+    } finally {
+      setSaving(false);
     }
   }
 

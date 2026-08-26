@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireUser } from "@/lib/auth/guards";
+import { requireFeature } from "@/lib/auth/guards";
 import { hasExecAccess } from "@/lib/auth/roles";
 
 // DELETE a review
@@ -10,7 +10,7 @@ export async function DELETE(
 ) {
     try {
         const { id } = await params;
-        const authed = await requireUser();
+        const authed = await requireFeature("career");
         if ("response" in authed) return authed.response;
 
         const account = await prisma.accounts.findUnique({
@@ -51,7 +51,7 @@ export async function PATCH(
 ) {
     try {
         const { id } = await params;
-        const authed = await requireUser();
+        const authed = await requireFeature("career");
         if ("response" in authed) return authed.response;
 
         const account = await prisma.accounts.findUnique({

@@ -6,11 +6,7 @@ import { useSessionQuery } from "@/client/hooks/auth";
 import { useMyAccountQuery } from "@/client/hooks/accounts";
 import { Card, CardContent } from "@/components/ui/card";
 import GoogleCalendarEmbed from "@/components/GoogleCalendarEmbed";
-
-// Keep in sync with app/api/authz/calendar/route.ts: members (brothers,
-// exec/leadership, alumni) and rushees (PNMs) can see the chapter calendar.
-// Applicants who haven't received a bid yet cannot.
-const CALENDAR_ALLOWED_TYPES = new Set(["BROTHER", "LEADERSHIP", "ALUMNI", "PNM"]);
+import { canAccessCalendar } from "@/lib/auth/roles";
 
 export default function PortalCalendarPage() {
     const session = useSessionQuery();
@@ -19,7 +15,7 @@ export default function PortalCalendarPage() {
     const userId = session.data?.user?.id ?? null;
     const accountType = account.data?.type ?? null;
     const isGateLoading = session.isFetching || (userId ? account.isFetching : false);
-    const isAllowed = Boolean(accountType) && CALENDAR_ALLOWED_TYPES.has(accountType as string);
+    const isAllowed = canAccessCalendar(accountType);
 
     return (
         <main className="max-w-5xl mx-auto px-6 py-10">
