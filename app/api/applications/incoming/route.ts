@@ -64,14 +64,16 @@ export async function GET(req: Request) {
     const q = searchParams.get("q")?.trim() || "";
     const flagged = searchParams.get("flagged");
     const statusParam = searchParams.get("status") || "";
-    const sort = searchParams.get("sort") === "status" ? "status" : "name";
+    const sortParam = searchParams.get("sort");
+    const sort =
+      sortParam === "status" || sortParam === "createdAt" ? sortParam : "name";
     const orderParam = searchParams.get("order");
     const order: "asc" | "desc" =
       orderParam === "asc" || orderParam === "desc"
         ? orderParam
-        : sort === "status"
-          ? "desc"
-          : "asc";
+        : sort === "name"
+          ? "asc"
+          : "desc";
 
     if (statusParam && !isValidStatus(statusParam)) {
       return badRequest("invalid_status");
@@ -103,6 +105,12 @@ export async function GET(req: Request) {
     items.sort((a, b) => {
       if (sort === "status") {
         const diff = statusSortRank(a.status) - statusSortRank(b.status);
+        return order === "desc" ? -diff : diff;
+      }
+      if (sort === "createdAt") {
+        const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        const diff = aTime - bTime;
         return order === "desc" ? -diff : diff;
       }
       const nameCmp = lastNameFromFullName(a.fullName).localeCompare(

@@ -11,7 +11,7 @@ export type IncomingApplicationsFilters = {
   flagged?: boolean | "all";
   search?: string;
   status?: applicationStatus | "all";
-  sortBy?: "name" | "status";
+  sortBy?: "name" | "status" | "createdAt";
   sortOrder?: "asc" | "desc";
 };
 
@@ -55,7 +55,7 @@ function buildIncomingUrl(filters: {
   flagged: boolean | "all";
   search: string;
   status: applicationStatus | "all";
-  sortBy: "name" | "status";
+  sortBy: "name" | "status" | "createdAt";
   sortOrder: "asc" | "desc";
 }): string {
   const params = new URLSearchParams();
@@ -81,7 +81,7 @@ export function useIncomingApplications(
   const status = options.status ?? "all";
   const sortBy = options.sortBy ?? "name";
   const sortOrder =
-    options.sortOrder ?? (sortBy === "status" ? "desc" : "asc");
+    options.sortOrder ?? (sortBy === "name" ? "asc" : "desc");
 
   const debouncedSearch = useDebouncedValue(search, SEARCH_DEBOUNCE_MS);
 

@@ -23,7 +23,19 @@ type ApplicationRow = {
   email: string;
   status: ApplicationStatusUI;
   flagged: boolean;
+  createdAt: string | Date | null;
 };
+
+function formatCreatedAt(dateLike: string | Date | null): string {
+  if (!dateLike) return "—";
+  const d = typeof dateLike === "string" ? new Date(dateLike) : dateLike;
+  if (Number.isNaN(d.getTime())) return "—";
+  return d.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
 
 /* ---------------- Status Helpers ---------------- */
 
@@ -152,6 +164,10 @@ function ApplicationCardRow({
             </p>
           </div>
 
+          <p className="text-sm text-gray-500 dark:text-gray-400 shrink-0 text-right ml-auto self-center transition-colors duration-300">
+            Created {formatCreatedAt(app.createdAt)}
+          </p>
+
           <div
             className="flex items-center gap-2 shrink-0"
             onClick={(e) => {
@@ -224,7 +240,10 @@ export default function ExecApplicationsPage() {
   const router = useRouter();
 
   const [search, setSearch] = useState("");
-  const [sortMode, setSortMode] = useState<"lastName" | "status">("lastName");
+  const [sortMode, setSortMode] = useState<"lastName" | "status" | "createdAt">(
+    "lastName",
+  );
+  const [currentSemester, setCurrentSemester] = useState(true);
   const [emailStatus, setEmailStatus] = useState<ApplicationStatusUI | "all">(
     "all",
   );
@@ -240,12 +259,17 @@ export default function ExecApplicationsPage() {
     updateStatuses,
     updating,
   } = useIncomingApplications({
-    currentSemester: true,
+    currentSemester,
     search,
     flagged: showFlaggedOnly ? true : "all",
     status: emailStatus === "all" ? "all" : UI_TO_PRISMA[emailStatus],
-    sortBy: sortMode === "status" ? "status" : "name",
-    sortOrder: sortMode === "status" ? "desc" : "asc",
+    sortBy:
+      sortMode === "status"
+        ? "status"
+        : sortMode === "createdAt"
+          ? "createdAt"
+          : "name",
+    sortOrder: sortMode === "lastName" ? "asc" : "desc",
   });
 
   const applications = useMemo<ApplicationRow[]>(() => {
@@ -255,6 +279,7 @@ export default function ExecApplicationsPage() {
       email: a.email,
       status: deriveUiStatus(a),
       flagged: Boolean(a.isFlagged),
+      createdAt: a.createdAt,
     }));
   }, [apps]);
 
@@ -343,71 +368,6 @@ export default function ExecApplicationsPage() {
                            dark:focus:ring-blue-500/20 dark:focus:border-blue-400 transition-colors"
               />
 
-              <select
-                value={emailStatus}
-                onChange={(e) =>
-                  setEmailStatus(
-                    e.target.value === "all"
-                      ? "all"
-                      : (Number(e.target.value) as ApplicationStatusUI),
-                  )
-                }
-                className="w-full sm:w-auto px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-900
-                           focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-300
-                           dark:bg-gray-900 dark:text-white dark:border-gray-700
-                           dark:focus:ring-blue-500/20 dark:focus:border-blue-400 transition-colors"
-              >
-                <option value="all">All statuses</option>
-                {Object.entries(STATUS_LABELS)
-                  .sort(([a], [b]) => Number(b) - Number(a))
-                  .map(([key, label]) => (
-                    <option key={key} value={Number(key)}>
-                      {label}
-                    </option>
-                  ))}
-              </select>
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-              <Button
-                variant={sortMode === "lastName" ? "default" : "outline"}
-                onClick={() => setSortMode("lastName")}
-              >
-                Sort by Last Name (A → Z)
-              </Button>
-
-              <Button
-                variant={sortMode === "status" ? "default" : "outline"}
-                onClick={() => setSortMode("status")}
-              >
-                Sort by Status (High → Low)
-              </Button>
-
-              <Button
-                variant={showFlaggedOnly ? "default" : "outline"}
-                onClick={() => setShowFlaggedOnly((v) => !v)}
-              >
-                {showFlaggedOnly
-                  ? "Showing Flagged Only"
-                  : "Filter: Flagged Only"}
-              </Button>
-
-              <Button onClick={copyEmails} variant="outline">
-                Copy Emails
-              </Button>
-
-              <Button
-                onClick={saveApplicationStatuses}
-                disabled={pendingCount === 0 || updating}
-                className="bg-green-800 text-white hover:bg-green-900 disabled:bg-green-800/50"
-              >
-                {updating
-                  ? "Saving…"
-                  : pendingCount > 0
-                    ? `Save application status (${pendingCount})`
-                    : "Save application status"}
-              </Button>
-
               <div className="text-sm text-gray-500 dark:text-gray-400 sm:ml-auto transition-colors duration-300">
                 Showing{" "}
                 <span className="font-medium text-gray-900 dark:text-white">
@@ -417,6 +377,102 @@ export default function ExecApplicationsPage() {
                 <span className="font-medium text-gray-900 dark:text-white">
                   {applicationsLoading ? "…" : total}
                 </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 sm:w-14 shrink-0">
+                  Sort
+                </span>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 flex-wrap">
+                  <Button
+                    variant={sortMode === "lastName" ? "default" : "outline"}
+                    onClick={() => setSortMode("lastName")}
+                  >
+                    Last Name (A → Z)
+                  </Button>
+                  <Button
+                    variant={sortMode === "status" ? "default" : "outline"}
+                    onClick={() => setSortMode("status")}
+                  >
+                    Status (High → Low)
+                  </Button>
+                  <Button
+                    variant={sortMode === "createdAt" ? "default" : "outline"}
+                    onClick={() => setSortMode("createdAt")}
+                  >
+                    Date Created (Newest)
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 sm:w-14 shrink-0">
+                  Filter
+                </span>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 flex-wrap">
+                  <Button
+                    variant={currentSemester ? "default" : "outline"}
+                    onClick={() => setCurrentSemester((v) => !v)}
+                  >
+                    {currentSemester ? "Current semester" : "All semesters"}
+                  </Button>
+                  <Button
+                    variant={showFlaggedOnly ? "default" : "outline"}
+                    onClick={() => setShowFlaggedOnly((v) => !v)}
+                  >
+                    {showFlaggedOnly
+                      ? "Showing Flagged Only"
+                      : "Flagged Only"}
+                  </Button>
+                  <select
+                    value={emailStatus}
+                    onChange={(e) =>
+                      setEmailStatus(
+                        e.target.value === "all"
+                          ? "all"
+                          : (Number(e.target.value) as ApplicationStatusUI),
+                      )
+                    }
+                    aria-label="Filter by status"
+                    className="w-full sm:w-auto px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-900
+                               focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-300
+                               dark:bg-gray-900 dark:text-white dark:border-gray-700
+                               dark:focus:ring-blue-500/20 dark:focus:border-blue-400 transition-colors"
+                  >
+                    <option value="all">All statuses</option>
+                    {Object.entries(STATUS_LABELS)
+                      .sort(([a], [b]) => Number(b) - Number(a))
+                      .map(([key, label]) => (
+                        <option key={key} value={Number(key)}>
+                          {label}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 sm:w-14 shrink-0">
+                  Action
+                </span>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 flex-wrap">
+                  <Button onClick={copyEmails} variant="outline">
+                    Copy Emails
+                  </Button>
+                  <Button
+                    onClick={saveApplicationStatuses}
+                    disabled={pendingCount === 0 || updating}
+                    className="bg-green-800 text-white hover:bg-green-900 disabled:bg-green-800/50"
+                  >
+                    {updating
+                      ? "Saving…"
+                      : pendingCount > 0
+                        ? `Save application status (${pendingCount})`
+                        : "Save application status"}
+                  </Button>
+                </div>
               </div>
             </div>
 
