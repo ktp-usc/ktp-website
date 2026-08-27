@@ -7,13 +7,14 @@ import { useSessionQuery } from '@/client/hooks/auth';
 import { useMyAccountQuery } from '@/client/hooks/accounts';
 import { useActiveVoteQuery, useSubmitVoteMutation } from '@/client/hooks/votes';
 import Link from "next/link";
+import { canAccessVoting } from "@/lib/auth/roles";
 
 export default function VotingPage() {
   const session = useSessionQuery();
   const account = useMyAccountQuery();
   const userId = session.data?.user?.id ?? null;
   const accountType = account.data?.type ?? null;
-  const isActiveMember = accountType === 'BROTHER' || accountType === 'LEADERSHIP';
+  const canVote = canAccessVoting(accountType);
   const isGateLoading = session.isFetching || (userId ? account.isFetching : false);
 
   const { data, isFetching, isError, error: queryError } = useActiveVoteQuery();
@@ -64,8 +65,8 @@ export default function VotingPage() {
             </div>
           ) : isGateLoading ? (
             <div className="text-sm text-gray-600">Checking access...</div>
-          ) : userId && !isActiveMember ? (
-            <div className="text-sm text-gray-600">Only active brothers can access voting.</div>
+          ) : userId && !canVote ? (
+            <div className="text-sm text-gray-600">Only members and pledges can access voting.</div>
           ) : isFetching ? (
             <div className="text-sm text-gray-600">Loading active question...</div>
           ) : isError ? (

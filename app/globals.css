@@ -790,3 +790,253 @@ button:disabled {
   padding: 0 !important;
   border-radius: 0 !important;
 }
+
+/* ============================================================
+   Matrix-themed Rush page — app/(site)/rush
+   Everything is scoped under .matrix-rush (or body:has(.matrix-rush))
+   so no other page picks these styles up.
+   ============================================================ */
+
+.matrix-rush {
+  --mx-green: #00ff41;
+  --mx-green-soft: #9dffb8;
+  --mx-green-mute: #4bcc74;
+  --mx-green-dim: #12833a;
+  --mx-panel: rgba(0, 14, 6, 0.74);
+  color: var(--mx-green-soft);
+}
+
+/* Fixed backdrop layers. Header is z-50 and Footer is z-10, so both stay
+   above these; page content sits at z-2. */
+.matrix-rush__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: #000;
+}
+
+.matrix-rush__rain {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.38;
+}
+
+.matrix-rush__scanlines {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.45;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0 2px,
+      rgba(0, 0, 0, 0.45) 2px 4px
+    ),
+    radial-gradient(ellipse at center, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.2) 45%, rgba(0, 0, 0, 0.8) 100%);
+}
+
+.matrix-rush__content {
+  position: relative;
+  z-index: 2;
+}
+
+/* The shared Header is transparent at the top of the page and white once
+   scrolled — neither reads on black, so pin it dark for this route only. */
+body:has(.matrix-rush) header {
+  background: rgba(0, 0, 0, 0.82) !important;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 1px 0 rgba(0, 255, 65, 0.28) !important;
+}
+body:has(.matrix-rush) header nav a,
+body:has(.matrix-rush) header a[href^="/auth/sign-in"] {
+  color: #9dffb8 !important;
+}
+body:has(.matrix-rush) header nav a:hover,
+body:has(.matrix-rush) header a[href^="/auth/sign-in"]:hover {
+  color: #00ff41 !important;
+  background-color: rgba(0, 255, 65, 0.1) !important;
+}
+body:has(.matrix-rush) header svg {
+  color: #9dffb8 !important;
+}
+
+/* ---- Terminal panel ---- */
+.mx-panel {
+  position: relative;
+  border: 1px solid rgba(0, 255, 65, 0.3);
+  background: var(--mx-panel);
+  box-shadow: inset 0 0 40px rgba(0, 255, 65, 0.04);
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.mx-panel:hover {
+  border-color: rgba(0, 255, 65, 0.75);
+  box-shadow:
+    inset 0 0 40px rgba(0, 255, 65, 0.07),
+    0 0 28px rgba(0, 255, 65, 0.2);
+  transform: translateY(-4px);
+}
+
+/* corner brackets */
+.mx-panel::before,
+.mx-panel::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--mx-green);
+  opacity: 0.7;
+  pointer-events: none;
+}
+.mx-panel::before {
+  top: -1px;
+  left: -1px;
+  border-right: 0;
+  border-bottom: 0;
+}
+.mx-panel::after {
+  bottom: -1px;
+  right: -1px;
+  border-left: 0;
+  border-top: 0;
+}
+
+.mx-glow {
+  text-shadow:
+    0 0 8px rgba(0, 255, 65, 0.55),
+    0 0 22px rgba(0, 255, 65, 0.22);
+}
+
+/* ---- Glitching headline ---- */
+.mx-glitch {
+  position: relative;
+  display: inline-block;
+  color: var(--mx-green);
+}
+.mx-glitch::before,
+.mx-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+.mx-glitch::before {
+  color: #00e5ff;
+  clip-path: polygon(0 0, 100% 0, 100% 46%, 0 46%);
+  animation: mx-glitch-a 3.4s steps(2, end) infinite;
+}
+.mx-glitch::after {
+  color: #ff2e6a;
+  clip-path: polygon(0 54%, 100% 54%, 100% 100%, 0 100%);
+  animation: mx-glitch-b 2.9s steps(2, end) infinite;
+}
+
+@keyframes mx-glitch-a {
+  0%,
+  90%,
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  92% {
+    opacity: 0.8;
+    transform: translate(-5px, -2px);
+  }
+  96% {
+    opacity: 0.8;
+    transform: translate(3px, 1px);
+  }
+}
+
+@keyframes mx-glitch-b {
+  0%,
+  88%,
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  90% {
+    opacity: 0.8;
+    transform: translate(4px, 2px);
+  }
+  94% {
+    opacity: 0.8;
+    transform: translate(-3px, -1px);
+  }
+}
+
+/* ---- Blinking terminal caret ---- */
+.mx-caret::after {
+  content: "▌";
+  margin-left: 0.1em;
+  animation: mx-blink 1.05s steps(1, end) infinite;
+}
+
+@keyframes mx-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---- Timeline connector between event cards ---- */
+.mx-timeline {
+  position: relative;
+}
+.mx-timeline::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 255, 65, 0) 0%,
+    rgba(0, 255, 65, 0.45) 8%,
+    rgba(0, 255, 65, 0.45) 92%,
+    rgba(0, 255, 65, 0) 100%
+  );
+}
+@media (min-width: 640px) {
+  .mx-timeline::before {
+    left: 16px;
+  }
+}
+
+.mx-node {
+  box-shadow: 0 0 12px rgba(0, 255, 65, 0.7);
+  animation: mx-pulse 2.6s ease-in-out infinite;
+}
+
+@keyframes mx-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(0, 255, 65, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(0, 255, 65, 0.95);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .matrix-rush .mx-glitch::before,
+  .matrix-rush .mx-glitch::after,
+  .matrix-rush .mx-caret::after,
+  .matrix-rush .mx-node {
+    animation: none;
+  }
+  .matrix-rush .mx-panel:hover {
+    transform: none;
+  }
+}

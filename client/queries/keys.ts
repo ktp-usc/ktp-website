@@ -6,6 +6,8 @@ export const qk = {
 
     applications: (filters: Record<string, unknown>) => ['applications', filters] as const,
     application: (id: string) => ['applications', id] as const,
+    incomingApplications: (filters: Record<string, unknown>) =>
+        ['applications', 'incoming', filters] as const,
 
     accounts: (filters: Record<string, unknown>) => ['accounts', filters] as const,
     account: (id: string) => ['accounts', id] as const,
@@ -13,5 +15,7 @@ export const qk = {
     activeVote: ['votes', 'active'] as const,
     voteEligibility: (id: string) => ['votes', id, 'eligibility'] as const,
     voteResults: (id: string) => ['votes', id, 'results'] as const,
-    voteHistory: ['votes', 'history'] as const
+    voteHistory: ['votes', 'history'] as const,
+
+    memberProgress: (semester: string) => ['exec', 'member-progress', semester] as const
 };

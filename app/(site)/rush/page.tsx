@@ -1,323 +1,281 @@
-"use client";
-
 import Link from "next/link";
-import Image from "next/image";
-import { useRef, forwardRef } from "react";
 
-import CalendarIcon from "@/components/CalendarIcon";
-import PinIcon from "@/components/PinIcon";
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion";
+import MatrixRain from "./components/MatrixRain";
 
-interface FloatingImageProps {
-    className?: string;
+const GROUPME_URL = "https://groupme.com/join_group/116625658/czF4Yrw4";
+
+type RushEvent = {
+    codename: string;
+    title: string;
+    date: string;
+    time: string;
+    location: string;
+    description: string;
+};
+
+const RUSH_EVENTS: RushEvent[] = [
+    {
+        codename: "INFO_NIGHT_01",
+        title: "Info Night #1",
+        date: "Thursday, September 3",
+        time: "7:00 – 8:00 PM",
+        location: "Location TBA",
+        description:
+            "Want to learn more about what KTP has to offer? We'll give a presentation about what it means to be a brother in KTP; then, you'll have a chance to ask our brothers anything about rush, the professional fraternity experience, or whatever else you're wondering.",
+    },
+    {
+        codename: "INFO_NIGHT_02",
+        title: "Info Night #2",
+        date: "Tuesday, September 8",
+        time: "7:00 – 8:00 PM",
+        location: "Location TBA",
+        description:
+            "Same content as Info Night #1 — you only need to attend one of the two. Pick whichever fits your schedule.",
+    },
+    {
+        codename: "GAME_NIGHT",
+        title: "Game Night: Escape the Matrix",
+        date: "Wednesday, September 9",
+        time: "7:00 – 8:30 PM",
+        location: "Location TBA",
+        description:
+            "Team up with our brothers to crack ciphers, solve puzzles, and escape the Matrix before the clock runs out. Part escape room, part game night, and the easiest way to actually get to know the chapter.",
+    },
+    {
+        codename: "TECH_WORKSHOP",
+        title: "Technical Workshop",
+        date: "Thursday, September 10",
+        time: "7:00 – 8:30 PM",
+        location: "Location TBA",
+        description:
+            "Want a glance at what it's like to join KTP? We'll teach you the basics of React and walk you through building your own website. No prior experience required — bring a laptop if you have one.",
+    },
+    {
+        codename: "PITCH_NIGHT",
+        title: "Pitch Night",
+        date: "Friday, September 11",
+        time: "5:00 – 7:00 PM",
+        location: "Location TBA",
+        description:
+            "Time to showcase your collaboration skills. First we'll give you tips on your resume and LinkedIn; then you'll work with a team to pitch a solution to a technical challenge. Please dress business casual!",
+    },
+];
+
+const WHY_KTP = [
+    {
+        title: "Hands-On Tech Experience",
+        detail: "Work on a project team to build real technical solutions for local nonprofits.",
+    },
+    {
+        title: "Professional Development",
+        detail: "Weekly workshops on LinkedIn, resumes, interview prep, and more.",
+    },
+    {
+        title: "Build Your Network",
+        detail: "Get connected to peers, alumni, faculty, internship opportunities, and tech professionals.",
+    },
+    {
+        title: "Social / Professional Balance",
+        detail: "Attend fun events like bonfires, big/little events, formal, and mountain weekend — while still getting to hackathons and conferences like CES and BSides!",
+    },
+];
+
+function EventCard({ event, index }: { event: RushEvent; index: number }) {
+    return (
+        <li className="relative pl-10 sm:pl-14">
+            {/* timeline node */}
+            <span
+                aria-hidden="true"
+                className="mx-node absolute left-2 top-8 h-2.5 w-2.5 -translate-x-1/2 rotate-45 bg-[#00ff41] sm:left-4"
+            />
+
+            <article className="mx-panel rounded-sm p-5 sm:p-7">
+                {/* terminal chrome */}
+                <div className="mb-4 flex items-center justify-between gap-4 border-b border-[#00ff41]/20 pb-3 font-mono text-[11px] uppercase tracking-[0.2em] text-[#4bcc74]">
+                    <span>
+                        {String(index + 1).padStart(2, "0")} / {event.codename}
+                    </span>
+                    <span className="hidden sm:inline">STATUS: OPEN</span>
+                </div>
+
+                <h3 className="font-mono text-xl font-bold text-[#00ff41] mx-glow sm:text-2xl">
+                    {event.title}
+                </h3>
+
+                <dl className="mt-5 grid gap-2 font-mono text-sm text-[#9dffb8] sm:grid-cols-2">
+                    <div className="flex items-start gap-2">
+                        <dt className="text-[#12833a]">[DATE]</dt>
+                        <dd>{event.date}</dd>
+                    </div>
+                    <div className="flex items-start gap-2">
+                        <dt className="text-[#12833a]">[TIME]</dt>
+                        <dd>{event.time}</dd>
+                    </div>
+                    <div className="flex items-start gap-2 sm:col-span-2">
+                        <dt className="text-[#12833a]">[LOC]</dt>
+                        <dd>{event.location}</dd>
+                    </div>
+                </dl>
+
+                <p className="mt-5 text-sm leading-relaxed text-[#9dffb8]/80 sm:text-base">
+                    {event.description}
+                </p>
+            </article>
+        </li>
+    );
 }
 
-/* floating cards image */
-const FloatingCardsImage = forwardRef<HTMLDivElement, FloatingImageProps>(function FloatingCardsImage({ className = "" }, ref) {
+export default function RushPage() {
     return (
-        <div
-            ref={ref}
-            aria-hidden="true"
-            className={`pointer-events-none hidden sm:block absolute -left-80 top-0 w-44 h-44 ktp-float-cards ${className}`}
-        >
-            <div className="relative w-full h-full">
-                <Image src="/Images/cards.png" alt="" fill style={{ objectFit: "contain" }} />
-            </div>
-        </div>
-    );
-});
+        <main className="matrix-rush min-h-screen font-mono">
+            <div className="matrix-rush__backdrop" aria-hidden="true" />
+            <MatrixRain />
+            <div className="matrix-rush__scanlines" aria-hidden="true" />
 
-/* floating chips image */
-const AnimatedChipsImage = forwardRef<HTMLDivElement, FloatingImageProps>(function AnimatedChipsImage({ className = "" }, ref) {
-    return (
-        <div
-            ref={ref}
-            aria-hidden="true"
-            className={`pointer-events-none hidden sm:block absolute -right-80 top-0 w-40 h-40 ktp-chips-anim ${className}`}
-        >
-            <div className="relative w-full h-full">
-                <Image src="/Images/chips.png" alt="" fill style={{ objectFit: "contain" }} />
-            </div>
-        </div>
-    );
-});
+            <div className="matrix-rush__content px-4 pt-14 pb-24 sm:px-6">
+                {/* ===== Hero ===== */}
+                <section className="mx-auto max-w-3xl text-center">
+                    <p className="font-mono text-xs uppercase tracking-[0.35em] text-[#12833a] sm:text-sm">
+                        Kappa Theta Pi · Alpha Theta · Fall 2026
+                    </p>
 
-export default function Page2() {
-    const cardsRef = useRef(null);
-    const chipsRef = useRef(null);
+                    <h1 className="mt-6 text-4xl font-extrabold uppercase leading-tight tracking-tight sm:text-6xl">
+                        <span className="mx-glitch mx-glow" data-text="Wake up,">
+                            Wake up,
+                        </span>
+                        <br />
+                        <span className="mx-glitch mx-glow" data-text="Gamecock.">
+                            Gamecock.
+                        </span>
+                    </h1>
 
-    return (
-        <>
-            <main className="relative">
-                {/* Background blobs */}
-                <div className="relative bg-white w-full">
-                    <div className="absolute inset-0 blob-c z-0">
-                        <div className="shape-blob eight" />
-                        <div className="shape-blob nine" />
+                    <div className="mx-panel mx-auto mt-10 max-w-2xl rounded-sm p-5 text-left sm:p-6">
+                        <p className="text-sm leading-relaxed text-[#9dffb8] sm:text-base">
+                            <span className="text-[#00ff41]">&gt;</span> The Matrix has you. Take the
+                            red pill and come see what USC&apos;s premier professional technology
+                            fraternity actually looks like from the inside.
+                        </p>
+                        <p className="mt-4 text-sm leading-relaxed text-[#9dffb8] sm:text-base">
+                            <span className="text-[#00ff41]">&gt;</span> Applications are due{" "}
+                            <strong className="text-[#00ff41]">
+                                Friday, September 11, 2026 at 9:00 PM
+                            </strong>
+                            .
+                            <span className="mx-caret" />
+                        </p>
                     </div>
-                </div>
 
-                <div className="relative z-10">
-                    <section className="text-center py-16 px-6 relative overflow-visible">
-                        <div className="relative inline-block">
-                            <FloatingCardsImage ref={cardsRef} />
-                            <AnimatedChipsImage ref={chipsRef} />
+                    <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                        <Link
+                            href="/apply"
+                            className="w-full max-w-xs whitespace-nowrap rounded-sm border border-[#00ff41] bg-[#00ff41]/10 px-6 py-3 font-mono text-sm font-bold uppercase tracking-[0.18em] text-[#00ff41] transition-all duration-300 hover:bg-[#00ff41]/25 hover:shadow-[0_0_24px_rgba(0,255,65,0.45)] sm:w-auto"
+                        >
+                            Start your application →
+                        </Link>
+                        <Link
+                            href={GROUPME_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full max-w-xs rounded-sm border border-[#00ff41]/40 px-6 py-3 font-mono text-sm font-bold uppercase tracking-[0.18em] text-[#9dffb8] transition-all duration-300 hover:border-[#00ff41] hover:text-[#00ff41] sm:w-auto"
+                        >
+                            Rush GroupMe
+                        </Link>
+                    </div>
 
-                            <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">Learn About Joining KTP!</h1>
-                        </div>
-                        <p className="text-gray-600 text-xl sm:text-xl mb-4">
-                            <strong>Go all in with Kappa Theta Pi for Spring 2026 Rush!</strong>
-                        </p>
-                        <p className="text-gray-600 text-xl sm:text-xl mb-4">
-                            <strong>Here&apos;s our rush schedule. Applications are due Friday, January 30, 2026.</strong>
-                        </p>
-                        <p className="text-gray-600 text-lg sm:text-xl mb-8">
-                            <span className="font-semibold text-black"></span>
-                        </p>
+                </section>
 
-                        {/* Application button */}
-                        <div className="flex justify-center gap-4 mb-6 px-4">
-                            <Link
-                                href="https://groupme.com/join_group/112363429/WgvjRlxj"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-6 py-3 bg-[#315CA9] text-white rounded-lg font-semibold hover:bg-[#23498F] transition-all duration-300 hover:scale-110 hover:drop-shadow-md"
-                            >
-                                Rush GroupMe
-                            </Link>
-                            <Link
-                                href="/apply"
-                                className="px-6 py-3 bg-[#315CA9] text-white rounded-lg font-semibold hover:bg-[#23498F] transition-all duration-300 hover:scale-110 hover:drop-shadow-md"
-                            >
-                                Start Your Application
-                            </Link>
-                        </div>
-                        <p className="text-gray-600 text-lg sm:text-xl mb-2">
-                            Also, join our{" "}
-                            <a
-                                href="https://calendar.google.com/calendar/u/0?cid=1b20343751d013074e5f5f82bfcb70a9cf4ffba7a5a59d93c92f3b2894f7ef66@group.calendar.google.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-[#315CA9] font-semibold hover:underline"
-                            >
-                                Spring 2026 Rush Google Calendar
-                            </a>{" "}
-                            to add all these events to your personal calendar!
-                        </p>
-                    </section>
+                {/* ===== Schedule ===== */}
+                <section className="mx-auto mt-20 max-w-4xl">
+                    <h2 className="font-mono text-2xl font-bold uppercase tracking-[0.15em] text-[#00ff41] mx-glow sm:text-3xl">
+                        Rush Schedule Fall 2026
+                    </h2>
 
-                    {/* ===== Timeline Section ===== */}
-                    <section className="max-w-6xl mx-auto mt-9 px-4 relative">
-                        <div>
-                            <h2 className="text-2xl sm:text-2xl font-bold mb-3">Spring 2026 Rush Events</h2>
+                    <p className="mt-4 border-l-2 border-[#00ff41]/40 pl-4 font-mono text-xs italic leading-relaxed text-[#4bcc74] sm:text-sm">
+                        WARNING: All rush dates, times, and locations are subject to change. Join the
+                        Rush GroupMe so you get notified of any changes.
+                    </p>
 
-                            <p className="text-gray-600 text-md italic font-bold sm:text-md mb-5 px-4">
-                                *All rush dates, times, and locations are subject to change. You must join our Rush GroupMe
-                                to get updated on any changes that occur.*
-                            </p>
+                    <ol className="mx-timeline mt-10 space-y-8">
+                        {RUSH_EVENTS.map((event, index) => (
+                            <EventCard key={event.codename} event={event} index={index} />
+                        ))}
 
-                            <div className="relative">
-                                {/* vertical line (left) */}
-                                <div className="absolute left-4 top-0 bottom-0 w-px bg-gray-200 hidden sm:block" />
+                        {/* Deadline */}
+                        <li className="relative pl-10 sm:pl-14">
+                            <span
+                                aria-hidden="true"
+                                className="mx-node absolute left-2 top-8 h-2.5 w-2.5 -translate-x-1/2 rotate-45 bg-[#00ff41] sm:left-4"
+                            />
+                            <article className="mx-panel rounded-sm border-[#00ff41]/70 p-5 sm:p-7">
+                                <div className="mb-4 flex items-center justify-between gap-4 border-b border-[#00ff41]/20 pb-3 font-mono text-[11px] uppercase tracking-[0.2em] text-[#4bcc74]">
+                                    <span>06 / APPLICATION_DEADLINE</span>
+                                    <span className="hidden sm:inline">STATUS: FINAL</span>
+                                </div>
 
-                                {/* Event 1 */}
-                                <div className="relative pl-10 pb-12">
-                                    <div className="absolute -left-3 text-2xl top-0 text-[#315CA9] font-bold" aria-hidden="true">
-                                        ♠
+                                <h3 className="font-mono text-xl font-bold text-[#00ff41] mx-glow sm:text-2xl">
+                                    Application Deadline
+                                </h3>
+
+                                <dl className="mt-5 grid gap-2 font-mono text-sm text-[#9dffb8] sm:grid-cols-2">
+                                    <div className="flex items-start gap-2">
+                                        <dt className="text-[#12833a]">[DATE]</dt>
+                                        <dd>Friday, September 11</dd>
                                     </div>
-                                    <h3 className="text-xl sm:text-xl font-semibold mb-2">Info Night #1</h3>
-                                    <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
-                                        <CalendarIcon />
-                                        <span>Thursday, January 22, 7:00-8:00 PM</span>
-                                    </p>
-                                    <p className="text-base text-gray-600 flex items-center gap-2 mb-4">
-                                        <PinIcon />
-                                        <span>Darla Moore School of Business Room 136</span>
-                                    </p>
-                                    <p className="text-base text-gray-600 leading-relaxed">
-                                        Want to learn more about what KTP has to offer? We&apos;ll give a presentation about what it means
-                                        to be a brother in KTP; then, you&apos;ll have a chance to ask our brothers any questions related to
-                                        rush, the professional fraternity experience, or anything else you may be wondering!
-                                    </p>
-                                </div>
-
-                                <div className="relative pl-10 pb-12">
-                                    <div className="absolute -left-3 text-2xl top-0 text-[#315CA9] font-bold" aria-hidden="true">
-                                        ♣
+                                    <div className="flex items-start gap-2">
+                                        <dt className="text-[#12833a]">[TIME]</dt>
+                                        <dd>9:00 PM</dd>
                                     </div>
-                                    <h3 className="text-xl sm:text-xl font-semibold mb-2">Info Night #2</h3>
-                                    <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
-                                        <CalendarIcon />
-                                        <span>Monday, January 26, 7:00-8:00 PM</span>
-                                    </p>
-                                    <p className="text-base text-gray-600 flex items-center gap-2 mb-4">
-                                        <PinIcon />
-                                        <span>Swearingen Engineering Center Room 1C01</span>
-                                    </p>
-                                    <p className="text-base text-gray-600 leading-relaxed">
-                                        Same as above; you only need to attend one of our info nights! Choose whichever one works best for you.
-                                    </p>
-                                </div>
+                                </dl>
 
-                                {/* Event 2 */}
-                                <div className="relative pl-10 pb-12">
-                                    <div className="absolute -left-3 text-2xl top-0 text-[#315CA9] font-bold" aria-hidden="true">
-                                        ♦
-                                    </div>
-                                    <h3 className="text-xl sm:text-xl font-semibold mb-2">Casino Night</h3>
-                                    <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
-                                        <CalendarIcon />
-                                        <span>Tuesday, January 27, 7:00-8:30 PM</span>
-                                    </p>
-                                    <p className="text-base text-gray-600 flex items-center gap-2 mb-4">
-                                        <PinIcon />
-                                        <span>Darla Moore School of Business Room 109</span>
-                                    </p>
-                                    <p className="text-base text-gray-600 leading-relaxed">
-                                        Join us for a night of classic Vegas-style casino games! You&apos;ll get the opportunity
-                                        to meet our brothers while playing hands of poker, blackjack, board games, and more.
-                                    </p>
-                                </div>
-
-                                {/* Event 3 */}
-                                <div className="relative pl-10 pb-12">
-                                    <div className="absolute -left-3 text-2xl top-0 text-[#315CA9] font-bold" aria-hidden="true">
-                                        ♥
-                                    </div>
-                                    <h3 className="text-xl sm:text-xl font-semibold mb-2">Technical Workshop</h3>
-                                    <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
-                                        <CalendarIcon />
-                                        <span>Thursday, January 29, 7:00-8:30 PM</span>
-                                    </p>
-                                    <p className="text-base text-gray-600 flex items-center gap-2 mb-4">
-                                        <PinIcon />
-                                        <span>Darla Moore School of Business Room 136</span>
-                                    </p>
-                                    <p className="text-base text-gray-600 leading-relaxed">
-                                        Want to get a glance of what it&apos;s like joining KTP? At this event, we&apos;ll teach you the basics of
-                                        React and how to build your own website!
-                                    </p>
-                                </div>
-
-                                {/* Event 4 */}
-                                <div className="relative pl-10 pb-12">
-                                    <div className="absolute -left-3 top-0 text-[#315CA9] text-2xl font-bold" aria-hidden="true">
-                                        ♠
-                                    </div>
-                                    <h3 className="text-xl sm:text-xl font-semibold mb-2">Pitch Night</h3>
-                                    <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
-                                        <CalendarIcon />
-                                        <span>Friday, January 30, 5:00-7:00 PM</span>
-                                    </p>
-                                    <p className="text-base text-gray-600 flex items-center gap-2 mb-4">
-                                        <PinIcon />
-                                        <span>Darla Moore School of Business Room 140</span>
-                                    </p>
-                                    <p className="text-base text-gray-600 leading-relaxed">
-                                        It&apos;s time to showcase your collaboration skills. First, we&apos;ll give you tips on your resume and
-                                        LinkedIn; then, you&apos;ll work with a team to pitch a solution to a technical challenge. Please dress
-                                        business casual!
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="relative pl-10 pb-12">
-                                <div className="absolute -left-3 text-2xl top-0 text-[#315CA9] font-bold" aria-hidden="true">
-                                    ♦
-                                </div>
-                                <h3 className="text-xl sm:text-xl font-semibold mb-2">Application Deadline</h3>
-                                <p className="text-base text-gray-600 flex items-center gap-2 mb-2">
-                                    <CalendarIcon />
-                                    <span>Friday, January 30, 9:00 PM</span>
+                                <p className="mt-5 text-sm leading-relaxed text-[#9dffb8]/80 sm:text-base">
+                                    Submit before the window closes. Rush event attendance is tracked
+                                    and included with your application.
                                 </p>
-                                <div className="mt-5 mb-3">
-                                    <Link
-                                        href="/apply"
-                                        className="inline-block px-6 py-3 bg-[#315CA9] text-white rounded-full font-semibold hover:bg-[#23498F] transition-colors"
-                                    >
-                                        Start Your Application
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
 
-                    <section className="max-w-4xl mx-auto mt-16 mb-24 px-4">
-                        <h1 className="text-4xl sm:text-4xl font-extrabold text-center mb-10">Frequently Asked Questions</h1>
+                                <Link
+                                    href="/apply"
+                                    className="mt-6 inline-block rounded-sm border border-[#00ff41] bg-[#00ff41]/10 px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-[0.18em] text-[#00ff41] transition-all duration-300 hover:bg-[#00ff41]/25 hover:shadow-[0_0_24px_rgba(0,255,65,0.45)]"
+                                >
+                                    Start your application
+                                </Link>
+                            </article>
+                        </li>
+                    </ol>
+                </section>
 
-                        <Accordion type="multiple" className="w-full divide-y divide-gray-200">
-                            <AccordionItem value="q1">
-                                <AccordionTrigger className="py-6 text-left text-xl! sm:text-xl! font-bold text-black hover:bg-gray-50">
-                                    I&apos;m not majoring in the MCEC, can I still apply?
-                                </AccordionTrigger>
-                                <AccordionContent className="pb-6 text-gray-700 text-lg leading-relaxed">
-                                    Yes! All majors are welcome, and we encourage applicants from different backgrounds to rush, as long as you
-                                    have an interest in the tech industry.
-                                </AccordionContent>
-                            </AccordionItem>
+                {/* ===== Why KTP ===== */}
+                <section className="mx-auto mt-24 max-w-4xl">
+                    <h2 className="text-center font-mono text-2xl font-bold uppercase tracking-[0.15em] text-[#00ff41] mx-glow sm:text-3xl">
+                        Why Kappa Theta Pi?
+                    </h2>
 
-                            <AccordionItem value="q2">
-                                <AccordionTrigger className="py-6 text-left text-xl! sm:text-xl! font-bold text-black hover:bg-gray-50">
-                                    How much of a time commitment is the New Member Education process?
-                                </AccordionTrigger>
-                                <AccordionContent className="pb-6 text-gray-700 text-lg leading-relaxed">
-                                    Should you accept a bid from us, you will be expected to attend 2-3 events per week, (including technical
-                                    workshops, professional workshops, social events, etc.) as well as actively contributing to your assigned
-                                    nonprofit project.
-                                </AccordionContent>
-                            </AccordionItem>
+                    <div className="mt-10 grid gap-6 sm:grid-cols-2">
+                        {WHY_KTP.map((reason) => (
+                            <article key={reason.title} className="mx-panel rounded-sm p-6">
+                                <h3 className="font-mono text-lg font-bold text-[#00ff41] mx-glow">
+                                    {reason.title}
+                                </h3>
+                                <p className="mt-3 flex gap-2 text-sm leading-relaxed text-[#9dffb8]/85 sm:text-base">
+                                    <span aria-hidden="true" className="text-[#12833a]">
+                                        &gt;
+                                    </span>
+                                    <span>{reason.detail}</span>
+                                </p>
+                            </article>
+                        ))}
+                    </div>
 
-                            <AccordionItem value="q3">
-                                <AccordionTrigger className="py-6 text-left text-xl! sm:text-xl! font-bold text-black hover:bg-gray-50">
-                                    I&apos;m not able to attend one of the rush events. How will this affect my chances?
-                                </AccordionTrigger>
-                                <AccordionContent className="pb-6 text-gray-700 text-lg leading-relaxed">
-                                    We understand that various circumstances prevent applicants from attending all of our events. Please contact
-                                    our Executive Secretary (Josiah White) via GroupMe DM at least an hour before the event takes place if you
-                                    aren&apos;t able to attend.
-                                </AccordionContent>
-                            </AccordionItem>
-
-                            <AccordionItem value="q4">
-                                <AccordionTrigger className="py-6 text-left text-xl! sm:text-xl! font-bold text-black hover:bg-gray-50">
-                                    Can I rush multiple professional fraternities alongside Kappa Theta Pi?
-                                </AccordionTrigger>
-                                <AccordionContent className="pb-6 text-gray-700 text-lg leading-relaxed">
-                                    Yes, but if you receive a bid from us, we ask that you only pledge our organization this semester. You&apos;re
-                                    also able to hold membership in any other professional or social fraternity/sorority!
-                                </AccordionContent>
-                            </AccordionItem>
-
-                            <AccordionItem value="q5">
-                                <AccordionTrigger className="py-6 text-left text-xl! sm:text-xl! font-bold text-black hover:bg-gray-50">
-                                    How much are dues? Do I have to pay?
-                                </AccordionTrigger>
-                                <AccordionContent className="pb-6 text-gray-700 text-lg leading-relaxed">
-                                    If you accept a bid from us, you are expected to pay $150 in New Member dues this semester. This will
-                                    cover all expenses related to running a professional fraternity, such as professional, technical, and social
-                                    events. If you are unable to pay the dues in full, you will have the opportunity to submit a financial
-                                    hardship appeal to our Director of Finance. More information will be provided once bids are awarded.
-                                </AccordionContent>
-                            </AccordionItem>
-
-                            <AccordionItem value="q6">
-                                <AccordionTrigger className="py-6 text-left text-xl! sm:text-xl! font-bold text-black hover:bg-gray-50">
-                                    If I&apos;m selected for an interview, what commitments should I plan for?
-                                </AccordionTrigger>
-                                <AccordionContent className="pb-6 text-gray-700 text-lg leading-relaxed">
-                                    In the event you advance in our recruitment process, anticipate a 15-20 minute interview slot on the weekend
-                                    of February 1st. More details will be provided over email upon invitation.
-                                </AccordionContent>
-                            </AccordionItem>
-                        </Accordion>
-                    </section>
-                </div>
-            </main>
-        </>
+                    <p className="mt-12 text-center font-mono text-sm text-[#4bcc74]">
+                        Still have questions? Ping us at{" "}
+                        <a
+                            href="mailto:soktp@mailbox.sc.edu"
+                            className="text-[#00ff41] underline decoration-[#00ff41]/40 underline-offset-4 hover:decoration-[#00ff41]"
+                        >
+                            soktp@mailbox.sc.edu
+                        </a>
+                    </p>
+                </section>
+            </div>
+        </main>
     );
 }
