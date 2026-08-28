@@ -62,7 +62,7 @@ export function uiTypeFromAccountType(
 
 export function requirementMemberTypesForUiType(uiType: MemberProgressUiType) {
   if (uiType === "Active") return ["ACTIVE", "ALL_MEMBERS"] as const;
-  if (uiType === "Pledge") return ["PLEDGE", "ALL_MEMBERS"] as const;
+  if (uiType === "Pledge") return ["PNM", "ALL_MEMBERS"] as const;
   return ["APPLICANT", "ALL_MEMBERS"] as const;
 }
 
