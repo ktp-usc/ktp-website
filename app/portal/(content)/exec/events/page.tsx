@@ -6,14 +6,30 @@ import { useState } from "react";
 import { UseEvents } from "@/hooks/useEvents";
 import { Event } from "./components/eventCard";
 import { useNumAccounts } from "@/hooks/useAccounts";
+import { attendanceAccountTypes } from "@/lib/events";
 
 export default function ExecEvents() {
   const [newEvent, setNewEvent] = useState(false);
-  const { events, createEvent, loading } = UseEvents();
-  const { numAccounts: totalAccounts, loading: accountsLoading } =
-    useNumAccounts();
+  const { events, createEvent, updateEvent, deleteEvent, loading } = UseEvents();
+  const { numAccounts: activeCount, loading: activeCountLoading } =
+    useNumAccounts(
+      attendanceAccountTypes({ activesOnly: true, pledgesOnly: false }),
+    );
+  const { numAccounts: pledgeCount, loading: pledgeCountLoading } =
+    useNumAccounts(
+      attendanceAccountTypes({ activesOnly: false, pledgesOnly: true }),
+    );
+  const { numAccounts: chapterCount, loading: chapterCountLoading } =
+    useNumAccounts(
+      attendanceAccountTypes({ activesOnly: false, pledgesOnly: false }),
+    );
 
-  if (loading || accountsLoading) {
+  if (
+    loading ||
+    activeCountLoading ||
+    pledgeCountLoading ||
+    chapterCountLoading
+  ) {
     return <div>Loading...</div>;
   }
 
@@ -36,7 +52,19 @@ export default function ExecEvents() {
 
       <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {events.map((event) => (
-          <Event key={event.id} event={event} totalAccounts={totalAccounts} />
+          <Event
+            key={event.id}
+            event={event}
+            totalAccounts={
+              event.pledgesOnly
+                ? pledgeCount
+                : event.activesOnly
+                  ? activeCount
+                  : chapterCount
+            }
+            onUpdate={updateEvent}
+            onDelete={deleteEvent}
+          />
         ))}
       </div>
 

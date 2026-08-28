@@ -1,24 +1,38 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import {
+  generateAttendanceCode,
+  getEventFormErrors,
+  parseEventFormBody,
+  toEventWriteData,
+} from "@/lib/events";
 
 export async function POST(req: Request) {
-  const body = await req.json();
-  const event = await prisma.event.create({
-    data: {
-      ...body,
-      attendance: [],
-      startDate: new Date(body.startDate),
-      attendanceCode: generateAttendanceCode(),
-    },
-  });
-  return NextResponse.json(event);
+  try {
+    const formData = parseEventFormBody(await req.json());
+    const errors = getEventFormErrors(formData);
+    if (Object.keys(errors).length > 0) {
+      return NextResponse.json({ errors }, { status: 400 });
+    }
+
+    const event = await prisma.event.create({
+      data: {
+        ...toEventWriteData(formData),
+        attendance: { create: [] },
+        attendanceCode: generateAttendanceCode(),
+      },
+    });
+    return NextResponse.json(event);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Failed to create event" },
+      { status: 500 },
+    );
+  }
 }
 
-export async function GET(req: Request) {
+export async function GET() {
   const events = await prisma.event.findMany();
   return NextResponse.json(events);
-}
-
-function generateAttendanceCode(length = 6) {
-  return crypto.randomUUID().replace(/-/g, "").slice(0, length).toUpperCase();
 }

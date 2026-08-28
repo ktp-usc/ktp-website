@@ -40,6 +40,7 @@ export async function GET(req: Request) {
           lastName: true,
           type: true,
           headshotBlobURL: true,
+          pointsAwarded: true,
         },
       }),
       prisma.pointRequirement.findMany({
@@ -89,7 +90,7 @@ export async function GET(req: Request) {
         type: account.type,
         uiType,
         headshotBlobURL: account.headshotBlobURL,
-        totalPoints: progress.totalPoints,
+        totalPoints: account.pointsAwarded,
         categoriesCompleted: progress.categoriesCompleted,
         totalCategories: progress.totalCategories,
         percentComplete: percentComplete(

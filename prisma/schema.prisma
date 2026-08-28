@@ -29,6 +29,7 @@ model event {
   name             String
   location         String
   activesOnly      Boolean
+  pledgesOnly      Boolean      @default(false)
   attendanceCode   String       @unique
   attendance       attendance[]
 
@@ -60,6 +61,7 @@ model accounts {
   career_reviews  career_reviews[]
   voteEligibility vote_eligibility[]
   voteQuestions   vote_questions[]
+  pointsAwarded   Int               @default(0)
 
   @@schema("public")
 }
@@ -248,8 +250,7 @@ enum leaderType {
 
 enum memberType {
   ACTIVE
-  PLEDGE
-  APPLICANT
+  PNM
   ALL_MEMBERS
 
   @@schema("public")
@@ -272,13 +273,5 @@ enum gradSemester {
 
   @@schema("public")
 }
-<<<<<<< HEAD
 
 
-model currentSemester {
-  semester String @id
-
-  @@schema("public")
-}
-=======
->>>>>>> a90aeace0d5d2e8dbf5e537d0332c96b245be2f4
