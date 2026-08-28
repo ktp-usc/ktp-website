@@ -1,32 +1,58 @@
-"use-client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { event } from "@prisma/client";
-type eventInput = {
-  PointRequirement: String;
-  name: String;
-  attendance: String[];
-  description: String;
-  startDate: String;
-  location: String;
-  activesOnly: Boolean;
-};
+import type { EventFormData } from "@/lib/events";
+
 export function UseEvents() {
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState<event[]>([]);
 
-  async function createEvent(event: eventInput) {
+  async function createEvent(eventData: EventFormData) {
     try {
       const res = await fetch("/api/events", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(event),
+        body: JSON.stringify(eventData),
       });
       if (!res.ok) {
         return console.error(res);
       }
       const newEvent = await res.json();
       setEvents((prev) => [...prev, newEvent]);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function updateEvent(id: string, eventData: EventFormData) {
+    try {
+      const res = await fetch(`/api/events/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(eventData),
+      });
+      if (!res.ok) {
+        return console.error(res);
+      }
+      const updated = await res.json();
+      setEvents((prev) =>
+        prev.map((item) => (item.id === id ? updated : item)),
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function deleteEvent(id: string) {
+    try {
+      const res = await fetch(`/api/events/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        return console.error(res);
+      }
+      setEvents((prev) => prev.filter((item) => item.id !== id));
     } catch (error) {
       console.error(error);
     }
@@ -52,5 +78,5 @@ export function UseEvents() {
     getEvents();
   }, []);
 
-  return { createEvent, events, loading };
+  return { createEvent, updateEvent, deleteEvent, events, loading };
 }

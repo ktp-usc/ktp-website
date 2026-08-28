@@ -17,5 +17,6 @@ export const qk = {
     voteResults: (id: string) => ['votes', id, 'results'] as const,
     voteHistory: ['votes', 'history'] as const,
 
-    memberProgress: (semester: string) => ['exec', 'member-progress', semester] as const
+    memberProgress: (semester: string) => ['exec', 'member-progress', semester] as const,
+    currentSemester: ['semester', 'current'] as const,
 };

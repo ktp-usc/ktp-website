@@ -2,7 +2,8 @@
 
 import React, { useMemo, useState } from "react";
 import Image from "next/image";
-import { ChevronDown, ChevronRight, Search } from "lucide-react";
+import { ChevronDown, ChevronRight, Minus, Plus, Search } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +20,7 @@ import {
 } from "@/components/ui/table";
 
 import {
+  useAdjustMemberPointsMutation,
   useMemberProgressQuery,
   type MemberProgressItem,
 } from "@/client/hooks/memberProgress";
@@ -75,8 +77,8 @@ export default function MemberProgressPage() {
         return !isFullyComplete(item.categoriesCompleted, item.totalCategories);
       })
       .sort((a, b) => {
-        if (a.percentComplete !== b.percentComplete) {
-          return a.percentComplete - b.percentComplete;
+        if (a.totalPoints !== b.totalPoints) {
+          return a.totalPoints - b.totalPoints;
         }
         const last = a.lastName.localeCompare(b.lastName);
         if (last !== 0) return last;
@@ -191,25 +193,30 @@ export default function MemberProgressPage() {
                         </span>
                         <Headshot item={item} size="sm" />
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-start justify-between gap-2">
-                            <p className="truncate font-medium text-gray-900 dark:text-gray-100">
-                              {fullName(item)}
-                            </p>
-                            <span className="shrink-0 text-xs text-gray-500 dark:text-gray-400">
-                              {item.totalPoints} pts
-                            </span>
-                          </div>
-                          <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-                            {item.uiType}
+                          <p className="truncate font-medium text-gray-900 dark:text-gray-100">
+                            {fullName(item)}
                           </p>
-                          <TickedProgress
-                            className="mt-2"
-                            completed={item.categoriesCompleted}
-                            total={item.totalCategories}
-                            label={`${item.categoriesCompleted} of ${item.totalCategories} categories`}
-                          />
                         </div>
                       </button>
+                      <div className="mt-1 flex items-center gap-3 pl-6">
+                        {item.uiType === "Pledge" ? (
+                          <PointsAdjuster item={item} />
+                        ) : (
+                          <span className="text-xs tabular-nums text-gray-500 dark:text-gray-400">
+                            {item.totalPoints} pts
+                          </span>
+                        )}
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          {item.uiType}
+                        </p>
+                      </div>
+                      <div className="mt-2 pl-6">
+                        <TickedProgress
+                          completed={item.categoriesCompleted}
+                          total={item.totalCategories}
+                          label={`${item.categoriesCompleted} of ${item.totalCategories} categories`}
+                        />
+                      </div>
                       {expanded ? (
                         <RequirementDetails item={item} className="mt-3 border-t border-gray-100 pt-3 dark:border-gray-800" />
                       ) : null}
@@ -224,8 +231,8 @@ export default function MemberProgressPage() {
                     <TableRow>
                       <TableHead className="w-10" />
                       <TableHead>Member</TableHead>
-                      <TableHead>Type</TableHead>
                       <TableHead>Points</TableHead>
+                      <TableHead>Type</TableHead>
                       <TableHead className="min-w-[220px]">Categories</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -253,11 +260,19 @@ export default function MemberProgressPage() {
                                 </span>
                               </div>
                             </TableCell>
-                            <TableCell className="text-sm text-gray-700 dark:text-gray-300 transition-colors duration-300">
-                              {item.uiType}
+                            <TableCell
+                              onClick={(event) => event.stopPropagation()}
+                            >
+                              {item.uiType === "Pledge" ? (
+                                <PointsAdjuster item={item} />
+                              ) : (
+                                <span className="text-sm tabular-nums text-gray-700 dark:text-gray-300">
+                                  {item.totalPoints}
+                                </span>
+                              )}
                             </TableCell>
                             <TableCell className="text-sm text-gray-700 dark:text-gray-300 transition-colors duration-300">
-                              {item.totalPoints}
+                              {item.uiType}
                             </TableCell>
                             <TableCell>
                               <TickedProgress
@@ -319,6 +334,54 @@ function RequirementDetails({
         </li>
       ))}
     </ul>
+  );
+}
+
+function PointsAdjuster({ item }: { item: MemberProgressItem }) {
+  const adjustPoints = useAdjustMemberPointsMutation(SEMESTER);
+
+  function change(delta: 1 | -1) {
+    if (delta < 0 && item.totalPoints <= 0) return;
+    adjustPoints.mutate(
+      { accountId: item.id, delta },
+      {
+        onError: () => {
+          toast.error("Could not update points. Please try again.");
+        },
+      },
+    );
+  }
+
+  return (
+    <div
+      className="flex shrink-0 items-center gap-1"
+      onClick={(event) => event.stopPropagation()}
+    >
+      <Button
+        type="button"
+        size="icon"
+        variant="outline"
+        className="h-7 w-7 cursor-pointer"
+        disabled={item.totalPoints <= 0}
+        aria-label={`Decrease points for ${fullName(item)}`}
+        onClick={() => change(-1)}
+      >
+        <Minus className="h-3.5 w-3.5" />
+      </Button>
+      <span className="min-w-8 text-center text-sm font-semibold tabular-nums text-gray-900 dark:text-gray-100">
+        {item.totalPoints}
+      </span>
+      <Button
+        type="button"
+        size="icon"
+        variant="outline"
+        className="h-7 w-7 cursor-pointer"
+        aria-label={`Increase points for ${fullName(item)}`}
+        onClick={() => change(1)}
+      >
+        <Plus className="h-3.5 w-3.5" />
+      </Button>
+    </div>
   );
 }
 

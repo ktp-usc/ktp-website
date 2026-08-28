@@ -21,6 +21,7 @@ export function usePoints(isActive: boolean) {
     PointRequirement[]
   >([]);
   const [requirementsLoading, setRequirementsLoading] = useState(false);
+  const [pointsAwarded, setPointsAwarded] = useState(0);
 
   async function getAttendance() {
     try {
@@ -52,6 +53,18 @@ export function usePoints(isActive: boolean) {
       setEventsLoading(false);
     }
   }
+  async function getAccountPoints() {
+    try {
+      const res = await fetch("/api/accounts/me");
+      if (!res.ok) return;
+      const json = await res.json();
+      const account = json.data ?? json;
+      setPointsAwarded(account?.pointsAwarded ?? 0);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async function getPointRequirements() {
     try {
       setRequirementsLoading(true);
@@ -82,6 +95,9 @@ export function usePoints(isActive: boolean) {
       }
       const attendance = await res.json();
       setAttendance((prev) => [...prev, attendance]);
+      setPointsAwarded(
+        (prev) => prev + (attendance?.pointsAwarded ?? 0),
+      );
     } catch (error) {
       return console.error(error);
     } finally {
@@ -94,6 +110,7 @@ export function usePoints(isActive: boolean) {
       getPointRequirements();
       getEvents();
       getAttendance();
+      getAccountPoints();
     }
   }, [accountId]);
 
@@ -104,13 +121,23 @@ export function usePoints(isActive: boolean) {
         pointRequirements,
         events,
       );
-      setRequirementProgressData(progress);
+      setRequirementProgressData({
+        ...progress,
+        totalPoints: pointsAwarded,
+      });
     }
-  }, [attendanceLoading, attendance, eventsLoading, requirementsLoading]);
+  }, [attendanceLoading, attendance, eventsLoading, requirementsLoading, pointsAwarded]);
   useEffect(() => {
     setLoading(false);
   }, [requirementProgressData]);
-  return { requirementProgressData, loading, setAccountId, updateAttendance };
+  return {
+    requirementProgressData,
+    loading,
+    setAccountId,
+    updateAttendance,
+    attendance,
+    events,
+  };
 }
 
 // const {

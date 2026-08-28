@@ -8,7 +8,7 @@ import {
   requirementMemberTypesForUiType,
   uiTypeFromAccountType,
 } from "@/lib/points/progress";
-import type { PointRequirement, type as AccountType } from "@prisma/client";
+import type { PointRequirement, type as AccountType, memberType } from "@prisma/client";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -40,6 +40,7 @@ export async function GET(req: Request) {
           lastName: true,
           type: true,
           headshotBlobURL: true,
+          pointsAwarded: true,
         },
       }),
       prisma.pointRequirement.findMany({

@@ -16,6 +16,7 @@ import {
   VoteGroup,
 } from "../components/portalCards";
 import { usePortalSession } from "../hooks/usePortalSession";
+import { CurrentSemesterInput } from "./CurrentSemesterInput";
 
 export default function LeadershipPage() {
   const router = useRouter();
@@ -37,13 +38,16 @@ export default function LeadershipPage() {
 
   return (
     <main className="max-w-7xl mx-auto px-6 py-8 bg-transparent transition-colors duration-300">
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
-          Welcome, {firstName}!
-        </h2>
-        <p className="text-gray-600 dark:text-gray-400">
-          Manage applications and chapter roster from your dashboard.
-        </p>
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2 dark:text-white transition-colors duration-300">
+            Welcome, {firstName}!
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400">
+            Manage applications and chapter roster from your dashboard.
+          </p>
+        </div>
+        <CurrentSemesterInput />
       </div>
 
       <div className="space-y-10">
