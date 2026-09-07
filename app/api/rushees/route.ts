@@ -1,70 +1,95 @@
-import { prisma } from '@/lib/prisma';
-import { requireBrother } from '@/lib/auth/guards';
-import { ok, serverError } from '@/lib/http/responses';
-import { applicationStatus, type as AccountType } from '@prisma/client';
+import { prisma } from "@/lib/prisma";
+import { requireBrother } from "@/lib/auth/guards";
+import { ok, serverError } from "@/lib/http/responses";
+import { applicationStatus, type as AccountType } from "@prisma/client";
+import { lastNameFromFullName } from "@/lib/applications/status";
+import { rusheeCommenterIdentity } from "@/lib/rushees";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function GET() {
-    const authed = await requireBrother();
-    if ('response' in authed) return authed.response;
+  const authed = await requireBrother();
+  if ("response" in authed) return authed.response;
 
-    const commenter =
-        [authed.account.firstName, authed.account.lastName].filter(Boolean).join(' ').trim() ||
-        authed.account.id;
+  const { commenter, aliases } = rusheeCommenterIdentity(
+    authed.account,
+    authed.user.id,
+  );
 
-    try {
-        const accounts = await prisma.accounts.findMany({
-            where: {
-                type: AccountType.APPLICANT
-            },
-            include: {
-                applications: {
-                    select: { id: true, fullName: true, status: true, userId: true }
-                }
-            },
-            orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }]
-        });
+  try {
+    const current = await prisma.currentSemester.findFirst();
+    const currentSemester = current?.semester;
 
-        const appIds = accounts
-            .map((acct) => acct.applications?.id ?? null)
-            .filter((id): id is string => Boolean(id));
+    const applications = await prisma.applications.findMany({
+      where: {
+        status: { not: applicationStatus.CLOSED },
+        accounts: { is: { type: AccountType.APPLICANT } },
+        ...(currentSemester ? { semester: currentSemester } : {}),
+      },
+      select: {
+        id: true,
+        fullName: true,
+        status: true,
+        userId: true,
+        lastModified: true,
+        comments: {
+          where: { commenter: { in: aliases } },
+          orderBy: { createdAt: "desc" },
+          take: 1,
+          select: { id: true, body: true, createdAt: true },
+        },
+        accounts: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            headshotBlobURL: true,
+          },
+        },
+      },
+    });
 
-        const myComments = appIds.length
-            ? await prisma.comment.findMany({
-                  where: { applicationId: { in: appIds }, commenter },
-                  orderBy: { createdAt: 'desc' }
-              })
-            : [];
-
-        const myCommentByApp = new Map(myComments.map((c) => [c.applicationId, c]));
-
-        const items = accounts.map((acct) => {
-            const app = acct.applications;
-            const appId = app?.id ?? null;
-            const myComment = appId ? myCommentByApp.get(appId) ?? null : null;
-            const fullName =
-                app?.fullName ??
-                [acct.firstName, acct.lastName].filter(Boolean).join(' ').trim() ??
-                'Unnamed Applicant';
-
-            return {
-                accountId: acct.id,
-                applicationId: appId,
-                fullName,
-                status: app?.status ?? applicationStatus.INCOMPLETE,
-                userId: app?.userId ?? acct.id,
-                headshotUrl: acct.headshotBlobURL ?? null,
-                myComment: myComment
-                    ? { id: myComment.id, body: myComment.body ?? '', createdAt: myComment.createdAt }
-                    : null
-            };
-        });
-
-        return ok({ items, commenter });
-    } catch (e) {
-        console.error('GET /api/rushees error:', e);
-        return serverError();
+    const byUser = new Map<string, (typeof applications)[number]>();
+    for (const app of applications) {
+      const existing = byUser.get(app.userId);
+      if (!existing || app.lastModified > existing.lastModified) {
+        byUser.set(app.userId, app);
+      }
     }
+
+    const items = [...byUser.values()]
+      .sort((a, b) =>
+        lastNameFromFullName(a.fullName).localeCompare(
+          lastNameFromFullName(b.fullName),
+        ),
+      )
+      .map((app) => {
+        const mine = app.comments[0];
+        const nameFromAccount = [app.accounts.firstName, app.accounts.lastName]
+          .filter(Boolean)
+          .join(" ")
+          .trim();
+        return {
+          accountId: app.accounts.id,
+          applicationId: app.id,
+          fullName: app.fullName || nameFromAccount || "Unknown",
+          status: app.status,
+          userId: app.userId,
+          headshotUrl: app.accounts.headshotBlobURL,
+          myComment: mine
+            ? {
+                id: mine.id,
+                body: mine.body ?? "",
+                createdAt: mine.createdAt.toISOString(),
+              }
+            : null,
+        };
+      });
+
+    return ok({ items, commenter });
+  } catch (e) {
+    console.error("GET /api/rushees error:", e);
+    return serverError();
+  }
 }

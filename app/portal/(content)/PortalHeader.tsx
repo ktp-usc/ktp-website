@@ -5,9 +5,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { LogOut, User } from "lucide-react";
 
+import { usePathname } from "next/navigation";
+
 import { useSessionQuery, useSignOutMutation } from "@/client/hooks/auth";
 import { useMyAccountQuery } from "@/client/hooks/accounts";
 import ThemeToggleInline from "@/components/ThemeToggleInline";
+import {
+    hasExecAccess,
+    portalHomePath,
+} from "@/lib/auth/roles";
 
 function buildDisplayName(account: any | null, sessionUser: any | null) {
     const first = (account?.firstName ?? "").trim();
@@ -28,9 +34,12 @@ export default function PortalHeader() {
     const session = useSessionQuery();
     const account = useMyAccountQuery();
     const signOut = useSignOutMutation();
+    const pathname = usePathname();
 
     const sessionUser = session.data?.user ?? null;
     const accountData = account.data ?? null;
+    const homeHref = portalHomePath(accountData?.type);
+    const showLeadershipNav = hasExecAccess(accountData?.type);
 
     const isLoading = session.isLoading || account.isLoading;
 
@@ -52,32 +61,66 @@ export default function PortalHeader() {
         <header
             className="bg-white shadow-sm border-b border-gray-200 dark:bg-gray-900 dark:border-gray-700 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                {/* logo + title */ }
-                <Link
-                    href="/portal"
-                    className="flex items-center gap-6 cursor-pointer"
-                    aria-label="Go to portal home"
-                >
-                    <Image
-                        src="/KTPLettersW.svg"
-                        alt="Kappa Theta Pi logo"
-                        className="hidden dark:block"
-                        width={ 100 }
-                        height={ 60 }
-                        priority
-                    />
-                    <Image
-                        src="/KTPLetters.svg"
-                        alt="Kappa Theta Pi logo"
-                        className="block dark:hidden"
-                        width={ 100 }
-                        height={ 60 }
-                    />
-                    <div className="hidden sm:block h-8 w-px bg-gray-300 dark:bg-gray-700"/>
-                    <h1 className="text-xl font-semibold text-gray-900 hidden sm:block dark:text-white transition-colors duration-300">
-                        Member Portal
-                    </h1>
-                </Link>
+                {/* logo + title */}
+                <div className="flex items-center gap-6">
+                    <Link
+                        href="/"
+                        className="flex items-center cursor-pointer"
+                        aria-label="Go to home"
+                    >
+                        <Image
+                            src="/KTPLettersW.svg"
+                            alt="Kappa Theta Pi logo"
+                            className="hidden dark:block"
+                            width={100}
+                            height={60}
+                            priority
+                        />
+                        <Image
+                            src="/KTPLetters.svg"
+                            alt="Kappa Theta Pi logo"
+                            className="block dark:hidden"
+                            width={100}
+                            height={60}
+                        />
+                    </Link>
+                    <div className="hidden sm:block h-8 w-px bg-gray-300 dark:bg-gray-700" />
+                    <Link
+                        href={homeHref}
+                        className="hidden sm:block cursor-pointer"
+                        aria-label="Go to portal home"
+                    >
+                        <h1 className="text-xl font-semibold text-gray-900 dark:text-white transition-colors duration-300">
+                            Member Portal
+                        </h1>
+                    </Link>
+                    {showLeadershipNav ? (
+                        <nav className="flex items-center gap-0.5 rounded-lg bg-gray-100 dark:bg-gray-800 p-0.5">
+                            {[
+                                { href: "/portal/leadership", label: "Leadership" },
+                                { href: "/portal/active", label: "Active" },
+                                { href: "/portal/pledge", label: "Pledge" },
+                            ].map((item) => {
+                                const active =
+                                    pathname === item.href ||
+                                    pathname.startsWith(`${item.href}/`);
+                                return (
+                                    <Link
+                                        key={item.href}
+                                        href={item.href}
+                                        className={`px-2.5 sm:px-3 py-1 rounded-md text-xs sm:text-sm font-medium transition-colors ${
+                                            active
+                                                ? "bg-white text-blue-700 shadow-sm dark:bg-gray-700 dark:text-blue-300"
+                                                : "text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                                        }`}
+                                    >
+                                        {item.label}
+                                    </Link>
+                                );
+                            })}
+                        </nav>
+                    ) : null}
+                </div>
 
                 {/* user + actions */ }
                 <div className="flex items-center gap-4">

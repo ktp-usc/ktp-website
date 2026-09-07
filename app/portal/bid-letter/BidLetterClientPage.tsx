@@ -6,21 +6,25 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useMyApplicationQuery, useUpdateMyApplicationMutation } from '@/client/hooks/applications';
+import { useApplicationQuery, useUpdateMyApplicationMutation } from '@/client/hooks/applications';
 
 import BackButton from "@/components/BackButton";
-import 'react-pdf/dist/Page/AnnotationLayer.css';
-import 'react-pdf/dist/Page/TextLayer.css';
+// import 'react-pdf/dist/Page/AnnotationLayer.css';
+// import 'react-pdf/dist/Page/TextLayer.css';
 
 type AppStatus = 'BID_OFFERED' | 'BID_ACCEPTED' | 'BID_DECLINED';
 
-export default function BidLetterClientPage() {
+type BidLetterClientPageProps = {
+  applicationId: string;
+};
+
+export default function BidLetterClientPage({ applicationId }: BidLetterClientPageProps) {
     const router = useRouter();
     const [isDark, setIsDark] = useState(false);
     const [loading, setLoading] = useState(false);
     const [hasMounted, setHasMounted] = useState(false);
 
-    const myAppQuery = useMyApplicationQuery();
+    const applicationQuery = useApplicationQuery(applicationId);
     const updateMyApp = useUpdateMyApplicationMutation();
 
     useEffect(() => {
@@ -73,7 +77,7 @@ export default function BidLetterClientPage() {
     async function setStatusAndReturn(nextStatus: AppStatus) {
         if (loading) return;
 
-        const currentStatus = (myAppQuery.data as any)?.status as AppStatus | undefined;
+        const currentStatus = applicationQuery.data?.status as AppStatus | undefined;
         if (currentStatus && currentStatus !== 'BID_OFFERED') {
             router.replace('/portal');
             return;
@@ -84,7 +88,7 @@ export default function BidLetterClientPage() {
 
         setLoading(true);
         try {
-            await updateMyApp.mutateAsync({ status: nextStatus });
+            await updateMyApp.mutateAsync({ id: applicationId, status: nextStatus });
             if (nextStatus === 'BID_ACCEPTED') sessionStorage.setItem('showBidAcceptedConfetti', '1');
             router.replace('/portal');
         } catch (e: any) {

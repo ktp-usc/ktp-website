@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireUser } from "@/lib/auth/guards";
+import { requireFeature } from "@/lib/auth/guards";
 
 // GET — fetch all reviews
 export async function GET() {
   try {
+    const authed = await requireFeature("career");
+    if ("response" in authed) return authed.response;
+
     const reviews = await prisma.career_reviews.findMany({
       orderBy: { createdAt: "desc" },
     });
@@ -21,7 +24,7 @@ export async function GET() {
 // POST — submit a new review
 export async function POST(req: NextRequest) {
   try {
-    const authed = await requireUser();
+    const authed = await requireFeature("career");
     if ("response" in authed) return authed.response;
 
     const account = await prisma.accounts.findUnique({

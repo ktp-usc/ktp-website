@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { neonAuth } from '@neondatabase/auth/next/server';
 import { prisma } from "@/lib/prisma";
+import { hasExecAccess } from "@/lib/auth/roles";
 
 export async function GET() {
     // 1) must be signed in
@@ -16,8 +17,8 @@ export async function GET() {
         select: { type: true }
     });
 
-    // 3) enforce exec
-    const isExec = account?.type === 'LEADERSHIP';
+    // 3) enforce exec (leadership and chairs)
+    const isExec = hasExecAccess(account?.type);
     if (!isExec) {
         return NextResponse.json({ allowed: false, reason: 'forbidden' }, { status: 403 });
     }

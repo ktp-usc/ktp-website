@@ -1,19 +1,15 @@
 import { prisma } from '@/lib/prisma';
-import { requireAdmin } from '@/lib/auth/guards';
-import { applicationStatus } from '@prisma/client';
+import { requireExec } from '@/lib/auth/guards';
 import { badRequest, ok, serverError } from '@/lib/http/responses';
+import { isValidStatus } from '@/lib/applications/status';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 type Ctx = { params: Promise<{ id: string }> };
 
-function isValidStatus(v: unknown): v is applicationStatus {
-    return typeof v === 'string' && (Object.values(applicationStatus) as string[]).includes(v);
-}
-
 export async function POST(req: Request, ctx: Ctx) {
-    const authed = await requireAdmin();
+    const authed = await requireExec();
     if ('response' in authed) return authed.response;
 
     const { id } = await ctx.params;

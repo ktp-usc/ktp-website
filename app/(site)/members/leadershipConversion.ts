@@ -10,6 +10,11 @@ export function toPlainText(leadership: string) {
   //   SECRETARY
   //   CHAIR_INFRASTRUCTURE
   //   CHAIR_CONFERENCES
+  //   CHAIR_HACKATHON
+  //   CHAIR_PLACEMENT
+  //   CHAIR_COMMUNICATIONS
+  //   DELEGATE_PGC
+  //   DELEGATE_NATIONALS
 
   switch (leadership) {
     case "PRESIDENT":
@@ -33,7 +38,17 @@ export function toPlainText(leadership: string) {
     case "CHAIR_INFRASTRUCTURE":
       return "Infrastructure Chair";
     case "CHAIR_CONFERENCES":
-      return "Conference Chair";
+      return "Conferences Chair";
+    case "CHAIR_HACKATHON":
+      return "Hackathon Chair";
+    case "CHAIR_PLACEMENT":
+      return "Placement Chair";
+    case "CHAIR_COMMUNICATIONS":
+      return "Communications Chair";
+    case "DELEGATE_PGC":
+      return "PGC Delegate";
+    case "DELEGATE_NATIONALS":
+      return "Nationals Delegate";
     default:
       return "Leader";
   }

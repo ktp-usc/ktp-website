@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { useMyAccountQuery } from "@/client/hooks/accounts";
 import { useRusheesQuery, useUpsertRusheeCommentMutation } from "@/client/hooks/rushees";
+import { canAccessRushees } from "@/lib/auth/roles";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,9 +18,9 @@ function statusLabel(status: string) {
 
 export default function RusheesPage() {
     const { data: myAccount, isLoading: accountLoading, isError: accountError } = useMyAccountQuery();
-    const isBrother = myAccount?.type === "BROTHER";
+    const canViewRushees = canAccessRushees(myAccount?.type);
 
-    const rusheesQuery = useRusheesQuery(Boolean(isBrother));
+    const rusheesQuery = useRusheesQuery(Boolean(canViewRushees));
     const upsertComment = useUpsertRusheeCommentMutation();
 
     const [drafts, setDrafts] = useState<Record<string, string>>({});
@@ -61,7 +62,7 @@ export default function RusheesPage() {
             );
         }
 
-        if (!isBrother) {
+        if (!canViewRushees) {
             return (
                 <Card className="max-w-xl mx-auto">
                     <CardHeader>
@@ -168,7 +169,7 @@ export default function RusheesPage() {
                 })}
             </div>
         );
-    }, [accountLoading, accountError, myAccount, isBrother, rusheesQuery, drafts, upsertComment, search]);
+    }, [accountLoading, accountError, myAccount, canViewRushees, rusheesQuery, drafts, upsertComment, search]);
 
     return (
         <div className="w-full max-w-5xl mx-auto px-4 py-8">
@@ -177,7 +178,7 @@ export default function RusheesPage() {
                 <p className="text-gray-600 dark:text-gray-300">
                     Leave your thoughts or interview evaluations! One comment per rushee, please.
                 </p>
-                {isBrother ? (
+                {canViewRushees ? (
                     <div className="mt-4">
                         <Input
                             value={search}

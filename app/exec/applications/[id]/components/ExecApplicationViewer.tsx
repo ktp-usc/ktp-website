@@ -156,12 +156,6 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
     return STATUS_LABELS[value] ?? 'Unknown';
   }
 
-  function isSubmitted()
-  {
-    if(app?.submittedAt == null) return false;
-    return true;
-  }
-
   async function postStatusNotification(oldStatus?: applicationStatus | null, newStatus?: applicationStatus | null) {
     if (!app?.id) return;
     const applicantName = formattedHeaderName(app);
@@ -473,7 +467,7 @@ export default function ExecApplicationViewer({ initialApplication }: { initialA
                 className="status-select"
                 value={app?.status ?? ''}
                 onChange={(e) => updateStatus(e.target.value as applicationStatus)}
-                disabled={statusUpdating || !isSubmitted()}
+                disabled={statusUpdating}
               >
                 {Object.entries(STATUS_LABELS).map(([status, label]) => (
                   <option key={status} value={status}>

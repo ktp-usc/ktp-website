@@ -167,6 +167,35 @@ export function useUpdateAccountByIdMutation() {
     });
 }
 
+export function useUploadAccountHeadshotMutation() {
+    const qc = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ id, file }: { id: string; file: File }) => {
+            const formData = new FormData();
+            formData.append("headshot", file);
+
+            const res = await fetch(`/api/accounts/${id}/headshot`, {
+                method: "POST",
+                body: formData,
+                credentials: "include",
+                cache: "no-store"
+            });
+
+            if (!res.ok) {
+                const body = await res.json().catch(() => null);
+                throw new Error(body?.error ?? "Failed to upload headshot");
+            }
+
+            return (await res.json()) as UploadHeadshotResponse;
+        },
+        onSuccess: async (_data, vars) => {
+            await qc.invalidateQueries({ queryKey: qk.account(vars.id) });
+            await qc.invalidateQueries({ queryKey: ["accounts"] });
+        }
+    });
+}
+
 export function useDeleteAccountMutation(id: string) {
     const qc = useQueryClient();
     return useMutation({

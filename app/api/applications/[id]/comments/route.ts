@@ -1,16 +1,12 @@
 import { prisma } from '@/lib/prisma';
-import { requireAdmin } from '@/lib/auth/guards';
-import { applicationStatus } from '@prisma/client';
+import { requireAdmin, requireExec } from '@/lib/auth/guards';
 import { badRequest, ok, serverError } from '@/lib/http/responses';
+import { isValidStatus } from '@/lib/applications/status';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 type Ctx = { params: Promise<{ id: string }> };
-
-function isValidStatus(v: unknown): v is applicationStatus {
-    return typeof v === 'string' && (Object.values(applicationStatus) as string[]).includes(v);
-}
 
 export async function GET(_: Request, ctx: Ctx) {
     const authed = await requireAdmin();
@@ -45,6 +41,10 @@ export async function POST(req: Request, ctx: Ctx) {
         const statusOverride = body.statusOverride;
         if (statusOverride != null && !isValidStatus(statusOverride)) {
             return badRequest('invalid_status_override');
+        }
+        if (statusOverride != null) {
+            const exec = await requireExec();
+            if ('response' in exec) return exec.response;
         }
 
         const result = await prisma.$transaction(async (tx) => {

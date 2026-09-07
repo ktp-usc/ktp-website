@@ -1,23 +1,32 @@
 "use client";
-import { event } from "@prisma/client";
 import { useEvent } from "@/hooks/useEvent";
 import { useParams } from "next/navigation";
 import { useAccounts } from "@/hooks/useAccounts";
-import { Calendar, MapPin, Clock } from "lucide-react";
+import { Calendar, MapPin, Clock, Pencil, Trash2 } from "lucide-react";
 import { AccountCard } from "./components/AccountCard";
 import { useAttendance } from "@/hooks/useAttendance";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { EventFormModal } from "../components/eventFormModal";
+import { DeleteEventModal } from "../components/deleteEventModal";
+import { attendanceAccountTypes, eventAudienceLabel } from "@/lib/events";
 
 export default function page() {
   const { id } = useParams<{ id: string }>();
-  const { event, loading } = useEvent(id);
+  const router = useRouter();
+  const { event, loading, updateEvent, deleteEvent } = useEvent(id);
   const {
     accounts,
     loading: accountsLoading,
     search,
     setSearch,
-  } = useAccounts();
+  } = useAccounts({
+    types: event ? attendanceAccountTypes(event) : undefined,
+    enabled: Boolean(event) && !loading,
+  });
   const { attendance, addAttendance, removeAttendance } = useAttendance(id);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   console.log(attendance);
   if (event === undefined || loading) {
     return <div>Loading...</div>;
@@ -37,15 +46,33 @@ export default function page() {
               </h1>
             </div>
 
-            <span
-              className={`h-fit rounded-full px-4 py-2 text-sm font-medium ${
-                event.activesOnly
-                  ? "bg-emerald-100 text-emerald-700"
-                  : "bg-blue-100 text-blue-700"
-              }`}
-            >
-              {event.activesOnly ? "Actives Only" : "All Members"}
-            </span>
+            <div className="flex h-fit items-center gap-3">
+              <span
+                className={`rounded-full px-4 py-2 text-sm font-medium ${
+                  event.pledgesOnly
+                    ? "bg-amber-100 text-amber-800"
+                    : event.activesOnly
+                      ? "bg-emerald-100 text-emerald-700"
+                      : "bg-blue-100 text-blue-700"
+                }`}
+              >
+                {eventAudienceLabel(event)}
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsEditing(true)}
+                className="cursor-pointer rounded-lg border border-green-200 p-2 text-emerald-900 transition hover:bg-green-100"
+              >
+                <Pencil size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsDeleting(true)}
+                className="cursor-pointer rounded-lg border border-red-700 p-2 text-red-700 transition hover:bg-red-50"
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
           </div>
 
           <div className="mt-6 flex gap-4 ">
@@ -146,6 +173,28 @@ export default function page() {
             ))}
         </div>
       </div>
+
+      {isEditing && (
+        <EventFormModal
+          event={event}
+          onClose={() => setIsEditing(false)}
+          onSubmit={updateEvent}
+        />
+      )}
+
+      {isDeleting && (
+        <DeleteEventModal
+          eventName={event.name}
+          onClose={() => setIsDeleting(false)}
+          onConfirm={async () => {
+            const deleted = await deleteEvent();
+            if (deleted) {
+              router.push("/portal/exec/events");
+            }
+            setIsDeleting(false);
+          }}
+        />
+      )}
     </div>
   );
 }

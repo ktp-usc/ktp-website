@@ -187,7 +187,7 @@ export default function Members() {
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
   const { loading, accounts, search, setSearch } = useAccounts();
   let allMembers = accounts.filter((member) => {
-    return member.type === "BROTHER" || member.type === "LEADERSHIP";
+    return member.type === "BROTHER" || member.type === "LEADERSHIP" || member.type === "CHAIR";
   });
   const handleImageError = (memberName: string) => {
     setImageErrors((prev) => ({ ...prev, [memberName]: true }));

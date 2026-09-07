@@ -1,10 +1,34 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { usePointRequirements } from "@/hooks/usePointRequirements";
-import { Requirement } from "./components/requirement";
+import { useMemo, useState, type ReactNode } from "react";
+import { ClipboardList, Plus, Search, Users } from "lucide-react";
+import type { memberType } from "@prisma/client";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { nextSemesters } from "@/data/requirementOptions";
+import { usePointRequirements } from "@/hooks/usePointRequirements";
+
+import { Requirement } from "./components/requirement";
+import {
+  RequirementFormModal,
+  type RequirementFormValues,
+} from "./components/RequirementFormModal";
+import { memberTypeLabel } from "./components/requirementLabels";
+
+type MemberFilter = "ALL" | memberType;
+type SemesterFilter = "ALL" | string;
+
+const MEMBER_FILTERS: MemberFilter[] = ["ALL", "ALL_MEMBERS", "ACTIVE", "PNM"];
 
 export default function Page() {
   const {
@@ -12,250 +36,215 @@ export default function Page() {
     updatePointRequirement,
     deletePointRequirement,
     requirements,
+    loading,
   } = usePointRequirements();
 
-  const [semesterDropdown, setSemesterDropdown] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [memberFilter, setMemberFilter] = useState<MemberFilter>("ALL");
+  const [semesterFilter, setSemesterFilter] = useState<SemesterFilter>("ALL");
 
-  const [requirementDetails, setRequirementDetails] = useState({
-    memberType: "ALL_MEMBERS",
-    name: "",
-    semester: nextSemesters[0],
-    description: "",
-    requiredAmount: 0,
-    pointsPerCompletion: 0,
-    maxPoints: 0,
-  });
-
-  function handleChange(name: string, value: any) {
-    setRequirementDetails((prev) => ({ ...prev, [name]: value }));
-  }
-
-  function resetForm() {
-    setRequirementDetails({
-      memberType: "ALL_MEMBERS",
-      name: "",
-      semester: nextSemesters[0],
-      description: "",
-      requiredAmount: 0,
-      pointsPerCompletion: 0,
-      maxPoints: 0,
-    });
-  }
-
-  useEffect(() => {
-    if (!semesterDropdown) {
-      return;
-    }
-
-    const handleClick = () => {
-      setSemesterDropdown(false);
+  const counts = useMemo(() => {
+    return {
+      total: requirements.length,
+      currentSemester: requirements.filter(
+        (req) => req.semester === nextSemesters[0],
+      ).length,
+      active: requirements.filter((req) => req.memberType === "ACTIVE").length,
+      pnm: requirements.filter((req) => req.memberType === "PNM").length,
     };
+  }, [requirements]);
 
-    document.addEventListener("click", handleClick);
-    return () => {
-      document.removeEventListener("click", handleClick);
-    };
-  }, [semesterDropdown]);
-  function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    createPointRequirement(requirementDetails);
-    resetForm();
+  const visibleRequirements = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+
+    return requirements
+      .filter((req) =>
+        memberFilter === "ALL" ? true : req.memberType === memberFilter,
+      )
+      .filter((req) =>
+        semesterFilter === "ALL" ? true : req.semester === semesterFilter,
+      )
+      .filter((req) => {
+        if (!needle) return true;
+        return (
+          req.name.toLowerCase().includes(needle) ||
+          req.description.toLowerCase().includes(needle)
+        );
+      })
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [requirements, memberFilter, semesterFilter, query]);
+
+  function handleCreate(values: RequirementFormValues) {
+    createPointRequirement(values);
+    setCreateOpen(false);
   }
+
   return (
-    <div className="grid lg:grid-cols-2">
-      <form className="m-8 bg-white border border-gray-200 rounded-2xl p-8 flex flex-col gap-8">
-        <div className="border-b border-gray-200 pb-8 flex flex-col gap-8">
-          <div>
-            <h1 className="font-semibold text-xl">Scope</h1>
-            <p className="font-light">
-              To who and when should the requirement take place?
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <p className="font-semibold ">Semester</p>
-            <button
-              type="button"
-              className="cursor-pointer flex justify-between w-full items-center border rounded-md p-2 no-raise"
-              onClick={() => {
-                setSemesterDropdown(true);
-              }}
-            >
-              {`${requirementDetails.semester !== "" ? requirementDetails.semester : "Select a Semester"}`}
-              {semesterDropdown ? <ChevronUp /> : <ChevronDown />}
-            </button>
-            {semesterDropdown && (
-              <div className="flex flex-col items-start p-1 border border-gray-200 rounded-lg mt-2 ">
-                <button
-                  type="button"
-                  name="semester"
-                  className="no-raise cursor-pointer hover:bg-blue-200 w-full text-start rounded-md p-2"
-                  onClick={() => handleChange("semester", nextSemesters[0])}
-                >
-                  {nextSemesters[0]}
-                </button>
-                <button
-                  type="button"
-                  className="no-raise cursor-pointer hover:bg-blue-200 w-full text-start rounded-md p-2"
-                  onClick={() => handleChange("semester", nextSemesters[1])}
-                >
-                  {nextSemesters[1]}
-                </button>
-                <button
-                  type="button"
-                  className="no-raise cursor-pointer hover:bg-blue-200 w-full text-start rounded-md p-2"
-                  onClick={() => handleChange("semester", nextSemesters[2])}
-                >
-                  {nextSemesters[2]}
-                </button>
-                <button
-                  type="button"
-                  className="no-raise cursor-pointer hover:bg-blue-200 w-full text-start rounded-md p-2"
-                  onClick={() => handleChange("semester", nextSemesters[3])}
-                >
-                  {nextSemesters[3]}
-                </button>
-              </div>
-            )}
-          </div>
-          <div>
-            <p className="font-semibold mb-2">Member Type</p>
-            <div className="flex justify-around border border-gray-200 rounded-sm p-1">
-              <button
-                type="button"
-                className={`no-raise cursor-pointer p-3 w-full rounded-sm ${requirementDetails.memberType == "ALL_MEMBERS" ? "bg-blue-200" : "hover:bg-blue-100"}`}
-                onClick={() => handleChange("memberType", "ALL_MEMBERS")}
-              >
-                All Members
-              </button>
-              <button
-                type="button"
-                className={`no-raise cursor-pointer p-3 w-full rounded-sm ${requirementDetails.memberType == "PLEDGE" ? "bg-blue-200" : "hover:bg-blue-100"}`}
-                onClick={() => handleChange("memberType", "PLEDGE")}
-              >
-                Pledge
-              </button>
-              <button
-                type="button"
-                className={`no-raise cursor-pointer p-3 w-full rounded-sm ${requirementDetails.memberType == "ACTIVE" ? "bg-blue-200" : "hover:bg-blue-100"}`}
-                onClick={() => handleChange("memberType", "ACTIVE")}
-              >
-                Active
-              </button>
-              <button
-                type="button"
-                className={`no-raise cursor-pointer  p-3 w-full rounded-sm ${requirementDetails.memberType == "PNM" ? "bg-blue-200" : "hover:bg-blue-100"}`}
-                onClick={() => handleChange("memberType", "PNM")}
-              >
-                PNM
-              </button>
-            </div>
-          </div>
+    <div className="mx-auto w-full min-w-0 max-w-7xl bg-transparent px-3 py-6 transition-colors duration-300 sm:px-4 sm:py-8">
+      <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="mb-2 text-3xl font-bold text-gray-900 transition-colors duration-300 sm:text-4xl dark:text-white">
+            Requirements
+          </h1>
+          <p className="text-sm text-gray-600 transition-colors duration-300 sm:text-base dark:text-gray-400">
+            Create and manage semester point requirements for actives, PNMs, and
+            the full chapter.
+          </p>
         </div>
-        <div className="flex flex-col gap-4 pb-8 border-grey-200 border-b">
-          <div>
-            <h1 className="font-semibold text-xl">Requirement</h1>
-            <p>The activity that needs completed</p>
-          </div>
-          <label className="flex flex-col gap-2 ">
-            <p className="font-semibold">Requirement name</p>
-            <input
-              placeholder="e.g. Coffee Chats"
-              className="border border-grey-200 w-full p-2 rounded-md"
-              value={requirementDetails.name}
-              onChange={(e) => handleChange("name", e.target.value)}
-            ></input>
-          </label>
-          <label>
-            <p className="mb-1 font-semibold">Description</p>
-            <textarea
-              value={requirementDetails.description}
-              placeholder="e.g. Pledges must complete 10 coffee chats by the end of the semester"
-              onChange={(e) => handleChange("description", e.target.value)}
-              className="w-full p-1 rounded-md border border-grey-200 h-28"
-            ></textarea>
-          </label>
-        </div>
-        <div className="flex flex-col gap-4 pb-8 border-b border-grey-200">
-          <div>
-            <h1 className="font-semibold text-xl">Points</h1>
-            <p>How completion contributes to the semester total</p>
-          </div>
-          <div>
-            <div className="flex gap-4">
-              <label className="w-full mb-1">
-                <p className="font-semibold">Required Count</p>
-                <input
-                  className="border border-grey-200 rounded-md p-1 w-full"
-                  value={requirementDetails.requiredAmount}
-                  onChange={(e) => {
-                    const num = Number(e.target.value);
-                    Number.isInteger(num)
-                      ? handleChange("requiredAmount", Number(e.target.value))
-                      : console.log(e.target.value, "is not a number");
-                  }}
-                ></input>
-              </label>
-              <label className="w-full">
-                <p className="font-semibold">Points Per Completion</p>
-                <input
-                  className="border border-grey-200 rounded-md p-1 w-full "
-                  value={requirementDetails.pointsPerCompletion}
-                  onChange={(e) => {
-                    const num = Number(e.target.value);
-                    Number.isInteger(num)
-                      ? handleChange(
-                          "pointsPerCompletion",
-                          Number(e.target.value),
-                        )
-                      : console.log(e.target.value, "is not a number");
-                  }}
-                ></input>
-              </label>
-              <label className="w-full ">
-                <p className="font-semibold">Maximum points</p>
-                <input
-                  className="border border-grey-200 rounded-md p-1 w-full"
-                  value={requirementDetails.maxPoints}
-                  onChange={(e) => {
-                    const num = Number(e.target.value);
-                    Number.isInteger(num)
-                      ? handleChange("maxPoints", Number(e.target.value))
-                      : console.log(e.target.value, "is not a number");
-                  }}
-                ></input>
-              </label>
-            </div>
-          </div>
-        </div>
-        <div className="flex gap-4 self-end">
-          <button
-            onClick={() => resetForm()}
-            className="cursor-pointer no-raise p-4 border border-gray-200 rounded-xl"
-            type="button"
-          >
-            Reset Form
-          </button>
-          <button
-            onClick={(e) => handleSubmit(e)}
-            className="cursor-pointer no-raise p-2 text-white bg-blue-950 rounded-2xl"
-            type="submit"
-          >
-            Save Requirement
-          </button>
-        </div>
-      </form>
-      <div>
-        <h1 className="text-2xl font-bold m-8">Existing Requirements</h1>
-        {requirements.map((requirement) => (
-          <Requirement
-            onUpdate={updatePointRequirement}
-            onDelete={deletePointRequirement}
-            req={requirement}
-            key={requirement.id}
-          />
-        ))}
+        <Button
+          onClick={() => setCreateOpen(true)}
+          className="cursor-pointer self-start bg-blue-800 hover:bg-blue-900 sm:self-auto"
+        >
+          <Plus />
+          Create requirement
+        </Button>
       </div>
+
+      <div className="mb-6 grid gap-3 sm:grid-cols-3">
+        <StatCard
+          icon={<ClipboardList className="h-4 w-4" />}
+          label="Total"
+          value={loading ? "—" : String(counts.total)}
+        />
+        <StatCard
+          icon={<ClipboardList className="h-4 w-4" />}
+          label={nextSemesters[0]}
+          value={loading ? "—" : String(counts.currentSemester)}
+        />
+        <StatCard
+          icon={<Users className="h-4 w-4" />}
+          label="Active / PNM"
+          value={loading ? "—" : `${counts.active} / ${counts.pnm}`}
+        />
+      </div>
+
+      <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-wrap gap-2">
+          {MEMBER_FILTERS.map((filter) => (
+            <Button
+              key={filter}
+              size="sm"
+              variant={memberFilter === filter ? "default" : "outline"}
+              onClick={() => setMemberFilter(filter)}
+              className={`cursor-pointer ${
+                memberFilter === filter
+                  ? ""
+                  : "text-gray-900 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white"
+              }`}
+            >
+              {filter === "ALL" ? "All types" : memberTypeLabel(filter)}
+            </Button>
+          ))}
+        </div>
+
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Select
+            value={semesterFilter}
+            onValueChange={(value) => setSemesterFilter(value as SemesterFilter)}
+          >
+            <SelectTrigger className="w-full bg-white sm:w-44 dark:bg-gray-900">
+              <SelectValue placeholder="Semester" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">All semesters</SelectItem>
+              {nextSemesters.map((semester) => (
+                <SelectItem key={semester} value={semester}>
+                  {semester}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search requirements"
+              className="bg-white pl-9 dark:bg-gray-900"
+            />
+          </div>
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="grid gap-4 md:grid-cols-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-48 rounded-xl" />
+          ))}
+        </div>
+      ) : visibleRequirements.length === 0 ? (
+        <Card className="border-dashed border-gray-300 bg-white/70 dark:border-gray-700 dark:bg-gray-900/60">
+          <CardContent className="flex flex-col items-center px-6 py-14 text-center">
+            <div className="mb-3 rounded-lg bg-blue-100 p-3 text-blue-700 dark:bg-gray-800 dark:text-blue-300">
+              <ClipboardList className="h-6 w-6" />
+            </div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+              No requirements found
+            </h2>
+            <p className="mt-1 max-w-md text-sm text-gray-600 dark:text-gray-400">
+              {requirements.length === 0
+                ? "Create the first point requirement to start tracking member progress."
+                : "Try a different type, semester, or search."}
+            </p>
+            {requirements.length === 0 ? (
+              <Button
+                className="mt-4 cursor-pointer bg-blue-800 hover:bg-blue-900"
+                onClick={() => setCreateOpen(true)}
+              >
+                <Plus />
+                Create requirement
+              </Button>
+            ) : null}
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2">
+          {visibleRequirements.map((requirement) => (
+            <Requirement
+              key={requirement.id}
+              req={requirement}
+              onUpdate={updatePointRequirement}
+              onDelete={deletePointRequirement}
+            />
+          ))}
+        </div>
+      )}
+
+      <RequirementFormModal
+        open={createOpen}
+        mode="create"
+        onClose={() => setCreateOpen(false)}
+        onSubmit={handleCreate}
+      />
     </div>
+  );
+}
+
+function StatCard({
+  icon,
+  label,
+  value,
+}: {
+  icon: ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <Card className="border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900">
+      <CardContent className="flex items-center gap-3 p-4">
+        <div className="rounded-md bg-blue-100 p-2 text-blue-700 dark:bg-gray-800 dark:text-blue-300">
+          {icon}
+        </div>
+        <div>
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+            {label}
+          </p>
+          <p className="text-xl font-semibold text-gray-900 dark:text-white">
+            {value}
+          </p>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

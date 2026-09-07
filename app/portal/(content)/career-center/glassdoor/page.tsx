@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useMyAccountQuery } from "@/client/hooks/accounts";
+import { hasExecAccess } from "@/lib/auth/roles";
 
 type Review = {
     id: string;
@@ -138,7 +139,7 @@ export default function GlassdoorPage() {
 
     const canEditOrDelete = (r: Review) => {
         if (!myAccount) return false;
-        return r.authorId === myAccount.id || myAccount.type === "LEADERSHIP";
+        return r.authorId === myAccount.id || hasExecAccess(myAccount.type);
     };
 
     const filtered = reviews.filter((r) => {

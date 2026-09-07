@@ -1,6 +1,11 @@
 import { event } from "@prisma/client";
 import Link from "next/link";
+import { useState } from "react";
 import { useAttendance } from "@/hooks/useAttendance";
+import { EventFormModal } from "./eventFormModal";
+import { DeleteEventModal } from "./deleteEventModal";
+import type { EventFormData } from "@/lib/events";
+import { eventAudienceLabel } from "@/lib/events";
 import {
   Calendar,
   Clock,
@@ -14,10 +19,14 @@ import {
 type EventProps = {
   event: event;
   totalAccounts: number;
+  onUpdate: (id: string, data: EventFormData) => void;
+  onDelete: (id: string) => void;
 };
 
-export function Event({ event, totalAccounts }: EventProps) {
+export function Event({ event, totalAccounts, onUpdate, onDelete }: EventProps) {
   const { attendance } = useAttendance(event.id);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const attendancePercentage =
     totalAccounts > 0 ? (attendance.length / totalAccounts) * 100 : 0;
@@ -36,12 +45,14 @@ export function Event({ event, totalAccounts }: EventProps) {
 
         <span
           className={`rounded-full px-3 py-1 text-xs font-medium ${
-            event.activesOnly
-              ? "bg-emerald-100 text-emerald-700"
-              : "bg-blue-100 text-blue-700"
+            event.pledgesOnly
+              ? "bg-amber-100 text-amber-800"
+              : event.activesOnly
+                ? "bg-emerald-100 text-emerald-700"
+                : "bg-blue-100 text-blue-700"
           }`}
         >
-          {event.activesOnly ? "Actives Only" : "All Members"}
+          {eventAudienceLabel(event)}
         </span>
       </div>
 
@@ -120,14 +131,41 @@ export function Event({ event, totalAccounts }: EventProps) {
           </button>
         </Link>
 
-        <button className="rounded-lg border border-green-200 text-emerald-900 p-2 transition hover:bg-green-100 cursor-pointer">
+        <button
+          type="button"
+          onClick={() => setIsEditing(true)}
+          className="rounded-lg border border-green-200 text-emerald-900 p-2 transition hover:bg-green-100 cursor-pointer"
+        >
           <Pencil size={16} />
         </button>
 
-        <button className="rounded-lg border border-red-700 p-2 cursor-pointer text-red-700 transition hover:bg-red-50">
+        <button
+          type="button"
+          onClick={() => setIsDeleting(true)}
+          className="rounded-lg border border-red-700 p-2 cursor-pointer text-red-700 transition hover:bg-red-50"
+        >
           <Trash2 size={16} />
         </button>
       </div>
+
+      {isEditing && (
+        <EventFormModal
+          event={event}
+          onClose={() => setIsEditing(false)}
+          onSubmit={(data) => onUpdate(event.id, data)}
+        />
+      )}
+
+      {isDeleting && (
+        <DeleteEventModal
+          eventName={event.name}
+          onClose={() => setIsDeleting(false)}
+          onConfirm={() => {
+            onDelete(event.id);
+            setIsDeleting(false);
+          }}
+        />
+      )}
     </div>
   );
 }

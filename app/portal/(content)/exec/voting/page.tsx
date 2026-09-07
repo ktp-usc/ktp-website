@@ -19,6 +19,7 @@ import {
   useVoteResultsQuery
 } from '@/client/hooks/votes';
 import { leaderType as LeaderType } from "@prisma/client";
+import { hasExecAccess } from "@/lib/auth/roles";
 
 const AUTO_REFRESH_MS = 5000;
 
@@ -36,7 +37,7 @@ export default function ExecVotingPage() {
   const userId = session.data?.user?.id ?? null;
   const leaderType = account.data?.leaderType ?? null;
   const isAdmin =
-    account.data?.type === 'LEADERSHIP' || (leaderType && leaderType !== LeaderType.N_A);
+    hasExecAccess(account.data?.type) || (leaderType && leaderType !== LeaderType.N_A);
   const isGateLoading = session.isFetching || (userId ? account.isFetching : false);
 
   const { data: activeData, isLoading: isQuestionLoading } = useActiveVoteQuery({

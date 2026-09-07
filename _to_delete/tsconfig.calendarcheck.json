@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [],
+  "files": [
+    "next-env.d.ts",
+    "proxy.ts",
+    "components/Header.tsx",
+    "app/api/authz/calendar/route.ts"
+  ]
+}

@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth/guards";
 import { ok, serverError } from "@/lib/http/responses";
+import { parseAccountTypesParam } from "@/lib/events";
+import type { type as AccountType } from "@prisma/client";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,6 +19,7 @@ export async function GET(req: Request) {
 
     const q = (searchParams.get("q") ?? "").trim();
     const type = (searchParams.get("type") ?? "").trim();
+    const types = parseAccountTypesParam(searchParams.get("types") ?? "");
     const leaderType = (searchParams.get("leaderType") ?? "").trim();
 
     const [firstName, ...rest] = q.split(/\s+/);
@@ -27,8 +30,11 @@ export async function GET(req: Request) {
     const skipRaw = parseIntParam(searchParams.get("skip"), 0);
     const skip = Math.max(skipRaw, 0);
 
+    const typeFilter: { type?: AccountType | { in: AccountType[] } } =
+      types.length > 0 ? { type: { in: types } } : type ? { type: type as AccountType } : {};
+
     const where: any = {
-      ...(type ? { type } : {}),
+      ...typeFilter,
       ...(leaderType ? { leaderType } : {}),
       ...(q
         ? {

@@ -16,6 +16,7 @@ import {
 } from "@/client/hooks/accounts";
 import HeadshotCropModal from "@/app/portal/settings/HeadshotCropModal";
 import BackButton from "@/components/BackButton";
+import { hasExecAccess } from "@/lib/auth/roles";
 
 // function joinList(list: string[] | null | undefined) {
 //   return (list ?? []).join(", ");
@@ -96,7 +97,7 @@ export default function SettingsPage() {
       GitHub: account.github ?? "",
       bio: prev.bio ?? "",
       type: account.type ?? "",
-      exec: account.type === "LEADERSHIP",
+      exec: hasExecAccess(account.type),
       pc: "2026",
       majors: account.majors ?? [],
       minors: account.minors ?? [],

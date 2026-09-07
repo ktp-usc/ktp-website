@@ -130,6 +130,7 @@ export function useDeleteApplicationMutation(id: string) {
         mutationFn: () => fetchJson<{ ok: true }>(`/api/applications/${ id }`, { method: "DELETE" }),
         onSuccess: async () => {
             await qc.invalidateQueries({ queryKey: qk.applications({}) });
+            await qc.invalidateQueries({ queryKey: ["applications", "incoming"] });
         }
     });
 }
@@ -192,6 +193,7 @@ export function useSetApplicationFlagMutation(id: string) {
         onSettled: async () => {
             await qc.invalidateQueries({ queryKey: qk.application(id) });
             await qc.invalidateQueries({ queryKey: qk.applications({}) });
+            await qc.invalidateQueries({ queryKey: ["applications", "incoming"] });
         }
     });
 }

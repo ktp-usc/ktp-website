@@ -2,26 +2,37 @@ import { redirect } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
 import BidLetterClientPage from "@/app/portal/bid-letter/BidLetterClientPage";
-import { requireUser } from "@/lib/auth/guards"; // adjust path to your prisma singleton
+import { requireUser } from "@/lib/auth/guards";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default async function BidLetterPage() {
-    const authed = await requireUser();
-    if ("response" in authed) {
-        // if your requireUser returns a NextResponse for unauth, send them to portal
-        redirect("/portal");
-    }
+type BidLetterPageProps = {
+  searchParams: Promise<{ applicationId?: string }>;
+};
 
-    const app = await prisma.applications.findUnique({
-        where: { userId: authed.user.id },
-        select: { status: true }
-    });
+export default async function BidLetterPage({ searchParams }: BidLetterPageProps) {
+  const authed = await requireUser();
+  if ("response" in authed) {
+    redirect("/portal");
+  }
 
-    if (!app || app.status !== "BID_OFFERED") {
-        redirect("/portal");
-    }
+  const { applicationId } = await searchParams;
 
-    return <BidLetterClientPage/>;
+  const app = applicationId
+    ? await prisma.applications.findFirst({
+        where: { id: applicationId, userId: authed.user.id },
+        select: { id: true, status: true },
+      })
+    : await prisma.applications.findFirst({
+        where: { userId: authed.user.id, status: "BID_OFFERED" },
+        orderBy: { createdAt: "desc" },
+        select: { id: true, status: true },
+      });
+
+  if (!app || app.status !== "BID_OFFERED") {
+    redirect("/portal");
+  }
+
+  return <BidLetterClientPage applicationId={app.id} />;
 }

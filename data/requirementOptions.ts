@@ -5,4 +5,4 @@ export const nextSemesters = [
   "Spring 2028",
 ];
 
-export const memberType = ["ALL_MEMBERS", "PLEDGE", "ACTIVE", "PNM"];
+export const memberType = ["ALL_MEMBERS", "ACTIVE", "PNM"];

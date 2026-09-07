@@ -1,4 +1,7 @@
 import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+import { isEligibleForEventAttendance } from "@/lib/events";
+import { createAttendanceWithPoints } from "@/lib/points/award";
 
 export async function GET(
   req: Request,
@@ -25,13 +28,21 @@ export async function POST(
     if (!event || !event.id) {
       return Response.json({ status: 404, message: "could not find event" });
     }
-    const data = await prisma.attendance.create({
-      data: {
-        eventId: event.id,
-        accountId: accountId,
-        checkedInAt: new Date(),
-      },
+
+    const account = await prisma.accounts.findUnique({
+      where: { id: accountId },
     });
+    if (!account) {
+      return NextResponse.json({ error: "Account not found" }, { status: 404 });
+    }
+    if (!isEligibleForEventAttendance(account.type, event)) {
+      return NextResponse.json(
+        { error: "Account is not eligible for this event" },
+        { status: 403 },
+      );
+    }
+
+    const data = await createAttendanceWithPoints(accountId, event.id);
     return Response.json(data);
   } catch (error) {
     console.log(error);
