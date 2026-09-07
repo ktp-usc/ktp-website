@@ -19,7 +19,7 @@ const RUSH_EVENTS: RushEvent[] = [
         title: "Info Night #1",
         date: "Thursday, September 3",
         time: "7:00 – 8:00 PM",
-        location: "Location TBA",
+        location: "300 Main St B201",
         description:
             "Want to learn more about what KTP has to offer? We'll give a presentation about what it means to be a brother in KTP; then, you'll have a chance to ask our brothers anything about rush, the professional fraternity experience, or whatever else you're wondering.",
     },
@@ -28,7 +28,7 @@ const RUSH_EVENTS: RushEvent[] = [
         title: "Info Night #2",
         date: "Tuesday, September 8",
         time: "7:00 – 8:00 PM",
-        location: "Location TBA",
+        location: "300 Main St B201",
         description:
             "Same content as Info Night #1 — you only need to attend one of the two. Pick whichever fits your schedule.",
     },
@@ -37,7 +37,7 @@ const RUSH_EVENTS: RushEvent[] = [
         title: "Game Night: Escape the Matrix",
         date: "Wednesday, September 9",
         time: "7:00 – 8:30 PM",
-        location: "Location TBA",
+        location: "Darla Moore Room 109",
         description:
             "Team up with our brothers to crack ciphers, solve puzzles, and escape the Matrix before the clock runs out. Part escape room, part game night, and the easiest way to actually get to know the chapter.",
     },
@@ -46,7 +46,7 @@ const RUSH_EVENTS: RushEvent[] = [
         title: "Technical Workshop",
         date: "Thursday, September 10",
         time: "7:00 – 8:30 PM",
-        location: "Location TBA",
+        location: "Darla Moore Room 133",
         description:
             "Want a glance at what it's like to join KTP? We'll teach you the basics of React and walk you through building your own website. No prior experience required — bring a laptop if you have one.",
     },
@@ -55,7 +55,7 @@ const RUSH_EVENTS: RushEvent[] = [
         title: "Pitch Night",
         date: "Friday, September 11",
         time: "5:00 – 7:00 PM",
-        location: "Location TBA",
+        location: "Darla Moore Room 140",
         description:
             "Time to showcase your collaboration skills. First we'll give you tips on your resume and LinkedIn; then you'll work with a team to pitch a solution to a technical challenge. Please dress business casual!",
     },
