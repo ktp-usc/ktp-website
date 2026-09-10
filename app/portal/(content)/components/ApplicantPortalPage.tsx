@@ -152,10 +152,18 @@ export default function ApplicantPortalPage() {
 
       {userId && role === "applicant" ? (
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white transition-colors duration-300">
-              Your Application
-            </h3>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white transition-colors duration-300">
+                Your Application
+              </h3>
+              {!applicationsLoading && applications.length > 0 ? (
+                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                  Applied in a previous semester? Create a new application for
+                  this rush cycle instead of reusing an old one.
+                </p>
+              ) : null}
+            </div>
             <button
               onClick={async () => {
                 if (applications.length >= MAX_APPLICATIONS_PER_USER) {
@@ -180,7 +188,7 @@ export default function ApplicantPortalPage() {
                   }
                 }
               }}
-              className="bg-blue-500 text-xl cursor-pointer rounded-full p-2 text-white flex gap-2 items-center"
+              className="bg-blue-500 text-xl cursor-pointer rounded-full p-2 text-white flex gap-2 items-center self-start sm:self-auto shrink-0"
             >
               Create New Application
               <Plus />
