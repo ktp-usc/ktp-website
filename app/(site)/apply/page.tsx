@@ -11,7 +11,8 @@ export default function ApplyPage() {
                     </h1>
 
                     <p className="text-gray-700 mb-6 text-center">
-                        Applying is simple: create an account, complete your application, and attend rush events.
+                        Applying is simple: first-time applicants create an account, returning applicants sign in and
+                        start a new application, then complete the application and attend rush events.
                         Your event attendance will be included as part of your application.
                     </p>
 
@@ -22,7 +23,7 @@ export default function ApplyPage() {
 
                         <ul className="list-disc pl-5 space-y-2 text-gray-700">
                             <li>
-                                Go to "Sign Up" button on the top right of the site.
+                                Go to the &quot;Sign Up&quot; button on the top right of the site.
                             </li>
                             <li>
                                 Fill out our sign-up, and use your USC email so we can match you to your application.
@@ -31,6 +32,43 @@ export default function ApplyPage() {
                                 Once your account is created, you&apos;ll be able to access and submit your application!
                             </li>
                         </ul>
+
+                        <div className="mt-4 flex justify-center">
+                            <Link
+                                href="/auth/sign-up"
+                                className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90"
+                            >
+                                Sign Up
+                            </Link>
+                        </div>
+                    </div>
+
+                    <div className="bg-gray-50 rounded-lg p-5 mb-6">
+                        <h2 className="font-semibold mb-3">
+                            Returning Applicants
+                        </h2>
+
+                        <ul className="list-disc pl-5 space-y-2 text-gray-700">
+                            <li>
+                                Sign in with the same USC email you used before. Do not create a new account.
+                            </li>
+                            <li>
+                                Open the portal and click <strong>Create New Application</strong> for this rush cycle.
+                            </li>
+                            <li>
+                                Then complete and submit your application the same way as first-time applicants
+                                (Steps 2 and 3).
+                            </li>
+                        </ul>
+
+                        <div className="mt-4 flex justify-center">
+                            <Link
+                                href="/auth/sign-in"
+                                className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90"
+                            >
+                                Sign In
+                            </Link>
+                        </div>
                     </div>
 
                     <div className="bg-gray-50 rounded-lg p-5 mb-6">
