@@ -249,7 +249,7 @@ export default function PortalApplicationPage() {
   useEffect(() => {
     if (loading) return;
     if (!dirty) setForm(formFromSources(application, account));
-  }, [applicationLoading, application, account, dirty]);
+  }, [applicationLoading, application, account, dirty, loading]);
 
   const isSubmitted = !!application?.submittedAt;
   const canEdit = !!userId && !isSubmitted && !loading;
