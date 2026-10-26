@@ -94,7 +94,7 @@ export default function ApplicantPortalPage() {
 
   const [applicationError, setApplicationError] = useState<string | null>(null);
 
-  if (userId && (isLoading || role !== "applicant")) {
+  if (userId && (isLoading || applicationsLoading || role !== "applicant")) {
     return (
       <main className="max-w-7xl mx-auto px-6 py-8">
         <p className="text-gray-600 dark:text-gray-400">Loading…</p>
