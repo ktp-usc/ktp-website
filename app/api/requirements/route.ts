@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { PointRequirement } from "@prisma/client";
 import { NextResponse, NextRequest } from "next/server";
 import { memberType } from "@prisma/client";
 //   id                  String     @id @default(uuid()) @db.Uuid
@@ -19,21 +18,28 @@ export async function POST(req: Request) {
   return NextResponse.json(pointRequirement);
 }
 
-export async function GET(request: NextRequest) {
-  const memberType = request.nextUrl.searchParams.get(
-    "memberType",
-  ) as memberType;
+const MEMBER_TYPES: memberType[] = ["ACTIVE", "PNM", "ALL_MEMBERS"];
 
-  let result: PointRequirement[];
-  if (!memberType) {
-    result = await prisma.pointRequirement.findMany();
-  } else {
-    result = await prisma.pointRequirement.findMany({
-      where: {
-        OR: [{ memberType: memberType }, { memberType: "ALL_MEMBERS" }],
-      },
-    });
+export async function GET(request: NextRequest) {
+  const memberTypeParam = request.nextUrl.searchParams.get("memberType");
+  const semester = request.nextUrl.searchParams.get("semester")?.trim() || null;
+
+  if (
+    memberTypeParam &&
+    !MEMBER_TYPES.includes(memberTypeParam as memberType)
+  ) {
+    return NextResponse.json({ error: "Invalid member type" }, { status: 400 });
   }
+
+  const selectedType = memberTypeParam as memberType | null;
+  const result = await prisma.pointRequirement.findMany({
+    where: {
+      ...(semester ? { semester } : {}),
+      ...(selectedType
+        ? { OR: [{ memberType: selectedType }, { memberType: "ALL_MEMBERS" }] }
+        : {}),
+    },
+  });
   return NextResponse.json(result);
 }
 

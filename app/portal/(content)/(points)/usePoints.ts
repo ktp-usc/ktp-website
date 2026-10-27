@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { getActivePointRequirements } from "@/lib/points/progress";
 import { RequirementProgressData } from "@/types";
 
-export function usePoints(isActive: boolean) {
+export function usePoints(isActive: boolean, semester?: string) {
   const [requirementProgressData, setRequirementProgressData] =
     useState<RequirementProgressData>({
       categoriesCompleted: 0,
@@ -68,9 +68,11 @@ export function usePoints(isActive: boolean) {
   async function getPointRequirements() {
     try {
       setRequirementsLoading(true);
-      const res = await fetch(
-        `/api/requirements?memberType=${isActive ? "ACTIVE" : "PLEDGE"}`,
-      );
+      const params = new URLSearchParams({
+        memberType: isActive ? "ACTIVE" : "PNM",
+      });
+      if (semester) params.set("semester", semester);
+      const res = await fetch(`/api/requirements?${params}`);
       if (!res.ok) {
         return console.error(res);
       }
@@ -112,7 +114,7 @@ export function usePoints(isActive: boolean) {
       getAttendance();
       getAccountPoints();
     }
-  }, [accountId]);
+  }, [accountId, isActive, semester]);
 
   useEffect(() => {
     if (!attendanceLoading && !eventsLoading && !requirementsLoading) {
@@ -126,7 +128,15 @@ export function usePoints(isActive: boolean) {
         totalPoints: pointsAwarded,
       });
     }
-  }, [attendanceLoading, attendance, eventsLoading, requirementsLoading, pointsAwarded]);
+  }, [
+    attendance,
+    attendanceLoading,
+    events,
+    eventsLoading,
+    pointRequirements,
+    pointsAwarded,
+    requirementsLoading,
+  ]);
   useEffect(() => {
     setLoading(false);
   }, [requirementProgressData]);

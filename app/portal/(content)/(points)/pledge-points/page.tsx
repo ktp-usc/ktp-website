@@ -8,12 +8,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { canAccessPledgePoints } from "@/lib/auth/roles";
+import { nextSemesters } from "@/data/requirementOptions";
 import { RequirementProgressList } from "../RequirementProgressList";
 import { usePoints } from "../usePoints";
 
-const SEMESTER_LABEL = "Spring 2026";
+const SEMESTER_LABEL = nextSemesters[0];
 
-export default function ActiveMemberPointsPage() {
+export default function PledgePointsPage() {
   const router = useRouter();
   const session = useSessionQuery();
   const account = useMyAccountQuery();
@@ -39,7 +40,7 @@ export default function ActiveMemberPointsPage() {
     updateAttendance,
     attendance,
     events,
-  } = usePoints(false);
+  } = usePoints(false, SEMESTER_LABEL);
 
   useEffect(() => {
     if (!isLoading && (!session.data?.user?.id || !isAuthorized)) {
@@ -79,7 +80,7 @@ export default function ActiveMemberPointsPage() {
           <div>
             <div className="flex items-center gap-2 mb-5">
               <Badge className="rounded-full px-3.5 py-1.5 text-sm bg-[#1e2d5a] text-white border-transparent hover:bg-[#1e2d5a]">
-                Active Member
+                Pledge
               </Badge>
               <Badge
                 variant="secondary"
@@ -89,7 +90,7 @@ export default function ActiveMemberPointsPage() {
               </Badge>
             </div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Active Member Points
+              Pledge Points
             </h1>
             {fullName && (
               <p className="text-base text-gray-400 dark:text-gray-500 mt-2">

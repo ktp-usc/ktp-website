@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "postinstall": "prisma generate",
-    "lint": "eslint"
+    "lint": "eslint",
+    "create-coffee-chats": "npx --yes tsx scripts/create-coffee-chat-events.ts"
   },
   "dependencies": {
     "@cyntler/react-doc-viewer": "^1.17.1",
