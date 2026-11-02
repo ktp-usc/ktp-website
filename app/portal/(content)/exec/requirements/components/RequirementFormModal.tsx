@@ -195,7 +195,7 @@ export function RequirementFormModal({
               <Textarea
                 id="requirement-description"
                 value={values.description}
-                placeholder="e.g. Pledges must complete 10 coffee chats by the end of the semester"
+                placeholder="e.g. Pledges must complete 12 coffee chats by the end of the semester"
                 className="min-h-24"
                 onChange={(e) => setField("description", e.target.value)}
               />
